@@ -14,7 +14,7 @@ public class PneuServicoRealizadoCreator {
             @NotNull final String fonteCadastro,
             @NotNull final BigDecimal valorBanda) {
         return PneuServicoRealizadoEntity.builder()
-                .codTipoServico(tipoServicoIncrementaVidaCadastroPneu.getCodigo())
+                .tipoServico(tipoServicoIncrementaVidaCadastroPneu)
                 .codUnidade(pneuCadastrado.getCodUnidade())
                 .codPneu(pneuCadastrado.getCodigo())
                 .custo(valorBanda)

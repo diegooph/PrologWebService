@@ -51,7 +51,6 @@ public final class VeiculoResource {
     @POST
     @Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
     @UsedBy(platforms = Platform.WEBSITE)
-    @Path("/")
     public Response insert(@HeaderParam("Authorization") @Required final String userToken,
                            @Required final VeiculoCadastroDto veiculo) {
         return service.insert(userToken, veiculo);
@@ -59,7 +58,6 @@ public final class VeiculoResource {
 
     @PUT
     @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
-    @Path("/")
     public Response update(@HeaderParam("Authorization") @Required final String userToken,
                            @Required final VeiculoEdicao veiculo) {
         return service.update(colaboradorAutenticadoProvider.get().getCodigo(), userToken, veiculo);

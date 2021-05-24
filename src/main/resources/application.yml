@@ -23,8 +23,7 @@ spring:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-
+    database-platform: br.com.zalf.prolog.webservice.v3.PrologDialect
   datasource:
     driver-class-name: org.postgresql.Driver
 
@@ -38,9 +37,3 @@ spring:
 
   flyway:
     enabled: false
-
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    url: /prolog/swagger.json
-    operations-sorter: method

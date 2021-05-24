@@ -1,16 +1,96 @@
 Change Log
 ==========
 
-<a name="v3.2.1"></a>
-## Version [v3.2.1](https://github.com/luizfp/PrologWebService/compare/v3.2.0...v3.2.1) (release-date) [unreleased]
+###
+### UNRELEASED
+###
+
+
+<a name="v3.3.6"></a>
+## Version [v3.3.6](https://github.com/luizfp/PrologWebService/compare/v3.3.5...v3.3.6) (2021-05-22)
+
+### Refactors
+* Otimiza busca dos indicadores individuais
+
+### Bug Fixes
+* Corrige upload de planilha de tracking
+* Corrige falha ao movimentar pneus na integração com a finatto
+
+<a name="v3.3.5"></a>
+## Version [v3.3.5](https://github.com/luizfp/PrologWebService/compare/v3.3.4...v3.3.5) (2021-05-20)
+
+### Refactors
+* Melhora mapeamento de exceptions do SQL
+* Otimiza geração da produtividade (PL-3648)
+
+<a name="v3.3.4"></a>
+## Version [v3.3.4](https://github.com/luizfp/PrologWebService/compare/v3.3.3...v3.3.4) (2021-05-17)
 
 ### Features
+* Cria function para o suporte consultar atualizações num pneu (PL-3490)
+
+### Refactors
+* Atualiza insert/update de pneu para logar o colaborador que inseriu/alterou um pneu (PL-3490)
+* Alterar relatórios e dashboards que utilizam a coluna placa da tabela veiculo_pneu (PL-3617)
+* Remover usos da coluna placa da tabela veiculo_pneu nos fluxos de sistema (WS e BD) (PL-3618)
+* Altera limite máximo permitido na listagem de checklists
+
+### Bug Fixes
+* Erro ao editar diagrama de veiculo (PL-3637)
+
+<a name="v3.3.3"></a>
+## Version [v3.3.3](https://github.com/luizfp/PrologWebService/compare/v3.3.2...v3.3.3) (2021-05-10)
+
+### Refactors
+* Adiciona validação para erros mapeados pelo `SpringDataJpa` (PL-3605)
+
+### Bug Fixes
+* Corrige problema de limpeza de arquivos/pastas temporárias
+
+<a name="v3.3.2"></a>
+## Version [v3.3.2](https://github.com/luizfp/PrologWebService/compare/v3.3.1...v3.3.2) (2021-05-09)
+
+### Bug Fixes
+* Corrige linha duplicada histórico de veículos (PL-3516)
+* Corrige atualização km ao realizar movimentação (PL-3630)
+
+### Refactors
+* Remove dependências e configurações não utilizadas do swagger
+* Padroniza documentação da API (PL-3621)
+* Melhora scheduler de limpeza de arquivos (PL-3436)
+
+<a name="v3.3.1"></a>
+## Version [v3.3.1](https://github.com/luizfp/PrologWebService/compare/v3.3.0...v3.3.1) (2021-05-04)
+
+### Bug Fixes
+* Corrige edição de KM de processo de movimentação
+* Corrige KM coletado enviado na listagem de movimentações da API v3
+* Corrige problema ao gerar cronograma de aferição para a Finatto
+
+<a name="v3.3.0"></a>
+## Version [v3.3.0](https://github.com/luizfp/PrologWebService/compare/v3.2.0...v3.3.0) (2021-05-02)
+
+### Features
+* Cria anotações para garantir os códigos acessados pelas requisições (PL-3551)
 * Cria functions de suporte para alterações em modelo de quiz (PL-3609)
 * Logar no BD quem altera um colaborador (PL-3491)
+* Cria v3 de listagem de checklist (PL-3461)
+* Cria v3 de ordem de serviço de checklist (PL-3462)
+* Cria v3 de listagem de movimentações (PL-3602)
 
 ### Refactors
 * Altera paths de v3 para serem precedidos por `api`
 * Altera path de unidades para estarem no `v3` e serem precedidos por `api`
+* Altera calculo de vencidas da function de geraçao dos dashboards e do relatorio de cronograma (PL-3538)
+* Realiza pequenas melhorias na PrologApplication (PL-3606)
+* Adiciona valores de medidas na API de aferição (PL-3570)
+* Altera relatório de exportação de Aferições para o Protheus (PL-3610)
+* Roteia método de busca de KM atual para a integração da Nepomuceno (PL-3508)
+
+### Bug Fixes
+* Corrige function de transferência de veículo entre Empresas para o Suporte (PS-1504)
+* Ajusta erros logados no sentry do package frota (PL-3593)
+* Corrige regex de validação de commit message (PL-3588)
 
 <a name="v3.2.0"></a>
 ## Version [v3.2.0](https://github.com/luizfp/PrologWebService/compare/v3.1.0...v3.2.0) (2021-04-18)

@@ -75,30 +75,33 @@ public final class SistemaApiProLogOld extends Sistema {
 
     @NotNull
     @Override
-    public Long insert(@NotNull final Pneu pneu,
+    public Long insert(final @NotNull Long codigoColaboradorCadastro,
+                       @NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
                        @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable {
         if (unidadeEstaComIntegracaoAtiva(codUnidade)) {
             throw new BloqueadoIntegracaoException("Para inserir pneus utilize o seu sistema de gestão");
         }
-        return getIntegradorProLog().insert(pneu, codUnidade, origemCadastro);
+        return getIntegradorProLog().insert(codigoColaboradorCadastro, pneu, codUnidade, origemCadastro);
     }
 
     @NotNull
     @Override
-    public List<Long> insert(@NotNull final List<Pneu> pneus) {
+    public List<Long> insert(final @NotNull Long codigoColaboradorCadastro,
+                             @NotNull final List<Pneu> pneus) {
         // Esse método é usado para importação de planilhas, então não precisa de validação para Unidade nesse momento.
         throw new BloqueadoIntegracaoException("Para inserir pneus utilize o seu sistema de gestão");
     }
 
     @Override
-    public void update(@NotNull final Pneu pneu,
+    public void update(final @NotNull Long codigoColaboradorEdicao,
+                       @NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
                        @NotNull final Long codOriginalPneu) throws Throwable {
         if (unidadeEstaComIntegracaoAtiva(codUnidade)) {
             throw new BloqueadoIntegracaoException("Para atualizar os dados do pneu utilize o seu sistema de gestão");
         }
-        getIntegradorProLog().update(pneu, codUnidade, codOriginalPneu);
+        getIntegradorProLog().update(codigoColaboradorEdicao, pneu, codUnidade, codOriginalPneu);
     }
 
     @NotNull

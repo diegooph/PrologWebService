@@ -2,9 +2,11 @@ package br.com.zalf.prolog.webservice.entrega.indicador;
 
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
 import br.com.zalf.prolog.webservice.entrega.indicador.item.IndicadorItem;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -12,9 +14,10 @@ import java.util.List;
  */
 public interface IndicadorDao {
 
-    List<IndicadorAcumulado> getAcumuladoIndicadoresIndividual(Long dataInicial,
-                                                               Long dataFinal,
-                                                               Long cpf) throws SQLException;
+    @NotNull
+    List<IndicadorAcumulado> getAcumuladoIndicadoresIndividual(@NotNull final Long cpf,
+                                                               @NotNull final LocalDate dataInicial,
+                                                               @NotNull final LocalDate dataFinal) throws SQLException;
 
     List<Indicador> getExtratoIndicador(Long dataInicial,
                                         Long dataFinal,

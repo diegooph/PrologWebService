@@ -120,13 +120,13 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
             if (rSet.next()) {
                 final Long codigoProcesso = rSet.getLong("CODIGO");
                 processoMovimentacao.setCodigo(codigoProcesso);
+                updateKmVeiculoIfNeeded(conn, processoMovimentacao, dataHoraMovimentacao, veioDoServico);
                 insertMovimentacoes(
                         conn,
                         servicoDao,
                         processoMovimentacao,
                         dataHoraMovimentacao,
                         fecharServicosAutomaticamente);
-                updateKmVeiculoIfNeeded(conn, processoMovimentacao, dataHoraMovimentacao, veioDoServico);
                 final List<CampoPersonalizadoResposta> respostas =
                         processoMovimentacao.getRespostasCamposPersonalizados();
                 if (respostas != null && !respostas.isEmpty()) {
@@ -365,7 +365,7 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                 veiculoDao.removePneuVeiculo(
                         conn,
                         processoMovimentacao.getUnidade().getCodigo(),
-                        origem.getVeiculo().getPlaca(),
+                        origem.getVeiculo().getCodigo(),
                         mov.getPneu().getCodigo());
             }
         }

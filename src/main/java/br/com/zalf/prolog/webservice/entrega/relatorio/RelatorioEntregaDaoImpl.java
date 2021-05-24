@@ -40,7 +40,7 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
             "sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1\n" +
             "else 0 end) as apontamentos_ok,\n" +
             "count(t.disp_apont_cadastrado) as total_apontamentos\n" +
-            "from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
+            "from tracking t join unidade_metas um on um.cod_unidade = t.cod_unidade\n" +
             "group by 1) as tracking on tracking_mapa = m.mapa\n" +
             "JOIN UNIDADE_FUNCAO_PRODUTIVIDADE UFP ON UFP.COD_UNIDADE = M.COD_UNIDADE \n" +
             "JOIN colaborador C ON C.matricula_ambev = M.matricmotorista " +
@@ -66,7 +66,7 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
             "sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1\n" +
             "else 0 end) as apontamentos_ok,\n" +
             "count(t.disp_apont_cadastrado) as total_apontamentos\n" +
-            "from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora\n" +
+            "from tracking t join unidade_metas um on um.cod_unidade = t.cod_unidade\n" +
             "group by 1) as tracking on tracking_mapa = m.mapa\n" +
             "JOIN UNIDADE_FUNCAO_PRODUTIVIDADE UFP ON UFP.COD_UNIDADE = M.COD_UNIDADE \n" +
             "JOIN colaborador C ON C.matricula_ambev = M.matricmotorista\n" +
@@ -100,7 +100,7 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
             "sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1 \n" +
             "else 0 end) as apontamentos_ok, \n" +
             "count(t.disp_apont_cadastrado) as total_apontamentos \n" +
-            "from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora \n" +
+            "from tracking t join unidade_metas um on um.cod_unidade = t.cod_unidade \n" +
             "group by 1) as tracking ON TRACKING_MAPA = M.MAPA \n" +
             "LEFT JOIN colaborador c2 on c2.matricula_ambev = m.matricajud1 and c2.cod_unidade = m.cod_unidade and c2.cod_funcao = ufp.cod_funcao_ajudante\n" +
             "LEFT JOIN colaborador c3 on c3.matricula_ambev = m.matricajud2 and c3.cod_unidade = m.cod_unidade and c3.cod_funcao = ufp.cod_funcao_ajudante ";

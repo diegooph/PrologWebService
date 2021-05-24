@@ -37,7 +37,7 @@ $$
 BEGIN
     RETURN COALESCE(TO_CHAR(TS_TZ, TS_FORTMAT), VALUE_IF_NULL);
 END;
-$$;    
+$$;
 
 create or replace function public.f_if(boolean, anyelement, anyelement) returns anyelement
     language plpgsql
@@ -51,7 +51,7 @@ BEGIN
             RETURN ($3);
         END CASE;
 END;
-$$;    
+$$;
 
 create or replace function public.tz_date(timestamp with time zone, text) returns date
     stable
@@ -62,7 +62,7 @@ $$
 BEGIN
     RETURN ($1 AT TIME ZONE $2) :: DATE;
 END;
-$$;    
+$$;
 
 create or replace function public.tz_unidade(f_cod_unidade bigint) returns text
     stable
@@ -6290,32 +6290,32 @@ create table if not exists audit.movimentacao_motivo_descarte_empresa_audit
 
 
 create or replace view public.view_mapa_colaborador(mapa, cpf, cod_unidade) as
-    SELECT m.mapa,
-           c.cpf,
-           c.cod_unidade
-    FROM ((mapa m
-        JOIN unidade_funcao_produtividade ufp ON ((ufp.cod_unidade = m.cod_unidade)))
-             JOIN colaborador_data c
-                  ON (((c.matricula_ambev = m.matricmotorista) AND (c.cod_funcao = ufp.cod_funcao_motorista) AND
-                       (c.cod_unidade = m.cod_unidade))))
-    UNION
-    SELECT m.mapa,
-           c.cpf,
-           c.cod_unidade
-    FROM ((mapa m
-        JOIN unidade_funcao_produtividade ufp ON ((ufp.cod_unidade = m.cod_unidade)))
-             JOIN colaborador_data c
-                  ON (((c.matricula_ambev = m.matricajud1) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
-                       (c.cod_unidade = m.cod_unidade))))
-    UNION
-    SELECT m.mapa,
-           c.cpf,
-           c.cod_unidade
-    FROM ((mapa m
-        JOIN unidade_funcao_produtividade ufp ON ((ufp.cod_unidade = m.cod_unidade)))
-             JOIN colaborador_data c
-                  ON (((c.matricula_ambev = m.matricajud2) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
-                       (c.cod_unidade = m.cod_unidade))));
+SELECT m.mapa,
+       c.cpf,
+       c.cod_unidade
+FROM ((mapa m
+    JOIN unidade_funcao_produtividade ufp ON ((ufp.cod_unidade = m.cod_unidade)))
+         JOIN colaborador_data c
+              ON (((c.matricula_ambev = m.matricmotorista) AND (c.cod_funcao = ufp.cod_funcao_motorista) AND
+                   (c.cod_unidade = m.cod_unidade))))
+UNION
+SELECT m.mapa,
+       c.cpf,
+       c.cod_unidade
+FROM ((mapa m
+    JOIN unidade_funcao_produtividade ufp ON ((ufp.cod_unidade = m.cod_unidade)))
+         JOIN colaborador_data c
+              ON (((c.matricula_ambev = m.matricajud1) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
+                   (c.cod_unidade = m.cod_unidade))))
+UNION
+SELECT m.mapa,
+       c.cpf,
+       c.cod_unidade
+FROM ((mapa m
+    JOIN unidade_funcao_produtividade ufp ON ((ufp.cod_unidade = m.cod_unidade)))
+         JOIN colaborador_data c
+              ON (((c.matricula_ambev = m.matricajud2) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
+                   (c.cod_unidade = m.cod_unidade))));
 
 comment on view public.view_mapa_colaborador is 'View utilizada para linkar os mapas relizados por cada colaborador';
 
@@ -6340,11 +6340,13 @@ ORDER BY m.data DESC, t.data;
 
 comment on view public.resumo_dados is 'View utilizada para juntar as datas que tem dados enviados ao sistema, planilhas ambev (2art e tracking)';
 
-create or replace view public.view_intervalo(codigo_marcacao_por_unidade, codigo, cod_unidade, cod_tipo_intervalo,
-                                             cpf_colaborador, data_hora, tipo_marcacao, fonte_data_hora,
-                                             justificativa_tempo_recomendado, justificativa_estouro, latitude_marcacao,
-                                             longitude_marcacao, valido, foi_ajustado, cod_colaborador_insercao,
-                                             status_ativo, data_hora_sincronizacao) as
+create or replace view public.view_intervalo
+            (codigo_marcacao_por_unidade, codigo, cod_unidade, cod_tipo_intervalo,
+             cpf_colaborador, data_hora, tipo_marcacao, fonte_data_hora,
+             justificativa_tempo_recomendado, justificativa_estouro, latitude_marcacao,
+             longitude_marcacao, valido, foi_ajustado, cod_colaborador_insercao,
+             status_ativo, data_hora_sincronizacao)
+as
 SELECT row_number() OVER (PARTITION BY i.cod_unidade ORDER BY i.codigo) AS codigo_marcacao_por_unidade,
        i.codigo,
        i.cod_unidade,
@@ -6375,14 +6377,16 @@ FROM (pneu_servico_realizado_data srr
 
 comment on view public.pneu_valor_vida is 'View que contém o valor e a vida associados a um pneu, somente para pneus que já foram recapados.';
 
-create or replace view public.view_analise_pneus("UNIDADE ALOCADO", "COD PNEU", "COD PNEU CLIENTE", "STATUS PNEU",
-                                                 cod_unidade, "MARCA", "MODELO", "MEDIDAS", "QTD DE AFERIÇÕES",
-                                                 "DTA 1a AFERIÇÃO", "DTA ÚLTIMA AFERIÇÃO", "DIAS ATIVO",
-                                                 "MÉDIA KM POR DIA", altura_sulco_interno, altura_sulco_central_interno,
-                                                 altura_sulco_central_externo, altura_sulco_externo,
-                                                 "MAIOR MEDIÇÃO VIDA", "MENOR SULCO ATUAL", "MILIMETROS GASTOS",
-                                                 "KMS POR MILIMETRO", "KMS A PERCORRER", "DIAS RESTANTES",
-                                                 "PREVISÃO DE TROCA") as
+create or replace view public.view_analise_pneus
+            ("UNIDADE ALOCADO", "COD PNEU", "COD PNEU CLIENTE", "STATUS PNEU",
+             cod_unidade, "MARCA", "MODELO", "MEDIDAS", "QTD DE AFERIÇÕES",
+             "DTA 1a AFERIÇÃO", "DTA ÚLTIMA AFERIÇÃO", "DIAS ATIVO",
+             "MÉDIA KM POR DIA", altura_sulco_interno, altura_sulco_central_interno,
+             altura_sulco_central_externo, altura_sulco_externo,
+             "MAIOR MEDIÇÃO VIDA", "MENOR SULCO ATUAL", "MILIMETROS GASTOS",
+             "KMS POR MILIMETRO", "KMS A PERCORRER", "DIAS RESTANTES",
+             "PREVISÃO DE TROCA")
+as
 SELECT u.nome                                                                           AS "UNIDADE ALOCADO",
        p.codigo                                                                         AS "COD PNEU",
        p.codigo_cliente                                                                 AS "COD PNEU CLIENTE",
@@ -6524,135 +6528,139 @@ GROUP BY q.cod_pneu, q.vida_pneu
 ORDER BY q.cod_pneu, q.vida_pneu;
 
 create or replace view public.view_pneu_km_rodado_total(cod_pneu, vida_pneu, km_rodado_vida, total_km_rodado_todas_vidas) as
-    WITH km_rodado_total AS (
-        SELECT view_pneu_km_rodado_vida.cod_pneu,
-               sum(view_pneu_km_rodado_vida.km_rodado_vida) AS total_km_rodado_todas_vidas
-        FROM view_pneu_km_rodado_vida
-        GROUP BY view_pneu_km_rodado_vida.cod_pneu
-        ORDER BY view_pneu_km_rodado_vida.cod_pneu
-    )
-    SELECT km_vida.cod_pneu,
-           km_vida.vida_pneu,
-           km_vida.km_rodado_vida,
-           km_total.total_km_rodado_todas_vidas
-    FROM (view_pneu_km_rodado_vida km_vida
-             JOIN km_rodado_total km_total ON ((km_vida.cod_pneu = km_total.cod_pneu)))
-    ORDER BY km_vida.cod_pneu, km_vida.vida_pneu;
+WITH km_rodado_total AS (
+    SELECT view_pneu_km_rodado_vida.cod_pneu,
+           sum(view_pneu_km_rodado_vida.km_rodado_vida) AS total_km_rodado_todas_vidas
+    FROM view_pneu_km_rodado_vida
+    GROUP BY view_pneu_km_rodado_vida.cod_pneu
+    ORDER BY view_pneu_km_rodado_vida.cod_pneu
+)
+SELECT km_vida.cod_pneu,
+       km_vida.vida_pneu,
+       km_vida.km_rodado_vida,
+       km_total.total_km_rodado_todas_vidas
+FROM (view_pneu_km_rodado_vida km_vida
+         JOIN km_rodado_total km_total ON ((km_vida.cod_pneu = km_total.cod_pneu)))
+ORDER BY km_vida.cod_pneu, km_vida.vida_pneu;
 
-create or replace view public.view_pneu_analise_vidas(cod_pneu, status, valor_pneu, valor_banda,
-                                                      data_hora_primeira_afericao, cod_primeira_afericao,
-                                                      cod_unidade_primeira_afericao, data_hora_ultima_afericao,
-                                                      cod_ultima_afericao, cod_unidade_ultima_afericao,
-                                                      vida_analisada_pneu, quantidade_afericoes_pneu_vida,
-                                                      maior_sulco_aferido_vida, menor_sulco_aferido_vida, sulco_gasto,
-                                                      total_dias_ativo, total_km_rodado_vida, sulco_restante,
-                                                      km_por_mm_vida, valor_por_km_vida) as
-    WITH dados_afericao AS (
-        SELECT a.codigo                                                                            AS cod_afericao,
-               a.cod_unidade                                                                       AS cod_unidade_afericao,
-               a.data_hora                                                                         AS data_hora_afericao,
-               a.tipo_processo_coleta                                                              AS tipo_processo_coleta_afericao,
-               av.cod_pneu,
-               av.vida_momento_afericao,
-               av.altura_sulco_central_interno,
-               av.altura_sulco_central_externo,
-               av.altura_sulco_externo,
-               av.altura_sulco_interno,
-               row_number()
-               OVER (PARTITION BY av.cod_pneu, av.vida_momento_afericao ORDER BY a.data_hora)      AS row_number_asc,
-               row_number()
-               OVER (PARTITION BY av.cod_pneu, av.vida_momento_afericao ORDER BY a.data_hora DESC) AS row_number_desc
-        FROM (afericao_data a
-                 JOIN afericao_valores_data av ON ((a.codigo = av.cod_afericao)))
-    ),
-         primeira_afericao AS (
-             SELECT da.cod_pneu,
-                    da.vida_momento_afericao,
-                    da.cod_afericao,
-                    da.cod_unidade_afericao,
-                    da.data_hora_afericao
-             FROM dados_afericao da
-             WHERE (da.row_number_asc = 1)
-         ),
-         ultima_afericao AS (
-             SELECT da.cod_pneu,
-                    da.vida_momento_afericao,
-                    da.cod_afericao,
-                    da.cod_unidade_afericao,
-                    da.data_hora_afericao
-             FROM dados_afericao da
-             WHERE (da.row_number_desc = 1)
-         ),
-         analises_afericoes AS (
-             SELECT da.cod_pneu,
-                    da.vida_momento_afericao                                                AS vida_analisada_pneu,
-                    count(da.cod_pneu)                                                      AS quantidade_afericoes_pneu_vida,
-                    max(GREATEST(da.altura_sulco_externo, da.altura_sulco_central_externo,
-                                 da.altura_sulco_central_interno, da.altura_sulco_interno)) AS maior_sulco_aferido_vida,
-                    min(LEAST(da.altura_sulco_externo, da.altura_sulco_central_externo, da.altura_sulco_central_interno,
-                              da.altura_sulco_interno))                                     AS menor_sulco_aferido_vida
-             FROM dados_afericao da
-             GROUP BY da.cod_pneu, da.vida_momento_afericao
-         )
-    SELECT p.codigo                                                                            AS cod_pneu,
-           p.status,
-           p.valor                                                                             AS valor_pneu,
-           COALESCE(pvv.valor, (0)::real)                                                      AS valor_banda,
-           pa.data_hora_afericao                                                               AS data_hora_primeira_afericao,
-           pa.cod_afericao                                                                     AS cod_primeira_afericao,
-           pa.cod_unidade_afericao                                                             AS cod_unidade_primeira_afericao,
-           ua.data_hora_afericao                                                               AS data_hora_ultima_afericao,
-           ua.cod_afericao                                                                     AS cod_ultima_afericao,
-           ua.cod_unidade_afericao                                                             AS cod_unidade_ultima_afericao,
-           aa.vida_analisada_pneu,
-           aa.quantidade_afericoes_pneu_vida,
-           aa.maior_sulco_aferido_vida,
-           aa.menor_sulco_aferido_vida,
-           (aa.maior_sulco_aferido_vida - aa.menor_sulco_aferido_vida)                         AS sulco_gasto,
-           (date_part('days'::text, (ua.data_hora_afericao - pa.data_hora_afericao)))::integer AS total_dias_ativo,
-           km_rodado_pneu.km_rodado_vida                                                       AS total_km_rodado_vida,
-           func_pneu_calcula_sulco_restante(p.vida_atual, p.vida_total, p.altura_sulco_externo,
-                                            p.altura_sulco_central_externo, p.altura_sulco_central_interno,
-                                            p.altura_sulco_interno, pru.sulco_minimo_recapagem,
-                                            pru.sulco_minimo_descarte)                         AS sulco_restante,
-           CASE
-               WHEN ((date_part('days'::text, (ua.data_hora_afericao - pa.data_hora_afericao)) >
-                      (0)::double precision) AND
-                     ((aa.maior_sulco_aferido_vida - aa.menor_sulco_aferido_vida) > (0)::double precision)) THEN (
-                       (km_rodado_pneu.km_rodado_vida)::double precision /
-                       (aa.maior_sulco_aferido_vida - aa.menor_sulco_aferido_vida))
-               ELSE (0)::double precision
-               END                                                                             AS km_por_mm_vida,
-           CASE
-               WHEN (km_rodado_pneu.km_rodado_vida = (0)::numeric) THEN (0)::double precision
-               ELSE
-                   CASE
-                       WHEN (km_rodado_pneu.vida_pneu = 1)
-                           THEN (p.valor / (km_rodado_pneu.km_rodado_vida)::double precision)
-                       ELSE (COALESCE(pvv.valor, (0)::real) / (km_rodado_pneu.km_rodado_vida)::double precision)
-                       END
-               END                                                                             AS valor_por_km_vida
-    FROM ((((((analises_afericoes aa
-        JOIN primeira_afericao pa ON (((pa.cod_pneu = aa.cod_pneu) AND
-                                       (pa.vida_momento_afericao = aa.vida_analisada_pneu))))
-        JOIN ultima_afericao ua ON (((ua.cod_pneu = aa.cod_pneu) AND
-                                     (ua.vida_momento_afericao = aa.vida_analisada_pneu))))
-        JOIN pneu_data p ON ((aa.cod_pneu = p.codigo)))
-        JOIN pneu_restricao_unidade pru ON ((p.cod_unidade = pru.cod_unidade)))
-        LEFT JOIN pneu_valor_vida pvv ON ((p.codigo = pvv.cod_pneu)))
-             JOIN view_pneu_km_rodado_vida km_rodado_pneu
-                  ON (((km_rodado_pneu.cod_pneu = aa.cod_pneu) AND (km_rodado_pneu.vida_pneu = aa.vida_analisada_pneu))))
-    ORDER BY aa.cod_pneu, aa.vida_analisada_pneu;
+create or replace view public.view_pneu_analise_vidas
+            (cod_pneu, status, valor_pneu, valor_banda,
+             data_hora_primeira_afericao, cod_primeira_afericao,
+             cod_unidade_primeira_afericao, data_hora_ultima_afericao,
+             cod_ultima_afericao, cod_unidade_ultima_afericao,
+             vida_analisada_pneu, quantidade_afericoes_pneu_vida,
+             maior_sulco_aferido_vida, menor_sulco_aferido_vida, sulco_gasto,
+             total_dias_ativo, total_km_rodado_vida, sulco_restante,
+             km_por_mm_vida, valor_por_km_vida)
+as
+WITH dados_afericao AS (
+    SELECT a.codigo                                                                            AS cod_afericao,
+           a.cod_unidade                                                                       AS cod_unidade_afericao,
+           a.data_hora                                                                         AS data_hora_afericao,
+           a.tipo_processo_coleta                                                              AS tipo_processo_coleta_afericao,
+           av.cod_pneu,
+           av.vida_momento_afericao,
+           av.altura_sulco_central_interno,
+           av.altura_sulco_central_externo,
+           av.altura_sulco_externo,
+           av.altura_sulco_interno,
+           row_number()
+           OVER (PARTITION BY av.cod_pneu, av.vida_momento_afericao ORDER BY a.data_hora)      AS row_number_asc,
+           row_number()
+           OVER (PARTITION BY av.cod_pneu, av.vida_momento_afericao ORDER BY a.data_hora DESC) AS row_number_desc
+    FROM (afericao_data a
+             JOIN afericao_valores_data av ON ((a.codigo = av.cod_afericao)))
+),
+     primeira_afericao AS (
+         SELECT da.cod_pneu,
+                da.vida_momento_afericao,
+                da.cod_afericao,
+                da.cod_unidade_afericao,
+                da.data_hora_afericao
+         FROM dados_afericao da
+         WHERE (da.row_number_asc = 1)
+     ),
+     ultima_afericao AS (
+         SELECT da.cod_pneu,
+                da.vida_momento_afericao,
+                da.cod_afericao,
+                da.cod_unidade_afericao,
+                da.data_hora_afericao
+         FROM dados_afericao da
+         WHERE (da.row_number_desc = 1)
+     ),
+     analises_afericoes AS (
+         SELECT da.cod_pneu,
+                da.vida_momento_afericao                                                AS vida_analisada_pneu,
+                count(da.cod_pneu)                                                      AS quantidade_afericoes_pneu_vida,
+                max(GREATEST(da.altura_sulco_externo, da.altura_sulco_central_externo,
+                             da.altura_sulco_central_interno, da.altura_sulco_interno)) AS maior_sulco_aferido_vida,
+                min(LEAST(da.altura_sulco_externo, da.altura_sulco_central_externo, da.altura_sulco_central_interno,
+                          da.altura_sulco_interno))                                     AS menor_sulco_aferido_vida
+         FROM dados_afericao da
+         GROUP BY da.cod_pneu, da.vida_momento_afericao
+     )
+SELECT p.codigo                                                                            AS cod_pneu,
+       p.status,
+       p.valor                                                                             AS valor_pneu,
+       COALESCE(pvv.valor, (0)::real)                                                      AS valor_banda,
+       pa.data_hora_afericao                                                               AS data_hora_primeira_afericao,
+       pa.cod_afericao                                                                     AS cod_primeira_afericao,
+       pa.cod_unidade_afericao                                                             AS cod_unidade_primeira_afericao,
+       ua.data_hora_afericao                                                               AS data_hora_ultima_afericao,
+       ua.cod_afericao                                                                     AS cod_ultima_afericao,
+       ua.cod_unidade_afericao                                                             AS cod_unidade_ultima_afericao,
+       aa.vida_analisada_pneu,
+       aa.quantidade_afericoes_pneu_vida,
+       aa.maior_sulco_aferido_vida,
+       aa.menor_sulco_aferido_vida,
+       (aa.maior_sulco_aferido_vida - aa.menor_sulco_aferido_vida)                         AS sulco_gasto,
+       (date_part('days'::text, (ua.data_hora_afericao - pa.data_hora_afericao)))::integer AS total_dias_ativo,
+       km_rodado_pneu.km_rodado_vida                                                       AS total_km_rodado_vida,
+       func_pneu_calcula_sulco_restante(p.vida_atual, p.vida_total, p.altura_sulco_externo,
+                                        p.altura_sulco_central_externo, p.altura_sulco_central_interno,
+                                        p.altura_sulco_interno, pru.sulco_minimo_recapagem,
+                                        pru.sulco_minimo_descarte)                         AS sulco_restante,
+       CASE
+           WHEN ((date_part('days'::text, (ua.data_hora_afericao - pa.data_hora_afericao)) >
+                  (0)::double precision) AND
+                 ((aa.maior_sulco_aferido_vida - aa.menor_sulco_aferido_vida) > (0)::double precision)) THEN (
+                   (km_rodado_pneu.km_rodado_vida)::double precision /
+                   (aa.maior_sulco_aferido_vida - aa.menor_sulco_aferido_vida))
+           ELSE (0)::double precision
+           END                                                                             AS km_por_mm_vida,
+       CASE
+           WHEN (km_rodado_pneu.km_rodado_vida = (0)::numeric) THEN (0)::double precision
+           ELSE
+               CASE
+                   WHEN (km_rodado_pneu.vida_pneu = 1)
+                       THEN (p.valor / (km_rodado_pneu.km_rodado_vida)::double precision)
+                   ELSE (COALESCE(pvv.valor, (0)::real) / (km_rodado_pneu.km_rodado_vida)::double precision)
+                   END
+           END                                                                             AS valor_por_km_vida
+FROM ((((((analises_afericoes aa
+    JOIN primeira_afericao pa ON (((pa.cod_pneu = aa.cod_pneu) AND
+                                   (pa.vida_momento_afericao = aa.vida_analisada_pneu))))
+    JOIN ultima_afericao ua ON (((ua.cod_pneu = aa.cod_pneu) AND
+                                 (ua.vida_momento_afericao = aa.vida_analisada_pneu))))
+    JOIN pneu_data p ON ((aa.cod_pneu = p.codigo)))
+    JOIN pneu_restricao_unidade pru ON ((p.cod_unidade = pru.cod_unidade)))
+    LEFT JOIN pneu_valor_vida pvv ON ((p.codigo = pvv.cod_pneu)))
+         JOIN view_pneu_km_rodado_vida km_rodado_pneu
+              ON (((km_rodado_pneu.cod_pneu = aa.cod_pneu) AND (km_rodado_pneu.vida_pneu = aa.vida_analisada_pneu))))
+ORDER BY aa.cod_pneu, aa.vida_analisada_pneu;
 
-create or replace view public.view_pneu_analise_vida_atual("UNIDADE ALOCADO", "COD PNEU", "COD PNEU CLIENTE",
-                                                           valor_acumulado, km_acumulado, "VIDA ATUAL", "STATUS PNEU",
-                                                           cod_unidade, valor_pneu, valor_vida_atual, "MARCA", "MODELO",
-                                                           "MEDIDAS", "QTD DE AFERIÇÕES", "DTA 1a AFERIÇÃO",
-                                                           "DTA ÚLTIMA AFERIÇÃO", "DIAS ATIVO", "MÉDIA KM POR DIA",
-                                                           "MAIOR MEDIÇÃO VIDA", "MENOR SULCO ATUAL",
-                                                           "MILIMETROS GASTOS", "KMS POR MILIMETRO", "VALOR POR KM",
-                                                           "VALOR POR KM ACUMULADO", "KMS A PERCORRER",
-                                                           "DIAS RESTANTES", "PREVISÃO DE TROCA", "DESTINO") as
+create or replace view public.view_pneu_analise_vida_atual
+            ("UNIDADE ALOCADO", "COD PNEU", "COD PNEU CLIENTE",
+             valor_acumulado, km_acumulado, "VIDA ATUAL", "STATUS PNEU",
+             cod_unidade, valor_pneu, valor_vida_atual, "MARCA", "MODELO",
+             "MEDIDAS", "QTD DE AFERIÇÕES", "DTA 1a AFERIÇÃO",
+             "DTA ÚLTIMA AFERIÇÃO", "DIAS ATIVO", "MÉDIA KM POR DIA",
+             "MAIOR MEDIÇÃO VIDA", "MENOR SULCO ATUAL",
+             "MILIMETROS GASTOS", "KMS POR MILIMETRO", "VALOR POR KM",
+             "VALOR POR KM ACUMULADO", "KMS A PERCORRER",
+             "DIAS RESTANTES", "PREVISÃO DE TROCA", "DESTINO")
+as
 SELECT u.nome                                                               AS "UNIDADE ALOCADO",
        p.codigo                                                             AS "COD PNEU",
        p.codigo_cliente                                                     AS "COD PNEU CLIENTE",
@@ -6750,8 +6758,10 @@ ORDER BY CASE
              ELSE NULL::date
              END;
 
-create or replace view public.afericao(codigo, data_hora, placa_veiculo, cpf_aferidor, km_veiculo, tempo_realizacao,
-                                       tipo_medicao_coletada, cod_unidade, tipo_processo_coleta) as
+create or replace view public.afericao
+            (codigo, data_hora, placa_veiculo, cpf_aferidor, km_veiculo, tempo_realizacao,
+             tipo_medicao_coletada, cod_unidade, tipo_processo_coleta)
+as
 SELECT ad.codigo,
        ad.data_hora,
        ad.placa_veiculo,
@@ -6764,9 +6774,11 @@ SELECT ad.codigo,
 FROM afericao_data ad
 WHERE (ad.deletado = false);
 
-create or replace view public.afericao_valores(cod_afericao, cod_pneu, cod_unidade, altura_sulco_central_interno,
-                                               altura_sulco_externo, altura_sulco_interno, psi, posicao,
-                                               vida_momento_afericao, altura_sulco_central_externo) as
+create or replace view public.afericao_valores
+            (cod_afericao, cod_pneu, cod_unidade, altura_sulco_central_interno,
+             altura_sulco_externo, altura_sulco_interno, psi, posicao,
+             vida_momento_afericao, altura_sulco_central_externo)
+as
 SELECT av.cod_afericao,
        av.cod_pneu,
        av.cod_unidade,
@@ -6780,12 +6792,14 @@ SELECT av.cod_afericao,
 FROM afericao_valores_data av
 WHERE (av.deletado = false);
 
-create or replace view public.afericao_manutencao(cod_afericao, cod_pneu, cod_unidade, tipo_servico,
-                                                  data_hora_resolucao, cpf_mecanico, qt_apontamentos, psi_apos_conserto,
-                                                  km_momento_conserto, cod_alternativa, cod_pneu_inserido, codigo,
-                                                  cod_processo_movimentacao, tempo_realizacao_millis,
-                                                  fechado_automaticamente_movimentacao,
-                                                  fechado_automaticamente_integracao) as
+create or replace view public.afericao_manutencao
+            (cod_afericao, cod_pneu, cod_unidade, tipo_servico,
+             data_hora_resolucao, cpf_mecanico, qt_apontamentos, psi_apos_conserto,
+             km_momento_conserto, cod_alternativa, cod_pneu_inserido, codigo,
+             cod_processo_movimentacao, tempo_realizacao_millis,
+             fechado_automaticamente_movimentacao,
+             fechado_automaticamente_integracao)
+as
 SELECT am.cod_afericao,
        am.cod_pneu,
        am.cod_unidade,
@@ -6805,10 +6819,12 @@ SELECT am.cod_afericao,
 FROM afericao_manutencao_data am
 WHERE (am.deletado = false);
 
-create or replace view public.colaborador(cpf, matricula_ambev, matricula_trans, data_nascimento, data_admissao,
-                                          data_demissao, status_ativo, nome, cod_equipe, cod_funcao, cod_unidade,
-                                          cod_permissao, cod_empresa, cod_setor, pis, data_hora_cadastro, codigo,
-                                          cod_unidade_cadastro) as
+create or replace view public.colaborador
+            (cpf, matricula_ambev, matricula_trans, data_nascimento, data_admissao,
+             data_demissao, status_ativo, nome, cod_equipe, cod_funcao, cod_unidade,
+             cod_permissao, cod_empresa, cod_setor, pis, data_hora_cadastro, codigo,
+             cod_unidade_cadastro)
+as
 SELECT c.cpf,
        c.matricula_ambev,
        c.matricula_trans,
@@ -6830,11 +6846,13 @@ SELECT c.cpf,
 FROM colaborador_data c
 WHERE (c.deletado = false);
 
-create or replace view public.pneu(codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, pressao_atual,
-                                   altura_sulco_interno, altura_sulco_central_interno, altura_sulco_externo,
-                                   cod_unidade, status, vida_atual, vida_total, cod_modelo_banda,
-                                   altura_sulco_central_externo, dot, valor, data_hora_cadastro, pneu_novo_nunca_rodado,
-                                   codigo, cod_empresa, cod_unidade_cadastro) as
+create or replace view public.pneu
+            (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, pressao_atual,
+             altura_sulco_interno, altura_sulco_central_interno, altura_sulco_externo,
+             cod_unidade, status, vida_atual, vida_total, cod_modelo_banda,
+             altura_sulco_central_externo, dot, valor, data_hora_cadastro, pneu_novo_nunca_rodado,
+             codigo, cod_empresa, cod_unidade_cadastro)
+as
 SELECT p.codigo_cliente,
        p.cod_modelo,
        p.cod_dimensao,
@@ -6859,8 +6877,10 @@ SELECT p.codigo_cliente,
 FROM pneu_data p
 WHERE (p.deletado = false);
 
-create or replace view public.checklist_ordem_servico(codigo_prolog, codigo, cod_unidade, cod_checklist, status,
-                                                      data_hora_fechamento) as
+create or replace view public.checklist_ordem_servico
+            (codigo_prolog, codigo, cod_unidade, cod_checklist, status,
+             data_hora_fechamento)
+as
 SELECT cos.codigo_prolog,
        cos.codigo,
        cos.cod_unidade,
@@ -6877,31 +6897,33 @@ SELECT f.codigo,
 FROM funcao_data f
 WHERE (f.deletado = false);
 
-create or replace view public.view_extrato_indicadores(cod_empresa, cod_regional, cod_unidade, cod_equipe, cpf, nome,
-                                                       equipe, funcao, data, mapa, placa, cxcarreg, qthlcarregados,
-                                                       qthlentregues, qthldevolvidos, resultado_devolucao_hectolitro,
-                                                       qtnfcarregadas, qtnfentregues, qtnfdevolvidas,
-                                                       resultado_devolucao_nf, entregascompletas, entregasnaorealizadas,
-                                                       entregasparciais, entregas_carregadas, resultado_devolucao_pdv,
-                                                       kmprevistoroad, kmsai, kmentr, km_percorrido,
-                                                       resultado_dispersao_km, hrsai, hr_sai, hrentr, hr_entr,
-                                                       tempo_rota, tempoprevistoroad, resultado_tempo_rota_segundos,
-                                                       resultado_dispersao_tempo, resultado_tempo_interno_segundos,
-                                                       tempo_interno, hrmatinal, resultado_tempo_largada_segundos,
-                                                       tempo_largada, total_tracking, apontamentos_ok, apontamentos_nok,
-                                                       resultado_tracking, meta_tracking, meta_tempo_rota_mapas,
-                                                       meta_caixa_viagem, meta_dev_hl, meta_dev_pdv, meta_dev_nf,
-                                                       meta_dispersao_km, meta_dispersao_tempo,
-                                                       meta_jornada_liquida_mapas, meta_raio_tracking,
-                                                       meta_tempo_interno_mapas, meta_tempo_largada_mapas,
-                                                       meta_tempo_rota_horas, meta_tempo_interno_horas,
-                                                       meta_tempo_largada_horas, meta_jornada_liquida_horas,
-                                                       bateu_dev_pdv, bateu_dev_hl, bateu_dev_nf, bateu_dispersao_tempo,
-                                                       bateu_dispersao_km, bateu_tempo_interno, bateu_tempo_rota,
-                                                       bateu_tempo_largada, bateu_jornada, bateu_tracking, gol_dev_pdv,
-                                                       gol_dev_hl, gol_dev_nf, gol_dispersao_tempo, gol_dispersao_km,
-                                                       gol_tempo_interno, gol_tempo_rota, gol_tempo_largada,
-                                                       gol_jornada, gol_tracking) as
+create or replace view public.view_extrato_indicadores
+            (cod_empresa, cod_regional, cod_unidade, cod_equipe, cpf, nome,
+             equipe, funcao, data, mapa, placa, cxcarreg, qthlcarregados,
+             qthlentregues, qthldevolvidos, resultado_devolucao_hectolitro,
+             qtnfcarregadas, qtnfentregues, qtnfdevolvidas,
+             resultado_devolucao_nf, entregascompletas, entregasnaorealizadas,
+             entregasparciais, entregas_carregadas, resultado_devolucao_pdv,
+             kmprevistoroad, kmsai, kmentr, km_percorrido,
+             resultado_dispersao_km, hrsai, hr_sai, hrentr, hr_entr,
+             tempo_rota, tempoprevistoroad, resultado_tempo_rota_segundos,
+             resultado_dispersao_tempo, resultado_tempo_interno_segundos,
+             tempo_interno, hrmatinal, resultado_tempo_largada_segundos,
+             tempo_largada, total_tracking, apontamentos_ok, apontamentos_nok,
+             resultado_tracking, meta_tracking, meta_tempo_rota_mapas,
+             meta_caixa_viagem, meta_dev_hl, meta_dev_pdv, meta_dev_nf,
+             meta_dispersao_km, meta_dispersao_tempo,
+             meta_jornada_liquida_mapas, meta_raio_tracking,
+             meta_tempo_interno_mapas, meta_tempo_largada_mapas,
+             meta_tempo_rota_horas, meta_tempo_interno_horas,
+             meta_tempo_largada_horas, meta_jornada_liquida_horas,
+             bateu_dev_pdv, bateu_dev_hl, bateu_dev_nf, bateu_dispersao_tempo,
+             bateu_dispersao_km, bateu_tempo_interno, bateu_tempo_rota,
+             bateu_tempo_largada, bateu_jornada, bateu_tracking, gol_dev_pdv,
+             gol_dev_hl, gol_dev_nf, gol_dispersao_tempo, gol_dispersao_km,
+             gol_tempo_interno, gol_tempo_rota, gol_tempo_largada,
+             gol_jornada, gol_tracking)
+as
 SELECT dados.cod_empresa,
        dados.cod_regional,
        dados.cod_unidade,
@@ -7175,9 +7197,11 @@ FROM (SELECT u.cod_empresa,
                          ON (((tracking.tracking_mapa = m.mapa) AND (tracking.tracking_unidade = m.cod_unidade))))
       ORDER BY m.data) dados;
 
-create or replace view public.view_intervalo_tipo(codigo_tipo_intervalo_por_unidade, codigo, cod_unidade, nome, icone,
-                                                  tempo_recomendado_minutos, tempo_estouro_minutos, horario_sugerido,
-                                                  ativo, tipo_jornada, cod_auxiliar) as
+create or replace view public.view_intervalo_tipo
+            (codigo_tipo_intervalo_por_unidade, codigo, cod_unidade, nome, icone,
+             tempo_recomendado_minutos, tempo_estouro_minutos, horario_sugerido,
+             ativo, tipo_jornada, cod_auxiliar)
+as
 SELECT row_number() OVER (PARTITION BY it.cod_unidade ORDER BY it.codigo) AS codigo_tipo_intervalo_por_unidade,
        it.codigo,
        it.cod_unidade,
@@ -7193,7 +7217,7 @@ FROM (intervalo_tipo it
          LEFT JOIN marcacao_tipo_jornada mtj
                    ON (((it.cod_unidade = mtj.cod_unidade) AND (it.codigo = mtj.cod_tipo_jornada))));
 
-    create or replace function public.func_intervalos_agrupados(f_cod_unidade bigint, f_cpf_colaborador bigint,
+create or replace function public.func_intervalos_agrupados(f_cod_unidade bigint, f_cpf_colaborador bigint,
                                                             f_cod_tipo_intervalo bigint)
     returns TABLE
             (
@@ -7347,20 +7371,22 @@ ORDER BY CPF_COLABORADOR,
          COALESCE(DATA_HORA_INICIO, DATA_HORA_FIM)
 $$;
 
-create or replace view public.view_extrato_mapas_versus_intervalos(data, mapa, cod_unidade, intervalos_previstos,
-                                                                   intervalos_realizados, cpf_motorista, nome_motorista,
-                                                                   inicio_intervalo_mot, fim_intervalo_mot,
-                                                                   marcacoes_reconhecidas_mot,
-                                                                   tempo_decorrido_minutos_mot,
-                                                                   mot_cumpriu_tempo_minimo, cpf_aj1, nome_aj1,
-                                                                   inicio_intervalo_aj1, fim_intervalo_aj1,
-                                                                   marcacoes_reconhecidas_aj1,
-                                                                   tempo_decorrido_minutos_aj1,
-                                                                   aj1_cumpriu_tempo_minimo, cpf_aj2, nome_aj2,
-                                                                   inicio_intervalo_aj2, fim_intervalo_aj2,
-                                                                   marcacoes_reconhecidas_aj2,
-                                                                   tempo_decorrido_minutos_aj2,
-                                                                   aj2_cumpriu_tempo_minimo) as
+create or replace view public.view_extrato_mapas_versus_intervalos
+            (data, mapa, cod_unidade, intervalos_previstos,
+             intervalos_realizados, cpf_motorista, nome_motorista,
+             inicio_intervalo_mot, fim_intervalo_mot,
+             marcacoes_reconhecidas_mot,
+             tempo_decorrido_minutos_mot,
+             mot_cumpriu_tempo_minimo, cpf_aj1, nome_aj1,
+             inicio_intervalo_aj1, fim_intervalo_aj1,
+             marcacoes_reconhecidas_aj1,
+             tempo_decorrido_minutos_aj1,
+             aj1_cumpriu_tempo_minimo, cpf_aj2, nome_aj2,
+             inicio_intervalo_aj2, fim_intervalo_aj2,
+             marcacoes_reconhecidas_aj2,
+             tempo_decorrido_minutos_aj2,
+             aj2_cumpriu_tempo_minimo)
+as
 SELECT m.data,
        m.mapa,
        m.cod_unidade,
@@ -7527,42 +7553,46 @@ FROM ((((((((((mapa m
          LEFT JOIN intervalo_tipo tipo_aj2 ON ((tipo_aj2.codigo = int_aj2.cod_tipo_intervalo)))
 ORDER BY m.mapa DESC;
 
-create or replace view public.view_intervalo_mapa_colaborador(data, mapa, cod_unidade, cpf, inicio_intervalo,
-                                                              fim_intervalo, tempo_decorrido_minutos,
-                                                              cumpriu_tempo_minimo) as
-    SELECT view_extrato_mapas_versus_intervalos.data,
-           view_extrato_mapas_versus_intervalos.mapa,
-           view_extrato_mapas_versus_intervalos.cod_unidade,
-           view_extrato_mapas_versus_intervalos.cpf_motorista               AS cpf,
-           view_extrato_mapas_versus_intervalos.inicio_intervalo_mot        AS inicio_intervalo,
-           view_extrato_mapas_versus_intervalos.fim_intervalo_mot           AS fim_intervalo,
-           view_extrato_mapas_versus_intervalos.tempo_decorrido_minutos_mot AS tempo_decorrido_minutos,
-           view_extrato_mapas_versus_intervalos.mot_cumpriu_tempo_minimo    AS cumpriu_tempo_minimo
-    FROM view_extrato_mapas_versus_intervalos
-    UNION
-    SELECT view_extrato_mapas_versus_intervalos.data,
-           view_extrato_mapas_versus_intervalos.mapa,
-           view_extrato_mapas_versus_intervalos.cod_unidade,
-           view_extrato_mapas_versus_intervalos.cpf_aj1                     AS cpf,
-           view_extrato_mapas_versus_intervalos.inicio_intervalo_aj1        AS inicio_intervalo,
-           view_extrato_mapas_versus_intervalos.fim_intervalo_aj1           AS fim_intervalo,
-           view_extrato_mapas_versus_intervalos.tempo_decorrido_minutos_aj1 AS tempo_decorrido_minutos,
-           view_extrato_mapas_versus_intervalos.aj1_cumpriu_tempo_minimo    AS cumpriu_tempo_minimo
-    FROM view_extrato_mapas_versus_intervalos
-    UNION
-    SELECT view_extrato_mapas_versus_intervalos.data,
-           view_extrato_mapas_versus_intervalos.mapa,
-           view_extrato_mapas_versus_intervalos.cod_unidade,
-           view_extrato_mapas_versus_intervalos.cpf_aj2                     AS cpf,
-           view_extrato_mapas_versus_intervalos.inicio_intervalo_aj2        AS inicio_intervalo,
-           view_extrato_mapas_versus_intervalos.fim_intervalo_aj2           AS fim_intervalo,
-           view_extrato_mapas_versus_intervalos.tempo_decorrido_minutos_aj2 AS tempo_decorrido_minutos,
-           view_extrato_mapas_versus_intervalos.aj2_cumpriu_tempo_minimo    AS cumpriu_tempo_minimo
-    FROM view_extrato_mapas_versus_intervalos;
+create or replace view public.view_intervalo_mapa_colaborador
+            (data, mapa, cod_unidade, cpf, inicio_intervalo,
+             fim_intervalo, tempo_decorrido_minutos,
+             cumpriu_tempo_minimo)
+as
+SELECT view_extrato_mapas_versus_intervalos.data,
+       view_extrato_mapas_versus_intervalos.mapa,
+       view_extrato_mapas_versus_intervalos.cod_unidade,
+       view_extrato_mapas_versus_intervalos.cpf_motorista               AS cpf,
+       view_extrato_mapas_versus_intervalos.inicio_intervalo_mot        AS inicio_intervalo,
+       view_extrato_mapas_versus_intervalos.fim_intervalo_mot           AS fim_intervalo,
+       view_extrato_mapas_versus_intervalos.tempo_decorrido_minutos_mot AS tempo_decorrido_minutos,
+       view_extrato_mapas_versus_intervalos.mot_cumpriu_tempo_minimo    AS cumpriu_tempo_minimo
+FROM view_extrato_mapas_versus_intervalos
+UNION
+SELECT view_extrato_mapas_versus_intervalos.data,
+       view_extrato_mapas_versus_intervalos.mapa,
+       view_extrato_mapas_versus_intervalos.cod_unidade,
+       view_extrato_mapas_versus_intervalos.cpf_aj1                     AS cpf,
+       view_extrato_mapas_versus_intervalos.inicio_intervalo_aj1        AS inicio_intervalo,
+       view_extrato_mapas_versus_intervalos.fim_intervalo_aj1           AS fim_intervalo,
+       view_extrato_mapas_versus_intervalos.tempo_decorrido_minutos_aj1 AS tempo_decorrido_minutos,
+       view_extrato_mapas_versus_intervalos.aj1_cumpriu_tempo_minimo    AS cumpriu_tempo_minimo
+FROM view_extrato_mapas_versus_intervalos
+UNION
+SELECT view_extrato_mapas_versus_intervalos.data,
+       view_extrato_mapas_versus_intervalos.mapa,
+       view_extrato_mapas_versus_intervalos.cod_unidade,
+       view_extrato_mapas_versus_intervalos.cpf_aj2                     AS cpf,
+       view_extrato_mapas_versus_intervalos.inicio_intervalo_aj2        AS inicio_intervalo,
+       view_extrato_mapas_versus_intervalos.fim_intervalo_aj2           AS fim_intervalo,
+       view_extrato_mapas_versus_intervalos.tempo_decorrido_minutos_aj2 AS tempo_decorrido_minutos,
+       view_extrato_mapas_versus_intervalos.aj2_cumpriu_tempo_minimo    AS cumpriu_tempo_minimo
+FROM view_extrato_mapas_versus_intervalos;
 
 
-create or replace view public.veiculo(placa, cod_unidade, cod_empresa, km, status_ativo, cod_tipo, cod_modelo,
-                                      cod_eixos, data_hora_cadastro, cod_unidade_cadastro, codigo) as
+create or replace view public.veiculo
+            (placa, cod_unidade, cod_empresa, km, status_ativo, cod_tipo, cod_modelo,
+             cod_eixos, data_hora_cadastro, cod_unidade_cadastro, codigo)
+as
 SELECT v.placa,
        v.cod_unidade,
        v.cod_empresa,
@@ -7577,10 +7607,12 @@ SELECT v.placa,
 FROM veiculo_data v
 WHERE (v.deletado = false);
 
-create or replace view cs.view_nps_respostas(cod_empresa, nome_empresa, cod_unidade, nome_unidade, cod_nps_pesquisa,
-                                             resposta_pergunta_escala, resposta_pergunta_descritiva, data_hora_resposta,
-                                             cod_colaborador, cpf_colaborador, data_nascimento_colaborador,
-                                             nome_colaborador) as
+create or replace view cs.view_nps_respostas
+            (cod_empresa, nome_empresa, cod_unidade, nome_unidade, cod_nps_pesquisa,
+             resposta_pergunta_escala, resposta_pergunta_descritiva, data_hora_resposta,
+             cod_colaborador, cpf_colaborador, data_nascimento_colaborador,
+             nome_colaborador)
+as
 SELECT e.codigo                                                                         AS cod_empresa,
        e.nome                                                                           AS nome_empresa,
        u.codigo                                                                         AS cod_unidade,
@@ -7599,37 +7631,39 @@ FROM (((cs.nps_respostas nr
          JOIN empresa e ON ((cd.cod_empresa = e.codigo)))
 ORDER BY e.nome, nr.resposta_pergunta_escala DESC;
 
-create or replace view view_produtividade_extrato(cod_unidade, matricula_ambev, data, cpf, nome_colaborador,
-                                                  data_nascimento,
-                                                  funcao, cod_funcao, nome_equipe, fator, cargaatual, entrega, mapa,
-                                                  placa,
-                                                  cxcarreg, cxentreg, qthlcarregados, qthlentregues, qtnfcarregadas,
-                                                  qtnfentregues,
-                                                  entregascompletas, entregasnaorealizadas, entregasparciais,
-                                                  kmprevistoroad,
-                                                  kmsai, kmentr, tempoprevistoroad, hrsai, hrentr, tempo_rota,
-                                                  tempointerno,
-                                                  hrmatinal, apontamentos_ok, total_tracking, tempo_largada,
-                                                  meta_tracking,
-                                                  meta_tempo_rota_mapas, meta_caixa_viagem, meta_dev_hl, meta_dev_nf,
-                                                  meta_dev_pdv,
-                                                  meta_dispersao_km, meta_dispersao_tempo, meta_jornada_liquida_mapas,
-                                                  meta_raio_tracking, meta_tempo_interno_mapas,
-                                                  meta_tempo_largada_mapas,
-                                                  meta_tempo_rota_horas, meta_tempo_interno_horas,
-                                                  meta_tempo_largada_horas,
-                                                  meta_jornada_liquida_horas, valor_rota, valor_recarga,
-                                                  valor_diferenca_eld,
-                                                  valor_as, valor) as
+create or replace view view_produtividade_extrato
+            (cod_unidade, matricula_ambev, data, cpf, nome_colaborador,
+             data_nascimento,
+             funcao, cod_funcao, nome_equipe, fator, cargaatual, entrega, mapa,
+             placa,
+             cxcarreg, cxentreg, qthlcarregados, qthlentregues, qtnfcarregadas,
+             qtnfentregues,
+             entregascompletas, entregasnaorealizadas, entregasparciais,
+             kmprevistoroad,
+             kmsai, kmentr, tempoprevistoroad, hrsai, hrentr, tempo_rota,
+             tempointerno,
+             hrmatinal, apontamentos_ok, total_tracking, tempo_largada,
+             meta_tracking,
+             meta_tempo_rota_mapas, meta_caixa_viagem, meta_dev_hl, meta_dev_nf,
+             meta_dev_pdv,
+             meta_dispersao_km, meta_dispersao_tempo, meta_jornada_liquida_mapas,
+             meta_raio_tracking, meta_tempo_interno_mapas,
+             meta_tempo_largada_mapas,
+             meta_tempo_rota_horas, meta_tempo_interno_horas,
+             meta_tempo_largada_horas,
+             meta_jornada_liquida_horas, valor_rota, valor_recarga,
+             valor_diferenca_eld,
+             valor_as, valor)
+as
 SELECT vmc.cod_unidade,
        c.matricula_ambev,
        m.data,
        vmc.cpf,
-       c.nome                                                             AS nome_colaborador,
+       c.nome                                                                            AS nome_colaborador,
        c.data_nascimento,
-       f.nome                                                             AS funcao,
-       f.codigo                                                           AS cod_funcao,
-       e.nome                                                             AS nome_equipe,
+       f.nome                                                                            AS funcao,
+       f.codigo                                                                          AS cod_funcao,
+       e.nome                                                                            AS nome_equipe,
        m.fator,
        m.cargaatual,
        m.entrega,
@@ -7705,7 +7739,7 @@ SELECT vmc.cod_unidade,
                            END
                    ELSE (0)::real
                    END +
-        -- MAPAS DE RECARGA (AS)
+               -- MAPAS DE RECARGA (AS)
                CASE
                    WHEN (((m.entrega)::text = 'AS'::text) AND ((m.cargaatual)::text = 'Recarga'::text)) THEN
                        CASE
@@ -7735,7 +7769,8 @@ SELECT vmc.cod_unidade,
                    (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator))
            WHEN ((c.matricula_ambev = m.matricajud2) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
                  ((m.entrega)::text <> 'AS'::text) AND (m.fator <> (0)::double precision) AND
-                 (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text) AND classificacao_roadshow <> 'Longa Distância')
+                 (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text) AND
+                 classificacao_roadshow <> 'Longa Distância')
                THEN (
                    ((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) /
                     (m.fator)::double precision) -
@@ -7744,12 +7779,12 @@ SELECT vmc.cod_unidade,
            END                                                            AS valor_diferenca_eld,
        -- MAPAS DE AS
        CASE
-            -- Esse WHEN precisa ser primeiro pois ele verifica a ausência de ajudantes.
-            WHEN ((c.matricula_ambev = m.matricmotorista) AND (c.cod_funcao = ufp.cod_funcao_motorista) AND
+           -- Esse WHEN precisa ser primeiro pois ele verifica a ausência de ajudantes.
+           WHEN ((c.matricula_ambev = m.matricmotorista) AND (c.cod_funcao = ufp.cod_funcao_motorista) AND
                  ((m.entrega)::text = 'AS'::text) AND ((m.cargaatual)::text <> 'Recarga'::text)
-                 AND (m.matricajud1 is null or m.matricajud1 <= 0) AND (m.matricajud2 is null or m.matricajud2 <= 0))
-                THEN
-                    uv.rm_motorista_valor_as_sem_ajudante
+               AND (m.matricajud1 is null or m.matricajud1 <= 0) AND (m.matricajud2 is null or m.matricajud2 <= 0))
+               THEN
+               uv.rm_motorista_valor_as_sem_ajudante
            WHEN ((c.matricula_ambev = m.matricmotorista) AND (c.cod_funcao = ufp.cod_funcao_motorista) AND
                  ((m.entrega)::text = 'AS'::text) AND ((m.cargaatual)::text <> 'Recarga'::text)) THEN
                CASE
@@ -7778,71 +7813,72 @@ SELECT vmc.cod_unidade,
                    ELSE (0)::real
                    END
            ELSE (0)::real
-           END                                                            AS valor_as,
+           END                                                                           AS valor_as,
        -- SOMA DO VALOR DOS MAPAS DE ROTA + RECARGA + DIFERENÇA ELD
-           -- MAPAS DE ROTA (<> AS E <> RECARGA)
-      ( CASE
-           WHEN ((c.matricula_ambev = m.matricmotorista) AND (c.cod_funcao = ufp.cod_funcao_motorista) AND
-                 (((m.entrega)::text <> 'AS'::text) AND ((m.cargaatual)::text <> 'Recarga'::text)))
-               THEN (m.vlbateujornmot + m.vlnaobateujornmot)
-           WHEN ((c.matricula_ambev = m.matricajud1) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
-                 (((m.entrega)::text <> 'AS'::text) AND ((m.cargaatual)::text <> 'Recarga'::text)) AND
-                 (m.fator <> (0)::double precision)) THEN ((m.vlbateujornaju + m.vlnaobateujornaju) / m.fator)
-           WHEN ((c.matricula_ambev = m.matricajud2) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
-                 (((m.entrega)::text <> 'AS'::text) AND ((m.cargaatual)::text <> 'Recarga'::text)) AND
-                 (m.fator <> (0)::double precision)) THEN ((m.vlbateujornaju + m.vlnaobateujornaju) / m.fator)
-           ELSE (0)::real
-           END +
+       -- MAPAS DE ROTA (<> AS E <> RECARGA)
+       (CASE
+            WHEN ((c.matricula_ambev = m.matricmotorista) AND (c.cod_funcao = ufp.cod_funcao_motorista) AND
+                  (((m.entrega)::text <> 'AS'::text) AND ((m.cargaatual)::text <> 'Recarga'::text)))
+                THEN (m.vlbateujornmot + m.vlnaobateujornmot)
+            WHEN ((c.matricula_ambev = m.matricajud1) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
+                  (((m.entrega)::text <> 'AS'::text) AND ((m.cargaatual)::text <> 'Recarga'::text)) AND
+                  (m.fator <> (0)::double precision)) THEN ((m.vlbateujornaju + m.vlnaobateujornaju) / m.fator)
+            WHEN ((c.matricula_ambev = m.matricajud2) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
+                  (((m.entrega)::text <> 'AS'::text) AND ((m.cargaatual)::text <> 'Recarga'::text)) AND
+                  (m.fator <> (0)::double precision)) THEN ((m.vlbateujornaju + m.vlnaobateujornaju) / m.fator)
+            ELSE (0)::real
+            END +
            ---------
-                  -- MAPAS DE RECARGA (<>AS)
+           -- MAPAS DE RECARGA (<>AS)
 
-               CASE
-                   WHEN (((m.entrega)::text <> 'AS'::text) AND ((m.cargaatual)::text = 'Recarga'::text)) THEN
-                       CASE
-                           WHEN ((c.matricula_ambev = m.matricmotorista) AND (c.cod_funcao = ufp.cod_funcao_motorista))
-                               THEN m.vlrecargamot
-                           WHEN ((c.matricula_ambev = m.matricajud1) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
-                                 (m.fator <> (0)::double precision)) THEN (m.vlrecargaaju / m.fator)
-                           WHEN ((c.matricula_ambev = m.matricajud2) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
-                                 (m.fator <> (0)::double precision)) THEN (m.vlrecargaaju / m.fator)
-                           ELSE (0)::real
-                           END
-                   ELSE (0)::real
-                   END +
+        CASE
+            WHEN (((m.entrega)::text <> 'AS'::text) AND ((m.cargaatual)::text = 'Recarga'::text)) THEN
+                CASE
+                    WHEN ((c.matricula_ambev = m.matricmotorista) AND (c.cod_funcao = ufp.cod_funcao_motorista))
+                        THEN m.vlrecargamot
+                    WHEN ((c.matricula_ambev = m.matricajud1) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
+                          (m.fator <> (0)::double precision)) THEN (m.vlrecargaaju / m.fator)
+                    WHEN ((c.matricula_ambev = m.matricajud2) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
+                          (m.fator <> (0)::double precision)) THEN (m.vlrecargaaju / m.fator)
+                    ELSE (0)::real
+                    END
+            ELSE (0)::real
+            END +
            ---------
            -- DIFERENÇA ELD
-           CASE
-           WHEN ((c.matricula_ambev = m.matricmotorista) AND (c.cod_funcao = ufp.cod_funcao_motorista) AND
-                 ((m.entrega)::text <> 'AS'::text) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND
-                 ((m.cargaatual)::text <> 'Recarga'::text) AND classificacao_roadshow <> 'Longa Distância') THEN (
-                   ((m.cxentreg * (view_valor_cx_unidade.valor_cx_motorista_rota)::double precision) /
-                    (m.fator)::double precision) - ((m.vlbateujornmot + m.vlnaobateujornmot) + m.vlrecargamot))
-           WHEN ((c.matricula_ambev = m.matricajud1) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
-                 ((m.entrega)::text <> 'AS'::text) AND (m.fator <> (0)::double precision) AND
-                 (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text)
-               AND classificacao_roadshow <> 'Longa Distância') THEN (
-                   ((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) /
-                    (m.fator)::double precision) -
-                   (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator))
-           WHEN ((c.matricula_ambev = m.matricajud2) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
-                 ((m.entrega)::text <> 'AS'::text) AND (m.fator <> (0)::double precision) AND
-                 (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text) AND classificacao_roadshow <> 'Longa Distância')
-               THEN (
-                   ((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) /
-                    (m.fator)::double precision) -
-                   (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator))
-           ELSE (0)::double precision
-           END +
+        CASE
+            WHEN ((c.matricula_ambev = m.matricmotorista) AND (c.cod_funcao = ufp.cod_funcao_motorista) AND
+                  ((m.entrega)::text <> 'AS'::text) AND (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND
+                  ((m.cargaatual)::text <> 'Recarga'::text) AND classificacao_roadshow <> 'Longa Distância') THEN (
+                    ((m.cxentreg * (view_valor_cx_unidade.valor_cx_motorista_rota)::double precision) /
+                     (m.fator)::double precision) - ((m.vlbateujornmot + m.vlnaobateujornmot) + m.vlrecargamot))
+            WHEN ((c.matricula_ambev = m.matricajud1) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
+                  ((m.entrega)::text <> 'AS'::text) AND (m.fator <> (0)::double precision) AND
+                  (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text)
+                AND classificacao_roadshow <> 'Longa Distância') THEN (
+                    ((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) /
+                     (m.fator)::double precision) -
+                    (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator))
+            WHEN ((c.matricula_ambev = m.matricajud2) AND (c.cod_funcao = ufp.cod_funcao_ajudante) AND
+                  ((m.entrega)::text <> 'AS'::text) AND (m.fator <> (0)::double precision) AND
+                  (m.tempoprevistoroad > um.meta_tempo_rota_horas) AND ((m.cargaatual)::text <> 'Recarga'::text) AND
+                  classificacao_roadshow <> 'Longa Distância')
+                THEN (
+                    ((m.cxentreg * (view_valor_cx_unidade.valor_cx_ajudante_rota)::double precision) /
+                     (m.fator)::double precision) -
+                    (((m.vlbateujornaju + m.vlnaobateujornaju) + m.vlrecargaaju) / m.fator))
+            ELSE (0)::double precision
+            END +
            -------
-        -- VALOR MAPAS DE AS
-        -- MOTORISTAS
+           -- VALOR MAPAS DE AS
+           -- MOTORISTAS
         CASE
             -- Esse WHEN precisa ser primeiro pois ele verifica a ausência de ajudantes.
             WHEN ((c.matricula_ambev = m.matricmotorista) AND (c.cod_funcao = ufp.cod_funcao_motorista) AND
-                 ((m.entrega)::text = 'AS'::text) AND ((m.cargaatual)::text <> 'Recarga'::text)
-                 AND (m.matricajud1 is null or m.matricajud1 <= 0) AND (m.matricajud2 is null or m.matricajud2 <= 0))
+                  ((m.entrega)::text = 'AS'::text) AND ((m.cargaatual)::text <> 'Recarga'::text)
+                AND (m.matricajud1 is null or m.matricajud1 <= 0) AND (m.matricajud2 is null or m.matricajud2 <= 0))
                 THEN
-                    uv.rm_motorista_valor_as_sem_ajudante
+                uv.rm_motorista_valor_as_sem_ajudante
             WHEN ((c.matricula_ambev = m.matricmotorista) AND (c.cod_funcao = ufp.cod_funcao_motorista) AND
                   ((m.entrega)::text = 'AS'::text)) THEN
                 CASE
@@ -7907,32 +7943,34 @@ FROM (((((((((view_mapa_colaborador vmc
                     GROUP BY t.mapa, t."código_transportadora") tracking
                    ON (((tracking.tracking_mapa = m.mapa) AND (tracking.cod_transportadora = m.cod_unidade))));
 
-create or replace view public.view_afericao_configuracao_alerta_sulco(cod_unidade, cod_config,
-                                                                      variacao_aceita_sulco_menor_milimetros,
-                                                                      variacao_aceita_sulco_maior_milimetros,
-                                                                      usa_default_prolog, bloquear_valores_menores,
-                                                                      bloquear_valores_maiores) as
-    WITH configuracao_prolog AS (
-        SELECT ap.variacao_aceita_sulco_maior_milimetros,
-               ap.variacao_aceita_sulco_menor_milimetros,
-               ap.bloquear_valores_menores,
-               ap.bloquear_valores_maiores
-        FROM afericao_configuracao_prolog ap
-    )
-    SELECT u.codigo                                            AS cod_unidade,
-           config.codigo                                       AS cod_config,
-           COALESCE(config.variacao_aceita_sulco_menor_milimetros,
-                    cp.variacao_aceita_sulco_menor_milimetros) AS variacao_aceita_sulco_menor_milimetros,
-           COALESCE(config.variacao_aceita_sulco_maior_milimetros,
-                    cp.variacao_aceita_sulco_maior_milimetros) AS variacao_aceita_sulco_maior_milimetros,
-           f_if((config.codigo IS NULL), true, false)          AS usa_default_prolog,
-           COALESCE(config.bloquear_valores_menores,
-                    cp.bloquear_valores_menores)               AS bloquear_valores_menores,
-           COALESCE(config.bloquear_valores_maiores,
-                    cp.bloquear_valores_maiores)               AS bloquear_valores_maiores
-    FROM ((unidade u
-        LEFT JOIN afericao_configuracao_alerta_sulco config ON ((u.codigo = config.cod_unidade)))
-             FULL JOIN configuracao_prolog cp ON (true));
+create or replace view public.view_afericao_configuracao_alerta_sulco
+            (cod_unidade, cod_config,
+             variacao_aceita_sulco_menor_milimetros,
+             variacao_aceita_sulco_maior_milimetros,
+             usa_default_prolog, bloquear_valores_menores,
+             bloquear_valores_maiores)
+as
+WITH configuracao_prolog AS (
+    SELECT ap.variacao_aceita_sulco_maior_milimetros,
+           ap.variacao_aceita_sulco_menor_milimetros,
+           ap.bloquear_valores_menores,
+           ap.bloquear_valores_maiores
+    FROM afericao_configuracao_prolog ap
+)
+SELECT u.codigo                                            AS cod_unidade,
+       config.codigo                                       AS cod_config,
+       COALESCE(config.variacao_aceita_sulco_menor_milimetros,
+                cp.variacao_aceita_sulco_menor_milimetros) AS variacao_aceita_sulco_menor_milimetros,
+       COALESCE(config.variacao_aceita_sulco_maior_milimetros,
+                cp.variacao_aceita_sulco_maior_milimetros) AS variacao_aceita_sulco_maior_milimetros,
+       f_if((config.codigo IS NULL), true, false)          AS usa_default_prolog,
+       COALESCE(config.bloquear_valores_menores,
+                cp.bloquear_valores_menores)               AS bloquear_valores_menores,
+       COALESCE(config.bloquear_valores_maiores,
+                cp.bloquear_valores_maiores)               AS bloquear_valores_maiores
+FROM ((unidade u
+    LEFT JOIN afericao_configuracao_alerta_sulco config ON ((u.codigo = config.cod_unidade)))
+         FULL JOIN configuracao_prolog cp ON (true));
 
 create or replace view public.checklist_modelo(cod_unidade, codigo, cod_versao_atual, nome, status_ativo) as
 SELECT cm.cod_unidade,
@@ -7943,13 +7981,15 @@ SELECT cm.cod_unidade,
 FROM checklist_modelo_data cm
 WHERE (cm.deletado = false);
 
-create or replace view public.checklist_ordem_servico_itens(cod_unidade, codigo, cod_os, cpf_mecanico,
-                                                            cod_pergunta_primeiro_apontamento, cod_contexto_pergunta,
-                                                            cod_contexto_alternativa,
-                                                            cod_alternativa_primeiro_apontamento, status_resolucao,
-                                                            qt_apontamentos, km, data_hora_conserto,
-                                                            data_hora_inicio_resolucao, data_hora_fim_resolucao,
-                                                            tempo_realizacao, feedback_conserto) as
+create or replace view public.checklist_ordem_servico_itens
+            (cod_unidade, codigo, cod_os, cpf_mecanico,
+             cod_pergunta_primeiro_apontamento, cod_contexto_pergunta,
+             cod_contexto_alternativa,
+             cod_alternativa_primeiro_apontamento, status_resolucao,
+             qt_apontamentos, km, data_hora_conserto,
+             data_hora_inicio_resolucao, data_hora_fim_resolucao,
+             tempo_realizacao, feedback_conserto)
+as
 SELECT cosi.cod_unidade,
        cosi.codigo,
        cosi.cod_os,
@@ -7969,10 +8009,12 @@ SELECT cosi.cod_unidade,
 FROM checklist_ordem_servico_itens_data cosi
 WHERE (cosi.deletado = false);
 
-create or replace view public.checklist_alternativa_pergunta(cod_checklist_modelo, cod_versao_checklist_modelo,
-                                                             cod_unidade, alternativa, ordem, cod_pergunta, codigo,
-                                                             codigo_contexto, alternativa_tipo_outros, prioridade,
-                                                             deve_abrir_ordem_servico) as
+create or replace view public.checklist_alternativa_pergunta
+            (cod_checklist_modelo, cod_versao_checklist_modelo,
+             cod_unidade, alternativa, ordem, cod_pergunta, codigo,
+             codigo_contexto, alternativa_tipo_outros, prioridade,
+             deve_abrir_ordem_servico)
+as
 SELECT cap.cod_checklist_modelo,
        cap.cod_versao_checklist_modelo,
        cap.cod_unidade,
@@ -7987,8 +8029,10 @@ SELECT cap.cod_checklist_modelo,
 FROM checklist_alternativa_pergunta_data cap
 WHERE (cap.deletado = false);
 
-create or replace view public.checklist_perguntas(cod_checklist_modelo, cod_versao_checklist_modelo, cod_unidade, ordem,
-                                                  pergunta, single_choice, cod_imagem, codigo, codigo_contexto) as
+create or replace view public.checklist_perguntas
+            (cod_checklist_modelo, cod_versao_checklist_modelo, cod_unidade, ordem,
+             pergunta, single_choice, cod_imagem, codigo, codigo_contexto)
+as
 SELECT cp.cod_checklist_modelo,
        cp.cod_versao_checklist_modelo,
        cp.cod_unidade,
@@ -8001,14 +8045,16 @@ SELECT cp.cod_checklist_modelo,
 FROM checklist_perguntas_data cp
 WHERE (cp.deletado = false);
 
-create or replace view public.checklist(cod_unidade, cod_checklist_modelo, cod_versao_checklist_modelo, codigo,
-                                        data_hora, data_hora_realizacao_tz_aplicado, data_hora_importado_prolog,
-                                        cpf_colaborador, placa_veiculo, tipo, tempo_realizacao, km_veiculo,
-                                        data_hora_sincronizacao, fonte_data_hora_realizacao,
-                                        versao_app_momento_realizacao, versao_app_momento_sincronizacao, device_id,
-                                        device_imei, device_uptime_realizacao_millis,
-                                        device_uptime_sincronizacao_millis, foi_offline, total_perguntas_ok,
-                                        total_perguntas_nok, total_alternativas_ok, total_alternativas_nok) as
+create or replace view public.checklist
+            (cod_unidade, cod_checklist_modelo, cod_versao_checklist_modelo, codigo,
+             data_hora, data_hora_realizacao_tz_aplicado, data_hora_importado_prolog,
+             cpf_colaborador, placa_veiculo, tipo, tempo_realizacao, km_veiculo,
+             data_hora_sincronizacao, fonte_data_hora_realizacao,
+             versao_app_momento_realizacao, versao_app_momento_sincronizacao, device_id,
+             device_imei, device_uptime_realizacao_millis,
+             device_uptime_sincronizacao_millis, foi_offline, total_perguntas_ok,
+             total_perguntas_nok, total_alternativas_ok, total_alternativas_nok)
+as
 SELECT c.cod_unidade,
        c.cod_checklist_modelo,
        c.cod_versao_checklist_modelo,
@@ -8037,15 +8083,17 @@ SELECT c.cod_unidade,
 FROM checklist_data c
 WHERE (c.deletado = false);
 
-create or replace view public.estratificacao_os(cod_os, nome_realizador_checklist, placa_veiculo, km, data_hora,
-                                                tipo_checklist, cod_pergunta, cod_contexto_pergunta, ordem_pergunta,
-                                                pergunta, single_choice, url_imagem, prioridade, prioridade_ordem,
-                                                cod_alternativa, cod_contexto_alternativa, alternativa, prazo,
-                                                resposta_outros, cod_tipo, cod_unidade, status_os, cod_checklist,
-                                                time_zone_unidade, status_item, nome_mecanico, cpf_mecanico,
-                                                tempo_realizacao, data_hora_conserto, data_hora_inicio_resolucao_utc,
-                                                data_hora_fim_resolucao_utc, km_fechamento, qt_apontamentos,
-                                                feedback_conserto, codigo) as
+create or replace view public.estratificacao_os
+            (cod_os, nome_realizador_checklist, placa_veiculo, km, data_hora,
+             tipo_checklist, cod_pergunta, cod_contexto_pergunta, ordem_pergunta,
+             pergunta, single_choice, url_imagem, prioridade, prioridade_ordem,
+             cod_alternativa, cod_contexto_alternativa, alternativa, prazo,
+             resposta_outros, cod_tipo, cod_unidade, status_os, cod_checklist,
+             time_zone_unidade, status_item, nome_mecanico, cpf_mecanico,
+             tempo_realizacao, data_hora_conserto, data_hora_inicio_resolucao_utc,
+             data_hora_fim_resolucao_utc, km_fechamento, qt_apontamentos,
+             feedback_conserto, codigo)
+as
 SELECT cos.codigo                                                     AS cod_os,
        realizador.nome                                                AS nome_realizador_checklist,
        c.placa_veiculo,
@@ -8099,8 +8147,10 @@ FROM (((((((((checklist_data c
     JOIN checklist_respostas_nok crn ON (((crn.cod_checklist = c.codigo) AND (crn.cod_alternativa = cap.codigo))))
          LEFT JOIN colaborador mecanico ON ((mecanico.cpf = cosi.cpf_mecanico)));
 
-create or replace view public.pneu_servico_realizado_incrementa_vida(cod_servico_realizado, cod_modelo_banda,
-                                                                     vida_nova_pneu, fonte_servico_realizado) as
+create or replace view public.pneu_servico_realizado_incrementa_vida
+            (cod_servico_realizado, cod_modelo_banda,
+             vida_nova_pneu, fonte_servico_realizado)
+as
 SELECT psrivd.cod_servico_realizado,
        psrivd.cod_modelo_banda,
        psrivd.vida_nova_pneu,
@@ -8122,8 +8172,10 @@ SELECT mpsrd.cod_movimentacao,
 FROM movimentacao_pneu_servico_realizado_data mpsrd
 WHERE (mpsrd.deletado = false);
 
-create or replace view public.pneu_servico_realizado(codigo, cod_tipo_servico, cod_unidade, cod_pneu, custo, vida,
-                                                     fonte_servico_realizado) as
+create or replace view public.pneu_servico_realizado
+            (codigo, cod_tipo_servico, cod_unidade, cod_pneu, custo, vida,
+             fonte_servico_realizado)
+as
 SELECT psrd.codigo,
        psrd.cod_tipo_servico,
        psrd.cod_unidade,
@@ -8784,8 +8836,7 @@ FROM AFERICAO A
 WHERE A.COD_UNIDADE = F_COD_UNIDADE
   AND (A.DATA_HORA AT TIME ZONE F_TZ_UNIDADE) :: DATE BETWEEN F_DATA_INICIAL AND F_DATA_FINAL
 ORDER BY A.DATA_HORA DESC
-LIMIT F_LIMIT
-    OFFSET F_OFFSET;
+LIMIT F_LIMIT OFFSET F_OFFSET;
 $$;
 
 create or replace function public.func_afericao_get_afericoes_placas_paginada(f_cod_unidade bigint,
@@ -8833,8 +8884,7 @@ WHERE A.COD_UNIDADE = F_COD_UNIDADE
           ELSE TRUE END
   AND (A.DATA_HORA AT TIME ZONE F_TZ_UNIDADE)::DATE BETWEEN F_DATA_INICIAL AND F_DATA_FINAL
 ORDER BY A.DATA_HORA DESC
-LIMIT F_LIMIT
-    OFFSET F_OFFSET;
+LIMIT F_LIMIT OFFSET F_OFFSET;
 $$;
 
 create or replace function public.func_afericao_get_config_tipo_afericao_veiculo(f_cod_unidade bigint)
@@ -9359,13 +9409,14 @@ BEGIN
         ),
 
              AFERICOES_DIA AS (
-                 SELECT (A.DATA_HORA AT TIME ZONE TZ_UNIDADE(A.COD_UNIDADE)) :: DATE AS DATA,
-                        SUM(CASE WHEN A.TIPO_MEDICAO_COLETADA = AFERICAO_SULCO THEN 1 ELSE 0 END) QTD_AFERICAO_SULCO,
+                 SELECT (A.DATA_HORA AT TIME ZONE TZ_UNIDADE(A.COD_UNIDADE)) :: DATE AS                 DATA,
+                        SUM(
+                                CASE WHEN A.TIPO_MEDICAO_COLETADA = AFERICAO_SULCO THEN 1 ELSE 0 END)   QTD_AFERICAO_SULCO,
                         SUM(
                                 CASE WHEN A.TIPO_MEDICAO_COLETADA = AFERICAO_PRESSAO THEN 1 ELSE 0 END) QTD_AFERICAO_PRESSAO,
                         SUM(CASE
                                 WHEN A.TIPO_MEDICAO_COLETADA = AFERICAO_SULCO_PRESSAO THEN 1
-                                ELSE 0 END) QTD_AFERICAO_SULCO_PRESSAO
+                                ELSE 0 END)                                                             QTD_AFERICAO_SULCO_PRESSAO
                  FROM AFERICAO A
                  WHERE A.COD_UNIDADE = ANY (F_COD_UNIDADES)
                    AND (A.DATA_HORA AT TIME ZONE TZ_UNIDADE(A.COD_UNIDADE)) :: DATE BETWEEN DATA_INICIAL AND DATA_FINAL
@@ -9415,10 +9466,10 @@ BEGIN
              -- que a placa vai vencer em 20 dias.
              ULTIMA_AFERICAO_SULCO AS (
                  SELECT DISTINCT ON (A.PLACA_VEICULO) A.COD_UNIDADE,
-                                                      A.PLACA_VEICULO                    AS PLACA,
+                                                      A.PLACA_VEICULO              AS PLACA,
                                                       DATE_PART('DAY', F_DATA_HOJE_UTC - MAX(DATA_HORA))
                                                           -
-                                                      (PRU.PERIODO_AFERICAO_SULCO)       AS QTD_DIAS_ENTRE_ULTIMA_AFERICAO_SULCO_E_HOJE
+                                                      (PRU.PERIODO_AFERICAO_SULCO) AS QTD_DIAS_ENTRE_ULTIMA_AFERICAO_SULCO_E_HOJE
                  FROM AFERICAO A
                           JOIN PNEU_RESTRICAO_UNIDADE PRU
                                ON (SELECT V.COD_UNIDADE
@@ -9435,10 +9486,10 @@ BEGIN
              ),
              ULTIMA_AFERICAO_PRESSAO AS (
                  SELECT DISTINCT ON (A.PLACA_VEICULO) A.COD_UNIDADE,
-                                                      A.PLACA_VEICULO                      AS PLACA,
+                                                      A.PLACA_VEICULO                AS PLACA,
                                                       DATE_PART('DAY', F_DATA_HOJE_UTC - MAX(DATA_HORA))
                                                           -
-                                                      (PRU.PERIODO_AFERICAO_PRESSAO)       AS QTD_DIAS_ENTRE_ULTIMA_AFERICAO_PRESSAO_E_HOJE
+                                                      (PRU.PERIODO_AFERICAO_PRESSAO) AS QTD_DIAS_ENTRE_ULTIMA_AFERICAO_PRESSAO_E_HOJE
                  FROM AFERICAO A
                           JOIN PNEU_RESTRICAO_UNIDADE PRU
                                ON (SELECT V.COD_UNIDADE
@@ -9581,7 +9632,7 @@ BEGIN
     IF F_COD_COLABORADOR_UPDATE IS NULL OR F_COD_COLABORADOR_UPDATE <= 0
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível validar sua sessão, por favor, faça login novamente');
+                'Não foi possível validar sua sessão, por favor, faça login novamente');
     END IF;
 
     IF ((SELECT COUNT(CODIGO)
@@ -9590,7 +9641,7 @@ BEGIN
            AND CODIGO = F_COD_CARGO) <= 0)
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Erro ao deletar, possivelmente este cargo já foi deletado');
+                'Erro ao deletar, possivelmente este cargo já foi deletado');
     END IF;
 
     IF ((SELECT COUNT(CODIGO)
@@ -9599,7 +9650,7 @@ BEGIN
            AND COD_FUNCAO = F_COD_CARGO) > 0)
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não é possível deletar pois existem colaboradores vinculados a este cargo');
+                'Não é possível deletar pois existem colaboradores vinculados a este cargo');
     END IF;
 
     -- Deleta cargo.
@@ -9638,7 +9689,7 @@ BEGIN
     IF F_COD_COLABORADOR_UPDATE IS NULL OR F_COD_COLABORADOR_UPDATE <= 0
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível validar sua sessão, por favor, faça login novamente');
+                'Não foi possível validar sua sessão, por favor, faça login novamente');
     END IF;
 
     IF ((SELECT COUNT(CODIGO)
@@ -9647,7 +9698,7 @@ BEGIN
            AND CODIGO = F_COD_CARGO) <= 0)
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Erro ao editar, possivelmente este cargo já foi deletado');
+                'Erro ao editar, possivelmente este cargo já foi deletado');
     END IF;
 
     -- Edita o cargo.
@@ -9663,7 +9714,7 @@ BEGIN
     IF (QTD_LINHAS_ATUALIZADAS <= 0)
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Erro ao editar o cargo, tente novamente');
+                'Erro ao editar o cargo, tente novamente');
     END IF;
     --
     --
@@ -9900,18 +9951,18 @@ BEGIN
     IF F_COD_COLABORADOR_UPDATE IS NULL OR F_COD_COLABORADOR_UPDATE <= 0
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível validar sua sessão, por favor, faça login novamente');
+                'Não foi possível validar sua sessão, por favor, faça login novamente');
     END IF;
 
     INSERT INTO FUNCAO_DATA (COD_EMPRESA, NOME, COD_COLABORADOR_UPDATE)
-    VALUES (F_COD_EMPRESA, TRIM_AND_REMOVE_EXTRA_SPACES(F_NOME_CARGO), F_COD_COLABORADOR_UPDATE) RETURNING CODIGO
-        INTO COD_CARGO_INSERIDO;
+    VALUES (F_COD_EMPRESA, TRIM_AND_REMOVE_EXTRA_SPACES(F_NOME_CARGO), F_COD_COLABORADOR_UPDATE)
+    RETURNING CODIGO INTO COD_CARGO_INSERIDO;
 
     -- Verificamos se o insert funcionou.
     IF COD_CARGO_INSERIDO <= 0
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível inserir o cargo, tente novamente');
+                'Não foi possível inserir o cargo, tente novamente');
     END IF;
 
     RETURN COD_CARGO_INSERIDO;
@@ -10234,22 +10285,22 @@ BEGIN
                    INNERTABLE.DATA_HORA_ULTIMO_CHECKLIST_RETORNO,
                    CR.COD_CHECKLIST_MODELO AS COD_CHECKLIST_MODELO_RETORNO,
                    COR.NOME                AS NOME_COLABORADOR_CHECKLIST_RETORNO
-            FROM (SELECT G.DAY :: DATE                                               AS DATA,
+            FROM (SELECT G.DAY :: DATE                  AS DATA,
                          V.PLACA,
                          MAX(CASE
                                  WHEN C.TIPO = CHECKLIST_TIPO_SAIDA
-                                     THEN C.CODIGO END)                              AS COD_CHECKLIST_SAIDA,
+                                     THEN C.CODIGO END) AS COD_CHECKLIST_SAIDA,
                          MAX(CASE
                                  WHEN C.TIPO = CHECKLIST_TIPO_SAIDA
                                      THEN C.DATA_HORA END) AT TIME ZONE
-                         F_TZ_UNIDADE                                                AS DATA_HORA_ULTIMO_CHECKLIST_SAIDA,
+                         F_TZ_UNIDADE                   AS DATA_HORA_ULTIMO_CHECKLIST_SAIDA,
                          MAX(CASE
                                  WHEN C.TIPO = CHECKLIST_TIPO_RETORNO
-                                     THEN C.CODIGO END)                              AS COD_CHECKLIST_RETORNO,
+                                     THEN C.CODIGO END) AS COD_CHECKLIST_RETORNO,
                          MAX(CASE
                                  WHEN C.TIPO = CHECKLIST_TIPO_RETORNO
                                      THEN C.DATA_HORA END) AT TIME ZONE
-                         F_TZ_UNIDADE                                                AS DATA_HORA_ULTIMO_CHECKLIST_RETORNO
+                         F_TZ_UNIDADE                   AS DATA_HORA_ULTIMO_CHECKLIST_RETORNO
                   FROM VEICULO V
                            CROSS JOIN GENERATE_SERIES(F_DATA_INICIAL, F_DATA_FINAL, '1 DAY') G(DAY)
                            LEFT JOIN CHECKLIST C
@@ -10514,7 +10565,8 @@ BEGIN
             F_DEVICE_IMEI,
             F_DEVICE_UPTIME_REALIZACAO_MILLIS,
             F_DEVICE_UPTIME_SINCRONIZACAO_MILLIS,
-            TRUE) RETURNING CODIGO INTO COD_CHECKLIST_INSERIDO;
+            TRUE)
+    RETURNING CODIGO INTO COD_CHECKLIST_INSERIDO;
 
     -- Verificamos se o insert funcionou.
     IF COD_CHECKLIST_INSERIDO <= 0
@@ -10707,10 +10759,12 @@ BEGIN
         THEN
             UPDATE CHECKLIST_OFFLINE_DADOS_UNIDADE
             SET VERSAO_DADOS = VERSAO_DADOS + 1
-            WHERE COD_UNIDADE = F_COD_UNIDADE RETURNING VERSAO_DADOS INTO VERSAO_DADOS_BD;
+            WHERE COD_UNIDADE = F_COD_UNIDADE
+            RETURNING VERSAO_DADOS INTO VERSAO_DADOS_BD;
         ELSE
             INSERT INTO CHECKLIST_OFFLINE_DADOS_UNIDADE(COD_UNIDADE, TOKEN_SINCRONIZACAO_CHECKLIST)
-            VALUES (F_COD_UNIDADE, F_RANDOM_STRING(64)) RETURNING VERSAO_DADOS INTO VERSAO_DADOS_BD;
+            VALUES (F_COD_UNIDADE, F_RANDOM_STRING(64))
+            RETURNING VERSAO_DADOS INTO VERSAO_DADOS_BD;
         END IF;
 
         RETURN QUERY
@@ -10941,8 +10995,7 @@ BEGIN
               AND F_IF(F_PLACA_VEICULO IS NULL, TRUE, C.PLACA_VEICULO = F_PLACA_VEICULO)
               AND F_IF(F_PRIORIDADE_ALTERNATIVA IS NULL, TRUE, CAP.PRIORIDADE = F_PRIORIDADE_ALTERNATIVA)
               AND F_IF(F_STATUS_ITENS IS NULL, TRUE, COSI.STATUS_RESOLUCAO = F_STATUS_ITENS)
-            LIMIT F_LIMIT
-                OFFSET F_OFFSET
+            LIMIT F_LIMIT OFFSET F_OFFSET
         ),
              DADOS_VEICULO AS (
                  SELECT V.PLACA :: TEXT AS PLACA_VEICULO,
@@ -11148,8 +11201,7 @@ BEGIN
           AND F_IF(F_PLACA_VEICULO IS NULL, TRUE, F_PLACA_VEICULO = C.PLACA_VEICULO)
           AND F_IF(F_STATUS_OS IS NULL, TRUE, F_STATUS_OS = COS.STATUS)
         ORDER BY COS.CODIGO DESC
-        LIMIT F_LIMIT
-            OFFSET F_OFFSET;
+        LIMIT F_LIMIT OFFSET F_OFFSET;
 END;
 $$;
 
@@ -11207,8 +11259,7 @@ BEGIN
                  QTD_ITENS_PRIORIDADE_ALTA DESC,
                  QTD_ITENS_PRIORIDADE_BAIXA DESC,
                  PLACA_VEICULO ASC
-        LIMIT F_LIMIT
-            OFFSET F_OFFSET;
+        LIMIT F_LIMIT OFFSET F_OFFSET;
 END;
 $$;
 
@@ -11918,7 +11969,7 @@ create or replace function public.func_garante_novo_km_menor_que_atual_veiculo(f
 as
 $$
 DECLARE
-    F_COD_EMPRESA CONSTANT      BIGINT := (SELECT U.COD_EMPRESA
+    F_COD_EMPRESA      CONSTANT BIGINT := (SELECT U.COD_EMPRESA
                                            FROM UNIDADE U
                                            WHERE U.CODIGO = F_COD_UNIDADE_VEICULO);
     F_KM_ATUAL_VEICULO CONSTANT BIGINT := (SELECT VD.KM
@@ -13095,8 +13146,8 @@ BEGIN
                          AND I.STATUS_ATIVO_INICIO = TRUE
                          AND I.STATUS_ATIVO_FIM = TRUE
                        GROUP BY C.CPF, I.COD_TIPO_INTERVALO, I.DATA_HORA_FIM, I.DATA_HORA_INICIO, IT.CODIGO
-                                WINDOW W AS (
-                                    PARTITION BY C.CPF, IT.CODIGO)) AS T
+                           WINDOW W AS (
+                               PARTITION BY C.CPF, IT.CODIGO)) AS T
                  GROUP BY T.CPF_COLABORADOR,
                           T.COD_TIPO_INTERVALO,
                           T.TEMPO_TOTAL_SEGUNDOS,
@@ -13188,8 +13239,8 @@ BEGIN
             F_ACAO_AJUSTE,
             COD_UNIDADE_AJUSTE,
             COD_COLABORADOR_AJUSTE,
-            F_DATA_HORA_AJUSTE) RETURNING CODIGO
-               INTO COD_AJUSTE_REALIZADO;
+            F_DATA_HORA_AJUSTE)
+    RETURNING CODIGO INTO COD_AJUSTE_REALIZADO;
 
     IF NOT FOUND OR COD_AJUSTE_REALIZADO IS NULL OR COD_AJUSTE_REALIZADO <= 0
     THEN
@@ -13199,8 +13250,8 @@ BEGIN
     INSERT INTO MARCACAO_HISTORICO (COD_MARCACAO, COD_AJUSTE, DATA_HORA_ANTIGA)
     VALUES (F_COD_MARCACAO_AJUSTADA,
             COD_AJUSTE_REALIZADO,
-            DATA_HORA_ATUAL_MARCACAO) RETURNING CODIGO
-               INTO COD_HISTORICO_MARCACAO;
+            DATA_HORA_ATUAL_MARCACAO)
+    RETURNING CODIGO INTO COD_HISTORICO_MARCACAO;
 
     IF NOT FOUND OR COD_HISTORICO_MARCACAO IS NULL OR COD_HISTORICO_MARCACAO <= 0
     THEN
@@ -13241,7 +13292,8 @@ SELECT I.COD_UNIDADE,
                      FROM TOKEN_AUTENTICACAO
                      WHERE TOKEN = F_TOKEN_RESPONSAVEL_INSERCAO))
 FROM INTERVALO I
-WHERE I.CODIGO = F_COD_MARCACAO_VINCULO RETURNING CODIGO AS NEW_COD_MARCACAO;
+WHERE I.CODIGO = F_COD_MARCACAO_VINCULO
+RETURNING CODIGO AS NEW_COD_MARCACAO;
 $$;
 
 create or replace function public.func_marcacao_insert_marcacao_inconsistencia(f_cod_marcacao_inicio bigint, f_cod_marcacao_sincronizada bigint) returns boolean
@@ -13262,7 +13314,8 @@ BEGIN
 
     -- INSERIR INCONSISTÊNCIA
     INSERT INTO MARCACAO_INCONSISTENCIA(COD_MARCACAO_VINCULO_INICIO_FIM, COD_MARCACAO_INCONSISTENTE)
-    VALUES (COD_VINCULO_INICIO_FIM, F_COD_MARCACAO_SINCRONIZADA) RETURNING CODIGO INTO COD_INCONSISTENCIA_INSERIDA;
+    VALUES (COD_VINCULO_INICIO_FIM, F_COD_MARCACAO_SINCRONIZADA)
+    RETURNING CODIGO INTO COD_INCONSISTENCIA_INSERIDA;
 
     IF COD_INCONSISTENCIA_INSERIDA IS NULL
     THEN
@@ -13272,7 +13325,8 @@ BEGIN
     -- ALTERAR FLAG NA TABELA MARCACAO_VINCULO_INICIO_FIM - POSSUI_INCONSISTENCIA
     UPDATE MARCACAO_VINCULO_INICIO_FIM
     SET POSSUI_INCONSISTENCIA = TRUE
-    WHERE CODIGO = COD_VINCULO_INICIO_FIM RETURNING CODIGO INTO COD_VINCULO_INICIO_FIM_ALTERADA;
+    WHERE CODIGO = COD_VINCULO_INICIO_FIM
+    RETURNING CODIGO INTO COD_VINCULO_INICIO_FIM_ALTERADA;
 
     IF COD_VINCULO_INICIO_FIM_ALTERADA IS NULL
     THEN
@@ -13335,8 +13389,8 @@ BEGIN
             FONTE_DATA_HORA_SERVIDOR,
             TRUE,
             F_DATA_HORA_ATUAL,
-            COD_COLABORADOR_INSERCAO) RETURNING CODIGO
-               INTO CODIGO_INICIO;
+            COD_COLABORADOR_INSERCAO)
+    RETURNING CODIGO INTO CODIGO_INICIO;
 
     IF CODIGO_INICIO IS NULL OR CODIGO_INICIO <= 0
     THEN
@@ -13360,8 +13414,8 @@ BEGIN
             FONTE_DATA_HORA_SERVIDOR,
             TRUE,
             F_DATA_HORA_ATUAL,
-            COD_COLABORADOR_INSERCAO) RETURNING CODIGO
-               INTO CODIGO_FIM;
+            COD_COLABORADOR_INSERCAO)
+    RETURNING CODIGO INTO CODIGO_FIM;
 
     IF CODIGO_FIM IS NULL OR CODIGO_FIM <= 0
     THEN
@@ -14344,21 +14398,21 @@ BEGIN
                SUM(DADOS.QT_AFERICAO_PRESSAO)       AS QTD_AFERICAO_PRESSAO,
                SUM(DADOS.QT_AFERICAO_SULCO)         AS QTD_AFERICAO_SULCO,
                SUM(DADOS.QT_AFERICAO_SULCO_PRESSAO) AS QTD_AFERICAO_SULCO_PRESSAO
-        FROM (SELECT (A.DATA_HORA AT TIME ZONE TZ_UNIDADE(A.COD_UNIDADE)) :: DATE               AS DATA_REFERENCIA,
+        FROM (SELECT (A.DATA_HORA AT TIME ZONE TZ_UNIDADE(A.COD_UNIDADE)) :: DATE AS DATA_REFERENCIA,
                      TO_CHAR((A.DATA_HORA AT TIME ZONE TZ_UNIDADE(A.COD_UNIDADE)),
-                             DATE_FORMAT)                                                       AS DATA_REFERENCIA_FORMATADA,
+                             DATE_FORMAT)                                         AS DATA_REFERENCIA_FORMATADA,
                      SUM(CASE
                              WHEN A.TIPO_MEDICAO_COLETADA = MEDICAO_COLETADA_PRESSAO
                                  THEN 1
-                             ELSE 0 END)                                                        AS QT_AFERICAO_PRESSAO,
+                             ELSE 0 END)                                          AS QT_AFERICAO_PRESSAO,
                      SUM(CASE
                              WHEN A.TIPO_MEDICAO_COLETADA = MEDICAO_COLETADA_SULCO
                                  THEN 1
-                             ELSE 0 END)                                                        AS QT_AFERICAO_SULCO,
+                             ELSE 0 END)                                          AS QT_AFERICAO_SULCO,
                      SUM(CASE
                              WHEN A.TIPO_MEDICAO_COLETADA = MEDICAO_COLETADA_SULCO_PRESSAO
                                  THEN 1
-                             ELSE 0 END)                                                        AS QT_AFERICAO_SULCO_PRESSAO
+                             ELSE 0 END)                                          AS QT_AFERICAO_SULCO_PRESSAO
               FROM AFERICAO A
               WHERE A.COD_UNIDADE = ANY (F_COD_UNIDADES)
                 AND (A.DATA_HORA AT TIME ZONE TZ_UNIDADE(A.COD_UNIDADE)) :: DATE >= F_DATA_INICIAL
@@ -16606,17 +16660,17 @@ SELECT U.NOME  AS "UNIDADE ALOCADA",
 FROM VEICULO V
          JOIN UNIDADE U ON V.COD_UNIDADE = U.CODIGO
          LEFT JOIN (SELECT CALCULO_AFERICAO_PRESSAO.PLACA,
-                           COUNT(CALCULO_AFERICAO_PRESSAO.PLACA)                                                    AS QTD_AFERICOES,
+                           COUNT(CALCULO_AFERICAO_PRESSAO.PLACA) AS QTD_AFERICOES,
                            CASE
                                WHEN
                                    MAX(CALCULO_AFERICAO_PRESSAO.DIAS_ENTRE_AFERICOES) IS NOT NULL
                                    THEN MAX(CALCULO_AFERICAO_PRESSAO.DIAS_ENTRE_AFERICOES)::TEXT
-                               ELSE '-' END                                                                         AS MAX_DIAS_ENTRE_AFERICOES,
+                               ELSE '-' END                      AS MAX_DIAS_ENTRE_AFERICOES,
                            CASE
                                WHEN
                                    MIN(CALCULO_AFERICAO_PRESSAO.DIAS_ENTRE_AFERICOES) IS NOT NULL
                                    THEN MIN(CALCULO_AFERICAO_PRESSAO.DIAS_ENTRE_AFERICOES)::TEXT
-                               ELSE '-' END                                                                         AS MIN_DIAS_ENTRE_AFERICOES,
+                               ELSE '-' END                      AS MIN_DIAS_ENTRE_AFERICOES,
                            CASE
                                WHEN
                                    MAX(CALCULO_AFERICAO_PRESSAO.DIAS_ENTRE_AFERICOES) IS NOT NULL
@@ -16630,18 +16684,18 @@ FROM VEICULO V
                                                                THEN 1
                                                            ELSE 0 END)
                                            END)::TEXT
-                               ELSE '-' END                                                                         AS MD_DIAS_ENTRE_AFERICOES,
+                               ELSE '-' END                      AS MD_DIAS_ENTRE_AFERICOES,
                            SUM(CASE
                                    WHEN CALCULO_AFERICAO_PRESSAO.DIAS_ENTRE_AFERICOES <=
                                         CALCULO_AFERICAO_PRESSAO.PERIODO_AFERICAO
                                        THEN 1
-                                   ELSE 0 END)                                                                      AS QTD_AFERICOES_DENTRO_META,
+                                   ELSE 0 END)                   AS QTD_AFERICOES_DENTRO_META,
                            TRUNC(SUM(CASE
                                          WHEN CALCULO_AFERICAO_PRESSAO.DIAS_ENTRE_AFERICOES <=
                                               CALCULO_AFERICAO_PRESSAO.PERIODO_AFERICAO
                                              THEN 1
                                          ELSE 0 END) / COUNT(CALCULO_AFERICAO_PRESSAO.PLACA)::NUMERIC * 100) ||
-                           '%'                                                                                      AS ADERENCIA
+                           '%'                                   AS ADERENCIA
                     FROM (SELECT A.PLACA_VEICULO            AS PLACA,
                                  A.DATA_HORA,
                                  A.TIPO_MEDICAO_COLETADA,
@@ -16663,17 +16717,17 @@ FROM VEICULO V
                     GROUP BY CALCULO_AFERICAO_PRESSAO.PLACA) AS CALCULO_PRESSAO
                    ON CALCULO_PRESSAO.PLACA = V.PLACA
          LEFT JOIN (SELECT CALCULO_AFERICAO_SULCO.PLACA,
-                           COUNT(CALCULO_AFERICAO_SULCO.PLACA)                                                    AS QTD_AFERICOES,
+                           COUNT(CALCULO_AFERICAO_SULCO.PLACA) AS QTD_AFERICOES,
                            CASE
                                WHEN
                                    MAX(CALCULO_AFERICAO_SULCO.DIAS_ENTRE_AFERICOES) IS NOT NULL
                                    THEN MAX(CALCULO_AFERICAO_SULCO.DIAS_ENTRE_AFERICOES)::TEXT
-                               ELSE '-' END                                                                       AS MAX_DIAS_ENTRE_AFERICOES,
+                               ELSE '-' END                    AS MAX_DIAS_ENTRE_AFERICOES,
                            CASE
                                WHEN
                                    MIN(CALCULO_AFERICAO_SULCO.DIAS_ENTRE_AFERICOES) IS NOT NULL
                                    THEN MIN(CALCULO_AFERICAO_SULCO.DIAS_ENTRE_AFERICOES)::TEXT
-                               ELSE '-' END                                                                       AS MIN_DIAS_ENTRE_AFERICOES,
+                               ELSE '-' END                    AS MIN_DIAS_ENTRE_AFERICOES,
                            CASE
                                WHEN
                                    MAX(CALCULO_AFERICAO_SULCO.DIAS_ENTRE_AFERICOES) IS NOT NULL
@@ -16687,18 +16741,18 @@ FROM VEICULO V
                                                                THEN 1
                                                            ELSE 0 END)
                                            END) :: TEXT
-                               ELSE '-' END                                                                       AS MD_DIAS_ENTRE_AFERICOES,
+                               ELSE '-' END                    AS MD_DIAS_ENTRE_AFERICOES,
                            SUM(CASE
                                    WHEN CALCULO_AFERICAO_SULCO.DIAS_ENTRE_AFERICOES <=
                                         CALCULO_AFERICAO_SULCO.PERIODO_AFERICAO
                                        THEN 1
-                                   ELSE 0 END)                                                                    AS QTD_AFERICOES_DENTRO_META,
+                                   ELSE 0 END)                 AS QTD_AFERICOES_DENTRO_META,
                            TRUNC(SUM(CASE
                                          WHEN CALCULO_AFERICAO_SULCO.DIAS_ENTRE_AFERICOES <=
                                               CALCULO_AFERICAO_SULCO.PERIODO_AFERICAO
                                              THEN 1
                                          ELSE 0 END) / COUNT(CALCULO_AFERICAO_SULCO.PLACA)::NUMERIC * 100) ||
-                           '%'                                                                                    AS ADERENCIA
+                           '%'                                 AS ADERENCIA
                     FROM (SELECT A.PLACA_VEICULO            AS PLACA,
                                  A.DATA_HORA,
                                  A.TIPO_MEDICAO_COLETADA,
@@ -16755,23 +16809,23 @@ DECLARE
 BEGIN
     RETURN QUERY
         SELECT COALESCE(TO_CHAR(A.DATA_HORA AT TIME ZONE TZ_UNIDADE(A.COD_UNIDADE), DATE_FORMAT),
-                        PNEU_NUNCA_AFERIDO)                                                               AS ULTIMA_AFERICAO,
+                        PNEU_NUNCA_AFERIDO)                                         AS ULTIMA_AFERICAO,
                C.NOME,
-               U.NOME                                                                                     AS UNIDADE_ALOCADO,
-               P.CODIGO_CLIENTE                                                                           AS COD_PNEU,
-               MAP.NOME                                                                                   AS NOME_MARCA,
-               MP.NOME                                                                                    AS NOME_MODELO,
-               ((((DP.LARGURA || '/'::TEXT) || DP.ALTURA) || ' R'::TEXT) || DP.ARO)                       AS MEDIDAS,
+               U.NOME                                                               AS UNIDADE_ALOCADO,
+               P.CODIGO_CLIENTE                                                     AS COD_PNEU,
+               MAP.NOME                                                             AS NOME_MARCA,
+               MP.NOME                                                              AS NOME_MODELO,
+               ((((DP.LARGURA || '/'::TEXT) || DP.ALTURA) || ' R'::TEXT) || DP.ARO) AS MEDIDAS,
                REPLACE(COALESCE(TRUNC(AV.ALTURA_SULCO_INTERNO::NUMERIC, 2)::TEXT, '-'), '.',
-                       ',')                                                                               AS SULCO_INTERNO,
+                       ',')                                                         AS SULCO_INTERNO,
                REPLACE(COALESCE(TRUNC(AV.ALTURA_SULCO_CENTRAL_INTERNO::NUMERIC, 2)::TEXT, '-'), '.',
-                       ',')                                                                               AS SULCO_CENTRAL_INTERNO,
+                       ',')                                                         AS SULCO_CENTRAL_INTERNO,
                REPLACE(COALESCE(TRUNC(AV.ALTURA_SULCO_CENTRAL_EXTERNO::NUMERIC, 2)::TEXT, '-'), '.',
-                       ',')                                                                               AS SULCO_CENTRAL_EXTERNO,
+                       ',')                                                         AS SULCO_CENTRAL_EXTERNO,
                REPLACE(COALESCE(TRUNC(AV.ALTURA_SULCO_EXTERNO::NUMERIC, 2)::TEXT, '-'), '.',
-                       ',')                                                                               AS SULCO_EXTERNO,
-               P.VIDA_ATUAL::TEXT                                                                         AS VIDA_ATUAL,
-               COALESCE(P.DOT, '-')                                                                       AS DOT
+                       ',')                                                         AS SULCO_EXTERNO,
+               P.VIDA_ATUAL::TEXT                                                   AS VIDA_ATUAL,
+               COALESCE(P.DOT, '-')                                                 AS DOT
         FROM PNEU P
                  JOIN DIMENSAO_PNEU DP ON DP.CODIGO = P.COD_DIMENSAO
                  JOIN UNIDADE U ON U.CODIGO = P.COD_UNIDADE
@@ -16917,30 +16971,30 @@ create or replace function public.func_test_1(f_cod_unidade bigint, f_data_inici
     language sql
 as
 $$
-SELECT C.NOME                                                                                                      AS NOME_COLABORADOR,
-       F.NOME                                                                                                      AS CARGO,
-       S.nome                                                                                                      AS SETOR,
-       IT.NOME                                                                                                     AS INTERVALO,
+SELECT C.NOME                            AS NOME_COLABORADOR,
+       F.NOME                            AS CARGO,
+       S.nome                            AS SETOR,
+       IT.NOME                           AS INTERVALO,
        COALESCE(TO_CHAR(I.DATA_HORA_INICIO AT TIME ZONE (SELECT TIMEZONE
                                                          FROM FUNC_GET_TIME_ZONE_UNIDADE(F_COD_UNIDADE)),
                         'DD/MM/YYYY HH24:mi:ss'),
-                '')                                                                                                AS DATA_HORA_INICIO,
+                '')                      AS DATA_HORA_INICIO,
 
-       I.latitude_marcacao_inicio::TEXT                                                                            as latitude_inicio,
-       I.longitude_marcacao_inicio::TEXT                                                                           as longitude_inicio,
+       I.latitude_marcacao_inicio::TEXT  as latitude_inicio,
+       I.longitude_marcacao_inicio::TEXT as longitude_inicio,
 
 
        COALESCE(TO_CHAR(I.DATA_HORA_FIM AT TIME ZONE (SELECT TIMEZONE
                                                       FROM FUNC_GET_TIME_ZONE_UNIDADE(F_COD_UNIDADE)),
                         'DD/MM/YYYY HH24:mi:ss'),
-                '')                                                                                                AS DATA_HORA_FIM,
+                '')                      AS DATA_HORA_FIM,
 
-       I.latitude_marcacao_fim::TEXT                                                                               as latitude_fim,
-       I.longitude_marcacao_fim::TEXT                                                                              as longitude_fim,
+       I.latitude_marcacao_fim::TEXT     as latitude_fim,
+       I.longitude_marcacao_fim::TEXT    as longitude_fim,
 
 
        COALESCE(TRUNC(EXTRACT(EPOCH FROM I.DATA_HORA_FIM - I.DATA_HORA_INICIO) / 60) :: TEXT,
-                '')                                                                                                AS TEMPO_DECORRIDO_MINUTOS,
+                '')                      AS TEMPO_DECORRIDO_MINUTOS,
        IT.TEMPO_RECOMENDADO_MINUTOS,
        CASE
            WHEN I.DATA_HORA_FIM IS NULL OR I.data_hora_inicio IS NULL
@@ -16948,14 +17002,14 @@ SELECT C.NOME                                                                   
            WHEN IT.TEMPO_RECOMENDADO_MINUTOS > (EXTRACT(EPOCH FROM I.DATA_HORA_FIM - I.DATA_HORA_INICIO) / 60)
                THEN
                'NÃO'
-           ELSE 'SIM' END                                                                                          AS CUMPRIU_TEMPO_MINIMO,
+           ELSE 'SIM' END                AS CUMPRIU_TEMPO_MINIMO,
        I.justificativa_tempo_recomendado,
        I.justificativa_estouro,
 
        coalesce(trunc((ST_Distance(
                ST_Point(i.longitude_marcacao_inicio::float, i.latitude_marcacao_inicio::float)::geography,
                ST_Point(i.longitude_marcacao_fim::float, i.latitude_marcacao_fim::float)::geography)))::TEXT,
-                '-')                                                                                               as distancia
+                '-')                     as distancia
 FROM FUNC_INTERVALOS_AGRUPADOS(f_cod_unidade, CASE
                                                   WHEN f_cpf = '%'
                                                       THEN NULL
@@ -17105,8 +17159,7 @@ BEGIN
           AND C.PLACA_VEICULO = F_PLACA_VEICULO
         LOOP
             -- Copia os itens da OS.
-            INSERT INTO CHECKLIST_ORDEM_SERVICO_ITEM_DELETADO_TRANSFERENCIA (
-                COD_ITEM_OS_PROLOG)
+            INSERT INTO CHECKLIST_ORDEM_SERVICO_ITEM_DELETADO_TRANSFERENCIA (COD_ITEM_OS_PROLOG)
             SELECT COSI.CODIGO
                    -- Utilizamos propositalmente a view e não a tabela _DATA, para não copiar itens já deletados e
                    -- não resolvidos.
@@ -18391,7 +18444,8 @@ BEGIN
             F_TOTAL_PERGUNTAS_OK,
             F_TOTAL_PERGUNTAS_NOK,
             F_TOTAL_ALTERNATIVAS_OK,
-            F_TOTAL_ALTERNATIVAS_NOK) RETURNING CODIGO INTO COD_CHECKLIST_INSERIDO;
+            F_TOTAL_ALTERNATIVAS_NOK)
+    RETURNING CODIGO INTO COD_CHECKLIST_INSERIDO;
 
     -- Verificamos se o insert funcionou.
     IF COD_CHECKLIST_INSERIDO <= 0
@@ -18510,20 +18564,20 @@ BEGIN
             WHERE MDP.CODIGO = F_COD_MARCA)))
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível encontrar esta marca do dispositivo móvel, confira a marca e tente novamente');
+                'Não foi possível encontrar esta marca do dispositivo móvel, confira a marca e tente novamente');
     END IF;
 
     -- Insere o registro de IMEI.
     INSERT INTO DISPOSITIVO_MOVEL (COD_EMPRESA, COD_MARCA, MODELO, DESCRICAO)
     VALUES (F_COD_EMPRESA, F_COD_MARCA, TRIM_AND_REMOVE_EXTRA_SPACES(F_MODELO),
-            TRIM_AND_REMOVE_EXTRA_SPACES(F_DESCRICAO)) RETURNING CODIGO
-               INTO COD_DISPOSITIVO_INSERIDO;
+            TRIM_AND_REMOVE_EXTRA_SPACES(F_DESCRICAO))
+    RETURNING CODIGO INTO COD_DISPOSITIVO_INSERIDO;
 
     -- Verificamos se o insert funcionou.
     IF COD_DISPOSITIVO_INSERIDO <= 0
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível inserir o dispositivo móvel, tente novamente');
+                'Não foi possível inserir o dispositivo móvel, tente novamente');
     END IF;
 
     RETURN COD_DISPOSITIVO_INSERIDO;
@@ -18545,7 +18599,7 @@ BEGIN
               AND COD_EMPRESA = F_COD_EMPRESA))
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível encontrar este dispositivo móvel, confira o código e tente novamente');
+                'Não foi possível encontrar este dispositivo móvel, confira o código e tente novamente');
     END IF;
 
     -- Verifica se o IMEI já existe no banco.
@@ -18556,14 +18610,14 @@ BEGIN
 
     -- Insere o registro de IMEI
     INSERT INTO DISPOSITIVO_MOVEL_IMEI (COD_EMPRESA, COD_DISPOSITIVO, IMEI)
-    VALUES (F_COD_EMPRESA, F_COD_DISPOSITIVO, F_IMEI) RETURNING CODIGO
-        INTO COD_IMEI_INSERIDO;
+    VALUES (F_COD_EMPRESA, F_COD_DISPOSITIVO, F_IMEI)
+    RETURNING CODIGO INTO COD_IMEI_INSERIDO;
 
     -- Verificamos se o insert funcionou.
     IF COD_IMEI_INSERIDO <= 0
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível inserir o número IMEI, tente novamente');
+                'Não foi possível inserir o número IMEI, tente novamente');
     END IF;
 END;
 $$;
@@ -18592,7 +18646,7 @@ BEGIN
     IF COD_DISPOSITIVO_INSERIDO <= 0
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível inserir o dispositivo móvel, tente novamente');
+                'Não foi possível inserir o dispositivo móvel, tente novamente');
     END IF;
 
     -- Insere os números de IMEI
@@ -18626,7 +18680,7 @@ BEGIN
               AND DM.COD_EMPRESA = F_COD_EMPRESA))
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível encontrar este dispositivo móvel, confira se ele está na listagem e tente novamente');
+                'Não foi possível encontrar este dispositivo móvel, confira se ele está na listagem e tente novamente');
     END IF;
 
     -- Verifica se a marca do dispositivo móvel existe no banco.
@@ -18636,7 +18690,7 @@ BEGIN
             WHERE MDP.CODIGO = F_COD_MARCA)))
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível encontrar esta marca do dispositivo móvel, confira a marca e tente novamente');
+                'Não foi possível encontrar esta marca do dispositivo móvel, confira a marca e tente novamente');
     END IF;
 
     -- Edita o registro do dispositivo móvel.
@@ -18652,7 +18706,7 @@ BEGIN
     IF (QTD_LINHAS_ATUALIZADAS <= 0)
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Erro ao editar o dispositivo móvel, tente novamente');
+                'Erro ao editar o dispositivo móvel, tente novamente');
     END IF;
 
     -- Deleta todos os números de IMEI anteriores
@@ -18684,7 +18738,7 @@ BEGIN
                             AND CODIGO = F_COD_DISPOSITIVO))
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Erro ao deletar, dispositivo móvel não encontrado');
+                'Erro ao deletar, dispositivo móvel não encontrado');
     END IF;
 
     -- Deleta todos os números de IMEI anteriores
@@ -18771,7 +18825,8 @@ VALUES (F_COD_UNIDADE,
         F_DEVICE_UPTIME_SINCRONIZACAO_MILLIS,
         F_ANDROID_API_VERSION,
         F_MARCA_DEVICE,
-        F_MODELO_DEVICE) RETURNING CODIGO;
+        F_MODELO_DEVICE)
+RETURNING CODIGO;
 $$;
 
 
@@ -19280,7 +19335,8 @@ BEGIN
 
     -- Insere a unidade.
     INSERT INTO UNIDADE (NOME, TIMEZONE, COD_REGIONAL, COD_EMPRESA)
-    VALUES (F_NOME_UNIDADE, F_TIMEZONE, F_COD_REGIONAL, F_COD_EMPRESA) RETURNING CODIGO INTO COD_UNIDADE_CADASTRADA;
+    VALUES (F_NOME_UNIDADE, F_TIMEZONE, F_COD_REGIONAL, F_COD_EMPRESA)
+    RETURNING CODIGO INTO COD_UNIDADE_CADASTRADA;
 
     -- Verifica se insert de unidade funcionou.
     IF (COD_UNIDADE_CADASTRADA <= 0)
@@ -19384,9 +19440,9 @@ DECLARE
 BEGIN
     PERFORM FUNC_GARANTE_PLACA_CADASTRADA(F_PLACA);
     PERFORM FUNC_GARANTE_NOVO_KM_MENOR_QUE_ATUAL_VEICULO(
-                        (SELECT V.COD_UNIDADE FROM VEICULO V WHERE V.PLACA = F_PLACA),
-                        F_PLACA,
-                        F_KM_ATUALIZADO);
+                (SELECT V.COD_UNIDADE FROM VEICULO V WHERE V.PLACA = F_PLACA),
+                F_PLACA,
+                F_KM_ATUALIZADO);
 
     --VERIFICA SE A PLACA AINDA ESTÁ NA EMPRESA QUE FOI REALIZADA A MOVIMENTACAO.
     IF ((SELECT U.COD_EMPRESA
@@ -20293,9 +20349,9 @@ BEGIN
                                                            WHERE TI.TOKEN_INTEGRACAO = F_TOKEN_INTEGRACAO)))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('[ERRO DE VÍNCULO] O token "%s" não está autorizado a inserir dados da unidade "%s"',
-                               F_TOKEN_INTEGRACAO,
-                               F_COD_UNIDADE_ITEM_OS));
+                FORMAT('[ERRO DE VÍNCULO] O token "%s" não está autorizado a inserir dados da unidade "%s"',
+                       F_TOKEN_INTEGRACAO,
+                       F_COD_UNIDADE_ITEM_OS));
     END IF;
 
     -- Validamos se o código do item fechado no Globus, está mapeado no ProLog.
@@ -20313,9 +20369,9 @@ BEGIN
         INTO COD_ITEM_RESOLVIDO_PROLOG;
     ELSE
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('[ERRO DE VÍNCULO] O item "%s" da O.S. "%s" não possuí vínculo no ProLog',
-                               F_COD_ITEM_RESOLVIDO_GLOBUS,
-                               F_COD_OS_GLOBUS));
+                FORMAT('[ERRO DE VÍNCULO] O item "%s" da O.S. "%s" não possuí vínculo no ProLog',
+                       F_COD_ITEM_RESOLVIDO_GLOBUS,
+                       F_COD_OS_GLOBUS));
     END IF;
 
     -- Validamos se o item mapeado está pendente no ProLog. Caso já está resolvido, apenas retorna sucesso.
@@ -20349,9 +20405,9 @@ BEGIN
            AND COD_ITEM_OS_GLOBUS = F_COD_ITEM_RESOLVIDO_GLOBUS) != F_PLACA_VEICULO_ITEM_OS)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('A placa "%s" não bate com a placa do item pendente "%s" do ProLog',
-                               F_PLACA_VEICULO_ITEM_OS,
-                               COD_ITEM_RESOLVIDO_PROLOG));
+                FORMAT('A placa "%s" não bate com a placa do item pendente "%s" do ProLog',
+                       F_PLACA_VEICULO_ITEM_OS,
+                       COD_ITEM_RESOLVIDO_PROLOG));
     END IF;
 
     -- Depois de validar podemos resolver o item.
@@ -20445,16 +20501,16 @@ create or replace function integracao.func_veiculo_insere_veiculo_prolog(f_cod_u
 as
 $$
 DECLARE
-    COD_EMPRESA_VEICULO CONSTANT       BIGINT  := (SELECT TI.COD_EMPRESA
+    COD_EMPRESA_VEICULO       CONSTANT BIGINT  := (SELECT TI.COD_EMPRESA
                                                    FROM INTEGRACAO.TOKEN_INTEGRACAO TI
                                                    WHERE TI.TOKEN_INTEGRACAO = F_TOKEN_INTEGRACAO);
     DEVE_SOBRESCREVER_VEICULO CONSTANT BOOLEAN := (SELECT *
                                                    FROM INTEGRACAO.FUNC_EMPRESA_GET_CONFIG_SOBRESCREVE_VEICULOS(
-                                                                COD_EMPRESA_VEICULO));
-    VEICULO_ESTA_NO_PROLOG CONSTANT    BOOLEAN := (SELECT EXISTS(SELECT V.CODIGO
+                                                           COD_EMPRESA_VEICULO));
+    VEICULO_ESTA_NO_PROLOG    CONSTANT BOOLEAN := (SELECT EXISTS(SELECT V.CODIGO
                                                                  FROM PUBLIC.VEICULO_DATA V
                                                                  WHERE V.PLACA::TEXT = F_PLACA_VEICULO_CADASTRADO));
-    STATUS_ATIVO_VEICULO CONSTANT      BOOLEAN := TRUE;
+    STATUS_ATIVO_VEICULO      CONSTANT BOOLEAN := TRUE;
     COD_VEICULO_PROLOG                 BIGINT;
     F_QTD_ROWS_ALTERADAS               BIGINT;
 BEGIN
@@ -20466,18 +20522,18 @@ BEGIN
          WHERE TI.TOKEN_INTEGRACAO = F_TOKEN_INTEGRACAO))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT(
-                                '[ERRO DE VÍNCULO] O token "%s" não está autorizado a inserir dados da unidade "%s",
-                                 confira se está usando o token correto',
-                                F_TOKEN_INTEGRACAO,
-                                F_COD_UNIDADE_VEICULO_ALOCADO));
+                FORMAT(
+                        '[ERRO DE VÍNCULO] O token "%s" não está autorizado a inserir dados da unidade "%s",
+                         confira se está usando o token correto',
+                        F_TOKEN_INTEGRACAO,
+                        F_COD_UNIDADE_VEICULO_ALOCADO));
     END IF;
 
     -- Validamos se o KM foi inputado corretamente.
     IF (F_KM_ATUAL_VEICULO_CADASTRADO < 0)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        '[ERRO DE DADOS] A quilometragem do veículo não pode ser um número negativo');
+                '[ERRO DE DADOS] A quilometragem do veículo não pode ser um número negativo');
     END IF;
 
     -- Validamos se o modelo do veículo está mapeado.
@@ -20487,7 +20543,7 @@ BEGIN
                             AND MV.CODIGO = F_COD_MODELO_VEICULO_CADASTRADO))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        '[ERRO DE VINCULO] O modelo do veículo não está mapeado corretamente, verificar vinculos');
+                '[ERRO DE VINCULO] O modelo do veículo não está mapeado corretamente, verificar vinculos');
     END IF;
 
     -- Validamos se o tipo do veículo está mapeado.
@@ -20497,15 +20553,15 @@ BEGIN
                             AND VT.COD_EMPRESA = COD_EMPRESA_VEICULO))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        '[ERRO DE VINCULO] O tipo do veículo não está mapeado corretamente, verificar vinculos');
+                '[ERRO DE VINCULO] O tipo do veículo não está mapeado corretamente, verificar vinculos');
     END IF;
 
     -- Validamos se a placa já existe no ProLog.
     IF (VEICULO_ESTA_NO_PROLOG AND NOT DEVE_SOBRESCREVER_VEICULO)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('[ERRO DE DADOS] A placa "%s" já está cadastrada no Sistema ProLog',
-                               F_PLACA_VEICULO_CADASTRADO));
+                FORMAT('[ERRO DE DADOS] A placa "%s" já está cadastrada no Sistema ProLog',
+                       F_PLACA_VEICULO_CADASTRADO));
     END IF;
 
     IF (VEICULO_ESTA_NO_PROLOG AND DEVE_SOBRESCREVER_VEICULO)
@@ -20522,11 +20578,11 @@ BEGIN
 
         -- Sebrescrevemos os dados do veículo.
         PERFORM INTEGRACAO.FUNC_VEICULO_SOBRESCREVE_VEICULO_CADASTRADO(
-                        F_PLACA_VEICULO_CADASTRADO,
-                        F_COD_UNIDADE_VEICULO_ALOCADO,
-                        F_KM_ATUAL_VEICULO_CADASTRADO,
-                        F_COD_TIPO_VEICULO_CADASTRADO,
-                        F_COD_MODELO_VEICULO_CADASTRADO);
+                F_PLACA_VEICULO_CADASTRADO,
+                F_COD_UNIDADE_VEICULO_ALOCADO,
+                F_KM_ATUAL_VEICULO_CADASTRADO,
+                F_COD_TIPO_VEICULO_CADASTRADO,
+                F_COD_MODELO_VEICULO_CADASTRADO);
 
     ELSE
         -- Aqui devemos apenas inserir o veículo no ProLog.
@@ -20545,7 +20601,8 @@ BEGIN
                 STATUS_ATIVO_VEICULO,
                 F_COD_TIPO_VEICULO_CADASTRADO,
                 F_COD_MODELO_VEICULO_CADASTRADO,
-                F_COD_UNIDADE_VEICULO_ALOCADO) RETURNING CODIGO INTO COD_VEICULO_PROLOG;
+                F_COD_UNIDADE_VEICULO_ALOCADO)
+        RETURNING CODIGO INTO COD_VEICULO_PROLOG;
     END IF;
 
     IF (DEVE_SOBRESCREVER_VEICULO)
@@ -20620,14 +20677,14 @@ BEGIN
     IF (F_COD_UNIDADE_ORIGINAL_ALOCADO <> F_NOVO_COD_UNIDADE_ALOCADO)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        '[ERRO DE OPERAÇÃO] Para mudar a Unidade do veículo, utilize a transferência de veículo');
+                '[ERRO DE OPERAÇÃO] Para mudar a Unidade do veículo, utilize a transferência de veículo');
     END IF;
 
     -- Validamos se o usuário trocou a placa do veículo.
     IF (F_PLACA_ORIGINAL_VEICULO <> F_NOVA_PLACA_VEICULO)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        '[ERRO DE OPERAÇÃO] O ProLog não permite a edição da placa do veículo');
+                '[ERRO DE OPERAÇÃO] O ProLog não permite a edição da placa do veículo');
     END IF;
 
     -- Validamos se a Unidade do veículo trocou
@@ -20635,7 +20692,7 @@ BEGIN
         <> F_COD_UNIDADE_ORIGINAL_ALOCADO)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        '[ERRO DE OPERAÇÃO] Para mudar a Unidade do veículo, utilize a transferência de veículo');
+                '[ERRO DE OPERAÇÃO] Para mudar a Unidade do veículo, utilize a transferência de veículo');
     END IF;
 
     -- Validamos se a Unidade pertence a mesma empresa do token.
@@ -20646,24 +20703,24 @@ BEGIN
          WHERE TI.TOKEN_INTEGRACAO = F_TOKEN_INTEGRACAO))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT(
-                                '[ERRO DE VÍNCULO] O token "%s" não está autorizado a atualizar dados da unidade "%s", verificar vínculos',
-                                F_TOKEN_INTEGRACAO,
-                                F_NOVO_COD_UNIDADE_ALOCADO));
+                FORMAT(
+                        '[ERRO DE VÍNCULO] O token "%s" não está autorizado a atualizar dados da unidade "%s", verificar vínculos',
+                        F_TOKEN_INTEGRACAO,
+                        F_NOVO_COD_UNIDADE_ALOCADO));
     END IF;
 
     -- Validamos se a placa já existe no ProLog.
     IF (SELECT NOT EXISTS(SELECT V.CODIGO FROM PUBLIC.VEICULO_DATA V WHERE V.PLACA::TEXT = F_NOVA_PLACA_VEICULO))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('[ERRO DE DADOS] A placa "%s" não existe no Sistema ProLog', F_NOVA_PLACA_VEICULO));
+                FORMAT('[ERRO DE DADOS] A placa "%s" não existe no Sistema ProLog', F_NOVA_PLACA_VEICULO));
     END IF;
 
     -- Validamos se o KM foi inputado corretamente.
     IF (F_NOVO_KM_VEICULO < 0)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        '[ERRO DE DADOS] A quilometragem do veículo não pode ser um número negativo');
+                '[ERRO DE DADOS] A quilometragem do veículo não pode ser um número negativo');
     END IF;
 
     -- Validamos se o modelo do veículo está mapeado.
@@ -20673,7 +20730,7 @@ BEGIN
                             AND MV.CODIGO = F_NOVO_COD_MODELO_VEICULO))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        '[ERRO DE VINCULO] O modelo do veículo não está mapeado corretamente, verificar vínculos');
+                '[ERRO DE VINCULO] O modelo do veículo não está mapeado corretamente, verificar vínculos');
     END IF;
 
     -- Validamos se o tipo do veículo está mapeado.
@@ -20683,7 +20740,7 @@ BEGIN
                             AND VT.COD_EMPRESA = COD_EMPRESA_VEICULO))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        '[ERRO DE VINCULO] O tipo do veículo não está mapeado corretamente, verificar vínculos');
+                '[ERRO DE VINCULO] O tipo do veículo não está mapeado corretamente, verificar vínculos');
     END IF;
 
     -- Validamos se o tipo foi alterado mesmo com o veículo contendo pneus aplicados.
@@ -20691,7 +20748,7 @@ BEGIN
         AND (SELECT COUNT(VP.*) FROM PUBLIC.VEICULO_PNEU VP WHERE VP.PLACA = F_PLACA_ORIGINAL_VEICULO) > 0)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        '[ERRO DE OPERAÇÃO] O tipo do veículo não pode ser alterado se a placa contém pneus aplicados');
+                '[ERRO DE OPERAÇÃO] O tipo do veículo não pode ser alterado se a placa contém pneus aplicados');
     END IF;
 
     UPDATE PUBLIC.VEICULO_DATA
@@ -20699,7 +20756,8 @@ BEGIN
         COD_MODELO = F_NOVO_COD_MODELO_VEICULO,
         COD_TIPO   = F_NOVO_COD_TIPO_VEICULO
     WHERE PLACA = F_PLACA_ORIGINAL_VEICULO
-      AND COD_UNIDADE = F_COD_UNIDADE_ORIGINAL_ALOCADO RETURNING CODIGO INTO COD_VEICULO_PROLOG;
+      AND COD_UNIDADE = F_COD_UNIDADE_ORIGINAL_ALOCADO
+    RETURNING CODIGO INTO COD_VEICULO_PROLOG;
 
     UPDATE INTEGRACAO.VEICULO_CADASTRADO
     SET DATA_HORA_ULTIMA_EDICAO = F_DATA_HORA_EDICAO_VEICULO
@@ -20743,23 +20801,24 @@ BEGIN
          WHERE V.PLACA = F_PLACA_VEICULO) <> COD_EMPRESA_VEICULO)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT(
-                                '[ERRO DE VÍNCULO] O token "%s" não está autorizado a atualizar dados da placa "%s", verificar vínculos',
-                                F_TOKEN_INTEGRACAO,
-                                F_PLACA_VEICULO));
+                FORMAT(
+                        '[ERRO DE VÍNCULO] O token "%s" não está autorizado a atualizar dados da placa "%s", verificar vínculos',
+                        F_TOKEN_INTEGRACAO,
+                        F_PLACA_VEICULO));
     END IF;
 
     -- Validamos se a placa já existe no ProLog.
     IF (SELECT NOT EXISTS(SELECT V.CODIGO FROM PUBLIC.VEICULO_DATA V WHERE V.PLACA::TEXT = F_PLACA_VEICULO))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('[ERRO DE DADOS] A placa "%s" não existe no Sistema ProLog', F_PLACA_VEICULO));
+                FORMAT('[ERRO DE DADOS] A placa "%s" não existe no Sistema ProLog', F_PLACA_VEICULO));
     END IF;
 
     UPDATE PUBLIC.VEICULO_DATA
     SET STATUS_ATIVO = F_ATIVAR_DESATIVAR_VEICULO
     WHERE PLACA = F_PLACA_VEICULO
-      AND COD_UNIDADE = COD_UNIDADE_VEICULO RETURNING CODIGO INTO COD_VEICULO_PROLOG;
+      AND COD_UNIDADE = COD_UNIDADE_VEICULO
+    RETURNING CODIGO INTO COD_VEICULO_PROLOG;
 
     UPDATE INTEGRACAO.VEICULO_CADASTRADO
     SET DATA_HORA_ULTIMA_EDICAO = F_DATA_HORA_EDICAO_VEICULO
@@ -20924,7 +20983,7 @@ BEGIN
     IF (IS_PRIMEIRA_VIDA)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        'Não é possível aplicar um serviço de troca de banda em um pneu na primeira vida');
+                'Não é possível aplicar um serviço de troca de banda em um pneu na primeira vida');
     END IF;
 
     --  Inserimos o serviço realizado, retornando o código.
@@ -20939,7 +20998,8 @@ BEGIN
             F_COD_PNEU_PROLOG,
             F_VALOR_BANDA_PNEU,
             VIDA_MOMENTO_SERVICO_REALIZADO,
-            FONTE_SERVICO_REALIZADO_CADASTRO) RETURNING CODIGO INTO F_COD_SERVICO_REALIZADO;
+            FONTE_SERVICO_REALIZADO_CADASTRO)
+    RETURNING CODIGO INTO F_COD_SERVICO_REALIZADO;
 
     -- Mapeamos o incremento de vida do serviço realizado acima.
     INSERT INTO PUBLIC.PNEU_SERVICO_REALIZADO_INCREMENTA_VIDA(COD_SERVICO_REALIZADO,
@@ -21062,7 +21122,7 @@ BEGIN
     IF (PNEU_POSSUI_BANDA AND TROCOU_BANDA_PNEU AND F_NOVO_VALOR_BANDA_PNEU IS NULL)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        'Você está trocando a banda, deve ser informado o valor da nova banda aplicada');
+                'Você está trocando a banda, deve ser informado o valor da nova banda aplicada');
     END IF;
 
     -- Validamos se o valor da banda é um valor válido. Apenas validamos se o pneu possuir banda.
@@ -21131,21 +21191,21 @@ BEGIN
     IF ((SELECT V.COD_UNIDADE FROM PUBLIC.VEICULO V WHERE V.CODIGO = F_COD_VEICULO_PROLOG) <> F_COD_UNIDADE_PNEU)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('A placa informada %s está em uma Unidade diferente do pneu informado %s,
+                FORMAT('A placa informada %s está em uma Unidade diferente do pneu informado %s,
                unidade da placa %s, unidade do pneu %s',
-                               F_PLACA_VEICULO_PNEU_APLICADO,
-                               F_CODIGO_PNEU_CLIENTE,
-                               (SELECT V.COD_UNIDADE FROM PUBLIC.VEICULO V WHERE V.CODIGO = F_COD_VEICULO_PROLOG),
-                               F_COD_UNIDADE_PNEU));
+                       F_PLACA_VEICULO_PNEU_APLICADO,
+                       F_CODIGO_PNEU_CLIENTE,
+                       (SELECT V.COD_UNIDADE FROM PUBLIC.VEICULO V WHERE V.CODIGO = F_COD_VEICULO_PROLOG),
+                       F_COD_UNIDADE_PNEU));
     END IF;
 
     -- Validamos se a posição repassada é uma posição válida no ProLog.
     IF (NOT IS_PLACA_POSICAO_PNEU_VALIDA(F_COD_VEICULO_PROLOG, F_POSICAO_VEICULO_PNEU_APLICADO, F_IS_POSICAO_ESTEPE))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('A posição informada %s para o pneu, não é uma posição válida para a placa %s',
-                               F_POSICAO_VEICULO_PNEU_APLICADO,
-                               F_PLACA_VEICULO_PNEU_APLICADO));
+                FORMAT('A posição informada %s para o pneu, não é uma posição válida para a placa %s',
+                       F_POSICAO_VEICULO_PNEU_APLICADO,
+                       F_PLACA_VEICULO_PNEU_APLICADO));
     END IF;
 
     -- Validamos se a placa possui algum outro pneu aplicado na posição.
@@ -21319,7 +21379,8 @@ BEGIN
             F_COD_PNEU_PROLOG,
             F_VALOR_BANDA_PNEU,
             VIDA_MOMENTO_SERVICO_REALIZADO,
-            FONTE_SERVICO_REALIZADO_MOVIMENTACAO) RETURNING CODIGO INTO F_COD_SERVICO_REALIZADO;
+            FONTE_SERVICO_REALIZADO_MOVIMENTACAO)
+    RETURNING CODIGO INTO F_COD_SERVICO_REALIZADO;
 
     -- Mapeamos o incremento de vida do serviço realizado acima.
     INSERT INTO PUBLIC.PNEU_SERVICO_REALIZADO_INCREMENTA_VIDA(COD_SERVICO_REALIZADO,
@@ -21367,7 +21428,8 @@ BEGIN
         VALUES (F_COD_EMPRESA,
                 TIPO_SERVICO_RECAPAGEM,
                 TRUE,
-                NOW()) RETURNING CODIGO INTO COD_SERVICO_INCREMENTA_VIDA;
+                NOW())
+        RETURNING CODIGO INTO COD_SERVICO_INCREMENTA_VIDA;
     END IF;
     RETURN COD_SERVICO_INCREMENTA_VIDA;
 END;
@@ -21449,9 +21511,9 @@ BEGIN
     IF (F_QTD_ROWS_ALTERADAS <= 0)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('Não foi possível atualizar as informações do pneu %s para o status %s',
-                               F_CODIGO_PNEU_CLIENTE,
-                               F_STATUS_PNEU));
+                FORMAT('Não foi possível atualizar as informações do pneu %s para o status %s',
+                       F_CODIGO_PNEU_CLIENTE,
+                       F_STATUS_PNEU));
     END IF;
 
     -- Precisamos vincular o pneu ao veículo apenas se o status for aplicado.
@@ -21691,36 +21753,36 @@ create or replace function public.func_relatorio_pneu_extrato_servicos_fechados(
     language sql
 as
 $$
-SELECT U.NOME                                                                                                       AS UNIDADE_SERVICO,
+SELECT U.NOME                                                                       AS UNIDADE_SERVICO,
        TO_CHAR((A.DATA_HORA AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE)),
-               'DD/MM/YYYY HH24:MI:SS')                                                                             AS DATA_HORA_AFERICAO,
+               'DD/MM/YYYY HH24:MI:SS')                                             AS DATA_HORA_AFERICAO,
        TO_CHAR((AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE)),
-               'DD/MM/YYYY HH24:MI:SS')                                                                             AS DATA_HORA_RESOLUCAO,
+               'DD/MM/YYYY HH24:MI:SS')                                             AS DATA_HORA_RESOLUCAO,
        TRUNC(EXTRACT(EPOCH FROM ((AM.DATA_HORA_RESOLUCAO) - (A.DATA_HORA))) /
-             3600)                                                                                                  AS HORAS_RESOLUCAO,
+             3600)                                                                  AS HORAS_RESOLUCAO,
        TRUNC(
-               EXTRACT(EPOCH FROM ((AM.DATA_HORA_RESOLUCAO) - (A.DATA_HORA))) / 60)                                 AS MINUTOS_RESOLUCAO,
-       A.PLACA_VEICULO                                                                                              AS PLACA_VEICULO,
-       A.KM_VEICULO                                                                                                 AS KM_AFERICAO,
-       AM.KM_MOMENTO_CONSERTO                                                                                       AS KM_MOMENTO_CONSERTO,
-       AM.KM_MOMENTO_CONSERTO - A.KM_VEICULO                                                                        AS KM_PERCORRIDO,
-       P.CODIGO_CLIENTE                                                                                             AS CODIGO_CLIENTE_PNEU,
-       P.PRESSAO_RECOMENDADA                                                                                        AS PRESSAO_RECOMENDADA_PNEU,
+               EXTRACT(EPOCH FROM ((AM.DATA_HORA_RESOLUCAO) - (A.DATA_HORA))) / 60) AS MINUTOS_RESOLUCAO,
+       A.PLACA_VEICULO                                                              AS PLACA_VEICULO,
+       A.KM_VEICULO                                                                 AS KM_AFERICAO,
+       AM.KM_MOMENTO_CONSERTO                                                       AS KM_MOMENTO_CONSERTO,
+       AM.KM_MOMENTO_CONSERTO - A.KM_VEICULO                                        AS KM_PERCORRIDO,
+       P.CODIGO_CLIENTE                                                             AS CODIGO_CLIENTE_PNEU,
+       P.PRESSAO_RECOMENDADA                                                        AS PRESSAO_RECOMENDADA_PNEU,
        COALESCE(REPLACE(ROUND(AV.PSI :: NUMERIC, 2) :: TEXT, '.', ','),
-                '-')                                                                                                AS PSI_AFERICAO,
+                '-')                                                                AS PSI_AFERICAO,
        COALESCE(REPLACE(ROUND((((AV.PSI / P.PRESSAO_RECOMENDADA) - 1) * 100) :: NUMERIC, 2) || '%', '.', ','),
-                '-')                                                                                                AS DISPERSAO_PRESSAO_ANTES,
+                '-')                                                                AS DISPERSAO_PRESSAO_ANTES,
        COALESCE(REPLACE(ROUND(AM.PSI_APOS_CONSERTO :: NUMERIC, 2) :: TEXT, '.', ','),
-                '-')                                                                                                AS PSI_POS_CONSERTO,
+                '-')                                                                AS PSI_POS_CONSERTO,
        COALESCE(REPLACE(ROUND((((AM.PSI_APOS_CONSERTO / P.PRESSAO_RECOMENDADA) - 1) * 100) :: NUMERIC, 2) || '%', '.',
                         ','),
-                '-')                                                                                                AS DISPERSAO_PRESSAO_DEPOIS,
-       COALESCE(PPNE.NOMENCLATURA, '-')                                                                             AS POSICAO,
-       AM.TIPO_SERVICO                                                                                              AS TIPO_SERVICO,
-       COALESCE(INITCAP(C.NOME), '-')                                                                               AS NOME_MECANICO,
-       COALESCE(AA.ALTERNATIVA, '-')                                                                                AS PROBLEMA_APONTADO,
+                '-')                                                                AS DISPERSAO_PRESSAO_DEPOIS,
+       COALESCE(PPNE.NOMENCLATURA, '-')                                             AS POSICAO,
+       AM.TIPO_SERVICO                                                              AS TIPO_SERVICO,
+       COALESCE(INITCAP(C.NOME), '-')                                               AS NOME_MECANICO,
+       COALESCE(AA.ALTERNATIVA, '-')                                                AS PROBLEMA_APONTADO,
        F_IF(AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO OR AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO, 'Sim' :: TEXT,
-            'Não')                                                                                                  AS TIPO_FECHAMENTO
+            'Não')                                                                  AS TIPO_FECHAMENTO
 FROM AFERICAO_MANUTENCAO AM
          JOIN UNIDADE U
               ON AM.COD_UNIDADE = U.CODIGO
@@ -22331,31 +22393,31 @@ create or replace function public.func_relatorio_pneu_extrato_servicos_abertos(f
     language sql
 as
 $$
-SELECT U.NOME                                                                                       AS UNIDADE_SERVICO,
-       AM.CODIGO :: TEXT                                                                            AS CODIGO_SERVICO,
-       AM.TIPO_SERVICO                                                                              AS TIPO_SERVICO,
-       AM.QT_APONTAMENTOS :: TEXT                                                                   AS QT_APONTAMENTOS,
+SELECT U.NOME                                                                                   AS UNIDADE_SERVICO,
+       AM.CODIGO :: TEXT                                                                        AS CODIGO_SERVICO,
+       AM.TIPO_SERVICO                                                                          AS TIPO_SERVICO,
+       AM.QT_APONTAMENTOS :: TEXT                                                               AS QT_APONTAMENTOS,
        TO_CHAR((A.DATA_HORA AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE)),
-               'DD/MM/YYYY HH24:MI') :: TEXT                                                        AS DATA_HORA_ABERTURA,
-       (F_DATA_ATUAL - ((A.DATA_HORA AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE)) :: DATE)) :: TEXT     AS DIAS_EM_ABERTO,
-       C.NOME                                                                                       AS NOME_COLABORADOR,
-       A.PLACA_VEICULO                                                                              AS PLACA_VEICULO,
-       P.CODIGO_CLIENTE                                                                             AS COD_PNEU_PROBLEMA,
-       COALESCE(PPNE.NOMENCLATURA :: TEXT, '-')                                                     AS POSICAO_PNEU_PROBLEMA,
-       DP.LARGURA || '/' :: TEXT || DP.ALTURA || ' R' :: TEXT || DP.ARO                             AS MEDIDAS,
-       A.CODIGO :: TEXT                                                                             AS COD_AFERICAO,
-       FUNC_PNEU_FORMAT_SULCO(AV.ALTURA_SULCO_INTERNO)                                              AS SULCO_INTERNO,
-       FUNC_PNEU_FORMAT_SULCO(AV.ALTURA_SULCO_CENTRAL_INTERNO)                                      AS SULCO_CENTRAL_INTERNO,
-       FUNC_PNEU_FORMAT_SULCO(AV.ALTURA_SULCO_CENTRAL_EXTERNO)                                      AS SULCO_CENTRAL_EXTERNO,
-       FUNC_PNEU_FORMAT_SULCO(AV.ALTURA_SULCO_EXTERNO)                                              AS SULCO_EXTERNO,
+               'DD/MM/YYYY HH24:MI') :: TEXT                                                    AS DATA_HORA_ABERTURA,
+       (F_DATA_ATUAL - ((A.DATA_HORA AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE)) :: DATE)) :: TEXT AS DIAS_EM_ABERTO,
+       C.NOME                                                                                   AS NOME_COLABORADOR,
+       A.PLACA_VEICULO                                                                          AS PLACA_VEICULO,
+       P.CODIGO_CLIENTE                                                                         AS COD_PNEU_PROBLEMA,
+       COALESCE(PPNE.NOMENCLATURA :: TEXT, '-')                                                 AS POSICAO_PNEU_PROBLEMA,
+       DP.LARGURA || '/' :: TEXT || DP.ALTURA || ' R' :: TEXT || DP.ARO                         AS MEDIDAS,
+       A.CODIGO :: TEXT                                                                         AS COD_AFERICAO,
+       FUNC_PNEU_FORMAT_SULCO(AV.ALTURA_SULCO_INTERNO)                                          AS SULCO_INTERNO,
+       FUNC_PNEU_FORMAT_SULCO(AV.ALTURA_SULCO_CENTRAL_INTERNO)                                  AS SULCO_CENTRAL_INTERNO,
+       FUNC_PNEU_FORMAT_SULCO(AV.ALTURA_SULCO_CENTRAL_EXTERNO)                                  AS SULCO_CENTRAL_EXTERNO,
+       FUNC_PNEU_FORMAT_SULCO(AV.ALTURA_SULCO_EXTERNO)                                          AS SULCO_EXTERNO,
        FUNC_PNEU_FORMAT_SULCO(LEAST(AV.ALTURA_SULCO_EXTERNO, AV.ALTURA_SULCO_CENTRAL_EXTERNO,
                                     AV.ALTURA_SULCO_CENTRAL_INTERNO,
-                                    AV.ALTURA_SULCO_INTERNO))                                       AS MENOR_SULCO,
-       REPLACE(COALESCE(TRUNC(AV.PSI) :: TEXT, '-'), '.', ',')                                      AS PRESSAO_PNEU_PROBLEMA,
+                                    AV.ALTURA_SULCO_INTERNO))                                   AS MENOR_SULCO,
+       REPLACE(COALESCE(TRUNC(AV.PSI) :: TEXT, '-'), '.', ',')                                  AS PRESSAO_PNEU_PROBLEMA,
        REPLACE(COALESCE(TRUNC(P.PRESSAO_RECOMENDADA) :: TEXT, '-'), '.',
-               ',')                                                                                 AS PRESSAO_RECOMENDADA,
-       PVN.NOME                                                                                     AS VIDA_PNEU_PROBLEMA,
-       PRN.NOME                                                                                     AS TOTAL_RECAPAGENS
+               ',')                                                                             AS PRESSAO_RECOMENDADA,
+       PVN.NOME                                                                                 AS VIDA_PNEU_PROBLEMA,
+       PRN.NOME                                                                                 AS TOTAL_RECAPAGENS
 FROM AFERICAO_MANUTENCAO AM
          JOIN PNEU P
               ON AM.COD_PNEU = P.CODIGO
@@ -22546,13 +22608,13 @@ create or replace function implantacao.func_veiculo_confere_planilha_importacao(
 as
 $$
 DECLARE
-    F_COD_EMPRESA CONSTANT            BIGINT := (SELECT U.COD_EMPRESA
+    F_COD_EMPRESA            CONSTANT BIGINT := (SELECT U.COD_EMPRESA
                                                  FROM UNIDADE U
                                                  WHERE U.CODIGO = F_COD_UNIDADE);
-    F_SIMILARIDADE CONSTANT           REAL   = 0.4;
+    F_SIMILARIDADE           CONSTANT REAL   = 0.4;
     F_SIMILIARIDADE_DIAGRAMA CONSTANT REAL   = 0.5;
-    F_SEM_SIMILARIDADE CONSTANT       REAL   = 0.0;
-    NAO_ENCONTRADO CONSTANT           TEXT   := '-';
+    F_SEM_SIMILARIDADE       CONSTANT REAL   = 0.0;
+    NAO_ENCONTRADO           CONSTANT TEXT   := '-';
 BEGIN
     CREATE TEMP TABLE IF NOT EXISTS TABLE_JSON
     (
@@ -23153,13 +23215,11 @@ BEGIN
     -- Define qual fluxo executar de acordo com a quantidade de valores de aferição encontrados
     CASE QTD_VALORES_AFERICAO
         WHEN 1
-            THEN
-                -- Somente um valor de aferição foi encontrado, deletar toda a aferição, manutenção e valores
-                PERFORM SUPORTE.FUNC_AFERICAO_DELETA_AFERICAO(F_COD_UNIDADE, F_PLACA, F_CODIGO_AFERICAO);
-                PREFIXO_MENSAGEM_RETORNO := 'AFERIÇÃO, MANUTENÇÃO E VALOR DE AFERIÇÃO DELETADO ';
-        ELSE
-            -- Existe mais de um valor de aferição, deletar exclusivamente por COD_PNEU
-            -- DELETA AFERIÇÃO.
+            THEN -- Somente um valor de aferição foi encontrado, deletar toda a aferição, manutenção e valores
+            PERFORM SUPORTE.FUNC_AFERICAO_DELETA_AFERICAO(F_COD_UNIDADE, F_PLACA, F_CODIGO_AFERICAO);
+            PREFIXO_MENSAGEM_RETORNO := 'AFERIÇÃO, MANUTENÇÃO E VALOR DE AFERIÇÃO DELETADO ';
+        ELSE -- Existe mais de um valor de aferição, deletar exclusivamente por COD_PNEU
+        -- DELETA AFERIÇÃO.
             UPDATE AFERICAO_VALORES_DATA
             SET DELETADO            = TRUE,
                 DATA_HORA_DELETADO  = NOW(),
@@ -23496,7 +23556,8 @@ BEGIN
     VALUES (F_COD_COLABORADOR_EXECUCAO,
             F_DATA_HORA_EXECUCAO,
             F_NOME_DISPOSITIVO,
-            F_COMANDOS_EXECUTADOS) RETURNING CODIGO INTO CODIGO_PROCEDIMENTO_TESTE;
+            F_COMANDOS_EXECUTADOS)
+    RETURNING CODIGO INTO CODIGO_PROCEDIMENTO_TESTE;
 
     IF NOT FOUND
     THEN
@@ -23528,7 +23589,8 @@ begin
             f_cod_colaborador_realizacao,
             f_data_hora_realizacao_pesquisa,
             f_resposta_pergunta_escala,
-            f_resposta_pergunta_descritiva) returning codigo into cod_respostas_pesquisa_nps;
+            f_resposta_pergunta_descritiva)
+    returning codigo into cod_respostas_pesquisa_nps;
 
     if not FOUND
     then
@@ -23833,7 +23895,8 @@ BEGIN
 
     --ADICIONA NOVA DIMENSÃO E RETORNA SEU ID.
     INSERT INTO DIMENSAO_PNEU(ALTURA, LARGURA, ARO)
-    VALUES (F_ALTURA, F_LARGURA, F_ARO) RETURNING CODIGO INTO COD_DIMENSAO_CRIADA;
+    VALUES (F_ALTURA, F_LARGURA, F_ARO)
+    RETURNING CODIGO INTO COD_DIMENSAO_CRIADA;
 
     --MENSAGEM DE SUCESSO.
     SELECT 'DIMENSÃO CADASTRADA COM SUCESSO! DIMENSÃO: ' || F_LARGURA || '/' || F_ALTURA || 'R' || F_ARO ||
@@ -23972,13 +24035,13 @@ BEGIN
                 AND MB.COD_EMPRESA = F_COD_EMPRESA)
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        FORMAT(E'Já existe uma marca de nome \'%s\' cadastrada na empresa', F_MARCA_BANDA));
+                FORMAT(E'Já existe uma marca de nome \'%s\' cadastrada na empresa', F_MARCA_BANDA));
     END IF;
 
     INSERT INTO MARCA_BANDA (COD_EMPRESA, NOME)
     SELECT F_COD_EMPRESA,
            REMOVE_EXTRA_SPACES(F_MARCA_BANDA)
-           RETURNING CODIGO INTO COD_MARCA_INSERIDO;
+    RETURNING CODIGO INTO COD_MARCA_INSERIDO;
 
     RETURN COD_MARCA_INSERIDO;
 END;
@@ -23990,7 +24053,8 @@ as
 $$
 UPDATE MARCA_BANDA
 SET NOME = REMOVE_EXTRA_SPACES(F_NOME_MARCA_BANDA)
-WHERE CODIGO = F_COD_MARCA_BANDA RETURNING CODIGO;
+WHERE CODIGO = F_COD_MARCA_BANDA
+RETURNING CODIGO;
 $$;
 
 create or replace function public.func_pneu_get_marca_banda_visualizacao(f_cod_marca bigint)
@@ -24025,7 +24089,7 @@ BEGIN
                 AND MB.COD_EMPRESA = F_COD_EMPRESA)
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        FORMAT(E'Já existe um modelo de nome \'%s\' cadastrado na mesma marca', F_NOME_MODELO_BANDA));
+                FORMAT(E'Já existe um modelo de nome \'%s\' cadastrado na mesma marca', F_NOME_MODELO_BANDA));
     END IF;
 
     INSERT INTO MODELO_BANDA (COD_EMPRESA,
@@ -24038,7 +24102,7 @@ BEGIN
            REMOVE_EXTRA_SPACES(F_NOME_MODELO_BANDA),
            F_QTD_SULCOS,
            F_ALTURA_SULCOS
-           RETURNING CODIGO INTO COD_MODELO_INSERIDO;
+    RETURNING CODIGO INTO COD_MODELO_INSERIDO;
 
     RETURN COD_MODELO_INSERIDO;
 END;
@@ -24058,7 +24122,8 @@ SET COD_MARCA     = F_COD_MARCA_BANDA,
     QT_SULCOS     = F_QTD_SULCOS,
     ALTURA_SULCOS = F_ALTURA_SULCOS
 WHERE COD_EMPRESA = F_COD_EMPRESA
-  AND CODIGO = F_COD_MODELO_BANDA RETURNING CODIGO;
+  AND CODIGO = F_COD_MODELO_BANDA
+RETURNING CODIGO;
 $$;
 
 create or replace function public.func_pneu_get_modelo_banda_visualizacao(f_cod_modelo_banda bigint)
@@ -24104,7 +24169,7 @@ BEGIN
                 AND MP.COD_EMPRESA = F_COD_EMPRESA)
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        FORMAT(E'Já existe um modelo de nome \'%s\' cadastrado na mesma marca', F_NOME_MODELO_PNEU));
+                FORMAT(E'Já existe um modelo de nome \'%s\' cadastrado na mesma marca', F_NOME_MODELO_PNEU));
     END IF;
 
     INSERT INTO MODELO_PNEU (COD_EMPRESA,
@@ -24117,7 +24182,7 @@ BEGIN
            REMOVE_EXTRA_SPACES(F_NOME_MODELO_PNEU),
            F_QTD_SULCOS,
            F_ALTURA_SULCOS
-           RETURNING CODIGO INTO COD_MODELO_INSERIDO;
+    RETURNING CODIGO INTO COD_MODELO_INSERIDO;
 
     RETURN COD_MODELO_INSERIDO;
 END;
@@ -24137,7 +24202,8 @@ SET COD_MARCA     = F_COD_MARCA_PNEU,
     QT_SULCOS     = F_QTD_SULCOS,
     ALTURA_SULCOS = F_ALTURA_SULCOS
 WHERE COD_EMPRESA = F_COD_EMPRESA
-  AND CODIGO = F_COD_MODELO_PNEU RETURNING CODIGO;
+  AND CODIGO = F_COD_MODELO_PNEU
+RETURNING CODIGO;
 $$;
 
 create or replace function public.func_pneu_get_modelo_pneu_visualizacao(f_cod_modelo bigint)
@@ -24596,9 +24662,9 @@ BEGIN
               AND COS.COD_UNIDADE = F_COD_UNIDADE_ORDEM_SERVICO))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('A Ordem de Serviço "%s" não existe na unidade "%s" do ProLog',
-                               F_COD_ORDEM_SERVICO,
-                               F_COD_UNIDADE_ORDEM_SERVICO));
+                FORMAT('A Ordem de Serviço "%s" não existe na unidade "%s" do ProLog',
+                       F_COD_ORDEM_SERVICO,
+                       F_COD_UNIDADE_ORDEM_SERVICO));
     END IF;
 
     -- 2° - Validamos se a O.S. está ABERTA.
@@ -24610,7 +24676,7 @@ BEGIN
                                              AND COS.CODIGO = F_COD_ORDEM_SERVICO) = F_STATUS_ORDEM_SERVICO_FECHADA)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('A Ordem de Serviço "%s" já está fechada no ProLog', F_COD_ORDEM_SERVICO));
+                FORMAT('A Ordem de Serviço "%s" já está fechada no ProLog', F_COD_ORDEM_SERVICO));
     END IF;
 
     -- 3° - Validamos se o Item a ser resolvido pertence a O.S..
@@ -24630,9 +24696,9 @@ BEGIN
                                           F_STATUS_ITEM_ORDEM_SERVICO_PENDENTE)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('O Item "%s" da O.S "%s" já está resolvido no ProLog',
-                               F_COD_ITEM_RESOLVIDO,
-                               F_COD_ORDEM_SERVICO));
+                FORMAT('O Item "%s" da O.S "%s" já está resolvido no ProLog',
+                       F_COD_ITEM_RESOLVIDO,
+                       F_COD_ORDEM_SERVICO));
     END IF;
 
     -- 5° - Validamos se o CPF está presente na empresa.
@@ -24654,7 +24720,7 @@ BEGIN
                                                                  WHERE TI.TOKEN_INTEGRACAO = F_TOKEN_INTEGRACAO)))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        'Você está tentando fechar um item de uma OS que não pertence à sua empresa');
+                'Você está tentando fechar um item de uma OS que não pertence à sua empresa');
     END IF;
 
     -- Não verificamos a DATA_HORA_CONSERTO no WHERE pois não nos importa se está fechada ou não. Se chegou nesse ponto
@@ -25418,12 +25484,12 @@ create or replace function implantacao.tg_func_veiculo_confere_planilha_importa_
 as
 $$
 DECLARE
-    F_COD_EMPRESA CONSTANT                 BIGINT   := (SELECT U.COD_EMPRESA
+    F_COD_EMPRESA                 CONSTANT BIGINT   := (SELECT U.COD_EMPRESA
                                                         FROM UNIDADE U
                                                         WHERE U.CODIGO = NEW.COD_UNIDADE_EDITAVEL);
-    F_VALOR_SIMILARIDADE CONSTANT          REAL     := 0.4;
+    F_VALOR_SIMILARIDADE          CONSTANT REAL     := 0.4;
     F_VALOR_SIMILARIDADE_DIAGRAMA CONSTANT REAL     := 0.5;
-    F_SEM_SIMILARIDADE CONSTANT            REAL     := 0.0;
+    F_SEM_SIMILARIDADE            CONSTANT REAL     := 0.0;
     F_QTD_ERROS                            SMALLINT := 0;
     F_MSGS_ERROS                           TEXT;
     F_QUEBRA_LINHA                         TEXT     := CHR(10);
@@ -25536,7 +25602,8 @@ BEGIN
             IF (F_SIMILARIDADE_MODELO < F_VALOR_SIMILARIDADE OR F_SIMILARIDADE_MODELO IS NULL)
             THEN
                 INSERT INTO MODELO_VEICULO (NOME, COD_MARCA, COD_EMPRESA)
-                VALUES (NEW.MODELO_EDITAVEL, F_COD_MARCA_BANCO, F_COD_EMPRESA) RETURNING CODIGO INTO F_COD_MODELO_BANCO;
+                VALUES (NEW.MODELO_EDITAVEL, F_COD_MARCA_BANCO, F_COD_EMPRESA)
+                RETURNING CODIGO INTO F_COD_MODELO_BANCO;
             END IF;
         ELSE
             F_QTD_ERROS = F_QTD_ERROS + 1;
@@ -25601,7 +25668,8 @@ BEGIN
                 IF (F_SIMILARIDADE_TIPO < F_VALOR_SIMILARIDADE OR F_SIMILARIDADE_TIPO IS NULL)
                 THEN
                     INSERT INTO VEICULO_TIPO (NOME, STATUS_ATIVO, COD_DIAGRAMA, COD_EMPRESA)
-                    VALUES (NEW.TIPO_EDITAVEL, TRUE, F_COD_DIAGRAMA_BANCO, F_COD_EMPRESA) RETURNING CODIGO INTO F_COD_TIPO_BANCO;
+                    VALUES (NEW.TIPO_EDITAVEL, TRUE, F_COD_DIAGRAMA_BANCO, F_COD_EMPRESA)
+                    RETURNING CODIGO INTO F_COD_TIPO_BANCO;
                 END IF;
             ELSE
                 F_QTD_ERROS = F_QTD_ERROS + 1;
@@ -26091,21 +26159,21 @@ BEGIN
                                                   F.NOME_REGIONAL
             FROM FUNC_COLABORADOR_GET_UNIDADES_ACESSO(F_COD_COLABORADOR, FALSE) F
         )
-        SELECT PRU.CODIGO                                                                AS CODIGO,
-               UA.CODIGO_EMPRESA                                                         AS CODIGO_EMPRESA,
-               UA.CODIGO_REGIONAL                                                        AS CODIGO_REGIONAL,
-               UA.NOME_REGIONAL                                                          AS NOME_REGIONAL,
-               UA.CODIGO_UNIDADE                                                         AS CODIGO_UNIDADE,
-               UA.NOME_UNIDADE                                                           AS NOME_UNIDADE,
-               PRU.COD_COLABORADOR_ULTIMA_ATUALIZACAO                                    AS COD_COLABORADOR_ULTIMA_ATUALIZACAO,
+        SELECT PRU.CODIGO                             AS CODIGO,
+               UA.CODIGO_EMPRESA                      AS CODIGO_EMPRESA,
+               UA.CODIGO_REGIONAL                     AS CODIGO_REGIONAL,
+               UA.NOME_REGIONAL                       AS NOME_REGIONAL,
+               UA.CODIGO_UNIDADE                      AS CODIGO_UNIDADE,
+               UA.NOME_UNIDADE                        AS NOME_UNIDADE,
+               PRU.COD_COLABORADOR_ULTIMA_ATUALIZACAO AS COD_COLABORADOR_ULTIMA_ATUALIZACAO,
                PRU.DATA_HORA_ULTIMA_ATUALIZACAO AT TIME ZONE
-               TZ_UNIDADE(PRU.COD_UNIDADE)                                               AS DATA_HORA_ULTIMA_ATUALIZACAO,
-               PRU.TOLERANCIA_CALIBRAGEM                                                 AS TOLERANCIA_CALIBRAGEM,
-               PRU.TOLERANCIA_INSPECAO                                                   AS TOLERANCIA_INSPECAO,
-               PRU.SULCO_MINIMO_RECAPAGEM                                                AS SULCO_MINIMO_RECAPAGEM,
-               PRU.SULCO_MINIMO_DESCARTE                                                 AS SULCO_MINIMO_DESCARTE,
-               PRU.PERIODO_AFERICAO_PRESSAO                                              AS PERIODO_AFERICAO_PRESSAO,
-               PRU.PERIODO_AFERICAO_SULCO                                                AS PERIODO_AFERICAO_SULCO
+               TZ_UNIDADE(PRU.COD_UNIDADE)            AS DATA_HORA_ULTIMA_ATUALIZACAO,
+               PRU.TOLERANCIA_CALIBRAGEM              AS TOLERANCIA_CALIBRAGEM,
+               PRU.TOLERANCIA_INSPECAO                AS TOLERANCIA_INSPECAO,
+               PRU.SULCO_MINIMO_RECAPAGEM             AS SULCO_MINIMO_RECAPAGEM,
+               PRU.SULCO_MINIMO_DESCARTE              AS SULCO_MINIMO_DESCARTE,
+               PRU.PERIODO_AFERICAO_PRESSAO           AS PERIODO_AFERICAO_PRESSAO,
+               PRU.PERIODO_AFERICAO_SULCO             AS PERIODO_AFERICAO_SULCO
         FROM UNIDADES_ACESSO UA
                  LEFT JOIN PNEU_RESTRICAO_UNIDADE PRU ON UA.CODIGO_UNIDADE = PRU.COD_UNIDADE
         ORDER BY UA.NOME_REGIONAL ASC, UA.NOME_UNIDADE ASC;
@@ -26227,8 +26295,8 @@ BEGIN
     PERFORM FUNC_GARANTE_INTEGRIDADE_EMPRESA_UNIDADE(F_COD_EMPRESA, F_COD_UNIDADE);
 
     INSERT INTO IMPLANTACAO.DADOS_AUTOR_IMPORT (COD_EMPRESA, COD_UNIDADE, TIPO_IMPORT, USUARIO, DATA_HORA)
-    VALUES (F_COD_EMPRESA, F_COD_UNIDADE, F_TIPO_IMPORT, F_USUARIO, DATA_HORA_IMPORT) RETURNING CODIGO
-        INTO COD_DADOS_AUTOR_IMPORT;
+    VALUES (F_COD_EMPRESA, F_COD_UNIDADE, F_TIPO_IMPORT, F_USUARIO, DATA_HORA_IMPORT)
+    RETURNING CODIGO INTO COD_DADOS_AUTOR_IMPORT;
 
     -- Verificamos se o insert funcionou.
     IF COD_DADOS_AUTOR_IMPORT > 0
@@ -26238,32 +26306,32 @@ BEGIN
                 THEN
                     SELECT *
                     FROM IMPLANTACAO.FUNC_PNEU_IMPORT_CRIA_TABELA_IMPORT(
-                                 F_COD_EMPRESA,
-                                 F_COD_UNIDADE,
-                                 F_USUARIO,
-                                 DATA_IMPORT)
+                            F_COD_EMPRESA,
+                            F_COD_UNIDADE,
+                            F_USUARIO,
+                            DATA_IMPORT)
                     INTO NOME_TABELA_CRIADA;
             WHEN F_TIPO_IMPORT = 'VEICULO'
                 THEN
                     SELECT *
                     FROM IMPLANTACAO.FUNC_VEICULO_IMPORT_CRIA_TABELA_IMPORT(
-                                 F_COD_EMPRESA,
-                                 F_COD_UNIDADE,
-                                 F_USUARIO,
-                                 DATA_IMPORT)
+                            F_COD_EMPRESA,
+                            F_COD_UNIDADE,
+                            F_USUARIO,
+                            DATA_IMPORT)
                     INTO NOME_TABELA_CRIADA;
             WHEN F_TIPO_IMPORT = 'COLABORADOR' --Preparado para quando for criado o import de colaborador
                 THEN
                     SELECT *
                     FROM IMPLANTACAO.FUNC_COLABORADOR_IMPORT_CRIA_TABELA_IMPORT(
-                                 F_COD_EMPRESA,
-                                 F_COD_UNIDADE,
-                                 F_USUARIO,
-                                 DATA_IMPORT)
+                            F_COD_EMPRESA,
+                            F_COD_UNIDADE,
+                            F_USUARIO,
+                            DATA_IMPORT)
                     INTO NOME_TABELA_CRIADA;
             ELSE
                 PERFORM THROW_GENERIC_ERROR(
-                                'Não foi possível identificar o tipo de import, verifique para tentar novamente.');
+                        'Não foi possível identificar o tipo de import, verifique para tentar novamente.');
             END CASE;
     ELSE
         PERFORM THROW_GENERIC_ERROR('Não foi possível inserir os dados do autor de import, tente novamente');
@@ -26439,9 +26507,9 @@ as
 $$
 DECLARE
     F_COD_EMPRESA                              BIGINT;
-    F_VALOR_SIMILARIDADE CONSTANT              REAL     := 0.4;
+    F_VALOR_SIMILARIDADE          CONSTANT     REAL     := 0.4;
     F_VALOR_SIMILARIDADE_DIMENSAO CONSTANT     REAL     := 0.55;
-    F_SEM_SIMILARIDADE CONSTANT                REAL     := 0.0;
+    F_SEM_SIMILARIDADE            CONSTANT     REAL     := 0.0;
     F_QTD_ERROS                                SMALLINT := 0;
     F_MSGS_ERROS                               TEXT;
     F_QUEBRA_LINHA                             TEXT     := CHR(10);
@@ -26655,7 +26723,8 @@ BEGIN
                             INSERT INTO MODELO_PNEU (NOME, COD_MARCA, COD_EMPRESA, QT_SULCOS, ALTURA_SULCOS)
                             VALUES (NEW.MODELO_EDITAVEL, F_COD_MARCA_BANCO, F_COD_EMPRESA,
                                     NEW.QTD_SULCOS_FORMATADA_IMPORT,
-                                    NEW.ALTURA_SULCOS_FORMATADA_IMPORT) RETURNING CODIGO INTO F_COD_MODELO_BANCO;
+                                    NEW.ALTURA_SULCOS_FORMATADA_IMPORT)
+                            RETURNING CODIGO INTO F_COD_MODELO_BANCO;
                         END IF;
                     END IF;
                 ELSE
@@ -26916,7 +26985,8 @@ BEGIN
                 IF (F_SIMILARIDADE_MARCA_BANDA < F_VALOR_SIMILARIDADE OR F_SIMILARIDADE_MARCA_BANDA IS NULL)
                 THEN
                     INSERT INTO MARCA_BANDA (NOME, COD_EMPRESA)
-                    VALUES (NEW.MARCA_BANDA_EDITAVEL, F_COD_EMPRESA) RETURNING CODIGO INTO F_COD_MARCA_BANDA_BANCO;
+                    VALUES (NEW.MARCA_BANDA_EDITAVEL, F_COD_EMPRESA)
+                    RETURNING CODIGO INTO F_COD_MARCA_BANDA_BANCO;
                 END IF;
 
                 IF (NEW.MODELO_BANDA_FORMATADO_IMPORT IS NULL)
@@ -27031,7 +27101,8 @@ BEGIN
                             INSERT INTO MODELO_BANDA (NOME, COD_MARCA, COD_EMPRESA, QT_SULCOS, ALTURA_SULCOS)
                             VALUES (NEW.MODELO_BANDA_EDITAVEL, F_COD_MARCA_BANDA_BANCO, F_COD_EMPRESA,
                                     NEW.QTD_SULCOS_BANDA_FORMATADA_IMPORT,
-                                    NEW.ALTURA_SULCOS_BANDA_FORMATADA_IMPORT) RETURNING CODIGO INTO F_COD_MODELO_BANDA_BANCO;
+                                    NEW.ALTURA_SULCOS_BANDA_FORMATADA_IMPORT)
+                            RETURNING CODIGO INTO F_COD_MODELO_BANDA_BANCO;
                         END IF;
                     END IF;
                 END IF;
@@ -27097,7 +27168,8 @@ BEGIN
                     NEW.DOT_FORMATADO_IMPORT,
                     NEW.VALOR_PNEU_FORMATADO_IMPORT,
                     F_COD_EMPRESA,
-                    NEW.COD_UNIDADE) RETURNING CODIGO INTO F_COD_PNEU;
+                    NEW.COD_UNIDADE)
+            RETURNING CODIGO INTO F_COD_PNEU;
 
 
             IF (NEW.VIDA_ATUAL_FORMATADA_IMPORT > 1)
@@ -27121,7 +27193,8 @@ BEGIN
                         F_COD_PNEU,
                         NEW.VALOR_BANDA_FORMATADO_IMPORT,
                         (NEW.VIDA_ATUAL_FORMATADA_IMPORT - 1),
-                        'FONTE_CADASTRO') RETURNING CODIGO INTO F_COD_SERVICO_REALIZADO;
+                        'FONTE_CADASTRO')
+                RETURNING CODIGO INTO F_COD_SERVICO_REALIZADO;
 
                 INSERT INTO PNEU_SERVICO_REALIZADO_INCREMENTA_VIDA (COD_SERVICO_REALIZADO,
                                                                     COD_MODELO_BANDA,
@@ -27505,7 +27578,7 @@ DECLARE
     STATUS_APLICADO_VEICULO CONSTANT TEXT    := 'EM_USO';
     DEVE_SOBRESCREVER_PNEU           BOOLEAN := (SELECT *
                                                  FROM INTEGRACAO.FUNC_EMPRESA_GET_CONFIG_SOBRESCREVE_PNEUS(
-                                                              COD_EMPRESA_PNEU));
+                                                         COD_EMPRESA_PNEU));
     COD_PNEU_PROLOG                  BIGINT;
     F_QTD_ROWS_ALTERADAS             BIGINT;
 BEGIN
@@ -27513,22 +27586,22 @@ BEGIN
     -- pneu caso for necessário.
     SELECT *
     FROM INTEGRACAO.FUNC_PNEU_INSERE_PNEU_PROLOG(
-                 F_COD_PNEU_SISTEMA_INTEGRADO,
-                 F_CODIGO_PNEU_CLIENTE,
-                 F_COD_UNIDADE_PNEU,
-                 F_COD_MODELO_PNEU,
-                 F_COD_DIMENSAO_PNEU,
-                 F_PRESSAO_CORRETA_PNEU,
-                 F_VIDA_ATUAL_PNEU,
-                 F_VIDA_TOTAL_PNEU,
-                 F_DOT_PNEU,
-                 F_VALOR_PNEU,
-                 F_PNEU_NOVO_NUNCA_RODADO,
-                 F_COD_MODELO_BANDA_PNEU,
-                 F_VALOR_BANDA_PNEU,
-                 F_DATA_HORA_PNEU_CADASTRO,
-                 F_TOKEN_INTEGRACAO,
-                 DEVE_SOBRESCREVER_PNEU)
+            F_COD_PNEU_SISTEMA_INTEGRADO,
+            F_CODIGO_PNEU_CLIENTE,
+            F_COD_UNIDADE_PNEU,
+            F_COD_MODELO_PNEU,
+            F_COD_DIMENSAO_PNEU,
+            F_PRESSAO_CORRETA_PNEU,
+            F_VIDA_ATUAL_PNEU,
+            F_VIDA_TOTAL_PNEU,
+            F_DOT_PNEU,
+            F_VALOR_PNEU,
+            F_PNEU_NOVO_NUNCA_RODADO,
+            F_COD_MODELO_BANDA_PNEU,
+            F_VALOR_BANDA_PNEU,
+            F_DATA_HORA_PNEU_CADASTRO,
+            F_TOKEN_INTEGRACAO,
+            DEVE_SOBRESCREVER_PNEU)
     INTO COD_PNEU_PROLOG;
 
     -- Validamos se a inserção do pneu aconteceu com sucesso.
@@ -27739,9 +27812,9 @@ BEGIN
     IF (F_QTD_ROWS_ALTERADAS <= 0)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('Não foi possível atualizar as informações do pneu %s para o status %s',
-                               F_CODIGO_PNEU_CLIENTE,
-                               F_STATUS_PNEU));
+                FORMAT('Não foi possível atualizar as informações do pneu %s para o status %s',
+                       F_CODIGO_PNEU_CLIENTE,
+                       F_STATUS_PNEU));
     END IF;
 
     -- Precisamos vincular o pneu ao veículo apenas se o status for aplicado.
@@ -27934,13 +28007,15 @@ begin
     drop view checklist;
 
     -- Recria a view checklist com a coluna cod_versao_checklist_modelo
-    create view checklist(cod_unidade, cod_checklist_modelo, codigo, data_hora, data_hora_importado_prolog,
-                          cpf_colaborador,
-                          placa_veiculo, tipo, tempo_realizacao, km_veiculo, data_hora_sincronizacao,
-                          fonte_data_hora_realizacao, versao_app_momento_realizacao, versao_app_momento_sincronizacao,
-                          device_id, device_imei, device_uptime_realizacao_millis, device_uptime_sincronizacao_millis,
-                          foi_offline, total_perguntas_ok, total_perguntas_nok, total_alternativas_ok,
-                          total_alternativas_nok, cod_versao_checklist_modelo) as
+    create view checklist
+                (cod_unidade, cod_checklist_modelo, codigo, data_hora, data_hora_importado_prolog,
+                 cpf_colaborador,
+                 placa_veiculo, tipo, tempo_realizacao, km_veiculo, data_hora_sincronizacao,
+                 fonte_data_hora_realizacao, versao_app_momento_realizacao, versao_app_momento_sincronizacao,
+                 device_id, device_imei, device_uptime_realizacao_millis, device_uptime_sincronizacao_millis,
+                 foi_offline, total_perguntas_ok, total_perguntas_nok, total_alternativas_ok,
+                 total_alternativas_nok, cod_versao_checklist_modelo)
+    as
     select c.cod_unidade,
            c.cod_checklist_modelo,
            c.codigo,
@@ -28143,8 +28218,8 @@ begin
                         pergunta_modelo_checklist.single_choice,
                         pergunta_modelo_checklist.cod_imagem,
                         pergunta_modelo_checklist.codigo_contexto,
-                        novo_cod_versao_modelo) returning codigo
-                           into cod_pergunta_criado;
+                        novo_cod_versao_modelo)
+                returning codigo into cod_pergunta_criado;
 
                 insert into migration_checklist.check_perguntas_aux (cod_modelo,
                                                                      cod_modelo_versao,
@@ -28188,8 +28263,8 @@ begin
                                 alternativa_modelo_checklist.prioridade,
                                 alternativa_modelo_checklist.deve_abrir_ordem_servico,
                                 alternativa_modelo_checklist.codigo_contexto,
-                                novo_cod_versao_modelo) returning codigo
-                                   into cod_alternativa_criado;
+                                novo_cod_versao_modelo)
+                        returning codigo into cod_alternativa_criado;
 
                         insert into migration_checklist.check_alternativas_aux (cod_modelo,
                                                                                 cod_modelo_versao,
@@ -28801,8 +28876,7 @@ begin
                   AND F_IF(F_PLACA_VEICULO IS NULL, TRUE, C.PLACA_VEICULO = F_PLACA_VEICULO)
                   AND F_IF(F_PRIORIDADE_ALTERNATIVA IS NULL, TRUE, CAP.PRIORIDADE = F_PRIORIDADE_ALTERNATIVA)
                   AND F_IF(F_STATUS_ITENS IS NULL, TRUE, COSI.STATUS_RESOLUCAO = F_STATUS_ITENS)
-                LIMIT F_LIMIT
-                    OFFSET F_OFFSET
+                LIMIT F_LIMIT OFFSET F_OFFSET
             ),
                  DADOS_VEICULO AS (
                      SELECT V.PLACA :: TEXT AS PLACA_VEICULO,
@@ -28903,8 +28977,7 @@ begin
                      QTD_ITENS_PRIORIDADE_ALTA DESC,
                      QTD_ITENS_PRIORIDADE_BAIXA DESC,
                      PLACA_VEICULO ASC
-            LIMIT F_LIMIT
-                OFFSET F_OFFSET;
+            LIMIT F_LIMIT OFFSET F_OFFSET;
     END;
     $$;
     --######################################################################################################################
@@ -29647,7 +29720,8 @@ begin
                 F_TOTAL_PERGUNTAS_OK,
                 F_TOTAL_PERGUNTAS_NOK,
                 F_TOTAL_ALTERNATIVAS_OK,
-                F_TOTAL_ALTERNATIVAS_NOK) RETURNING CODIGO INTO COD_CHECKLIST_INSERIDO;
+                F_TOTAL_ALTERNATIVAS_NOK)
+        RETURNING CODIGO INTO COD_CHECKLIST_INSERIDO;
 
         -- Verificamos se o insert funcionou.
         IF COD_CHECKLIST_INSERIDO <= 0
@@ -30035,7 +30109,8 @@ begin
         VALUES (F_COD_UNIDADE_MODELO,
                 NOVO_COD_VERSAO_MODELO,
                 F_NOME_MODELO,
-                F_STATUS_ATIVO) RETURNING CODIGO INTO COD_MODELO_INSERIDO;
+                F_STATUS_ATIVO)
+        RETURNING CODIGO INTO COD_MODELO_INSERIDO;
 
 
         IF COD_MODELO_INSERIDO IS NULL OR COD_MODELO_INSERIDO <= 0
@@ -30150,10 +30225,10 @@ begin
 
 
     DROP FUNCTION FUNC_CHECKLIST_UPDATE_MODELO_CHECKLIST(F_NOME_MODELO TEXT,
-        F_COD_UNIDADE BIGINT,
-        F_COD_MODELO BIGINT,
-        F_COD_CARGOS BIGINT[],
-        F_COD_TIPOS_VEICULOS BIGINT[]);
+                                                         F_COD_UNIDADE BIGINT,
+                                                         F_COD_MODELO BIGINT,
+                                                         F_COD_CARGOS BIGINT[],
+                                                         F_COD_TIPOS_VEICULOS BIGINT[]);
 
     CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_UPDATE_MODELO_CHECKLIST_INFOS(F_COD_UNIDADE BIGINT,
                                                                             F_COD_MODELO BIGINT,
@@ -30265,8 +30340,7 @@ begin
     begin
         -- Verifica se o nome do modelo sofreu alteração, cria nova versão sem alterar contexto.
         if (select exists(
-                           select soundex(f_nome_modelo)
-                               except
+                           select soundex(f_nome_modelo) except
                            select soundex(nome)
                            from checklist_modelo
                            where cod_versao_atual = f_cod_versao_modelo
@@ -30583,76 +30657,71 @@ begin
             -- A) Caso mais simples: nada mudou, não precisamos fazer nada.
             when algo_mudou_no_contexto is false and deve_criar_nova_versao_modelo is false and
                  algo_mudou_no_modelo is false
-                then
-                    return query
-                        select null :: bigint  as codigo_item,
-                               null :: boolean as item_novo,
-                               null :: boolean as item_mudou_contexto,
-                               null :: boolean as item_tipo_pergunta,
-                               false           as algo_mudou_no_modelo,
-                               false           as algo_mudou_no_contexto,
-                               false           as deve_criar_nova_versao_modelo;
+                then return query
+                    select null :: bigint  as codigo_item,
+                           null :: boolean as item_novo,
+                           null :: boolean as item_mudou_contexto,
+                           null :: boolean as item_tipo_pergunta,
+                           false           as algo_mudou_no_modelo,
+                           false           as algo_mudou_no_contexto,
+                           false           as deve_criar_nova_versao_modelo;
 
             -- B) Caso intermediário: algo mudou no modelo porém nada que justifique a criação de uma nova versão.
             when algo_mudou_no_modelo is true and deve_criar_nova_versao_modelo is false
-                then
-                    return query
-                        select null :: bigint  as codigo_item,
-                               null :: boolean as item_novo,
-                               null :: boolean as item_mudou_contexto,
-                               null :: boolean as item_tipo_pergunta,
-                               true            as algo_mudou_no_modelo,
-                               false           as algo_mudou_no_contexto,
-                               false           as deve_criar_nova_versao_modelo;
+                then return query
+                    select null :: bigint  as codigo_item,
+                           null :: boolean as item_novo,
+                           null :: boolean as item_mudou_contexto,
+                           null :: boolean as item_tipo_pergunta,
+                           true            as algo_mudou_no_modelo,
+                           false           as algo_mudou_no_contexto,
+                           false           as deve_criar_nova_versao_modelo;
 
             -- C) Caso intermediário: algo mudou no modelo com a criação de uma nova versão e mantendo o código de contexto.
             when algo_mudou_no_modelo is true and deve_criar_nova_versao_modelo is true and
                  algo_mudou_no_contexto is false
-                then
-                    return query
-                        select p.codigo                      as codigo_item,
-                               p.pergunta_nova               as item_novo,
-                               p.pergunta_mudou_contexto     as item_mudou_contexto,
-                               true                          as item_tipo_pergunta,
-                               true                          as algo_mudou_no_modelo,
-                               false                         as algo_mudou_no_contexto,
-                               deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
-                        from perguntas p
-                        union all
-                        select a.codigo                      as codigo_item,
-                               a.alternativa_nova            as item_novo,
-                               a.alternativa_mudou_contexto  as item_mudou_contexto,
-                               false                         as item_tipo_pergunta,
-                               true                          as algo_mudou_no_modelo,
-                               false                         as algo_mudou_no_contexto,
-                               deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
-                        from alternativas a;
+                then return query
+                    select p.codigo                      as codigo_item,
+                           p.pergunta_nova               as item_novo,
+                           p.pergunta_mudou_contexto     as item_mudou_contexto,
+                           true                          as item_tipo_pergunta,
+                           true                          as algo_mudou_no_modelo,
+                           false                         as algo_mudou_no_contexto,
+                           deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
+                    from perguntas p
+                    union all
+                    select a.codigo                      as codigo_item,
+                           a.alternativa_nova            as item_novo,
+                           a.alternativa_mudou_contexto  as item_mudou_contexto,
+                           false                         as item_tipo_pergunta,
+                           true                          as algo_mudou_no_modelo,
+                           false                         as algo_mudou_no_contexto,
+                           deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
+                    from alternativas a;
 
             -- D) Caso mais complexo: algo mudou e iremos precisar criar nova versão. Nesse cenário temos que retornar
             -- todas as informações.
             when algo_mudou_no_contexto is true and deve_criar_nova_versao_modelo is true
-                then
-                    return query
-                        select p.codigo                      as codigo_item,
-                               p.pergunta_nova               as item_novo,
-                               p.pergunta_mudou_contexto     as item_mudou_contexto,
-                               true                          as item_tipo_pergunta,
-                               true                          as algo_mudou_no_modelo,
-                               true                          as algo_mudou_no_contexto,
-                               deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
-                        from perguntas p
-                        union all
-                        select a.codigo                      as codigo_item,
-                               a.alternativa_nova            as item_novo,
-                               a.alternativa_mudou_contexto  as item_mudou_contexto,
-                               false                         as item_tipo_pergunta,
-                               true                          as algo_mudou_no_modelo,
-                               true                          as algo_mudou_no_contexto,
-                               deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
-                        from alternativas a;
-            else
-                raise exception
-                    'Erro! Estado ilegal dos dados. algo_mudou_no_modelo = false AND deve_criar_nova_versao_modelo = true';
+                then return query
+                    select p.codigo                      as codigo_item,
+                           p.pergunta_nova               as item_novo,
+                           p.pergunta_mudou_contexto     as item_mudou_contexto,
+                           true                          as item_tipo_pergunta,
+                           true                          as algo_mudou_no_modelo,
+                           true                          as algo_mudou_no_contexto,
+                           deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
+                    from perguntas p
+                    union all
+                    select a.codigo                      as codigo_item,
+                           a.alternativa_nova            as item_novo,
+                           a.alternativa_mudou_contexto  as item_mudou_contexto,
+                           false                         as item_tipo_pergunta,
+                           true                          as algo_mudou_no_modelo,
+                           true                          as algo_mudou_no_contexto,
+                           deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
+                    from alternativas a;
+            else raise exception
+                'Erro! Estado ilegal dos dados. algo_mudou_no_modelo = false AND deve_criar_nova_versao_modelo = true';
             end case;
 
         drop table alternativas;
@@ -31181,9 +31250,9 @@ begin
                   AND COS.COD_UNIDADE = F_COD_UNIDADE_ORDEM_SERVICO))
         THEN
             PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                            FORMAT('A Ordem de Serviço "%s" não existe na unidade "%s" do ProLog',
-                                   F_COD_ORDEM_SERVICO,
-                                   F_COD_UNIDADE_ORDEM_SERVICO));
+                    FORMAT('A Ordem de Serviço "%s" não existe na unidade "%s" do ProLog',
+                           F_COD_ORDEM_SERVICO,
+                           F_COD_UNIDADE_ORDEM_SERVICO));
         END IF;
 
         -- 2° - Validamos se a O.S. está ABERTA.
@@ -31195,7 +31264,7 @@ begin
                                                  AND COS.CODIGO = F_COD_ORDEM_SERVICO) = F_STATUS_ORDEM_SERVICO_FECHADA)
         THEN
             PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                            FORMAT('A Ordem de Serviço "%s" já está fechada no ProLog', F_COD_ORDEM_SERVICO));
+                    FORMAT('A Ordem de Serviço "%s" já está fechada no ProLog', F_COD_ORDEM_SERVICO));
         END IF;
 
         -- 3° - Validamos se o Item a ser resolvido pertence a O.S..
@@ -31215,9 +31284,9 @@ begin
                                               F_STATUS_ITEM_ORDEM_SERVICO_PENDENTE)
         THEN
             PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                            FORMAT('O Item "%s" da O.S "%s" já está resolvido no ProLog',
-                                   F_COD_ITEM_RESOLVIDO,
-                                   F_COD_ORDEM_SERVICO));
+                    FORMAT('O Item "%s" da O.S "%s" já está resolvido no ProLog',
+                           F_COD_ITEM_RESOLVIDO,
+                           F_COD_ORDEM_SERVICO));
         END IF;
 
         -- 5° - Validamos se o CPF está presente na empresa.
@@ -31239,7 +31308,7 @@ begin
                                                                      WHERE TI.TOKEN_INTEGRACAO = F_TOKEN_INTEGRACAO)))
         THEN
             PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                            'Você está tentando fechar um item de uma OS que não pertence à sua empresa');
+                    'Você está tentando fechar um item de uma OS que não pertence à sua empresa');
         END IF;
 
         -- Não verificamos a DATA_HORA_CONSERTO no WHERE pois não nos importa se está fechada ou não. Se chegou nesse ponto
@@ -31350,7 +31419,8 @@ begin
     ALTER TABLE PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO
         RENAME COD_ALTERNATIVA_OS_PROLOG TO COD_CONTEXTO_ALTERNATIVA_OS_PROLOG;
 
-    DROP FUNCTION PICCOLOTUR.FUNC_CHECK_OS_INSERE_ITEM_OS_ABERTA(BIGINT, BIGINT, BIGINT, BIGINT, BIGINT, BIGINT, TIMESTAMP WITH TIME ZONE, TEXT);
+    DROP FUNCTION PICCOLOTUR.FUNC_CHECK_OS_INSERE_ITEM_OS_ABERTA(BIGINT, BIGINT, BIGINT, BIGINT, BIGINT, BIGINT,
+                                                                 TIMESTAMP WITH TIME ZONE, TEXT);
     CREATE OR REPLACE FUNCTION
         PICCOLOTUR.FUNC_CHECK_OS_INSERE_ITEM_OS_ABERTA(F_COD_OS_GLOBUS BIGINT,
                                                        F_COD_UNIDADE_OS BIGINT,
@@ -31393,9 +31463,9 @@ begin
              WHERE TI.TOKEN_INTEGRACAO = F_TOKEN_INTEGRACAO))
         THEN
             PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                            FORMAT('[ERRO DE VÍNCULO] O token "%s" não está autorizado a inserir dados da unidade "%s"',
-                                   F_TOKEN_INTEGRACAO,
-                                   F_COD_UNIDADE_OS));
+                    FORMAT('[ERRO DE VÍNCULO] O token "%s" não está autorizado a inserir dados da unidade "%s"',
+                           F_TOKEN_INTEGRACAO,
+                           F_COD_UNIDADE_OS));
         END IF;
 
         -- Validamos se o Item da Ordem de Serviço já existe no ProLog.
@@ -31407,10 +31477,10 @@ begin
                              AND CODIGO = F_COD_ITEM_OS_GLOBUS))
         THEN
             PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        -- TODO - Será que devemos lançar o erro, incrementar a quantidade, ou não fazer nada?
-                            FORMAT('[ERRO DE STATUS] O serviço "%s" já está existe na O.S "%s" do ProLog',
-                                   F_COD_ITEM_OS_GLOBUS,
-                                   F_COD_OS_GLOBUS));
+                -- TODO - Será que devemos lançar o erro, incrementar a quantidade, ou não fazer nada?
+                    FORMAT('[ERRO DE STATUS] O serviço "%s" já está existe na O.S "%s" do ProLog',
+                           F_COD_ITEM_OS_GLOBUS,
+                           F_COD_OS_GLOBUS));
         END IF;
 
         -- Validamos se a Ordem de Serviço já está fechada. Se estiver aberta, iremos adicionar o item nela.
@@ -31420,8 +31490,8 @@ begin
                AND COS.COD_UNIDADE = F_COD_UNIDADE_OS) = STATUS_OS_FECHADA)
         THEN
             PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        -- TODO - Será que devemos lançar um erro, ou ignorar pois já está fechada, ou reabrir e inserir o item?
-                            FORMAT('[ERRO DE STATUS] A O.S "%s" já está FECHADA no ProLog', F_COD_OS_GLOBUS));
+                -- TODO - Será que devemos lançar um erro, ou ignorar pois já está fechada, ou reabrir e inserir o item?
+                    FORMAT('[ERRO DE STATUS] A O.S "%s" já está FECHADA no ProLog', F_COD_OS_GLOBUS));
         END IF;
 
         -- Validamos se o código do checklist existe.
@@ -31432,8 +31502,8 @@ begin
                   AND C.COD_UNIDADE = F_COD_UNIDADE_OS))
         THEN
             PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                            FORMAT('[ERRO DE VÍNCULO] O checklist "%s" não encontra-se na base de dados do ProLog',
-                                   F_COD_CHECKLIST));
+                    FORMAT('[ERRO DE VÍNCULO] O checklist "%s" não encontra-se na base de dados do ProLog',
+                           F_COD_CHECKLIST));
         END IF;
 
         -- Validamos se a pergunta existe e está mesmo vinculada ao checklist realizado.
@@ -31444,9 +31514,9 @@ begin
                   AND CRN.COD_PERGUNTA = CODIGO_PERGUNTA))
         THEN
             PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                            FORMAT('[ERRO DE VÍNCULO] A pergunta "%s" não possui vínculo com o checklist "%s"',
-                                   F_COD_CONTEXTO_PERGUNTA_CHECKLIST,
-                                   F_COD_CHECKLIST));
+                    FORMAT('[ERRO DE VÍNCULO] A pergunta "%s" não possui vínculo com o checklist "%s"',
+                           F_COD_CONTEXTO_PERGUNTA_CHECKLIST,
+                           F_COD_CHECKLIST));
         END IF;
 
         -- Validamos se a alternativa existe e pertence a pergunta do checklist realizado.
@@ -31458,9 +31528,9 @@ begin
                   AND CRN.COD_ALTERNATIVA = CODIGO_ALTERNATIVA))
         THEN
             PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                            FORMAT('[ERRO DE VÍNCULO] A alternativa "%s" não possui vínculo com a pergunta "%s"',
-                                   F_COD_CONTEXTO_ALTERNATIVA_CHECKLIST,
-                                   F_COD_CONTEXTO_PERGUNTA_CHECKLIST));
+                    FORMAT('[ERRO DE VÍNCULO] A alternativa "%s" não possui vínculo com a pergunta "%s"',
+                           F_COD_CONTEXTO_ALTERNATIVA_CHECKLIST,
+                           F_COD_CONTEXTO_PERGUNTA_CHECKLIST));
         END IF;
 
         -- Validamos se o Item da O.S pertencem a um checklist que de fato foi enviado para o Globus.
@@ -31472,11 +31542,11 @@ begin
                                   AND CINEG.COD_CONTEXTO_ALTERNATIVA = F_COD_CONTEXTO_ALTERNATIVA_CHECKLIST)))
         THEN
             PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                            FORMAT(
-                                    '[ERRO DE VÍNCULO] Não existe vínculo entre o cod_checklist "%s", cod_pergunta "%s" e cod_alternativa "%s"',
-                                    F_COD_CHECKLIST,
-                                    F_COD_CONTEXTO_PERGUNTA_CHECKLIST,
-                                    F_COD_CONTEXTO_ALTERNATIVA_CHECKLIST));
+                    FORMAT(
+                            '[ERRO DE VÍNCULO] Não existe vínculo entre o cod_checklist "%s", cod_pergunta "%s" e cod_alternativa "%s"',
+                            F_COD_CHECKLIST,
+                            F_COD_CONTEXTO_PERGUNTA_CHECKLIST,
+                            F_COD_CONTEXTO_ALTERNATIVA_CHECKLIST));
         END IF;
 
         -- Se a Ordem de Serviço não existe, então criamos ela.
@@ -31507,7 +31577,8 @@ begin
                 F_COD_CONTEXTO_PERGUNTA_CHECKLIST,
                 F_COD_CONTEXTO_ALTERNATIVA_CHECKLIST,
                 CODIGO_PERGUNTA,
-                CODIGO_ALTERNATIVA) RETURNING CODIGO INTO COD_ITEM_OS_PROLOG;
+                CODIGO_ALTERNATIVA)
+        RETURNING CODIGO INTO COD_ITEM_OS_PROLOG;
 
         -- Não chegará nesse ponto um 'item', 'checklist' ou 'alternativa' que não existam, então podemos inserir os
         -- dados com segurança. Também, não chegará aqui um item que não deveremos inserir ou que devemos aumentar a
@@ -31576,9 +31647,9 @@ begin
                                                                WHERE TI.TOKEN_INTEGRACAO = F_TOKEN_INTEGRACAO)))
         THEN
             PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                            FORMAT('[ERRO DE VÍNCULO] O token "%s" não está autorizado a inserir dados da unidade "%s"',
-                                   F_TOKEN_INTEGRACAO,
-                                   F_COD_UNIDADE_ITEM_OS));
+                    FORMAT('[ERRO DE VÍNCULO] O token "%s" não está autorizado a inserir dados da unidade "%s"',
+                           F_TOKEN_INTEGRACAO,
+                           F_COD_UNIDADE_ITEM_OS));
         END IF;
 
         -- Validamos se o código do item fechado no Globus, está mapeado no ProLog.
@@ -31596,9 +31667,9 @@ begin
             INTO COD_ITEM_RESOLVIDO_PROLOG;
         ELSE
             PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                            FORMAT('[ERRO DE VÍNCULO] O item "%s" da O.S. "%s" não possuí vínculo no ProLog',
-                                   F_COD_ITEM_RESOLVIDO_GLOBUS,
-                                   F_COD_OS_GLOBUS));
+                    FORMAT('[ERRO DE VÍNCULO] O item "%s" da O.S. "%s" não possuí vínculo no ProLog',
+                           F_COD_ITEM_RESOLVIDO_GLOBUS,
+                           F_COD_OS_GLOBUS));
         END IF;
 
         -- Validamos se o item mapeado está pendente no ProLog. Caso já está resolvido, apenas retorna sucesso.
@@ -31632,9 +31703,9 @@ begin
                AND COD_ITEM_OS_GLOBUS = F_COD_ITEM_RESOLVIDO_GLOBUS) != F_PLACA_VEICULO_ITEM_OS)
         THEN
             PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                            FORMAT('A placa "%s" não bate com a placa do item pendente "%s" do ProLog',
-                                   F_PLACA_VEICULO_ITEM_OS,
-                                   COD_ITEM_RESOLVIDO_PROLOG));
+                    FORMAT('A placa "%s" não bate com a placa do item pendente "%s" do ProLog',
+                           F_PLACA_VEICULO_ITEM_OS,
+                           COD_ITEM_RESOLVIDO_PROLOG));
         END IF;
 
         -- Depois de validar podemos resolver o item.
@@ -31789,7 +31860,8 @@ begin
         UPDATE CHECKLIST_ORDEM_SERVICO_ITENS
         SET QT_APONTAMENTOS = QT_APONTAMENTOS + 1
         WHERE CODIGO = F_COD_ITEM_ORDEM_SERVICO
-          AND STATUS_RESOLUCAO = F_STATUS_RESOLUCAO RETURNING QT_APONTAMENTOS INTO NOVA_QTD_APONTAMENTOS_ITEM;
+          AND STATUS_RESOLUCAO = F_STATUS_RESOLUCAO
+        RETURNING QT_APONTAMENTOS INTO NOVA_QTD_APONTAMENTOS_ITEM;
 
         -- Insere a alternativa que incrementou a quantidade de apontamentos na tabela.
         INSERT INTO CHECKLIST_ORDEM_SERVICO_ITENS_APONTAMENTOS (COD_ITEM_ORDEM_SERVICO,
@@ -31831,7 +31903,8 @@ begin
                 F_COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO,
                 F_STATUS_RESOLUCAO,
                 F_COD_CONTEXTO_PERGUNTA,
-                F_COD_CONTEXTO_ALTERNATIVA) RETURNING CODIGO INTO CODIGO_ITEM_OS;
+                F_COD_CONTEXTO_ALTERNATIVA)
+        RETURNING CODIGO INTO CODIGO_ITEM_OS;
 
         -- Insere a alternativa que incrementou a quantidade de apontamentos na tabela.
         INSERT INTO CHECKLIST_ORDEM_SERVICO_ITENS_APONTAMENTOS (COD_ITEM_ORDEM_SERVICO,
@@ -32072,9 +32145,9 @@ begin
 
     -- FUNC_CHECKLIST_RELATORIO_RESUMO_REALIZADOS - Aplica as alterações no relatório de resumo de checklist
     DROP FUNCTION FUNC_CHECKLIST_RELATORIO_RESUMO_REALIZADOS(F_COD_UNIDADES BIGINT[],
-        F_PLACA_VEICULO TEXT,
-        F_DATA_INICIAL DATE,
-        F_DATA_FINAL DATE);
+                                                             F_PLACA_VEICULO TEXT,
+                                                             F_DATA_INICIAL DATE,
+                                                             F_DATA_FINAL DATE);
     CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_RELATORIO_RESUMO_REALIZADOS(F_COD_UNIDADES BIGINT[],
                                                                           F_PLACA_VEICULO TEXT,
                                                                           F_DATA_INICIAL DATE,
@@ -32512,14 +32585,14 @@ begin
     --######################################################################################################################
     -- Remove usos da CHECKLIST_RESPOSTAS e utiliza nova coluna DATA_HORA_REALIZACAO_TZ_APLICADO.
     DROP FUNCTION FUNC_CHECKLIST_GET_ALL_CHECKLISTS_REALIZADOS(F_COD_UNIDADE BIGINT,
-        F_COD_EQUIPE BIGINT,
-        F_COD_TIPO_VEICULO BIGINT,
-        F_PLACA_VEICULO CHARACTER VARYING,
-        F_DATA_INICIAL DATE,
-        F_DATA_FINAL DATE,
-        F_TIMEZONE TEXT,
-        F_LIMIT INTEGER,
-        F_OFFSET BIGINT);
+                                                               F_COD_EQUIPE BIGINT,
+                                                               F_COD_TIPO_VEICULO BIGINT,
+                                                               F_PLACA_VEICULO CHARACTER VARYING,
+                                                               F_DATA_INICIAL DATE,
+                                                               F_DATA_FINAL DATE,
+                                                               F_TIMEZONE TEXT,
+                                                               F_LIMIT INTEGER,
+                                                               F_OFFSET BIGINT);
     CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_GET_ALL_CHECKLISTS_REALIZADOS(F_COD_UNIDADE BIGINT,
                                                                             F_COD_EQUIPE BIGINT,
                                                                             F_COD_TIPO_VEICULO BIGINT,
@@ -32581,8 +32654,7 @@ begin
               AND (F_HAS_COD_TIPO_VEICULO = 1 OR V.COD_TIPO = F_COD_TIPO_VEICULO)
               AND (F_HAS_PLACA_VEICULO = 1 OR C.PLACA_VEICULO = F_PLACA_VEICULO)
             ORDER BY DATA_HORA_SINCRONIZACAO DESC
-            LIMIT F_LIMIT
-                OFFSET F_OFFSET;
+            LIMIT F_LIMIT OFFSET F_OFFSET;
     END;
     $$;
     --######################################################################################################################
@@ -32870,8 +32942,8 @@ begin
                     pergunta_modelo_checklist.single_choice,
                     pergunta_modelo_checklist.cod_imagem,
                     pergunta_modelo_checklist.codigo_contexto,
-                    novo_cod_versao_modelo) returning codigo
-                       into cod_pergunta_criado;
+                    novo_cod_versao_modelo)
+            returning codigo into cod_pergunta_criado;
 
             insert into migration_checklist.check_perguntas_aux (cod_modelo,
                                                                  cod_modelo_versao,
@@ -32915,8 +32987,8 @@ begin
                             alternativa_modelo_checklist.prioridade,
                             alternativa_modelo_checklist.deve_abrir_ordem_servico,
                             alternativa_modelo_checklist.codigo_contexto,
-                            novo_cod_versao_modelo) returning codigo
-                               into cod_alternativa_criado;
+                            novo_cod_versao_modelo)
+                    returning codigo into cod_alternativa_criado;
 
                     insert into migration_checklist.check_alternativas_aux (cod_modelo,
                                                                             cod_modelo_versao,
@@ -33158,7 +33230,8 @@ BEGIN
             F_TOTAL_PERGUNTAS_OK,
             F_TOTAL_PERGUNTAS_NOK,
             F_TOTAL_ALTERNATIVAS_OK,
-            F_TOTAL_ALTERNATIVAS_NOK) RETURNING CODIGO INTO COD_CHECKLIST_INSERIDO;
+            F_TOTAL_ALTERNATIVAS_NOK)
+    RETURNING CODIGO INTO COD_CHECKLIST_INSERIDO;
 
     -- Verificamos se o insert funcionou.
     IF COD_CHECKLIST_INSERIDO <= 0
@@ -33497,7 +33570,8 @@ BEGIN
     VALUES (F_COD_UNIDADE_MODELO,
             NOVO_COD_VERSAO_MODELO,
             F_NOME_MODELO,
-            F_STATUS_ATIVO) RETURNING CODIGO INTO COD_MODELO_INSERIDO;
+            F_STATUS_ATIVO)
+    RETURNING CODIGO INTO COD_MODELO_INSERIDO;
 
 
     IF COD_MODELO_INSERIDO IS NULL OR COD_MODELO_INSERIDO <= 0
@@ -33709,8 +33783,7 @@ declare
 begin
     -- Verifica se o nome do modelo sofreu alteração, cria nova versão sem alterar contexto.
     if (select exists(
-                       select soundex(f_nome_modelo)
-                           except
+                       select soundex(f_nome_modelo) except
                        select soundex(nome)
                        from checklist_modelo
                        where cod_versao_atual = f_cod_versao_modelo
@@ -34027,76 +34100,71 @@ begin
         -- A) Caso mais simples: nada mudou, não precisamos fazer nada.
         when algo_mudou_no_contexto is false and deve_criar_nova_versao_modelo is false and
              algo_mudou_no_modelo is false
-            then
-                return query
-                    select null :: bigint  as codigo_item,
-                           null :: boolean as item_novo,
-                           null :: boolean as item_mudou_contexto,
-                           null :: boolean as item_tipo_pergunta,
-                           false           as algo_mudou_no_modelo,
-                           false           as algo_mudou_no_contexto,
-                           false           as deve_criar_nova_versao_modelo;
+            then return query
+                select null :: bigint  as codigo_item,
+                       null :: boolean as item_novo,
+                       null :: boolean as item_mudou_contexto,
+                       null :: boolean as item_tipo_pergunta,
+                       false           as algo_mudou_no_modelo,
+                       false           as algo_mudou_no_contexto,
+                       false           as deve_criar_nova_versao_modelo;
 
         -- B) Caso intermediário: algo mudou no modelo porém nada que justifique a criação de uma nova versão.
         when algo_mudou_no_modelo is true and deve_criar_nova_versao_modelo is false
-            then
-                return query
-                    select null :: bigint  as codigo_item,
-                           null :: boolean as item_novo,
-                           null :: boolean as item_mudou_contexto,
-                           null :: boolean as item_tipo_pergunta,
-                           true            as algo_mudou_no_modelo,
-                           false           as algo_mudou_no_contexto,
-                           false           as deve_criar_nova_versao_modelo;
+            then return query
+                select null :: bigint  as codigo_item,
+                       null :: boolean as item_novo,
+                       null :: boolean as item_mudou_contexto,
+                       null :: boolean as item_tipo_pergunta,
+                       true            as algo_mudou_no_modelo,
+                       false           as algo_mudou_no_contexto,
+                       false           as deve_criar_nova_versao_modelo;
 
         -- C) Caso intermediário: algo mudou no modelo com a criação de uma nova versão e mantendo o código de contexto.
         when algo_mudou_no_modelo is true and deve_criar_nova_versao_modelo is true and
              algo_mudou_no_contexto is false
-            then
-                return query
-                    select p.codigo                      as codigo_item,
-                           p.pergunta_nova               as item_novo,
-                           p.pergunta_mudou_contexto     as item_mudou_contexto,
-                           true                          as item_tipo_pergunta,
-                           true                          as algo_mudou_no_modelo,
-                           false                         as algo_mudou_no_contexto,
-                           deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
-                    from perguntas p
-                    union all
-                    select a.codigo                      as codigo_item,
-                           a.alternativa_nova            as item_novo,
-                           a.alternativa_mudou_contexto  as item_mudou_contexto,
-                           false                         as item_tipo_pergunta,
-                           true                          as algo_mudou_no_modelo,
-                           false                         as algo_mudou_no_contexto,
-                           deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
-                    from alternativas a;
+            then return query
+                select p.codigo                      as codigo_item,
+                       p.pergunta_nova               as item_novo,
+                       p.pergunta_mudou_contexto     as item_mudou_contexto,
+                       true                          as item_tipo_pergunta,
+                       true                          as algo_mudou_no_modelo,
+                       false                         as algo_mudou_no_contexto,
+                       deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
+                from perguntas p
+                union all
+                select a.codigo                      as codigo_item,
+                       a.alternativa_nova            as item_novo,
+                       a.alternativa_mudou_contexto  as item_mudou_contexto,
+                       false                         as item_tipo_pergunta,
+                       true                          as algo_mudou_no_modelo,
+                       false                         as algo_mudou_no_contexto,
+                       deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
+                from alternativas a;
 
         -- D) Caso mais complexo: algo mudou e iremos precisar criar nova versão. Nesse cenário temos que retornar
         -- todas as informações.
         when algo_mudou_no_contexto is true and deve_criar_nova_versao_modelo is true
-            then
-                return query
-                    select p.codigo                      as codigo_item,
-                           p.pergunta_nova               as item_novo,
-                           p.pergunta_mudou_contexto     as item_mudou_contexto,
-                           true                          as item_tipo_pergunta,
-                           true                          as algo_mudou_no_modelo,
-                           true                          as algo_mudou_no_contexto,
-                           deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
-                    from perguntas p
-                    union all
-                    select a.codigo                      as codigo_item,
-                           a.alternativa_nova            as item_novo,
-                           a.alternativa_mudou_contexto  as item_mudou_contexto,
-                           false                         as item_tipo_pergunta,
-                           true                          as algo_mudou_no_modelo,
-                           true                          as algo_mudou_no_contexto,
-                           deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
-                    from alternativas a;
-        else
-            raise exception
-                'Erro! Estado ilegal dos dados. algo_mudou_no_modelo = false AND deve_criar_nova_versao_modelo = true';
+            then return query
+                select p.codigo                      as codigo_item,
+                       p.pergunta_nova               as item_novo,
+                       p.pergunta_mudou_contexto     as item_mudou_contexto,
+                       true                          as item_tipo_pergunta,
+                       true                          as algo_mudou_no_modelo,
+                       true                          as algo_mudou_no_contexto,
+                       deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
+                from perguntas p
+                union all
+                select a.codigo                      as codigo_item,
+                       a.alternativa_nova            as item_novo,
+                       a.alternativa_mudou_contexto  as item_mudou_contexto,
+                       false                         as item_tipo_pergunta,
+                       true                          as algo_mudou_no_modelo,
+                       true                          as algo_mudou_no_contexto,
+                       deve_criar_nova_versao_modelo as deve_criar_nova_versao_modelo
+                from alternativas a;
+        else raise exception
+            'Erro! Estado ilegal dos dados. algo_mudou_no_modelo = false AND deve_criar_nova_versao_modelo = true';
         end case;
 
     drop table alternativas;
@@ -34415,8 +34483,7 @@ BEGIN
           AND (F_HAS_COD_TIPO_VEICULO = 1 OR V.COD_TIPO = F_COD_TIPO_VEICULO)
           AND (F_HAS_PLACA_VEICULO = 1 OR C.PLACA_VEICULO = F_PLACA_VEICULO)
         ORDER BY DATA_HORA_SINCRONIZACAO DESC
-        LIMIT F_LIMIT
-            OFFSET F_OFFSET;
+        LIMIT F_LIMIT OFFSET F_OFFSET;
 END;
 $$;
 
@@ -34814,9 +34881,9 @@ BEGIN
          WHERE TI.TOKEN_INTEGRACAO = F_TOKEN_INTEGRACAO))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('[ERRO DE VÍNCULO] O token "%s" não está autorizado a inserir dados da unidade "%s"',
-                               F_TOKEN_INTEGRACAO,
-                               F_COD_UNIDADE_OS));
+                FORMAT('[ERRO DE VÍNCULO] O token "%s" não está autorizado a inserir dados da unidade "%s"',
+                       F_TOKEN_INTEGRACAO,
+                       F_COD_UNIDADE_OS));
     END IF;
 
     -- Validamos se o Item da Ordem de Serviço já existe no ProLog.
@@ -34843,8 +34910,8 @@ BEGIN
               AND C.COD_UNIDADE = F_COD_UNIDADE_OS))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('[ERRO DE VÍNCULO] O checklist "%s" não encontra-se na base de dados do ProLog',
-                               F_COD_CHECKLIST));
+                FORMAT('[ERRO DE VÍNCULO] O checklist "%s" não encontra-se na base de dados do ProLog',
+                       F_COD_CHECKLIST));
     END IF;
 
     -- Validamos se a pergunta existe e está mesmo vinculada ao checklist realizado.
@@ -34855,9 +34922,9 @@ BEGIN
               AND CRN.COD_PERGUNTA = CODIGO_PERGUNTA))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('[ERRO DE VÍNCULO] A pergunta "%s" não possui vínculo com o checklist "%s"',
-                               F_COD_CONTEXTO_PERGUNTA_CHECKLIST,
-                               F_COD_CHECKLIST));
+                FORMAT('[ERRO DE VÍNCULO] A pergunta "%s" não possui vínculo com o checklist "%s"',
+                       F_COD_CONTEXTO_PERGUNTA_CHECKLIST,
+                       F_COD_CHECKLIST));
     END IF;
 
     -- Validamos se a alternativa existe e pertence a pergunta do checklist realizado.
@@ -34869,9 +34936,9 @@ BEGIN
               AND CRN.COD_ALTERNATIVA = CODIGO_ALTERNATIVA))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('[ERRO DE VÍNCULO] A alternativa "%s" não possui vínculo com a pergunta "%s"',
-                               F_COD_CONTEXTO_ALTERNATIVA_CHECKLIST,
-                               F_COD_CONTEXTO_PERGUNTA_CHECKLIST));
+                FORMAT('[ERRO DE VÍNCULO] A alternativa "%s" não possui vínculo com a pergunta "%s"',
+                       F_COD_CONTEXTO_ALTERNATIVA_CHECKLIST,
+                       F_COD_CONTEXTO_PERGUNTA_CHECKLIST));
     END IF;
 
     -- Validamos se o Item da O.S pertencem a um checklist que de fato foi enviado para o Globus.
@@ -34883,11 +34950,11 @@ BEGIN
                               AND CINEG.COD_CONTEXTO_ALTERNATIVA = F_COD_CONTEXTO_ALTERNATIVA_CHECKLIST)))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT(
-                                '[ERRO DE VÍNCULO] Não existe vínculo entre o cod_checklist "%s", cod_pergunta "%s" e cod_alternativa "%s"',
-                                F_COD_CHECKLIST,
-                                F_COD_CONTEXTO_PERGUNTA_CHECKLIST,
-                                F_COD_CONTEXTO_ALTERNATIVA_CHECKLIST));
+                FORMAT(
+                        '[ERRO DE VÍNCULO] Não existe vínculo entre o cod_checklist "%s", cod_pergunta "%s" e cod_alternativa "%s"',
+                        F_COD_CHECKLIST,
+                        F_COD_CONTEXTO_PERGUNTA_CHECKLIST,
+                        F_COD_CONTEXTO_ALTERNATIVA_CHECKLIST));
     END IF;
 
     -- Se chegou nesse estágio, já validamos todos os cenários do item, devemos então inserir.
@@ -34927,7 +34994,8 @@ BEGIN
             F_COD_CONTEXTO_PERGUNTA_CHECKLIST,
             F_COD_CONTEXTO_ALTERNATIVA_CHECKLIST,
             CODIGO_PERGUNTA,
-            CODIGO_ALTERNATIVA) RETURNING CODIGO INTO COD_ITEM_OS_PROLOG;
+            CODIGO_ALTERNATIVA)
+    RETURNING CODIGO INTO COD_ITEM_OS_PROLOG;
 
     -- Não chegará nesse ponto um 'item', 'checklist' ou 'alternativa' que não existam, então podemos inserir os
     -- dados com segurança. Também, não chegará aqui um item que não deveremos inserir ou que devemos aumentar a
@@ -34976,7 +35044,8 @@ BEGIN
     UPDATE CHECKLIST_ORDEM_SERVICO_ITENS
     SET QT_APONTAMENTOS = QT_APONTAMENTOS + 1
     WHERE CODIGO = F_COD_ITEM_ORDEM_SERVICO
-      AND STATUS_RESOLUCAO = F_STATUS_RESOLUCAO RETURNING QT_APONTAMENTOS INTO NOVA_QTD_APONTAMENTOS_ITEM;
+      AND STATUS_RESOLUCAO = F_STATUS_RESOLUCAO
+    RETURNING QT_APONTAMENTOS INTO NOVA_QTD_APONTAMENTOS_ITEM;
 
     -- Insere a alternativa que incrementou a quantidade de apontamentos na tabela.
     INSERT INTO CHECKLIST_ORDEM_SERVICO_ITENS_APONTAMENTOS (COD_ITEM_ORDEM_SERVICO,
@@ -35015,7 +35084,8 @@ BEGIN
             F_COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO,
             F_STATUS_RESOLUCAO,
             F_COD_CONTEXTO_PERGUNTA,
-            F_COD_CONTEXTO_ALTERNATIVA) RETURNING CODIGO INTO CODIGO_ITEM_OS;
+            F_COD_CONTEXTO_ALTERNATIVA)
+    RETURNING CODIGO INTO CODIGO_ITEM_OS;
 
     -- Insere a alternativa que incrementou a quantidade de apontamentos na tabela.
     INSERT INTO CHECKLIST_ORDEM_SERVICO_ITENS_APONTAMENTOS (COD_ITEM_ORDEM_SERVICO,
@@ -35079,8 +35149,7 @@ BEGIN
           AND (F_HAS_DATA_INICIAL = 1 OR (C.DATA_HORA AT TIME ZONE F_TIMEZONE) :: DATE >= F_DATA_INICIAL)
           AND (F_HAS_DATA_FINAL = 1 OR (C.DATA_HORA AT TIME ZONE F_TIMEZONE) :: DATE <= F_DATA_FINAL)
         ORDER BY C.DATA_HORA DESC
-        LIMIT F_LIMIT
-            OFFSET F_OFFSET;
+        LIMIT F_LIMIT OFFSET F_OFFSET;
 END;
 $$;
 
@@ -35328,10 +35397,10 @@ create or replace function integracao.func_pneu_insere_pneu_prolog(f_cod_pneu_si
 as
 $$
 DECLARE
-    PNEU_PRIMEIRA_VIDA CONSTANT  BIGINT  := 1;
+    PNEU_PRIMEIRA_VIDA  CONSTANT BIGINT  := 1;
     PNEU_STATUS_ESTOQUE CONSTANT TEXT    := 'ESTOQUE';
-    PNEU_POSSUI_BANDA CONSTANT   BOOLEAN := F_IF(F_VIDA_ATUAL_PNEU > PNEU_PRIMEIRA_VIDA, TRUE, FALSE);
-    COD_EMPRESA_PNEU CONSTANT    BIGINT  := (SELECT TI.COD_EMPRESA
+    PNEU_POSSUI_BANDA   CONSTANT BOOLEAN := F_IF(F_VIDA_ATUAL_PNEU > PNEU_PRIMEIRA_VIDA, TRUE, FALSE);
+    COD_EMPRESA_PNEU    CONSTANT BIGINT  := (SELECT TI.COD_EMPRESA
                                              FROM INTEGRACAO.TOKEN_INTEGRACAO TI
                                              WHERE TI.TOKEN_INTEGRACAO = F_TOKEN_INTEGRACAO);
     PNEU_ESTA_NO_PROLOG CONSTANT BOOLEAN := (SELECT EXISTS(SELECT P.CODIGO
@@ -35421,7 +35490,7 @@ BEGIN
     IF (PNEU_POSSUI_BANDA AND F_VALOR_BANDA_PNEU IS NULL)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        'O pneu não está na primeira vida, deve ser informado o valor da banda aplicada');
+                'O pneu não está na primeira vida, deve ser informado o valor da banda aplicada');
     END IF;
 
     -- Validamos se o valor da banda é um valor válido. Apenas validamos se o pneu possuir banda.
@@ -35510,7 +35579,8 @@ BEGIN
                 F_VALOR_PNEU,
                 F_IF(PNEU_POSSUI_BANDA, F_COD_MODELO_BANDA_PNEU, NULL),
                 F_IF(PNEU_POSSUI_BANDA, FALSE, F_PNEU_NOVO_NUNCA_RODADO), -- Forçamos FALSE caso o pneu já possua uma banda aplicada.
-                F_DATA_HORA_PNEU_CADASTRO) RETURNING CODIGO INTO COD_PNEU_PROLOG;
+                F_DATA_HORA_PNEU_CADASTRO)
+        RETURNING CODIGO INTO COD_PNEU_PROLOG;
 
         -- Precisamos criar um serviço de incremento de vida para o pneu cadastrado já possuíndo uma banda.
         IF (PNEU_POSSUI_BANDA)
@@ -35524,7 +35594,7 @@ BEGIN
     ELSE
         -- Pneu está no ProLog e não deve sobrescrever.
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('O pneu %s já está cadastrado no Sistema ProLog', F_CODIGO_PNEU_CLIENTE));
+                FORMAT('O pneu %s já está cadastrado no Sistema ProLog', F_CODIGO_PNEU_CLIENTE));
     END IF;
 
     IF (F_DEVE_SOBRESCREVER_PNEU)
@@ -35625,7 +35695,7 @@ create or replace function integracao.func_veiculo_deleta_servicos_abertos_placa
 as
 $$
 DECLARE
-    COD_SERVICOS_PARA_DELETAR CONSTANT   BIGINT[] := (SELECT ARRAY_AGG(COSI.CODIGO)
+    COD_SERVICOS_PARA_DELETAR   CONSTANT BIGINT[] := (SELECT ARRAY_AGG(COSI.CODIGO)
                                                       FROM CHECKLIST_ORDEM_SERVICO COS
                                                                JOIN CHECKLIST C ON COS.COD_CHECKLIST = C.CODIGO
                                                                JOIN CHECKLIST_ORDEM_SERVICO_ITENS COSI
@@ -35697,7 +35767,7 @@ create or replace function integracao.func_veiculo_sobrescreve_veiculo_cadastrad
 as
 $$
 DECLARE
-    COD_EMPRESA_VEICULO CONSTANT       BIGINT := (SELECT COD_EMPRESA
+    COD_EMPRESA_VEICULO       CONSTANT BIGINT := (SELECT COD_EMPRESA
                                                   FROM UNIDADE
                                                   WHERE CODIGO = F_COD_UNIDADE_VEICULO);
     COD_UNIDADE_ATUAL_VEICULO CONSTANT BIGINT := (SELECT COD_UNIDADE
@@ -35727,7 +35797,7 @@ create or replace function integracao.func_veiculo_deleta_servicos_abertos_placa
 as
 $$
 DECLARE
-    COD_SERVICOS_PARA_DELETAR CONSTANT   BIGINT[] := (SELECT ARRAY_AGG(COSI.CODIGO)
+    COD_SERVICOS_PARA_DELETAR   CONSTANT BIGINT[] := (SELECT ARRAY_AGG(COSI.CODIGO)
                                                       FROM CHECKLIST_ORDEM_SERVICO COS
                                                                JOIN CHECKLIST C ON COS.COD_CHECKLIST = C.CODIGO
                                                                JOIN CHECKLIST_ORDEM_SERVICO_ITENS COSI
@@ -35981,8 +36051,8 @@ BEGIN
     VALUES (F_COD_UNIDADE_DESTINO_MODELO_CHECKLIST,
             NOVO_COD_VERSAO_MODELO,
             NOME_MODELO_CHECKLIST_COPIADO,
-            STATUS_MODELO_CHECKLIST_COPIADO) RETURNING CODIGO
-               INTO COD_MODELO_CHECKLIST_INSERIDO;
+            STATUS_MODELO_CHECKLIST_COPIADO)
+    RETURNING CODIGO INTO COD_MODELO_CHECKLIST_INSERIDO;
 
     -- VERIFICAMOS SE O INSERT FUNCIONOU.
     IF COD_MODELO_CHECKLIST_INSERIDO IS NULL OR COD_MODELO_CHECKLIST_INSERIDO <= 0
@@ -36060,8 +36130,8 @@ BEGIN
                     PERGUNTA_MODELO_CHECKLIST_COPIADO.PERGUNTA,
                     PERGUNTA_MODELO_CHECKLIST_COPIADO.SINGLE_CHOICE,
                     PERGUNTA_MODELO_CHECKLIST_COPIADO.COD_IMAGEM,
-                    NOVO_COD_VERSAO_MODELO) RETURNING CODIGO
-                       INTO COD_PERGUNTA_CRIADO;
+                    NOVO_COD_VERSAO_MODELO)
+            RETURNING CODIGO INTO COD_PERGUNTA_CRIADO;
             -- ALTERNATIVA.
             INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA (COD_CHECKLIST_MODELO,
                                                         COD_UNIDADE,
@@ -36224,8 +36294,8 @@ BEGIN
            CONCAT(CC.NOME, ' (cópia)'),
            CC.STATUS_ATIVO
     FROM CHECKLIST_MODELO CC
-    WHERE CC.CODIGO = F_COD_MODELO_CHECKLIST_COPIADO RETURNING CODIGO
-        INTO COD_MODELO_CHECKLIST_INSERIDO;
+    WHERE CC.CODIGO = F_COD_MODELO_CHECKLIST_COPIADO
+    RETURNING CODIGO INTO COD_MODELO_CHECKLIST_INSERIDO;
 
     -- VERIFICAMOS SE O INSERT FUNCIONOU.
     IF COD_MODELO_CHECKLIST_INSERIDO IS NULL OR COD_MODELO_CHECKLIST_INSERIDO <= 0
@@ -36300,8 +36370,8 @@ BEGIN
                                           AND CGI.COD_EMPRESA IS NULL)),
                          PERGUNTA_MODELO_CHECKLIST_COPIADO.COD_IMAGEM,
                          NULL),
-                    NOVO_COD_VERSAO_MODELO) RETURNING CODIGO
-                       INTO COD_PERGUNTA_CRIADO;
+                    NOVO_COD_VERSAO_MODELO)
+            RETURNING CODIGO INTO COD_PERGUNTA_CRIADO;
             -- ALTERNATIVA.
             INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA (COD_CHECKLIST_MODELO,
                                                         COD_UNIDADE,
@@ -36352,7 +36422,8 @@ BEGIN
                               PG_USERNAME_DELECAO, COD_DIAGRAMA)
     VALUES (F_DATA_HORA, F_PLACA_VEICULO, F_CPF_AFERIDOR, F_KM_VEICULO, F_TEMPO_REALIZACAO, F_TIPO_MEDICAO_COLETADA,
             F_COD_UNIDADE, F_TIPO_PROCESSO_COLETA, FALSE, NULL, NULL,
-            F_COD_DIAGRAMA_VEICULO) RETURNING CODIGO INTO F_COD_AFERICAO_INSERIDA;
+            F_COD_DIAGRAMA_VEICULO)
+    RETURNING CODIGO INTO F_COD_AFERICAO_INSERIDA;
 
     RETURN F_COD_AFERICAO_INSERIDA;
 END
@@ -36398,7 +36469,8 @@ BEGIN
             F_PLACA_VEICULO,
             F_KM_ATUAL,
             F_POSICAO_PROLOG,
-            F_COD_DIAGRAMA_VEICULO) RETURNING COD_MOVIMENTACAO INTO F_COD_MOVIMENTACAO_REALIZADA;
+            F_COD_DIAGRAMA_VEICULO)
+    RETURNING COD_MOVIMENTACAO INTO F_COD_MOVIMENTACAO_REALIZADA;
 
     IF (F_COD_MOVIMENTACAO_REALIZADA <= 0)
     THEN
@@ -36449,7 +36521,8 @@ BEGIN
             NULL,
             NULL,
             NULL,
-            F_COD_DIAGRAMA_VEICULO) RETURNING COD_MOVIMENTACAO INTO F_COD_MOVIMENTACAO_REALIZADA;
+            F_COD_DIAGRAMA_VEICULO)
+    RETURNING COD_MOVIMENTACAO INTO F_COD_MOVIMENTACAO_REALIZADA;
 
     IF (F_COD_MOVIMENTACAO_REALIZADA <= 0)
     THEN
@@ -36609,13 +36682,14 @@ BEGIN
 
     -- Insere na tabela pai
     INSERT INTO SOCORRO_ROTA (COD_UNIDADE, STATUS_ATUAL)
-    VALUES (F_COD_UNIDADE, 'ABERTO') RETURNING CODIGO INTO F_COD_SOCORRO_INSERIDO;
+    VALUES (F_COD_UNIDADE, 'ABERTO')
+    RETURNING CODIGO INTO F_COD_SOCORRO_INSERIDO;
 
     -- Exibe erro se não puder inserir
     IF F_COD_SOCORRO_INSERIDO IS NULL OR F_COD_SOCORRO_INSERIDO <= 0
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível realizar a abertura desse socorro em rota, tente novamente');
+                'Não foi possível realizar a abertura desse socorro em rota, tente novamente');
     END IF;
 
     -- Insere na tabela de abertura
@@ -36662,13 +36736,14 @@ BEGIN
             F_DEVICE_UPTIME_MILLIS_ABERTURA,
             F_ANDROID_API_VERSION_ABERTURA,
             F_MARCA_DEVICE_ABERTURA,
-            F_MODELO_DEVICE_ABERTURA) RETURNING CODIGO INTO F_COD_SOCORRO_ABERTURA_INSERIDO;
+            F_MODELO_DEVICE_ABERTURA)
+    RETURNING CODIGO INTO F_COD_SOCORRO_ABERTURA_INSERIDO;
 
     -- Exibe erro se não puder inserir
     IF F_COD_SOCORRO_ABERTURA_INSERIDO IS NULL OR F_COD_SOCORRO_ABERTURA_INSERIDO <= 0
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível realizar a abertura desse socorro em rota, tente novamente');
+                'Não foi possível realizar a abertura desse socorro em rota, tente novamente');
     END IF;
 
     -- Atualiza o KM no veículo, caso:
@@ -36708,35 +36783,35 @@ DECLARE
     F_STATUS_SOCORRO                          SOCORRO_ROTA_STATUS_TYPE;
     F_COD_SOCORRO_INVALIDACAO_INSERIDO        BIGINT;
     F_QTD_LINHAS_ATUALIZADAS                  BIGINT;
-    F_COD_COLABORADOR_ABERTURA CONSTANT       BIGINT  := (SELECT COD_COLABORADOR_ABERTURA
+    F_COD_COLABORADOR_ABERTURA       CONSTANT BIGINT  := (SELECT COD_COLABORADOR_ABERTURA
                                                           FROM SOCORRO_ROTA_ABERTURA
                                                           WHERE COD_SOCORRO_ROTA = F_COD_SOCORRO_ROTA);
-    F_COD_COLABORADOR_ATENDIMENTO CONSTANT    BIGINT  := (SELECT COD_COLABORADOR_ATENDIMENTO
+    F_COD_COLABORADOR_ATENDIMENTO    CONSTANT BIGINT  := (SELECT COD_COLABORADOR_ATENDIMENTO
                                                           FROM SOCORRO_ROTA_ATENDIMENTO
                                                           WHERE COD_SOCORRO_ROTA = F_COD_SOCORRO_ROTA);
-    F_COD_PERMISSAO_TRATAR_SOCORRO CONSTANT   INTEGER := 146;
+    F_COD_PERMISSAO_TRATAR_SOCORRO   CONSTANT INTEGER := 146;
     F_COD_PERMISSAO_ABERTURA_SOCORRO CONSTANT INTEGER := 145;
 BEGIN
     -- Verifica se o socorro em rota existe.
     IF F_COD_COLABORADOR_ABERTURA IS NULL
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível localizar o socorro em rota.');
+                'Não foi possível localizar o socorro em rota.');
     END IF;
 
     -- Verifica se o socorro em rota foi atendido por quem está invalidando.
     IF F_COD_COLABORADOR_ATENDIMENTO IS NOT NULL AND F_COD_COLABORADOR_ATENDIMENTO != F_COD_COLABORADOR_INVALIDACAO
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não é possível invalidar um socorro que foi atendido por outro colaborador.');
+                'Não é possível invalidar um socorro que foi atendido por outro colaborador.');
     END IF;
 
     F_PERMISSAO_TRATAR_SOCORRO := (SELECT *
                                    FROM FUNC_COLABORADOR_VERIFICA_POSSUI_FUNCAO_PROLOG(
-                                                F_COD_COLABORADOR_INVALIDACAO, F_COD_PERMISSAO_TRATAR_SOCORRO));
+                                           F_COD_COLABORADOR_INVALIDACAO, F_COD_PERMISSAO_TRATAR_SOCORRO));
     F_PERMISSAO_ABERTURA_SOCORRO := (SELECT *
                                      FROM FUNC_COLABORADOR_VERIFICA_POSSUI_FUNCAO_PROLOG(
-                                                  F_COD_COLABORADOR_INVALIDACAO, F_COD_PERMISSAO_ABERTURA_SOCORRO));
+                                             F_COD_COLABORADOR_INVALIDACAO, F_COD_PERMISSAO_ABERTURA_SOCORRO));
     F_STATUS_SOCORRO := (SELECT STATUS_ATUAL
                          FROM SOCORRO_ROTA
                          WHERE CODIGO = F_COD_SOCORRO_ROTA);
@@ -36747,12 +36822,12 @@ BEGIN
         IF F_STATUS_SOCORRO = 'INVALIDO'
         THEN
             PERFORM THROW_GENERIC_ERROR(
-                            'Não foi possível invalidar o socorro, pois ele já foi invalidado.');
+                    'Não foi possível invalidar o socorro, pois ele já foi invalidado.');
         END IF;
         IF F_STATUS_SOCORRO = 'FINALIZADO'
         THEN
             PERFORM THROW_GENERIC_ERROR(
-                            'Não foi possível invalidar o socorro, pois ele já foi finalizado.');
+                    'Não foi possível invalidar o socorro, pois ele já foi finalizado.');
         END IF;
         -- Caso tenha a permissão de abertura, impede a invalidação de socorros de outros colaboradores e também
         -- de socorros que não estão mais em aberto.
@@ -36761,16 +36836,16 @@ BEGIN
         IF F_COD_COLABORADOR_ABERTURA <> F_COD_COLABORADOR_INVALIDACAO
         THEN
             PERFORM THROW_GENERIC_ERROR(
-                            'Você não tem permissão para invalidar pedidos de socorro de outros colaboradores.');
+                    'Você não tem permissão para invalidar pedidos de socorro de outros colaboradores.');
         END IF;
         IF F_STATUS_SOCORRO <> 'ABERTO'
         THEN
             PERFORM THROW_GENERIC_ERROR(
-                            'Não foi possível invalidar o socorro, pois ele não está mais em aberto.');
+                    'Não foi possível invalidar o socorro, pois ele não está mais em aberto.');
         END IF;
     ELSE
         PERFORM THROW_GENERIC_ERROR(
-                        'Você não ter permissão para invalidar o socorro.');
+                'Você não ter permissão para invalidar o socorro.');
     END IF;
 
     INSERT INTO SOCORRO_ROTA_INVALIDACAO (COD_SOCORRO_ROTA,
@@ -36808,7 +36883,8 @@ BEGIN
             F_DEVICE_UPTIME_MILLIS_INVALIDACAO,
             F_ANDROID_API_VERSION_INVALIDACAO,
             F_MARCA_DEVICE_INVALIDACAO,
-            F_MODELO_DEVICE_INVALIDACAO) RETURNING CODIGO INTO F_COD_SOCORRO_INVALIDACAO_INSERIDO;
+            F_MODELO_DEVICE_INVALIDACAO)
+    RETURNING CODIGO INTO F_COD_SOCORRO_INVALIDACAO_INSERIDO;
 
     IF F_COD_SOCORRO_INVALIDACAO_INSERIDO IS NOT NULL AND F_COD_SOCORRO_INVALIDACAO_INSERIDO > 0
     THEN
@@ -36818,11 +36894,11 @@ BEGIN
         IF F_QTD_LINHAS_ATUALIZADAS IS NULL OR F_QTD_LINHAS_ATUALIZADAS <= 0
         THEN
             PERFORM THROW_GENERIC_ERROR(
-                            'Não foi possível realizar a invalidação desse socorro em rota, tente novamente.');
+                    'Não foi possível realizar a invalidação desse socorro em rota, tente novamente.');
         END IF;
     ELSE
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível realizar a invalidação desse socorro em rota, tente novamente.');
+                'Não foi possível realizar a invalidação desse socorro em rota, tente novamente.');
     END IF;
 
     RETURN F_COD_SOCORRO_INVALIDACAO_INSERIDO;
@@ -36861,23 +36937,23 @@ BEGIN
     IF F_COD_COLABORADOR_ABERTURA IS NULL
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível localizar o socorro em rota.');
+                'Não foi possível localizar o socorro em rota.');
     END IF;
 
     IF F_STATUS_SOCORRO = 'EM_ATENDIMENTO'
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível atender o socorro, pois ele já foi atendido.');
+                'Não foi possível atender o socorro, pois ele já foi atendido.');
     END IF;
     IF F_STATUS_SOCORRO = 'INVALIDO'
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível atender o socorro, pois ele já foi invalidado.');
+                'Não foi possível atender o socorro, pois ele já foi invalidado.');
     END IF;
     IF F_STATUS_SOCORRO = 'FINALIZADO'
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível atender o socorro, pois ele já foi finalizado.');
+                'Não foi possível atender o socorro, pois ele já foi finalizado.');
     END IF;
 
     INSERT INTO SOCORRO_ROTA_ATENDIMENTO (COD_SOCORRO_ROTA,
@@ -36909,7 +36985,8 @@ BEGIN
             F_DEVICE_UPTIME_MILLIS_ATENDIMENTO,
             F_ANDROID_API_VERSION_ATENDIMENTO,
             F_MARCA_DEVICE_ATENDIMENTO,
-            F_MODELO_DEVICE_ATENDIMENTO) RETURNING CODIGO INTO F_COD_SOCORRO_ATENDIMENTO_INSERIDO;
+            F_MODELO_DEVICE_ATENDIMENTO)
+    RETURNING CODIGO INTO F_COD_SOCORRO_ATENDIMENTO_INSERIDO;
 
     IF F_COD_SOCORRO_ATENDIMENTO_INSERIDO > 0
     THEN
@@ -36919,11 +36996,11 @@ BEGIN
         IF F_QTD_LINHAS_ATUALIZADAS <= 0
         THEN
             PERFORM THROW_GENERIC_ERROR(
-                            'Não foi possível realizar o atendimento desse socorro em rota, tente novamente.');
+                    'Não foi possível realizar o atendimento desse socorro em rota, tente novamente.');
         END IF;
     ELSE
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível realizar a atendimento desse socorro em rota, tente novamente.');
+                'Não foi possível realizar a atendimento desse socorro em rota, tente novamente.');
     END IF;
 
     RETURN F_COD_SOCORRO_ATENDIMENTO_INSERIDO;
@@ -36968,30 +37045,30 @@ BEGIN
     IF F_COD_COLABORADOR_ABERTURA IS NULL
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível localizar o socorro em rota.');
+                'Não foi possível localizar o socorro em rota.');
     END IF;
 
     -- Verifica se o socorro em rota foi atendido por quem está finalizando
     IF F_COD_COLABORADOR_ATENDIMENTO != F_COD_COLABORADOR_FINALIZACAO
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não é possível finalizar um socorro que foi atendido por outro colaborador.');
+                'Não é possível finalizar um socorro que foi atendido por outro colaborador.');
     END IF;
 
     IF F_STATUS_SOCORRO = 'ABERTO'
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível finalizar o socorro, pois ele ainda não foi atendido.');
+                'Não foi possível finalizar o socorro, pois ele ainda não foi atendido.');
     END IF;
     IF F_STATUS_SOCORRO = 'INVALIDO'
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível finalizar o socorro, pois ele já foi invalidado.');
+                'Não foi possível finalizar o socorro, pois ele já foi invalidado.');
     END IF;
     IF F_STATUS_SOCORRO = 'FINALIZADO'
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível finalizar o socorro, pois ele já foi finalizado.');
+                'Não foi possível finalizar o socorro, pois ele já foi finalizado.');
     END IF;
 
     INSERT INTO SOCORRO_ROTA_FINALIZACAO (COD_SOCORRO_ROTA,
@@ -37029,7 +37106,8 @@ BEGIN
             F_DEVICE_UPTIME_MILLIS_FINALIZACAO,
             F_ANDROID_API_VERSION_FINALIZACAO,
             F_MARCA_DEVICE_FINALIZACAO,
-            F_MODELO_DEVICE_FINALIZACAO) RETURNING CODIGO INTO F_COD_SOCORRO_FINALIZACAO_INSERIDO;
+            F_MODELO_DEVICE_FINALIZACAO)
+    RETURNING CODIGO INTO F_COD_SOCORRO_FINALIZACAO_INSERIDO;
 
     IF F_COD_SOCORRO_FINALIZACAO_INSERIDO > 0
     THEN
@@ -37039,11 +37117,11 @@ BEGIN
         IF F_QTD_LINHAS_ATUALIZADAS <= 0
         THEN
             PERFORM THROW_GENERIC_ERROR(
-                            'Não foi possível realizar a invalidação desse socorro em rota, tente novamente.');
+                    'Não foi possível realizar a invalidação desse socorro em rota, tente novamente.');
         END IF;
     ELSE
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível realizar a invalidação desse socorro em rota, tente novamente.');
+                'Não foi possível realizar a invalidação desse socorro em rota, tente novamente.');
     END IF;
 
     RETURN F_COD_SOCORRO_FINALIZACAO_INSERIDO;
@@ -37201,7 +37279,7 @@ BEGIN
     IF NOT FOUND
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível encontrar esse socorro');
+                'Não foi possível encontrar esse socorro');
     END IF;
 END;
 $$;
@@ -37245,18 +37323,19 @@ BEGIN
                 AND SROP.COD_EMPRESA = F_COD_EMPRESA)
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        FORMAT(E'Já existe uma descrição \'%s\' cadastrada nesta empresa', F_DESCRICAO));
+                FORMAT(E'Já existe uma descrição \'%s\' cadastrada nesta empresa', F_DESCRICAO));
     END IF;
 
     INSERT INTO SOCORRO_ROTA_OPCAO_PROBLEMA (COD_EMPRESA, DESCRICAO, OBRIGA_DESCRICAO,
                                              COD_COLABORADOR_ULTIMA_ATUALIZACAO, DATA_HORA_ULTIMA_ATUALIZACAO)
     VALUES (F_COD_EMPRESA, F_DESCRICAO, F_OBRIGA_DESCRICAO, F_COD_COLABORADOR,
-            F_DATA_HORA) RETURNING CODIGO INTO F_COD_OPCAO_PROBLEMA_INSERIDO;
+            F_DATA_HORA)
+    RETURNING CODIGO INTO F_COD_OPCAO_PROBLEMA_INSERIDO;
 
     IF F_COD_OPCAO_PROBLEMA_INSERIDO <= 0
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível inserir a opção de problema, tente novamente');
+                'Não foi possível inserir a opção de problema, tente novamente');
     END IF;
 
     RETURN F_COD_OPCAO_PROBLEMA_INSERIDO;
@@ -37289,7 +37368,7 @@ BEGIN
                 AND SROP.COD_EMPRESA = F_COD_EMPRESA)
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        FORMAT(E'Já existe uma descrição \'%s\' cadastrada na empresa', F_DESCRICAO));
+                FORMAT(E'Já existe uma descrição \'%s\' cadastrada na empresa', F_DESCRICAO));
     END IF;
 
     SELECT DESCRICAO, OBRIGA_DESCRICAO, DATA_HORA_ULTIMA_ATUALIZACAO, COD_COLABORADOR_ULTIMA_ATUALIZACAO, STATUS_ATIVO
@@ -37328,7 +37407,8 @@ BEGIN
             F_COD_EMPRESA,
             F_OLD_DESCRICAO,
             F_OLD_OBRIGA_DESCRICAO,
-            F_OLD_STATUS_ATIVO) RETURNING CODIGO INTO F_COD_HISTORICO_ALTERACAO;
+            F_OLD_STATUS_ATIVO)
+    RETURNING CODIGO INTO F_COD_HISTORICO_ALTERACAO;
 
     IF NOT FOUND OR F_COD_HISTORICO_ALTERACAO IS NULL OR F_COD_HISTORICO_ALTERACAO <= 0 THEN
         PERFORM THROW_GENERIC_ERROR('Não foi possível criar um histórico para a edição de problema, ' ||
@@ -37368,7 +37448,7 @@ BEGIN
     IF NOT FOUND
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível encontrar a opção de problema');
+                'Não foi possível encontrar a opção de problema');
     END IF;
 END;
 $$;
@@ -37457,7 +37537,8 @@ BEGIN
             F_COD_EMPRESA,
             F_OLD_DESCRICAO,
             F_OLD_OBRIGA_DESCRICAO,
-            F_STATUS_ATIVO) RETURNING CODIGO INTO F_COD_HISTORICO_ALTERACAO;
+            F_STATUS_ATIVO)
+    RETURNING CODIGO INTO F_COD_HISTORICO_ALTERACAO;
 
     IF NOT FOUND OR F_COD_HISTORICO_ALTERACAO IS NULL OR F_COD_HISTORICO_ALTERACAO <= 0 THEN
         PERFORM THROW_GENERIC_ERROR('Não foi possível criar um histórico para a mudança de status de opção de' ||
@@ -37515,14 +37596,14 @@ BEGIN
             F_COD_EMPRESA,
             F_COD_EQUIPE,
             F_PIS,
-            F_COD_UNIDADE_CADASTRO) RETURNING CODIGO
-               INTO F_COD_COLABORADOR_INSERIDO;
+            F_COD_UNIDADE_CADASTRO)
+    RETURNING CODIGO INTO F_COD_COLABORADOR_INSERIDO;
 
     -- Verificamos se o insert de colaborador funcionou.
     IF F_COD_COLABORADOR_INSERIDO IS NULL OR F_COD_COLABORADOR_INSERIDO <= 0
     THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'Não foi possível inserir o colaborador, tente novamente');
+                'Não foi possível inserir o colaborador, tente novamente');
     END IF;
 
     IF F_PREFIXO_PAIS IS NOT NULL AND F_TELEFONE IS NOT NULL
@@ -37536,14 +37617,14 @@ BEGIN
                 F_PREFIXO_PAIS,
                 F_COD_COLABORADOR_INSERIDO,
                 F_TELEFONE,
-                F_COD_COLABORADOR_UPDATE) RETURNING CODIGO
-                   INTO F_COD_TELEFONE_INSERIDO;
+                F_COD_COLABORADOR_UPDATE)
+        RETURNING CODIGO INTO F_COD_TELEFONE_INSERIDO;
 
         -- Verificamos se o insert do telefone do colaborador funcionou.
         IF F_COD_TELEFONE_INSERIDO IS NULL OR F_COD_TELEFONE_INSERIDO <= 0
         THEN
             PERFORM THROW_GENERIC_ERROR(
-                            'Não foi possível inserir o colaborador devido a problemas no telefone, tente novamente');
+                    'Não foi possível inserir o colaborador devido a problemas no telefone, tente novamente');
         END IF;
     END IF;
 
@@ -37554,14 +37635,14 @@ BEGIN
                                        COD_COLABORADOR_ULTIMA_ATUALIZACAO)
         VALUES (F_COD_COLABORADOR_INSERIDO,
                 F_EMAIL,
-                F_COD_COLABORADOR_UPDATE) RETURNING CODIGO
-                   INTO F_COD_EMAIL_INSERIDO;
+                F_COD_COLABORADOR_UPDATE)
+        RETURNING CODIGO INTO F_COD_EMAIL_INSERIDO;
 
         -- Verificamos se o insert do email funcionou.
         IF F_COD_EMAIL_INSERIDO IS NULL OR F_COD_EMAIL_INSERIDO <= 0
         THEN
             PERFORM THROW_GENERIC_ERROR(
-                            'Não foi possível inserir o colaborador devido a problemas no e-mail, tente novamente');
+                    'Não foi possível inserir o colaborador devido a problemas no e-mail, tente novamente');
         END IF;
     END IF;
 
@@ -37632,7 +37713,7 @@ BEGIN
         IF NOT FOUND
         THEN
             PERFORM THROW_GENERIC_ERROR(
-                            'Não foi possível atualizar o colaborador devido a problemas no telefone, tente novamente');
+                    'Não foi possível atualizar o colaborador devido a problemas no telefone, tente novamente');
         END IF;
     END IF;
 
@@ -37649,7 +37730,7 @@ BEGIN
         IF NOT FOUND
         THEN
             PERFORM THROW_GENERIC_ERROR(
-                            'Não foi possível atualizar o colaborador devido a problemas no e-mail, tente novamente');
+                    'Não foi possível atualizar o colaborador devido a problemas no e-mail, tente novamente');
         END IF;
     END IF;
 
@@ -37836,7 +37917,7 @@ BEGIN
     -- TODO: Criar estrutura própria para realizar essa verificação
     IF NOT F_COD_EMPRESA = ANY (F_COD_EMPRESAS_LIBERADAS) THEN
         PERFORM THROW_GENERIC_ERROR(
-                        'A funcionalidade de Socorro em Rota não está liberada para a sua empresa, entre em contato com conexao@zalf.com.br para contratar!');
+                'A funcionalidade de Socorro em Rota não está liberada para a sua empresa, entre em contato com conexao@zalf.com.br para contratar!');
     END IF;
 END;
 $$;
@@ -38137,9 +38218,9 @@ BEGIN
     IF (F_QTD_ROWS_ALTERADAS <= 0)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('Não foi possível atualizar as informações do pneu %s para o status %s',
-                               F_CODIGO_PNEU_CLIENTE,
-                               F_STATUS_PNEU));
+                FORMAT('Não foi possível atualizar as informações do pneu %s para o status %s',
+                       F_CODIGO_PNEU_CLIENTE,
+                       F_STATUS_PNEU));
     END IF;
 
     -- Precisamos vincular o pneu ao veículo apenas se o status for aplicado.
@@ -38300,9 +38381,9 @@ BEGIN
     IF (F_QTD_ROWS_ALTERADAS <= 0)
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(
-                        FORMAT('NÃO FOI POSSÍVEL ATUALIZAR AS INFORMAÇÕES DO PNEU %S PARA O STATUS %S',
-                               F_CODIGO_PNEU_CLIENTE,
-                               F_STATUS_PNEU));
+                FORMAT('NÃO FOI POSSÍVEL ATUALIZAR AS INFORMAÇÕES DO PNEU %S PARA O STATUS %S',
+                       F_CODIGO_PNEU_CLIENTE,
+                       F_STATUS_PNEU));
     END IF;
 
     -- PRECISAMOS VINCULAR O PNEU AO VEÍCULO APENAS SE O STATUS FOR APLICADO.
@@ -38458,7 +38539,8 @@ begin
     set mensagem_erro_ao_sincronizar = f_error_message,
         data_hora_ultima_atualizacao = f_data_hora_atualizacao,
         qtd_tentativas               = qtd_tentativas + 1
-    where cod_checklist_para_sincronizar = f_cod_checklist returning qtd_tentativas into nova_quantidade_tentativas;
+    where cod_checklist_para_sincronizar = f_cod_checklist
+    returning qtd_tentativas into nova_quantidade_tentativas;
 
     insert into piccolotur.checklist_erros_sincronia(cod_checklist_para_sincronizar,
                                                      nova_qtd_tentativas,
@@ -38666,41 +38748,41 @@ $$
 DECLARE
 BEGIN
     RETURN QUERY
-        WITH DADOS AS (SELECT U.NOME :: TEXT                                                           AS NOME_UNIDADE,
-                              V.PLACA :: TEXT                                                          AS PLACA_VEICULO,
+        WITH DADOS AS (SELECT U.NOME :: TEXT                                                       AS NOME_UNIDADE,
+                              V.PLACA :: TEXT                                                      AS PLACA_VEICULO,
                               (SELECT COUNT(VP.COD_PNEU)
                                FROM VEICULO_PNEU VP
                                WHERE VP.PLACA = V.PLACA
-                               GROUP BY VP.PLACA) :: TEXT                                              AS QTD_PNEUS_APLICADOS,
-                              MV.NOME :: TEXT                                                          AS NOME_MODELO_VEICULO,
-                              VT.NOME :: TEXT                                                          AS NOME_TIPO_VEICULO,
-                              TO_CHAR(SULCO.DATA_HORA_ULTIMA_AFERICAO_SULCO, 'DD/MM/YYYY HH24:MI')     AS DATA_HORA_ULTIMA_AFERICAO_SULCO,
+                               GROUP BY VP.PLACA) :: TEXT                                          AS QTD_PNEUS_APLICADOS,
+                              MV.NOME :: TEXT                                                      AS NOME_MODELO_VEICULO,
+                              VT.NOME :: TEXT                                                      AS NOME_TIPO_VEICULO,
+                              TO_CHAR(SULCO.DATA_HORA_ULTIMA_AFERICAO_SULCO, 'DD/MM/YYYY HH24:MI') AS DATA_HORA_ULTIMA_AFERICAO_SULCO,
                               TO_CHAR(PRESSAO.DATA_HORA_ULTIMA_AFERICAO_PRESSAO,
-                                      'DD/MM/YYYY HH24:MI')                                            AS DATA_HORA_ULTIMA_AFERICAO_PRESSAO,
+                                      'DD/MM/YYYY HH24:MI')                                        AS DATA_HORA_ULTIMA_AFERICAO_PRESSAO,
                               TO_CHAR(SULCO.DATA_ULTIMA_AFERICAO_SULCO + (PRU.PERIODO_AFERICAO_SULCO ||
                                                                           ' DAYS') :: INTERVAL,
-                                      'DD/MM/YYYY')                                                    AS DATA_VENCIMENTO_SULCO,
+                                      'DD/MM/YYYY')                                                AS DATA_VENCIMENTO_SULCO,
                               TO_CHAR(PRESSAO.DATA_ULTIMA_AFERICAO_PRESSAO + (PRU.PERIODO_AFERICAO_PRESSAO ||
                                                                               ' DAYS') :: INTERVAL,
-                                      'DD/MM/YYYY')                                                    AS DATA_VENCIMENTO_PRESSAO,
+                                      'DD/MM/YYYY')                                                AS DATA_VENCIMENTO_PRESSAO,
                               (PRU.PERIODO_AFERICAO_SULCO -
-                               SULCO.DIAS) :: TEXT                                                     AS DIAS_VENCIMENTO_SULCO,
+                               SULCO.DIAS) :: TEXT                                                 AS DIAS_VENCIMENTO_SULCO,
                               (PRU.PERIODO_AFERICAO_PRESSAO - PRESSAO.DIAS) :: TEXT
-                                                                                                       AS DIAS_VENCIMENTO_PRESSAO,
-                              SULCO.DIAS :: TEXT                                                       AS DIAS_DESDE_ULTIMA_AFERICAO_SULCO,
-                              PRESSAO.DIAS :: TEXT                                                     AS DIAS_DESDE_ULTIMA_AFERICAO_PRESSAO,
+                                                                                                   AS DIAS_VENCIMENTO_PRESSAO,
+                              SULCO.DIAS :: TEXT                                                   AS DIAS_DESDE_ULTIMA_AFERICAO_SULCO,
+                              PRESSAO.DIAS :: TEXT                                                 AS DIAS_DESDE_ULTIMA_AFERICAO_PRESSAO,
                               F_IF(CONFIG.PODE_AFERIR_SULCO OR CONFIG.PODE_AFERIR_SULCO_PRESSAO, TRUE,
-                                   FALSE)                                                              AS PODE_AFERIR_SULCO,
+                                   FALSE)                                                          AS PODE_AFERIR_SULCO,
                               F_IF(CONFIG.PODE_AFERIR_PRESSAO OR CONFIG.PODE_AFERIR_SULCO_PRESSAO, TRUE,
-                                   FALSE)                                                              AS PODE_AFERIR_PRESSAO,
+                                   FALSE)                                                          AS PODE_AFERIR_PRESSAO,
                               F_IF(SULCO.DIAS IS NULL, TRUE,
-                                   FALSE)                                                              AS SULCO_NUNCA_AFERIDO,
+                                   FALSE)                                                          AS SULCO_NUNCA_AFERIDO,
                               F_IF(PRESSAO.DIAS IS NULL, TRUE,
-                                   FALSE)                                                              AS PRESSAO_NUNCA_AFERIDA,
+                                   FALSE)                                                          AS PRESSAO_NUNCA_AFERIDA,
                               F_IF(SULCO.DIAS > PRU.PERIODO_AFERICAO_SULCO, TRUE,
-                                   FALSE)                                                              AS AFERICAO_SULCO_VENCIDA,
+                                   FALSE)                                                          AS AFERICAO_SULCO_VENCIDA,
                               F_IF(PRESSAO.DIAS > PRU.PERIODO_AFERICAO_PRESSAO, TRUE,
-                                   FALSE)                                                              AS AFERICAO_PRESSAO_VENCIDA
+                                   FALSE)                                                          AS AFERICAO_PRESSAO_VENCIDA
                        FROM VEICULO V
                                 JOIN MODELO_VEICULO MV
                                      ON MV.CODIGO = V.COD_MODELO
@@ -39180,4 +39262,67 @@ BEGIN
 END ;
 $$;
 
-
+CREATE
+    OR REPLACE FUNCTION FUNC_CHECKLIST_RELATORIO_DADOS_GERAIS(
+    F_COD_UNIDADES BIGINT[],
+    F_DATA_INICIAL DATE,
+    F_DATA_FINAL DATE,
+    F_PLACA TEXT,
+    F_COD_COLABORADOR BIGINT)
+    RETURNS TABLE
+            (
+                UNIDADE                TEXT,
+                "DATA/HORA REALIZAÇÃO" TEXT,
+                "CPF COLABORADOR"      TEXT,
+                "NOME COLABORADOR"     TEXT,
+                "TIPO VEÍCULO"         TEXT,
+                PLACA                  TEXT,
+                "TIPO CHECKLIST"       TEXT,
+                "CÓDIGO MODELO"        TEXT,
+                "NOME MODELO"          TEXT,
+                PERGUNTA               TEXT,
+                ALTERNATIVA            TEXT,
+                RESPOSTA               TEXT,
+                PRIORIDADE             TEXT,
+                "TIPO RESPOSTA"        TEXT
+            )
+    LANGUAGE SQL
+AS
+$$
+SELECT U.NOME                                         AS NOME_UNIDADE,
+       TO_CHAR(CL.DATA_HORA, 'DD/MM/YYYY HH24:MI:SS') AS DATA_HORA_REALIZACAO,
+       LPAD(CL.CPF_COLABORADOR :: TEXT, 11, '0')      AS CPF_COLABORADOR,
+       CO.NOME                                        AS NOME_COLABORADOR,
+       VT.NOME                                        AS NOME_TIPO_VEICULO,
+       CL.PLACA_VEICULO                               AS PLACA_VEICULO,
+       CASE
+           WHEN CL.TIPO = 'S'
+               THEN 'SAÍDA'
+           ELSE 'RETORNO' END                         AS TIPO_CHECKLIST,
+       CM.CODIGO :: TEXT                              AS CODIGO_MODELO_CHECKLIST,
+       CM.NOME                                        AS NOME_MODELO_CHECKLIST,
+       CP.PERGUNTA                                    AS PERGUNTA,
+       CAP.ALTERNATIVA                                AS ALTERNATIVA,
+       ''                                             AS RESPOSTA,
+       CAP.PRIORIDADE                                 AS PRIORIDADE,
+       CASE
+           WHEN CP.SINGLE_CHOICE
+               THEN 'ÚNICA ESCOLHA'
+           ELSE 'MÚLTIPLA ESCOLHA' END                AS TIPO_RESPOSTA
+FROM CHECKLIST CL
+         JOIN CHECKLIST_MODELO CM ON CL.COD_CHECKLIST_MODELO = CM.CODIGO
+         JOIN CHECKLIST_PERGUNTAS CP ON CM.CODIGO = CP.COD_CHECKLIST_MODELO
+         JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP ON CP.CODIGO = CAP.COD_PERGUNTA
+         JOIN UNIDADE U ON CL.COD_UNIDADE = U.CODIGO
+         JOIN COLABORADOR CO ON CO.CPF = CL.CPF_COLABORADOR
+         JOIN VEICULO_TIPO VT ON VT.CODIGO =
+                                 (SELECT V.COD_TIPO
+                                  FROM VEICULO V
+                                  WHERE V.PLACA = CL.PLACA_VEICULO)
+WHERE U.CODIGO = ANY (F_COD_UNIDADES)
+  AND (CL.DATA_HORA AT TIME ZONE TZ_UNIDADE(CL.COD_UNIDADE)) :: DATE >= F_DATA_INICIAL
+  AND (CL.DATA_HORA AT TIME ZONE TZ_UNIDADE(CL.COD_UNIDADE)) :: DATE <= F_DATA_FINAL
+  AND F_IF(F_PLACA IS NOT NULL, CL.PLACA_VEICULO = F_PLACA, TRUE)
+  AND F_IF(F_COD_COLABORADOR IS NOT NULL, CO.CODIGO = F_COD_COLABORADOR, TRUE)
+ORDER BY U.CODIGO, CL.DATA_HORA DESC, CL.PLACA_VEICULO, CM.CODIGO, CP.PERGUNTA, CAP.CODIGO;
+$$;

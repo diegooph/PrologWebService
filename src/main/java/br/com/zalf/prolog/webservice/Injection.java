@@ -138,10 +138,10 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarc
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.gente.empresa.EmpresaDaoImpl;
-import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
-import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDaoImpl;
-import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDao;
-import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.gente.faleconosco.FaleConoscoDao;
+import br.com.zalf.prolog.webservice.gente.faleconosco.FaleConoscoDaoImpl;
+import br.com.zalf.prolog.webservice.gente.faleconosco.relatorios.FaleConoscoRelatorioDao;
+import br.com.zalf.prolog.webservice.gente.faleconosco.relatorios.FaleConoscoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutorDao;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutorDaoImpl;
 import br.com.zalf.prolog.webservice.gente.quiz.modelo.QuizModeloDao;

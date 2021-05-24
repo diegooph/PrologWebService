@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao._model;
 
+import br.com.zalf.prolog.webservice.commons.util.datetime.TimezoneUtils;
+import br.com.zalf.prolog.webservice.v3.LocalDateTimeUtcAttributeConverter;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.VeiculoKmColetado;
 import lombok.AllArgsConstructor;
@@ -9,10 +11,9 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created on 2021-03-25
@@ -32,29 +33,27 @@ public final class MovimentacaoProcessoEntity implements EntityKmColetado {
     private Long codigo;
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
+    @Convert(converter = LocalDateTimeUtcAttributeConverter.class)
+    @Column(name = "data_hora")
+    private LocalDateTime dataHoraRealizacao;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cpf_responsavel", referencedColumnName = "cpf")
+    private ColaboradorEntity colaboradorRealizacaoProcesso;
+    @Column(name = "observacao")
+    private String observacao;
     @OneToMany(mappedBy = "movimentacaoProcesso", fetch = FetchType.LAZY)
     private Set<MovimentacaoEntity> movimentacoes;
 
     @NotNull
     @Override
     public VeiculoKmColetado getVeiculoKmColetado() {
-        final Optional<VeiculoMovimentacao> veiculo = getVeiculo();
-        if (veiculo.isPresent()) {
-            final VeiculoMovimentacao veiculoMovimentacao = veiculo.get();
-            return VeiculoKmColetado.of(veiculoMovimentacao.getCodVeiculo(), veiculoMovimentacao.getKmColetado());
-        } else {
-            throw new IllegalStateException(String.format(
-                    "O processo de movimentação %d não possui veículo associado.",
-                    codigo));
-        }
-    }
-
-    @NotNull
-    public List<MovimentacaoEntity> getMovimentacoesNoVeiculo(@NotNull final Long codVeiculo) {
-        return movimentacoes
-                .stream()
-                .filter(m -> m.isMovimentacaoNoVeiculo(codVeiculo))
-                .collect(Collectors.toList());
+        return getVeiculo()
+                .orElseThrow(() -> {
+                    throw new IllegalStateException(String.format(
+                            "O processo de movimentação %d não possui veículo associado.",
+                            codigo));
+                })
+                .toVeiculoKmColetado();
     }
 
     @NotNull
@@ -69,5 +68,11 @@ public final class MovimentacaoProcessoEntity implements EntityKmColetado {
         }
 
         return Optional.empty();
+    }
+
+    @NotNull
+    public LocalDateTime getDataHoraRealizacaoTzAplicado() {
+        return TimezoneUtils.applyTimezone(this.dataHoraRealizacao,
+                                           this.colaboradorRealizacaoProcesso.getColaboradorZoneId());
     }
 }

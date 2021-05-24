@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorInsercao
 import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorListagem;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -61,10 +60,15 @@ public interface ColaboradorDao {
 
     Long getCodUnidadeByCpf(@NotNull final Long cpf) throws SQLException;
 
-    boolean colaboradorTemAcessoFuncao(@NotNull final Long cpf, final int codPilar, final int codFuncaoProLog) throws SQLException;
+    boolean colaboradorTemAcessoFuncao(@NotNull final Long cpf, final int codPilar, final int codFuncaoProLog)
+            throws SQLException;
 
     @NotNull
     Long getCodColaboradorByCpf(@NotNull final Connection conn,
                                 @NotNull final Long codEmpresa,
+                                @NotNull final String cpfColaborador) throws Throwable;
+
+    @NotNull
+    Long getCodColaboradorByCpf(@NotNull final Long codEmpresa,
                                 @NotNull final String cpfColaborador) throws Throwable;
 }

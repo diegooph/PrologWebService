@@ -640,32 +640,35 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Long insert(@NotNull final Pneu pneu,
+    public Long insert(@NotNull final Long codigoColaboradorCadastro,
+                       @NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
                        @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable {
         if (pneuDao == null) {
             pneuDao = Injection.providePneuDao();
         }
-        return pneuDao.insert(pneu, codUnidade, origemCadastro);
+        return pneuDao.insert(codigoColaboradorCadastro, pneu, codUnidade, origemCadastro);
     }
 
     @NotNull
     @Override
-    public List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable {
+    public List<Long> insert(@NotNull final Long codigoColaboradorCadastro,
+                             @NotNull final List<Pneu> pneus) throws Throwable {
         if (pneuDao == null) {
             pneuDao = Injection.providePneuDao();
         }
-        return pneuDao.insert(pneus);
+        return pneuDao.insert(codigoColaboradorCadastro, pneus);
     }
 
     @Override
-    public void update(@NotNull final Pneu pneu,
+    public void update(@NotNull final Long codigoColaboradorEdicao,
+                       @NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
                        @NotNull final Long codOriginalPneu) throws Throwable {
         if (pneuDao == null) {
             pneuDao = Injection.providePneuDao();
         }
-        pneuDao.update(pneu, codUnidade, codOriginalPneu);
+        pneuDao.update(codigoColaboradorEdicao, pneu, codUnidade, codOriginalPneu);
     }
 
     @NotNull

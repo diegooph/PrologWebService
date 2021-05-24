@@ -237,14 +237,14 @@ from mapa m
                    on ajudante2.cod_unidade = m.cod_unidade and ajudante2.cod_funcao = ufp.cod_funcao_ajudante
                        and ajudante2.matricula_ambev = m.matricajud2
          left join (select t.mapa                         as tracking_mapa,
-                           t.código_transportadora           tracking_unidade,
+                           t.cod_unidade                     tracking_unidade,
                            count(t.disp_apont_cadastrado) as total_apontamentos,
                            sum(case
                                    when t.disp_apont_cadastrado <= um.meta_raio_tracking
                                        then 1
                                    else 0 end)            as apontamentos_ok
                     from tracking t
-                             join unidade_metas um on um.cod_unidade = t.código_transportadora
+                             join unidade_metas um on um.cod_unidade = t.cod_unidade
                     group by 1, 2) as tracking on tracking_mapa = m.mapa and tracking_unidade = m.cod_unidade
 where m.cod_unidade = f_cod_unidade
   and m.data between f_data_inicial and f_data_final

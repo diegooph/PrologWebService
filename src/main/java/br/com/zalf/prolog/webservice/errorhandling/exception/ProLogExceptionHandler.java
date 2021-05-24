@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.errorhandling.exception;
 
 import br.com.zalf.prolog.webservice.errorhandling.sql.SqlExceptionTranslator;
 import org.jetbrains.annotations.NotNull;
+import org.postgresql.util.PSQLException;
+import org.springframework.dao.DataAccessException;
 
 import java.sql.SQLException;
 
@@ -20,6 +22,12 @@ public class ProLogExceptionHandler {
 
     public ProLogException map(@NotNull final Throwable throwable,
                                @NotNull final String fallBackErrorMessage) {
+
+        if (throwable instanceof DataAccessException) {
+            final PSQLException psqlException = (PSQLException) throwable.getCause().getCause();
+            return sqlTranslator.doTranslate(psqlException, fallBackErrorMessage);
+        }
+
         if (throwable instanceof SQLException) {
             return sqlTranslator.doTranslate((SQLException) throwable, fallBackErrorMessage);
         }

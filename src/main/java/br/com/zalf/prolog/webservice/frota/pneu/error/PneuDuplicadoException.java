@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.error;
 
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.DuplicateKeyException;
 
 /**
@@ -10,6 +11,6 @@ import br.com.zalf.prolog.webservice.errorhandling.sql.DuplicateKeyException;
 public class PneuDuplicadoException extends DuplicateKeyException {
 
     PneuDuplicadoException() {
-        super("ERRO!\nEste pneu já está cadastrado");
+        super("ERRO!\nEste pneu já está cadastrado", "", "", GenericException.NO_LOGS_INTO_SENTRY);
     }
 }

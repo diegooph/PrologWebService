@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.afericao;
 
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.*;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * Created on 2021-03-26
@@ -36,8 +37,25 @@ public class AfericaoService implements KmProcessoAtualizavel {
     }
 
     @NotNull
-    public AfericaoEntity getByCodigo(@NotNull final Long codigo) {
-        return afericaoDao.getOne(codigo);
+    public List<AfericaoPlacaProjection> getAfericoesPlacas(@NotNull final FiltroAfericaoPlaca filtro) {
+        return afericaoDao.getAfericoesPlacas(filtro.getCodUnidades(),
+                                              filtro.getCodTipoVeiculo(),
+                                              filtro.getCodVeiculo(),
+                                              filtro.getDataInicial(),
+                                              filtro.getDataFinal(),
+                                              filtro.getLimit(),
+                                              filtro.getOffset(),
+                                              filtro.isIncluirMedidas());
+    }
+
+    @NotNull
+    public List<AfericaoAvulsaProjection> getAfericoesAvulsas(@NotNull final FiltroAfericaoAvulsa filtro) {
+        return afericaoDao.getAfericoesAvulsas(filtro.getCodUnidades(),
+                                               filtro.getDataInicial(),
+                                               filtro.getDataFinal(),
+                                               filtro.getLimit(),
+                                               filtro.getOffset(),
+                                               filtro.isIncluirMedidas());
     }
 
     @Transactional
@@ -48,5 +66,10 @@ public class AfericaoService implements KmProcessoAtualizavel {
                 .withKmColetadoVeiculo(novoKm)
                 .build();
         afericaoDao.save(entity);
+    }
+
+    @NotNull
+    public AfericaoEntity getByCodigo(@NotNull final Long codigo) {
+        return afericaoDao.getOne(codigo);
     }
 }

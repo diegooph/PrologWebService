@@ -34,14 +34,21 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
                     return handlePSQLException((PSQLException) sqlException.getNextException(), fallBackErrorMessage);
                 }
             }
-
         } catch (final Throwable t) {
             // Se acontecer algum outro erro ao tentarmos mapear o erro principal, realizamos o fallBack para a
             // mensagem recebida lançando uma exception genérica.
-            return new GenericException(fallBackErrorMessage);
+            return new GenericException(fallBackErrorMessage, "Erro interno ao realizar mapeamento de exception.", t);
         }
 
-        return new DataAccessException(fallBackErrorMessage);
+        return new DataAccessException(fallBackErrorMessage,
+                                       "Não foi possível realizar o mapeamento do erro.",
+                                       sqlException);
+    }
+
+    @Nullable
+    protected ProLogException customTranslate(@NotNull final SQLException sqlException,
+                                              @NotNull final String fallBackErrorMessage) {
+        return null;
     }
 
     @NotNull
@@ -119,11 +126,5 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
     @NotNull
     private String getPSQLErrorConstraint(@NotNull final SQLException sqlException) {
         return ((PSQLException) sqlException).getServerErrorMessage().getConstraint();
-    }
-
-    @Nullable
-    protected ProLogException customTranslate(@NotNull final SQLException sqlException,
-                                              @NotNull final String fallBackErrorMessage) {
-        return null;
     }
 }

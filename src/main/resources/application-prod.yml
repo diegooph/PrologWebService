@@ -1,5 +1,5 @@
 prolog:
-  version_code: "v3.2.1"
+  version_code: "v3.3.6"
 spring:
   profiles: prod
   datasource:

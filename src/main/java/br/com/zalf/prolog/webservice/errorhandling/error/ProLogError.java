@@ -8,131 +8,144 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 
 public final class ProLogError {
-	/**
-	 * Contains the same HTTP Status code returned by the server
-	 */
-	private final int httpStatusCode;
+    /**
+     * Contains the same HTTP Status code returned by the server
+     */
+    private final int httpStatusCode;
 
-	/**
-	 * Application specific error code
-	 */
-	private final int proLogErrorCode;
+    /**
+     * Application specific error code
+     */
+    private final int proLogErrorCode;
 
-	/**
-	 * Message describing the error
-	 */
-	@NotNull
-	private final String message;
+    /**
+     * Message describing the error
+     */
+    @NotNull
+    private final String message;
 
-	/**
-	 * Message with extra information, without expose any delicate data
-	 */
-	@Nullable
-	private final String detailedMessage;
+    /**
+     * Message with extra information, without expose any delicate data
+     */
+    @Nullable
+    private final String detailedMessage;
 
-	/**
-	 * Link point to page where the error message is documented
-	 */
-	@Nullable
-	private final String moreInfoLink;
+    /**
+     * Link point to page where the error message is documented
+     */
+    @Nullable
+    private final String moreInfoLink;
 
-	/**
-	 * Extra information that might be useful for developers
-	 */
-	@Nullable
-	private final String developerMessage;
+    /**
+     * Extra information that might be useful for developers
+     */
+    @Nullable
+    private final String developerMessage;
 
-	private ProLogError(final int httpStatusCode,
-						final int proLogErrorCode,
-						@NotNull final String message,
-						@Nullable final String detailedMessage,
-						@Nullable final String moreInfoLink,
-						@Nullable final String developerMessage) {
-		this.httpStatusCode = httpStatusCode;
-		this.proLogErrorCode = proLogErrorCode;
-		this.message = message;
-		this.detailedMessage = detailedMessage;
-		this.moreInfoLink = moreInfoLink;
-		this.developerMessage = developerMessage;
-	}
+    private ProLogError(final int httpStatusCode,
+                        final int proLogErrorCode,
+                        @NotNull final String message,
+                        @Nullable final String detailedMessage,
+                        @Nullable final String moreInfoLink,
+                        @Nullable final String developerMessage) {
+        this.httpStatusCode = httpStatusCode;
+        this.proLogErrorCode = proLogErrorCode;
+        this.message = message;
+        this.detailedMessage = detailedMessage;
+        this.moreInfoLink = moreInfoLink;
+        this.developerMessage = developerMessage;
+    }
 
-	@NotNull
-	public static ProLogError createFrom(@NotNull final ProLogException ex) {
-		return new ProLogError(
-				ex.getHttpStatusCode(),
-				ex.getProLogErrorCode(),
-				ex.getMessage(),
-				ex.getDetailedMessage(),
-				ex.getMoreInfoLink(),
-				// Só setamos essa mensagem se estivermos em modo DEBUG. Assim evitamos de vazar alguma informação
-				// sensitiva.
-				BuildConfig.DEBUG ? ex.getDeveloperMessage() : null);
-	}
+    @NotNull
+    public static ProLogError createFrom(@NotNull final ProLogException ex) {
+        return new ProLogError(
+                ex.getHttpStatusCode(),
+                ex.getProLogErrorCode(),
+                ex.getMessage(),
+                ex.getDetailedMessage(),
+                ex.getMoreInfoLink(),
+                // Só setamos essa mensagem se estivermos em modo DEBUG. Assim evitamos de vazar alguma informação
+                // sensitiva.
+                BuildConfig.DEBUG ? ex.getDeveloperMessage() : null);
+    }
 
-	@NotNull
-	public static ProLogError createFrom(@NotNull final NotAuthorizedException ex) {
-		return new ProLogError(
-				Response.Status.UNAUTHORIZED.getStatusCode(),
-				ProLogErrorCodes.NOT_AUTHORIZED.errorCode(),
-				ex.getMessage(),
-				"Sem autorização para acessar a API.",
-				null,
-				// Só setamos essa mensagem se estivermos em modo DEBUG. Assim evitamos de vazar alguma informação
-				// sensitiva.
-				null);
-	}
+    @NotNull
+    public static ProLogError createFrom(@NotNull final NotAuthorizedException ex) {
+        return new ProLogError(
+                Response.Status.UNAUTHORIZED.getStatusCode(),
+                ProLogErrorCodes.NOT_AUTHORIZED.errorCode(),
+                ex.getMessage(),
+                "Sem autorização para acessar a API.",
+                null,
+                // Só setamos essa mensagem se estivermos em modo DEBUG. Assim evitamos de vazar alguma informação
+                // sensitiva.
+                null);
+    }
 
-	@NotNull
-	public static ProLogError createFrom(@NotNull final ForbiddenException ex) {
-		return new ProLogError(
-				Response.Status.FORBIDDEN.getStatusCode(),
-				ProLogErrorCodes.FORBIDDEN.errorCode(),
-				ex.getMessage(),
-				"Usuário sem permissão.",
-				null,
-				// Só setamos essa mensagem se estivermos em modo DEBUG. Assim evitamos de vazar alguma informação
-				// sensitiva.
-				null);
-	}
+    @NotNull
+    public static ProLogError createFrom(@NotNull final ForbiddenException ex) {
+        return new ProLogError(
+                Response.Status.FORBIDDEN.getStatusCode(),
+                ProLogErrorCodes.FORBIDDEN.errorCode(),
+                ex.getMessage(),
+                "Usuário sem permissão.",
+                null,
+                // Só setamos essa mensagem se estivermos em modo DEBUG. Assim evitamos de vazar alguma informação
+                // sensitiva.
+                null);
+    }
 
-	@NotNull
-	public static ProLogError generateFromString(@NotNull final String jsonError) {
-		return GsonUtils.getGson().fromJson(jsonError, ProLogError.class);
-	}
+    @NotNull
+    public static ProLogError createFrom(@NotNull final NotFoundException ex) {
+        final String msg = "A url buscada não existe na API.";
+        return new ProLogError(
+                ex.getResponse().getStatus(),
+                ProLogErrorCodes.NOT_FOUND.errorCode(),
+                msg,
+                msg,
+                null,
+                BuildConfig.DEBUG ? msg : null);
+    }
 
-	public int getHttpStatusCode() {
-		return httpStatusCode;
-	}
+    @NotNull
+    public static ProLogError generateFromString(@NotNull final String jsonError) {
+        return GsonUtils.getGson().fromJson(jsonError, ProLogError.class);
+    }
 
-	public int getProLogErrorCode() {
-		return proLogErrorCode;
-	}
+    @Override
+    public String toString() {
+        return "ErrorMessage [httpStatusCode=" + httpStatusCode + ", proLogErrorCode=" + proLogErrorCode
+                + ", message=" + message + ", moreInfoLink=" + moreInfoLink + ", developerMessage=" + developerMessage
+                + "]";
+    }
 
-	@NotNull
-	public String getMessage() {
-		return message;
-	}
+    public int getHttpStatusCode() {
+        return httpStatusCode;
+    }
 
-	@Nullable
-	public String getDeveloperMessage() {
-		return developerMessage;
-	}
+    public int getProLogErrorCode() {
+        return proLogErrorCode;
+    }
 
-	public String getMoreInfoLink() {
-		return moreInfoLink;
-	}
+    @NotNull
+    public String getMessage() {
+        return message;
+    }
 
-	public String getDetailedMessage() {
-		return detailedMessage;
-	}
+    @Nullable
+    public String getDeveloperMessage() {
+        return developerMessage;
+    }
 
-	@Override
-	public String toString() {
-		return "ErrorMessage [httpStatusCode=" + httpStatusCode + ", proLogErrorCode=" + proLogErrorCode
-				+ ", message=" + message + ", moreInfoLink=" + moreInfoLink + ", developerMessage=" + developerMessage
-				+ "]";
-	}
+    public String getMoreInfoLink() {
+        return moreInfoLink;
+    }
+
+    public String getDetailedMessage() {
+        return detailedMessage;
+    }
 }

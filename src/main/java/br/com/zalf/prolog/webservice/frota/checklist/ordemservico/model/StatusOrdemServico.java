@@ -20,20 +20,20 @@ public enum StatusOrdemServico {
     }
 
     @NotNull
-    public String asString() {
-        return status;
-    }
-
-    @NotNull
     public static StatusOrdemServico fromString(@Nullable final String text) throws IllegalArgumentException {
         if (text != null) {
-            for (StatusOrdemServico statusOs : StatusOrdemServico.values()) {
-                if (text.equalsIgnoreCase(statusOs.status)) {
+            for (final StatusOrdemServico statusOs : StatusOrdemServico.values()) {
+                if (text.equalsIgnoreCase(statusOs.status) || text.equalsIgnoreCase(statusOs.name())) {
                     return statusOs;
                 }
             }
         }
 
         throw new IllegalArgumentException("Nenhum enum com esse valor encontrado: " + text);
+    }
+
+    @NotNull
+    public String asString() {
+        return status;
     }
 }
