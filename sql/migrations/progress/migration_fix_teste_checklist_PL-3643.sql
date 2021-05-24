@@ -62,7 +62,7 @@ create or replace function func_checklist_get_listagem(f_cod_unidades bigint[],
                 anexo_midia_alternativa_nok               text,
                 cod_auxiliar_alternativa                  text,
                 alternativa_selecionada                   boolean,
-                resposta_outros text
+                resposta_outros                           text
             )
     language plpgsql
 as
