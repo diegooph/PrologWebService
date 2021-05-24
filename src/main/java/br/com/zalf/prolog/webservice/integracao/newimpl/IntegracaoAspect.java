@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.newimpl.sistemas.SistemaFactory;
 import br.com.zalf.prolog.webservice.integracao.newimpl.sistemas.SistemaIntegrado;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
+import br.com.zalf.prolog.webservice.v3.CurrentRequest;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -31,17 +32,22 @@ public final class IntegracaoAspect {
     @NotNull
     private final IntegracaoDao integracaoDao;
     @NotNull
-    private final RequestIntegrado request;
+    private final CurrentRequest request;
 
     @Around("@annotation(Integrado)")
     public Object onIntegratedMethodCalled(final ProceedingJoinPoint joinPoint) throws Throwable {
-        final String requestToken = request.getRequestToken();
-        final Integrado integrado = getIntegradoAnnotation(joinPoint);
-        final Optional<SistemaKey> sistemaKey = getSistemaKey(requestToken, integrado.recursoIntegrado());
-        if (sistemaKey.isPresent()) {
-            return delegateToSistema(joinPoint, sistemaKey.get());
+        final Optional<String> optional = request.getRequestToken();
+        if (optional.isPresent()) {
+            final String requestToken = optional.get();
+            final Integrado integrado = getIntegradoAnnotation(joinPoint);
+            final Optional<SistemaKey> sistemaKey = getSistemaKey(requestToken, integrado.recursoIntegrado());
+            if (sistemaKey.isPresent()) {
+                return delegateToSistema(joinPoint, sistemaKey.get());
+            } else {
+                return joinPoint.proceed();
+            }
         } else {
-            return joinPoint.proceed();
+            throw new IllegalStateException("Nenhum token presente no request para poder rotear");
         }
     }
 

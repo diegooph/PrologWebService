@@ -4,10 +4,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.newimpl.AfericaoIntegrada;
-import br.com.zalf.prolog.webservice.integracao.newimpl.RequestIntegrado;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.SistemaWebFinattoOld;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.data.SistemaWebFinattoRequesterImpl;
+import br.com.zalf.prolog.webservice.v3.CurrentRequest;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public final class SistemaWebFinatto implements SistemaIntegrado, AfericaoIntegrada {
     @NotNull
-    private final RequestIntegrado request;
+    private final CurrentRequest request;
 
     @NotNull
     @Override
@@ -38,9 +38,10 @@ public final class SistemaWebFinatto implements SistemaIntegrado, AfericaoIntegr
         return getImpl().insertAfericao(codUnidade, afericao, deveAbrirServico);
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @NotNull
     private SistemaWebFinattoOld getImpl() {
-        final String requestToken = request.getRequestToken();
+        final String requestToken = request.getRequestToken().get();
         return new SistemaWebFinattoOld(new SistemaWebFinattoRequesterImpl(),
                                         getKey(),
                                         RecursoIntegrado.AFERICAO,
