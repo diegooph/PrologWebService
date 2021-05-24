@@ -11,6 +11,7 @@ Change Log
 
 ### Refactors
 * Otimiza busca dos indicadores individuais
+* Adiciona @Max no Limit de busca de dados dos endpoints da Api.
 
 ### Bug Fixes
 * Corrige upload de planilha de tracking
