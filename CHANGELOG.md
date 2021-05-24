@@ -4,7 +4,9 @@ Change Log
 ###
 ### UNRELEASED
 ###
-
+### Features
+* Cria nova estrutura de roteamento (PL-3623)
+* Implementa nova estrutura de roteamento para o insert de aferição (PL-3623)
 
 <a name="v3.3.6"></a>
 ## Version [v3.3.6](https://github.com/luizfp/PrologWebService/compare/v3.3.5...v3.3.6) (2021-05-22)
