@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.integracao.newimpl.AfericaoIntegrada;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.SistemaWebFinattoOld;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.data.SistemaWebFinattoRequesterImpl;
-import br.com.zalf.prolog.webservice.v3.CurrentRequest;
+import br.com.zalf.prolog.webservice.config.CurrentRequest;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;

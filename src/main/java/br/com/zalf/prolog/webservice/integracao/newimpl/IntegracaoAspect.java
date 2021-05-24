@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.newimpl.sistemas.SistemaFactory;
 import br.com.zalf.prolog.webservice.integracao.newimpl.sistemas.SistemaIntegrado;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import br.com.zalf.prolog.webservice.v3.CurrentRequest;
+import br.com.zalf.prolog.webservice.config.CurrentRequest;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

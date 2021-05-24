@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.validation;
 
-import br.com.zalf.prolog.webservice.v3.CurrentRequest;
+import br.com.zalf.prolog.webservice.config.CurrentRequest;
 import br.com.zalf.prolog.webservice.v3.geral.unidade.UnidadeService;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
