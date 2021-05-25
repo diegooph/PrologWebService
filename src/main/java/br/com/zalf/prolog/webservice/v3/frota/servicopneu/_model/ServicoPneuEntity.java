@@ -36,7 +36,7 @@ public final class ServicoPneuEntity implements EntityKmColetado {
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
     @Column(name = "km_momento_conserto")
-    private long kmColetadoVeiculoFechamentoServico;
+    private Long kmColetadoVeiculoFechamentoServico;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_afericao", nullable = false)
     private AfericaoEntity afericao;
