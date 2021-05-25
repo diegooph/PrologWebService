@@ -7,10 +7,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.stream.Stream;
 
 /**
  * Created on 2021-03-10
@@ -80,5 +82,13 @@ public class PneuEntity {
     @NotNull
     public Integer getVidaAnterior() {
         return this.vidaAtual - 1;
+    }
+
+    @Transient
+    @Nullable
+    public Double getMenorSulco() {
+        return Stream.of(alturaSulcoInterno, alturaSulcoCentralInterno, alturaSulcoCentralExterno, alturaSulcoExterno)
+                .min(Double::compareTo)
+                .orElse(null);
     }
 }
