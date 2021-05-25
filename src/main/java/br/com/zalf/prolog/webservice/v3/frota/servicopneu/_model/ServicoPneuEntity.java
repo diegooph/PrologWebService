@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.v3.frota.servicopneu._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAlternativaEntity;
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.VeiculoKmColetado;
@@ -53,8 +54,9 @@ public final class ServicoPneuEntity implements EntityKmColetado {
     private Integer quantidadeApontamentos;
     @Column(name = "psi_apos_conserto")
     private Double psiAposConserto;
-    @Column(name = "cod_alternativa")
-    private Long codAlternativa;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_alternativa", referencedColumnName = "codigo")
+    private AfericaoAlternativaEntity alternativa;
     @Column(name = "tempo_realizacao_millis")
     private Long tempoRealizacaoMillis;
     @Column(name = "fechado_automaticamente_movimentacao", nullable = false, columnDefinition = "default false")
