@@ -3,18 +3,22 @@ package br.com.zalf.prolog.webservice.v3.frota.pneu;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.integracao.OperacoesBloqueadasYaml;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
+import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuListagemDto;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * Created on 2021-03-12
@@ -28,7 +32,7 @@ public class PneuService {
     @NotNull
     private final PneuDao pneuDao;
     @NotNull
-    private final PneuCadastroMapper pneuCadastroMapper;
+    private final PneuMapper pneuMapper;
     @NotNull
     private final PneuServicoService pneuServicoService;
     @NotNull
@@ -37,12 +41,12 @@ public class PneuService {
     @Autowired
     public PneuService(@NotNull final PneuDao pneuDao,
                        @NotNull final PneuServicoService pneuServicoService,
-                       @NotNull final PneuCadastroMapper pneuCadastroMapper,
+                       @NotNull final PneuMapper pneuMapper,
                        @NotNull final OperacoesBloqueadasYaml operacoesBloqueadas) {
         this.pneuDao = pneuDao;
         this.pneuServicoService = pneuServicoService;
         this.operacoesBloqueadas = operacoesBloqueadas;
-        this.pneuCadastroMapper = pneuCadastroMapper;
+        this.pneuMapper = pneuMapper;
     }
 
     @NotNull
@@ -54,7 +58,7 @@ public class PneuService {
             operacoesBloqueadas.validateEmpresaUnidadeBloqueada(pneuCadastroDto.getCodEmpresaAlocado(),
                                                                 pneuCadastroDto.getCodUnidadeAlocado());
             validatePneu(pneuCadastroDto, ignoreDotValidation);
-            final PneuEntity pneuEntity = pneuCadastroMapper.toEntity(pneuCadastroDto);
+            final PneuEntity pneuEntity = pneuMapper.toEntity(pneuCadastroDto);
             final PneuEntity pneuInsert = pneuEntity.toBuilder()
                     .origemCadastro(getOrigemCadastro(tokenIntegracao))
                     .build();
@@ -69,6 +73,23 @@ public class PneuService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir pneu, tente novamente.");
+        }
+    }
+
+    @NotNull
+    public List<PneuListagemDto> getPneusByStatus(@NotNull final List<Long> codUnidades,
+                                                  @Nullable final StatusPneu statusPneu,
+                                                  final int limit,
+                                                  final int offset) {
+        try {
+            final List<PneuEntity> pneusByStatus =
+                    pneuDao.getPneusByStatus(codUnidades, statusPneu, PageRequest.of(offset, limit));
+            return pneuMapper.toPneuListagemDto(pneusByStatus);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar pneus.", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar pneus, tente novamente.");
         }
     }
 

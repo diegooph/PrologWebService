@@ -34,10 +34,12 @@ public class PneuEntity {
     private Long codUnidade;
     @Column(name = "codigo_cliente", nullable = false)
     private String codigoCliente;
-    @Column(name = "cod_modelo", nullable = false)
-    private Long codModelo;
-    @Column(name = "cod_dimensao", nullable = false)
-    private Long codDimensao;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_modelo", referencedColumnName = "codigo")
+    private ModeloPneuEntity modeloPneu;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_dimensao", referencedColumnName = "codigo")
+    private DimensaoPneuEntity dimensaoPneu;
     @Column(name = "pressao_recomendada", nullable = false)
     private Double pressaoRecomendada;
     @Column(name = "pressao_atual")
@@ -57,8 +59,9 @@ public class PneuEntity {
     private Integer vidaAtual;
     @Column(name = "vida_total")
     private Integer vidaTotal;
-    @Column(name = "cod_modelo_banda")
-    private Long codModeloBanda;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_modelo_banda", referencedColumnName = "codigo")
+    private ModeloBandaEntity modeloBanda;
     @Column(name = "dot", length = 20)
     private String dot;
     @Column(name = "valor", nullable = false)

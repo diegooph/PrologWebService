@@ -10,12 +10,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "marca_pneu", schema = "public")
 public class MarcaPneuEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private Long codigo;
-
     @Column(name = "nome", nullable = false)
     private String nome;
 }
