@@ -72,6 +72,11 @@ public final class ServicoPneuEntity implements EntityKmColetado {
         return VeiculoKmColetado.of(getAfericao().getVeiculo().getCodigo(), kmColetadoVeiculoFechamentoServico);
     }
 
+    @Transient
+    public ServicoPneuStatus getStatus() {
+        return isFechadoAutomaticamente() ? ServicoPneuStatus.FECHADO : ServicoPneuStatus.ABERTO;
+    }
+
     public boolean isFechadoAutomaticamente() {
         return fechadoAfericao || fechadoMovimentacao || fechadoIntegracao;
     }
