@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.VeiculoKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.ColaboradorEntity;
-import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,16 +53,8 @@ public final class ServicoPneuEntity implements EntityKmColetado {
     private Integer quantidadeApontamentos;
     @Column(name = "psi_apos_conserto")
     private Double psiAposConserto;
-    @Column(name = "km_momento_concerto")
-    private Long kmMomentoConserto;
     @Column(name = "cod_alternativa")
     private Long codAlternativa;
-    @ManyToOne
-    @JoinColumn(name = "cod_pneu_inserido", referencedColumnName = "codigo")
-    private PneuEntity pneuInserido;
-    @ManyToOne
-    @JoinColumn(name = "cod_processo_movimentacao", referencedColumnName = "codigo")
-    private MovimentacaoProcessoEntity movimentacaoProcesso;
     @Column(name = "tempo_realizacao_millis")
     private Long tempoRealizacaoMillis;
     @Column(name = "fechado_automaticamente_movimentacao", nullable = false, columnDefinition = "default false")
@@ -72,9 +63,6 @@ public final class ServicoPneuEntity implements EntityKmColetado {
     private boolean fechadoIntegracao;
     @Column(name = "fechado_automaticamente_afericao", nullable = false, columnDefinition = "default false")
     private boolean fechadoAfericao;
-    @ManyToOne
-    @JoinColumn(name = "cod_afericao_fechamento_automatico", referencedColumnName = "codigo")
-    private AfericaoEntity afericaoFechamentoAutomatico;
     @Column(name = "forma_coleta_dados_fechamento")
     private FormaColetaDadosAfericaoEnum formaColetaDadosFechamento;
 
