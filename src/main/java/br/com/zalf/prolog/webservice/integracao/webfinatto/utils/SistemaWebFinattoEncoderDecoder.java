@@ -10,8 +10,16 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class SistemaWebFinattoEncoderDecoder {
     private static final int IDENTIFICADOR_UNIDADE = 1;
-    private static final int NUMERO_CARACTERES_UNIDADE = 5;
-    private static final int NUMERO_CARACTERES_VEICULO = 13;
+    /**
+     * Estamos falando de 9999 unidades para chegar a dar problema, nesse dia eu quero que quebre! Virei pessoalmente
+     * aqui editar este número e ficar orgulhoso de quanto crescemos.
+     */
+    private static final int NUMERO_CARACTERES_UNIDADE = 4;
+    /**
+     * O código do veículo vindo da integração é sequencial por cliente. Não precisamos nos preocupar com um código
+     * gigantesco vindo para ser codificado, 8 é um valor plausível (baseado em achismo).
+     */
+    private static final int NUMERO_CARACTERES_VEICULO = 8;
 
     private SistemaWebFinattoEncoderDecoder() {
         throw new IllegalStateException(

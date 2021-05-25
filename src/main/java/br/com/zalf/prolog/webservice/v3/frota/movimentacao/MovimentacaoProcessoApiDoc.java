@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoPr
 import br.com.zalf.prolog.webservice.v3.validation.CodUnidades;
 import io.swagger.annotations.*;
 
+import javax.validation.constraints.Max;
 import java.util.List;
 
 /**
@@ -49,6 +50,7 @@ public interface MovimentacaoProcessoApiDoc {
             @ApiParam(value = "Código de Pneu - Utilizado para filtrar as movimentações de apenas um pneu. Caso" +
                     " não deseje filtrar, basta não enviar esse parâmetro.")
             @Optional final Long codPneu,
+            @Max(value = 1000, message = "O limite de busca é 1000 registros.")
             @ApiParam(value = "Limite de movimentações retornadas pela busca. O valor máximo é 1000.",
                       example = "1000",
                       required = true) final int limit,
