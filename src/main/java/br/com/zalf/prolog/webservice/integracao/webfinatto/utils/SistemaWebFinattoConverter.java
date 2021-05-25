@@ -703,12 +703,12 @@ public class SistemaWebFinattoConverter {
         if (veiculo == null) {
             throw new IllegalStateException("A movimentação deve envolver um veículo");
         }
-
+        final Long codVeiculoExtraido = SistemaWebFinattoEncoderDecoder.extraiCodVeiculo(veiculo.getCodigo());
         return new VeiculoMovimentacaoWebFinatto(unidadeDeParaHolder.getCodAuxiliarEmpresa(),
                                                  unidadeDeParaHolder.getCodAuxiliarFilial(),
                                                  veiculo.getKmAtual(),
                                                  veiculo.getPlaca(),
-                                                 veiculo.getCodigo().toString());
+                                                 codVeiculoExtraido.toString());
     }
 
     @NotNull

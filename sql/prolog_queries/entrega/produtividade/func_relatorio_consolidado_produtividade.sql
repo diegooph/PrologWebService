@@ -92,7 +92,7 @@ select matricula_ambev,
                                                   else 0 end)
                                     else 0 end) +
                                sum(valor)) :: numeric, 2), '.', ',')                        as "VALOR TOTAL"
-from view_produtividade_extrato vpe
+from view_produtividade_extrato_com_total vpe
          left join pre_contracheque_informacoes pci on pci.cod_unidade = vpe.cod_unidade
          left join unidade_funcao_produtividade ufp on ufp.cod_unidade = vpe.cod_unidade
 where vpe.cod_unidade = f_cod_unidade
