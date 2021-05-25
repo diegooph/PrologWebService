@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.v3.frota.servicopneu._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
+import lombok.Builder;
 import lombok.Value;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,8 @@ import java.time.LocalDateTime;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@Value(staticConstructor = "of")
+@Value
+@Builder
 public class ServicoPneuListagemDto {
     Long codUnidadeServico;
     Long codServico;
