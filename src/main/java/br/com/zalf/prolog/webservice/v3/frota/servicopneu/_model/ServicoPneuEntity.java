@@ -41,10 +41,10 @@ public final class ServicoPneuEntity implements EntityKmColetado {
     private AfericaoEntity afericao;
     @Column(name = "tipo_servico", nullable = false)
     private TipoServico tipoServico;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo")
     private PneuEntity pneu;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cpf_mecanico", referencedColumnName = "cpf")
     private ColaboradorEntity mecanico;
     @Column(name = "data_hora_resolucao")
