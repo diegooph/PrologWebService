@@ -2,13 +2,17 @@ package br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
+import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.FiltroServicoListagemDto;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuEntity;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * Created on 2021-03-26
@@ -33,6 +37,16 @@ public class ServicoPneuService implements KmProcessoAtualizavel {
                                          @NotNull final Long codVeiculo,
                                          final long novoKm) {
         updateKmColetadoFechamento(codProcesso, novoKm);
+    }
+
+    public List<ServicoPneuEntity> findServicosPneuByFilter(final FiltroServicoListagemDto dto) {
+        return servicoPneuDao.findServicosPneuByUnidades(dto.getCodUnidades(),
+                                                         dto.getCodVeiculo(),
+                                                         dto.getCodPneu(),
+                                                         dto.getStatus().getFiltroFechado(),
+                                                         PageRequest.of(dto.getOffset(),
+                                                                        dto.getLimit(),
+                                                                        Sort.by("codigo")));
     }
 
     @NotNull
