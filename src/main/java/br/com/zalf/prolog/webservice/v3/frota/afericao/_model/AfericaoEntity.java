@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
@@ -38,6 +39,8 @@ public final class AfericaoEntity implements EntityKmColetado {
     private long kmColetadoVeiculo;
     @OneToMany(mappedBy = "afericao", fetch = FetchType.LAZY)
     private Set<ServicoPneuEntity> servicosGeradosPneu;
+    @Column(name = "data_hora")
+    private LocalDateTime dataHora;
 
     @NotNull
     @Override
