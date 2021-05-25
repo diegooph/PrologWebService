@@ -29,6 +29,7 @@ public interface ServicoPneuDao extends JpaRepository<ServicoPneuEntity, Long> {
                    "                                or :filtroFechado = sp.fechadoMovimentacao)) " +
                    "and (:codVeiculo is null or :codVeiculo = v.codigo)                          " +
                    "and (:codPneu is null or :codPneu = p.codigo)                                ")
+    @NotNull
     List<ServicoPneuEntity> findServicosPneuByUnidades(@NotNull final List<Long> codUnidades,
                                                        @Nullable final Long codVeiculo,
                                                        @Nullable final Long codPneu,

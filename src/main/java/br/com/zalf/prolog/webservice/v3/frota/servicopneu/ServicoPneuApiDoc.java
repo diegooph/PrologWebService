@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuListagemDto;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -12,10 +14,10 @@ import java.util.List;
  */
 public interface ServicoPneuApiDoc {
 
-    List<ServicoPneuListagemDto> getServicosByUnidadeAndStatus(final List<Long> codUnidades,
-                                                               final ServicoPneuStatus status,
-                                                               final Long codVeiculo,
-                                                               final Long codPneu,
+    List<ServicoPneuListagemDto> getServicosByUnidadeAndStatus(final @NotNull List<Long> codUnidades,
+                                                               final @NotNull ServicoPneuStatus status,
+                                                               final @Nullable Long codVeiculo,
+                                                               final @Nullable Long codPneu,
                                                                final int limit,
                                                                final int offset);
 }

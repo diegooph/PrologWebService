@@ -39,7 +39,8 @@ public class ServicoPneuService implements KmProcessoAtualizavel {
         updateKmColetadoFechamento(codProcesso, novoKm);
     }
 
-    public List<ServicoPneuEntity> findServicosPneuByFilter(final FiltroServicoListagemDto dto) {
+    @NotNull
+    public List<ServicoPneuEntity> findServicosPneuByFilter(@NotNull final FiltroServicoListagemDto dto) {
         return servicoPneuDao.findServicosPneuByUnidades(dto.getCodUnidades(),
                                                          dto.getCodVeiculo(),
                                                          dto.getCodPneu(),

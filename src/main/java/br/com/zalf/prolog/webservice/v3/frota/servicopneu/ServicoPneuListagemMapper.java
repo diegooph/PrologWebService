@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuListagemDto;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,13 +16,15 @@ import java.util.stream.Collectors;
 @Component
 public class ServicoPneuListagemMapper {
 
-    public List<ServicoPneuListagemDto> toDto(final List<ServicoPneuEntity> servicosPneu) {
+    @NotNull
+    public List<ServicoPneuListagemDto> toDto(@NotNull final List<ServicoPneuEntity> servicosPneu) {
         return servicosPneu.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
-    private ServicoPneuListagemDto toDto(final ServicoPneuEntity servicoPneu) {
+    @NotNull
+    private ServicoPneuListagemDto toDto(@NotNull final ServicoPneuEntity servicoPneu) {
         final ServicoPneuListagemDto.ServicoPneuListagemDtoBuilder builder = ServicoPneuListagemDto.builder()
                 .codServico(servicoPneu.getCodigo())
                 .codUnidadeServico(servicoPneu.getCodUnidade())

@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuEnti
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuListagemDto;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuStatus;
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,11 +33,12 @@ public class ServicoPneuResource implements ServicoPneuApiDoc {
 
     @GET
     @Override
-    public List<ServicoPneuListagemDto> getServicosByUnidadeAndStatus(@QueryParam("codUnidades") final List<Long> codUnidades,
+    @NotNull
+    public List<ServicoPneuListagemDto> getServicosByUnidadeAndStatus(@QueryParam("codUnidades") @NotNull final List<Long> codUnidades,
                                                                       @QueryParam("statusServicoPneu")
-                                                                      @DefaultValue("DEFAULT") final ServicoPneuStatus status,
-                                                                      @QueryParam("codVeiculo") final Long codVeiculo,
-                                                                      @QueryParam("codPneu") final Long codPneu,
+                                                                      @DefaultValue("DEFAULT") @NotNull final ServicoPneuStatus status,
+                                                                      @QueryParam("codVeiculo") @Nullable final Long codVeiculo,
+                                                                      @QueryParam("codPneu") @Nullable final Long codPneu,
                                                                       @QueryParam("limit") final int limit,
                                                                       @QueryParam("offset") final int offset) {
 

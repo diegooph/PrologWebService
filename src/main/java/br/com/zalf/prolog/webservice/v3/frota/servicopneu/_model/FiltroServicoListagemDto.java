@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.v3.frota.servicopneu._model;
 
 import lombok.Getter;
 import lombok.Value;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -13,9 +15,13 @@ import java.util.List;
 @Value(staticConstructor = "of")
 @Getter
 public class FiltroServicoListagemDto {
+    @NotNull
     List<Long> codUnidades;
+    @Nullable
     Long codVeiculo;
+    @Nullable
     Long codPneu;
+    @NotNull
     ServicoPneuStatus status;
     int limit;
     int offset;
