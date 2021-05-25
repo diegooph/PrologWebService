@@ -26,9 +26,6 @@ public class ServicoPneuListagemDto {
     boolean fechadoAutomaticamente;
     FormaColetaDadosAfericaoEnum formaColetaDados;
     ServicoPneuStatus status;
-    String nomeColaborador;
-    String cpfColaborador;
-    Long codColaborador;
     Long codPneu;
     String codCliente;
     Integer posicaoPneuAberturaServico;
@@ -44,7 +41,6 @@ public class ServicoPneuListagemDto {
     int vidaTotal;
     Long codAfericao;
     Double psiAfericao;
-    LocalDateTime dataAfericao;
     LocalDateTime dataHoraAbertura;
     Long codVeiculo;
     String placa;
