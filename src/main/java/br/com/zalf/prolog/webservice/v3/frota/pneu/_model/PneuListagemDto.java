@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.pneu._model;
 
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,24 +12,82 @@ public class PneuListagemDto {
     @NotNull
     Long codPneu;
     @NotNull
-    Long codRegionalPneu;
+    String codigoCliente;
     @NotNull
-    String nomeRegionalPneu;
+    Long codGrupoPneu;
+    @NotNull
+    String nomeGrupoPneu;
     @NotNull
     Long codUnidadePneu;
     @NotNull
     String nomeUnidadePneu;
     @NotNull
-    String codigoCliente;
+    Integer vidaAtualPneu;
     @NotNull
-    Long codModeloPneu;
+    Integer vidaTotalPneu;
+
+    @NotNull
+    Double pressaoRecomendadaPneuEmPsi;
+    @Nullable
+    Double pressaoAtualPneuEmPsi;
+    @Nullable
+    Double sulcoExternoPneuEmMilimetros;
+    @Nullable
+    Double sulcoCentralExternoPneuEmMilimetros;
+    @Nullable
+    Double sulcoCentralInternoPneuEmMilimetros;
+    @Nullable
+    Double sulcoInternoPneuEmMilimetros;
+    @Nullable
+    String dotPneu;
+    @NotNull
+    BigDecimal valorPneu;
+
     @NotNull
     Long codDimensaoPneu;
     @NotNull
-    BigDecimal valorPneu;
+    Double alturaPneu;
+    @NotNull
+    Double larguraPneu;
+    @NotNull
+    Double aroPneu;
+
+    @NotNull
+    Long codMarcaPneu;
+    @NotNull
+    String nomeMarcaPneu;
+    @NotNull
+    Long codModeloPneu;
+    @NotNull
+    String nomeModeloPneu;
+    @NotNull
+    Integer qtdSulcosModeloPneu;
+    @NotNull
+    Double alturaSulcosModeloPneuEmMilimetros;
+
     @Nullable
-    String dotPneu;
+    Long codMarcaBanda;
+    @Nullable
+    String nomeMarcaBanda;
+    @Nullable
+    Long codModeloBanda;
+    @Nullable
+    String nomeModeloBanda;
+    @Nullable
+    Double alturaSulcosModeloBandaEmMilimetros;
+    @Nullable
+    Integer qtdSulcosModeloBanda;
+
+    boolean pneuNovoNuncaRodado;
+
+    @NotNull
+    StatusPneu statusPneu;
+    @Nullable
+    Long codVeiculoPneuAplicado;
+    @Nullable
+    String placaVeiculoPneuAplicado;
+    @Nullable
+    String identificadorFrotaVeiculoPneuAplicado;
     @Nullable
     Integer posicaoAplicado;
-    boolean pneuNovoNuncaRodado;
 }
