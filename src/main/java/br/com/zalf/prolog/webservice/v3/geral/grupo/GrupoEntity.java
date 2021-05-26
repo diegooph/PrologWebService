@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "pneu", schema = "public")
+@Table(name = "regional", schema = "public")
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
