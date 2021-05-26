@@ -37,7 +37,7 @@ public final class AfericaoEntity implements EntityKmColetado {
     @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo", nullable = false)
     private VeiculoEntity veiculo;
     @Column(name = "km_veiculo", nullable = false)
-    private long kmColetadoVeiculo;
+    private Long kmColetadoVeiculo;
     @OneToMany(mappedBy = "afericao", fetch = FetchType.LAZY)
     private Set<ServicoPneuEntity> servicosGeradosPneu;
     @Column(name = "data_hora")
