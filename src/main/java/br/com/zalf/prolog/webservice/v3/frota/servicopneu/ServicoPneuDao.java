@@ -22,6 +22,9 @@ public interface ServicoPneuDao extends JpaRepository<ServicoPneuEntity, Long> {
                    "from ServicoPneuEntity sp join fetch sp.pneu p                               " +
                    "                          join fetch sp.afericao a                           " +
                    "                          join fetch a.veiculo v                             " +
+                   "                          join fetch a.valoresAfericao va                    " +
+                   "                          join fetch va.pk.pneu vapkp                        " +
+                   "                          left join fetch sp.mecanico m                      " +
                    "                          left join fetch sp.alternativa al                  " +
                    "where sp.codUnidade in :codUnidades                                          " +
                    "and (:filtroFechado is null or (:filtroFechado = sp.fechadoAfericao          " +
