@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.v3.frota.pneu._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
+import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
@@ -93,6 +94,8 @@ public class PneuEntity {
     private VeiculoEntity veiculoPneuAplicado;
     @Formula(value = "(select vp.posicao from veiculo_pneu vp where vp.cod_pneu = codigo)")
     private Integer posicaoAplicado;
+    @OneToMany(mappedBy = "pneu", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<MovimentacaoEntity> movimentacoesPneu;
 
     public boolean isRecapado() {
         return vidaAtual > 1;
