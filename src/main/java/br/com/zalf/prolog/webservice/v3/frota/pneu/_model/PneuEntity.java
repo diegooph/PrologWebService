@@ -3,10 +3,13 @@ package br.com.zalf.prolog.webservice.v3.frota.pneu._model;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoRealizadoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
@@ -32,8 +35,9 @@ public class PneuEntity {
     private Long codigo;
     @Column(name = "cod_empresa", nullable = false)
     private Long codEmpresa;
-    @Column(name = "cod_unidade", nullable = false)
-    private Long codUnidade;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_unidade", referencedColumnName = "codigo")
+    private UnidadeEntity unidade;
     @Column(name = "codigo_cliente", nullable = false)
     private String codigoCliente;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -79,6 +83,13 @@ public class PneuEntity {
     private OrigemAcaoEnum origemCadastro;
     @OneToMany(mappedBy = "pneuServicoRealizado", fetch = FetchType.LAZY)
     private Set<PneuServicoRealizadoEntity> servicosRealizados;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(name = "veiculo_pneu",
+               joinColumns = @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo"),
+               inverseJoinColumns = @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo"))
+    private VeiculoEntity veiculoPneuAplicado;
+    @Formula(value = "(select vp.posicao from veiculo_pneu vp where vp.cod_pneu = codigo)")
+    private Integer posicaoAplicado;
 
     public boolean isRecapado() {
         return vidaAtual > 1;

@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.v3.frota.pneu;
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.*;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ public class PneuMapper {
     public PneuEntity toEntity(@NotNull final PneuCadastroDto dto) {
         return PneuEntity.builder()
                 .codEmpresa(dto.getCodEmpresaAlocado())
-                .codUnidade(dto.getCodUnidadeAlocado())
+                .unidade(createUnidade(dto.getCodUnidadeAlocado()))
                 .codigoCliente(dto.getCodigoCliente())
                 .modeloPneu(createModeloPneu(dto.getCodModeloPneu()))
                 .dimensaoPneu(createDimensaoPneuEntity(dto.getCodDimensaoPneu()))
@@ -45,6 +46,11 @@ public class PneuMapper {
     @NotNull
     public PneuListagemDto toPneuListagemDto(@NotNull final PneuEntity pneu) {
         return null;
+    }
+
+    @NotNull
+    private UnidadeEntity createUnidade(@NotNull final Long codUnidadeAlocado) {
+        return UnidadeEntity.builder().codigo(codUnidadeAlocado).build();
     }
 
     @NotNull
