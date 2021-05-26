@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.v3.frota.pneu;
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.*;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class PneuMapper {
                 .status(StatusPneu.ESTOQUE)
                 .vidaAtual(dto.getVidaAtualPneu())
                 .vidaTotal(dto.getVidaTotalPneu())
-                .modeloBanda(createModeloBanda(dto.getCodModeloBanda()))
+                .modeloBanda(dto.getCodModeloBanda() == null ? null : createModeloBanda(dto.getCodModeloBanda()))
                 .dot(dto.getDotPneu())
                 .valor(dto.getValorPneu())
                 .dataHoraCadastro(Now.getOffsetDateTimeUtc())
@@ -45,7 +46,46 @@ public class PneuMapper {
 
     @NotNull
     public PneuListagemDto toPneuListagemDto(@NotNull final PneuEntity pneu) {
-        return null;
+        final ModeloBandaEntity modeloBanda = pneu.getModeloBanda();
+        final VeiculoEntity veiculo = pneu.getVeiculoPneuAplicado();
+        return PneuListagemDto.of(pneu.getCodigo(),
+                                  pneu.getCodigoCliente(),
+                                  pneu.getUnidade().getGrupo().getCodigo(),
+                                  pneu.getUnidade().getGrupo().getNome(),
+                                  pneu.getUnidade().getCodigo(),
+                                  pneu.getUnidade().getNome(),
+                                  pneu.getVidaAtual(),
+                                  pneu.getVidaTotal(),
+                                  pneu.getPressaoRecomendada(),
+                                  pneu.getPressaoAtual(),
+                                  pneu.getAlturaSulcoExterno(),
+                                  pneu.getAlturaSulcoCentralExterno(),
+                                  pneu.getAlturaSulcoCentralInterno(),
+                                  pneu.getAlturaSulcoInterno(),
+                                  pneu.getDot(),
+                                  pneu.getValor(),
+                                  pneu.getDimensaoPneu().getCodigo(),
+                                  pneu.getDimensaoPneu().getAltura().doubleValue(),
+                                  pneu.getDimensaoPneu().getLargura().doubleValue(),
+                                  pneu.getDimensaoPneu().getAro(),
+                                  pneu.getModeloPneu().getMarca().getCodigo(),
+                                  pneu.getModeloPneu().getMarca().getNome(),
+                                  pneu.getModeloPneu().getCodigo(),
+                                  pneu.getModeloPneu().getNome(),
+                                  pneu.getModeloPneu().getQuantidadeSulcos().intValue(),
+                                  pneu.getModeloPneu().getAlturaSulcos(),
+                                  modeloBanda == null ? null : modeloBanda.getMarcaBanda().getCodigo(),
+                                  modeloBanda == null ? null : modeloBanda.getMarcaBanda().getNome(),
+                                  modeloBanda == null ? null : modeloBanda.getCodigo(),
+                                  modeloBanda == null ? null : modeloBanda.getNome(),
+                                  modeloBanda == null ? null : modeloBanda.getQuantidadeSulcos().intValue(),
+                                  modeloBanda == null ? null : modeloBanda.getAlturaSulcos(),
+                                  pneu.isPneuNovoNuncaRodado(),
+                                  pneu.getStatus(),
+                                  veiculo == null ? null : veiculo.getCodigo(),
+                                  veiculo == null ? null : veiculo.getPlaca(),
+                                  veiculo == null ? null : veiculo.getIdentificadorFrota(),
+                                  pneu.getPosicaoAplicado());
     }
 
     @NotNull

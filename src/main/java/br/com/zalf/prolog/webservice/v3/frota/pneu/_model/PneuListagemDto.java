@@ -74,9 +74,9 @@ public class PneuListagemDto {
     @Nullable
     String nomeModeloBanda;
     @Nullable
-    Double alturaSulcosModeloBandaEmMilimetros;
-    @Nullable
     Integer qtdSulcosModeloBanda;
+    @Nullable
+    Double alturaSulcosModeloBandaEmMilimetros;
 
     boolean pneuNovoNuncaRodado;
 
