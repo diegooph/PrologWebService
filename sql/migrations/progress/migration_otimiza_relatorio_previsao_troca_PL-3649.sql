@@ -85,23 +85,23 @@ $$;
 drop view view_pneu_analise_vida_atual;
 create or replace view view_pneu_analise_vida_atual as
 with dados as (
-    select view_pneu_analise_vidas.cod_pneu,
-           view_pneu_analise_vidas.vida_analisada_pneu,
-           view_pneu_analise_vidas.status,
-           view_pneu_analise_vidas.valor_pneu,
-           view_pneu_analise_vidas.valor_banda,
-           view_pneu_analise_vidas.quantidade_afericoes_pneu_vida,
-           view_pneu_analise_vidas.data_hora_primeira_afericao,
-           view_pneu_analise_vidas.data_hora_ultima_afericao,
-           view_pneu_analise_vidas.total_dias_ativo,
-           view_pneu_analise_vidas.total_km_rodado_vida,
-           view_pneu_analise_vidas.maior_sulco_aferido_vida,
-           view_pneu_analise_vidas.menor_sulco_aferido_vida,
-           view_pneu_analise_vidas.sulco_gasto,
-           view_pneu_analise_vidas.sulco_restante,
-           view_pneu_analise_vidas.km_por_mm_vida,
-           view_pneu_analise_vidas.valor_por_km_vida
-    from view_pneu_analise_vidas
+    select vpav.cod_pneu,
+           vpav.vida_analisada_pneu,
+           vpav.status,
+           vpav.valor_pneu,
+           vpav.valor_banda,
+           vpav.quantidade_afericoes_pneu_vida,
+           vpav.data_hora_primeira_afericao,
+           vpav.data_hora_ultima_afericao,
+           vpav.total_dias_ativo,
+           vpav.total_km_rodado_vida,
+           vpav.maior_sulco_aferido_vida,
+           vpav.menor_sulco_aferido_vida,
+           vpav.sulco_gasto,
+           vpav.sulco_restante,
+           vpav.km_por_mm_vida,
+           vpav.valor_por_km_vida
+    from view_pneu_analise_vidas vpav
 )
 select p.cod_unidade                                                 as cod_unidade,
        u.nome                                                        as nome_unidade_alocado,
