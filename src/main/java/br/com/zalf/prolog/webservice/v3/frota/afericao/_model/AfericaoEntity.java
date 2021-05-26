@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.afericao._model;
 
+import br.com.zalf.prolog.webservice.v3.frota.afericao.valores._model.AfericaoPneuValorEntity;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.VeiculoKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuEntity;
@@ -41,6 +42,10 @@ public final class AfericaoEntity implements EntityKmColetado {
     private Set<ServicoPneuEntity> servicosGeradosPneu;
     @Column(name = "data_hora")
     private LocalDateTime dataHora;
+    @OneToMany(mappedBy = "pk.afericao",
+               fetch = FetchType.LAZY,
+               targetEntity = AfericaoPneuValorEntity.class)
+    private Set<AfericaoPneuValorEntity> valoresAfericao;
 
     @NotNull
     @Override
