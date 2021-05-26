@@ -47,10 +47,10 @@ public class UnidadeVisualizacaoListagemDto {
     @ApiModelProperty(value = "A longitude da unidade.", example = "-48.679233")
     @Nullable
     String longitudeUnidade;
-    @ApiModelProperty(value = "Código da regional da unidade.", required = true, example = "1")
+    @ApiModelProperty(value = "Código do grupo da unidade.", required = true, example = "1")
     @NotNull
-    Long codRegional;
-    @ApiModelProperty(value = "Nome da regional da unidade.", required = true, example = "Sudeste")
+    Long codGrupo;
+    @ApiModelProperty(value = "Nome do grupo da unidade.", required = true, example = "Sudeste")
     @NotNull
-    String nomeRegional;
+    String nomeGrupo;
 }

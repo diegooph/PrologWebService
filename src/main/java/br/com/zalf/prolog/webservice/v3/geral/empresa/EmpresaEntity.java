@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.gente.empresa._model;
+package br.com.zalf.prolog.webservice.v3.geral.empresa;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
