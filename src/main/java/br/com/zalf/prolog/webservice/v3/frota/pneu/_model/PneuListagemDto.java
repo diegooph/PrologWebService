@@ -40,8 +40,6 @@ public class PneuListagemDto {
     Double sulcoInternoPneuEmMilimetros;
     @Nullable
     String dotPneu;
-    @NotNull
-    BigDecimal valorPneu;
 
     @NotNull
     Long codDimensaoPneu;
@@ -64,6 +62,8 @@ public class PneuListagemDto {
     Integer qtdSulcosModeloPneu;
     @NotNull
     Double alturaSulcosModeloPneuEmMilimetros;
+    @NotNull
+    BigDecimal valorPneu;
 
     @Nullable
     Long codMarcaBanda;
@@ -77,6 +77,8 @@ public class PneuListagemDto {
     Integer qtdSulcosModeloBanda;
     @Nullable
     Double alturaSulcosModeloBandaEmMilimetros;
+    @Nullable
+    BigDecimal valorBandaPneu;
 
     boolean pneuNovoNuncaRodado;
 

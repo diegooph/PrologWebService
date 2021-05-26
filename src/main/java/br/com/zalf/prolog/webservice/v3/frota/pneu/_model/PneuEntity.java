@@ -11,10 +11,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Formula;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 
 /**
@@ -98,5 +101,15 @@ public class PneuEntity {
     @NotNull
     public Integer getVidaAnterior() {
         return this.vidaAtual - 1;
+    }
+
+    @Nullable
+    public BigDecimal getValorUltimaBandaAplicada() {
+        return servicosRealizados.stream()
+                .filter(PneuServicoRealizadoEntity::isIncrementaVida)
+                .sorted(Comparator.comparing(PneuServicoRealizadoEntity::getCodigo))
+                .min(Collections.reverseOrder())
+                .map(PneuServicoRealizadoEntity::getCusto)
+                .orElse(null);
     }
 }

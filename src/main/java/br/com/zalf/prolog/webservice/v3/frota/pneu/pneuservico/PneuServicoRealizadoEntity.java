@@ -40,4 +40,8 @@ public class PneuServicoRealizadoEntity {
     private Integer vida;
     @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
     private String fonteServicoRealizado;
+
+    public boolean isIncrementaVida() {
+        return tipoServico.isIncrementaVida();
+    }
 }
