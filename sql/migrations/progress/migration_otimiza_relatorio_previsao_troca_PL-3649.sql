@@ -149,11 +149,11 @@ select p.cod_unidade                                                 as cod_unid
                          ((dados.total_km_rodado_vida / (dados.total_dias_ativo)::numeric) > 0::numeric)) then (
                            (dados.km_por_mm_vida * dados.sulco_restante) /
                            ((dados.total_km_rodado_vida / (dados.total_dias_ativo)::numeric))::double precision)
-                   else (0)::double precision
+                   else 0::double precision
                    end)                                              as dias_restantes_pneu,
        case
-           when (((dados.total_km_rodado_vida > (0)::numeric) and (dados.total_dias_ativo > 0)) and
-                 ((dados.total_km_rodado_vida / (dados.total_dias_ativo)::numeric) > (0)::numeric)) then (
+           when (((dados.total_km_rodado_vida > 0::numeric) and (dados.total_dias_ativo > 0)) and
+                 ((dados.total_km_rodado_vida / (dados.total_dias_ativo)::numeric) > 0::numeric)) then (
                    (((dados.km_por_mm_vida * dados.sulco_restante) /
                      ((dados.total_km_rodado_vida / (dados.total_dias_ativo)::numeric))::double precision))::integer +
                    current_date)
