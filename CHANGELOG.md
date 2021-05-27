@@ -8,6 +8,9 @@ Change Log
 ### Refactors
 * Corrige estrutura de testes (PL-3643)
 
+### Bug Fixes
+* Corrige agrupamento dos itens das Ordens de Serviços
+
 <a name="v3.3.6"></a>
 ## Version [v3.3.6](https://github.com/luizfp/PrologWebService/compare/v3.3.5...v3.3.6) (2021-05-22)
 
