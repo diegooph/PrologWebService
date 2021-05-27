@@ -42,7 +42,7 @@ public final class AfericaoEntity implements EntityKmColetado {
     private Set<ServicoPneuEntity> servicosGeradosPneu;
     @Column(name = "data_hora")
     private LocalDateTime dataHora;
-    @OneToMany(mappedBy = "pk.afericao",
+    @OneToMany(mappedBy = "afericao",
                fetch = FetchType.LAZY,
                targetEntity = AfericaoPneuValorEntity.class)
     private Set<AfericaoPneuValorEntity> valoresAfericao;

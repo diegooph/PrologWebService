@@ -76,7 +76,7 @@ public class PneuEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "origem_cadastro", nullable = false)
     private OrigemAcaoEnum origemCadastro;
-    @OneToMany(mappedBy = "pk.pneu",
+    @OneToMany(mappedBy = "pneu",
                fetch = FetchType.LAZY,
                targetEntity = AfericaoPneuValorEntity.class)
     private Set<AfericaoPneuValorEntity> valoresPneu;
