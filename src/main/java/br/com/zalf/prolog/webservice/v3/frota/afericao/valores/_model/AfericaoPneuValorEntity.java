@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * Created on 2021-05-25
@@ -30,8 +29,23 @@ import java.io.Serializable;
 })
 public class AfericaoPneuValorEntity {
 
-    @EmbeddedId
-    private PK pk;
+    @Id
+    @Column(name = "cod_afericao")
+    private Long codAfericao;
+
+    @MapsId
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_afericao", referencedColumnName = "codigo")
+    private AfericaoEntity afericao;
+
+    @MapsId
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo")
+    private PneuEntity pneu;
+
+    @Id
+    @Column(name = "cod_pneu")
+    private Long codPneu;
 
     @Column(name = "psi")
     private Double psi;
@@ -39,16 +53,4 @@ public class AfericaoPneuValorEntity {
     private Integer posicao;
     @Column(name = "vida_momento_afericao")
     private Integer vidaMomentoAfericao;
-
-    @Embeddable
-    @NoArgsConstructor
-    @Getter
-    @EqualsAndHashCode
-    public static class PK implements Serializable {
-        @ManyToOne(fetch = FetchType.LAZY)
-        private AfericaoEntity afericao;
-
-        @ManyToOne(fetch = FetchType.LAZY)
-        private PneuEntity pneu;
-    }
 }
