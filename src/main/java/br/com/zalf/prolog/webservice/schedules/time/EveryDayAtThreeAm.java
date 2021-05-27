@@ -8,12 +8,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created on 2021-02-25
+ * Created on 2021-05-27
  *
- * @author Guilherme Steinert (https://github.com/steinert999)
+ * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Scheduled(cron = "0 0 0 * * *", zone = "America/Sao_Paulo")
-public @interface Daily {
+@Scheduled(cron = "0 0 3 * * *", zone = "America/Sao_Paulo")
+public @interface EveryDayAtThreeAm {
 }
