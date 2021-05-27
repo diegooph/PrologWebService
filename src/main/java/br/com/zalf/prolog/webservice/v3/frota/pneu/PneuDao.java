@@ -30,6 +30,8 @@ public interface PneuDao extends JpaRepository<PneuEntity, Long> {
                    "left join fetch p.servicosRealizados psr " +
                    "left join fetch psr.tipoServico " +
                    "left join fetch p.veiculoPneuAplicado " +
+                   "left join fetch p.movimentacoesPneu mov " +
+                   "left join fetch mov.movimentacaoDestino " +
                    "where u.codigo in :codUnidades " +
                    "and (:statusPneu is null or p.status = :statusPneu)")
     List<PneuEntity> getPneusByStatus(@NotNull final List<Long> codUnidades,
