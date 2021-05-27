@@ -1,13 +1,12 @@
 package br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
-import br.com.zalf.prolog.webservice.v3.frota.afericao.valores._model.AfericaoPneuValorEntity;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuListagemDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -50,15 +49,15 @@ public class ServicoPneuListagemMapper {
                     .psiRecomendada(servicoPneu.getPneu().getPressaoRecomendada())
                     .vidaAtual(servicoPneu.getPneu().getVidaAtual())
                     .vidaTotal(servicoPneu.getPneu().getVidaTotal());
-        final Optional<AfericaoPneuValorEntity> afericaoPneuValor = servicoPneu.getAfericao().getValoresAfericao()
-                .stream()
-                .filter(valor -> valor.getPk().getPneu().equals(servicoPneu.getPneu()))
-                .findFirst();
-        afericaoPneuValor.ifPresent(valor -> {
-            builder.psiAfericao(valor.getPsi())
-                    .posicaoPneuAberturaServico(valor.getPosicao());
-        });
 
+        servicoPneu.getAfericao().getValoresAfericao()
+                .stream()
+                .filter(valor -> Objects.equals(valor.getPneu(), servicoPneu.getPneu()))
+                .findFirst()
+                .ifPresent(valor -> {
+                    builder.psiAfericao(valor.getPsi())
+                            .posicaoPneuAberturaServico(valor.getPosicao());
+                });
         builder.codAfericao(servicoPneu.getAfericao().getCodigo())
                 .dataHoraAbertura(servicoPneu.getAfericao().getDataHora())
                 .codVeiculo(servicoPneu.getAfericao().getVeiculo().getCodigo())

@@ -77,7 +77,7 @@ public final class ServicoPneuEntity implements EntityKmColetado {
     @Transient
     @NotNull
     public ServicoPneuStatus getStatus() {
-        return isFechadoAutomaticamente() ? ServicoPneuStatus.FECHADO : ServicoPneuStatus.ABERTO;
+        return !isFechadoAutomaticamente() && mecanico == null ? ServicoPneuStatus.ABERTO : ServicoPneuStatus.FECHADO;
     }
 
     public boolean isFechadoAutomaticamente() {

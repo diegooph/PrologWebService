@@ -19,19 +19,25 @@ import java.util.List;
 public interface ServicoPneuDao extends JpaRepository<ServicoPneuEntity, Long> {
 
     @Query("select sp " +
-                   "from ServicoPneuEntity sp join fetch sp.pneu p                               " +
-                   "                          join fetch sp.afericao a                           " +
-                   "                          join fetch a.veiculo v                             " +
-                   "                          join fetch a.valoresAfericao va                    " +
-                   "                          join fetch va.pneu vapkp                           " +
-                   "                          left join fetch sp.mecanico m                      " +
-                   "                          left join fetch sp.alternativa al                  " +
-                   "where sp.codUnidade in :codUnidades                                          " +
-                   "and (:filtroFechado is null or (:filtroFechado = sp.fechadoAfericao          " +
-                   "                                or :filtroFechado = sp.fechadoIntegracao     " +
-                   "                                or :filtroFechado = sp.fechadoMovimentacao)) " +
-                   "and (:codVeiculo is null or :codVeiculo = v.codigo)                          " +
-                   "and (:codPneu is null or :codPneu = p.codigo)                                ")
+                   "from ServicoPneuEntity sp join fetch sp.pneu p                                   " +
+                   "                          join fetch sp.afericao a                               " +
+                   "                          join fetch a.veiculo v                                 " +
+                   "                          join fetch a.valoresAfericao va                        " +
+                   "                          join fetch va.pneu vapkp                               " +
+                   "                          left join fetch sp.mecanico m                          " +
+                   "                          left join fetch sp.alternativa al                      " +
+                   "where sp.codUnidade in :codUnidades                                              " +
+                   "and (:filtroFechado is null or (:filtroFechado = true                            " +
+                   "                                   and (sp.fechadoAfericao = true                " +
+                   "                                   or sp.fechadoIntegracao = true                " +
+                   "                                   or sp.fechadoMovimentacao = true or m is not null ))          " +
+                   "  " +
+                   "                                or (:filtroFechado = false                       " +
+                   "                                   and (sp.fechadoAfericao = false               " +
+                   "                                        and sp.fechadoIntegracao = false         " +
+                   "                                        and sp.fechadoMovimentacao = false and m is null )))   " +
+                   "and (:codVeiculo is null or :codVeiculo = v.codigo)                              " +
+                   "and (:codPneu is null or :codPneu = p.codigo)                                    ")
     @NotNull
     List<ServicoPneuEntity> findServicosPneuByUnidades(@NotNull final List<Long> codUnidades,
                                                        @Nullable final Long codVeiculo,
