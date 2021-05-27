@@ -3,9 +3,9 @@ drop function func_relatorio_previsao_troca(f_data_inicial date,
     f_cod_unidade text[],
     f_status_pneu character varying);
 
-create or replace function func_pneu_relatorio_previsao_troca(f_data_final date,
-                                                              f_cod_unidades bigint[],
-                                                              f_status_pneu text)
+create or replace function func_pneu_relatorio_previsao_troca(f_cod_unidades bigint[],
+                                                              f_status_pneu text,
+                                                              f_data_final date)
     returns table
             (
                 "UNIDADE ALOCADO"         text,
