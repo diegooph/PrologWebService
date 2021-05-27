@@ -109,7 +109,7 @@ select vap.nome_unidade_alocado                  as nome_unidade_alocado,
        vap.medidas                               as medidas,
        count(vap.nome_modelo)                    as quantidade
 from view_analise_pneus vap
-where vap.cod_unidade = any (f_cod_unidades)
+where vap.cod_unidade_alocado = any (f_cod_unidades)
   and vap.previsao_troca between f_data_inicial and f_data_final
   and vap.status_pneu = f_status_pneu
 group by vap.nome_unidade_alocado, vap.previsao_troca, vap.nome_marca, vap.nome_modelo, vap.medidas
