@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -94,6 +95,7 @@ public class PneuEntity {
     @Nullable
     public Double getMenorSulco() {
         return Stream.of(alturaSulcoInterno, alturaSulcoCentralInterno, alturaSulcoCentralExterno, alturaSulcoExterno)
+                .filter(Objects::nonNull)
                 .min(Double::compareTo)
                 .orElse(null);
     }
