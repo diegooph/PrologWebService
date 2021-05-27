@@ -76,6 +76,7 @@ public class PneuService {
         }
     }
 
+    @Transactional
     @NotNull
     public List<PneuListagemDto> getPneusByStatus(@NotNull final List<Long> codUnidades,
                                                   @Nullable final StatusPneu statusPneu,

@@ -25,7 +25,7 @@ public class ModeloPneuEntity {
     private Long codigo;
     @Column(name = "nome", nullable = false)
     private String nome;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_marca", referencedColumnName = "codigo")
     private MarcaPneuEntity marca;
     @Column(name = "cod_empresa", nullable = false)

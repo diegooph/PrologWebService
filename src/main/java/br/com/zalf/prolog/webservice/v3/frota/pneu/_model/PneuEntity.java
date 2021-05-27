@@ -94,7 +94,7 @@ public class PneuEntity {
     private VeiculoEntity veiculoPneuAplicado;
     @Formula(value = "(select vp.posicao from veiculo_pneu vp where vp.cod_pneu = codigo)")
     private Integer posicaoAplicado;
-    @OneToMany(mappedBy = "pneu", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "pneu", fetch = FetchType.LAZY)
     private Set<MovimentacaoEntity> movimentacoesPneu;
 
     public boolean isRecapado() {
