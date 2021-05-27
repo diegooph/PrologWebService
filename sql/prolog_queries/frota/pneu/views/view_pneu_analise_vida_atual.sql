@@ -34,10 +34,10 @@ select p.cod_unidade                                                 as cod_unid
            end                                                       as valor_vida_atual,
        map.nome                                                      as nome_marca,
        mp.nome                                                       as nome_modelo,
-       (dp.largura || '/' || dp.altura || ' R' || dp.aro)            as medidas,
+       dp.largura || '/' || dp.altura || ' R' || dp.aro              as medidas,
        dados.quantidade_afericoes_pneu_vida                          as qtd_afericoes,
-       to_char(dados.data_hora_primeira_afericao, 'DD/MM/YYYY')      as data_primeira_afericao,
-       to_char(dados.data_hora_ultima_afericao, 'DD/MM/YYYY')        as data_ultima_afericao,
+       dados.data_hora_primeira_afericao                             as data_hora_primeira_afericao,
+       dados.data_hora_ultima_afericao                               as data_hora_ultima_afericao,
        dados.total_dias_ativo                                        as dias_ativo,
        round(
                case
