@@ -1,4 +1,4 @@
-create temp table if not exists temp_infos_update
+create table backup.correcao_kms_errados_propagacao_pl_3620
 as
 select distinct on (cosid.codigo) cosid.codigo  as cod_item,
                                   vd.codigo     as cod_veiculo,
@@ -34,26 +34,12 @@ where cosid.cod_agrupamento_resolucao_em_lote is not null
 -- Aqui corrigimos o km no item da O.S.
 update checklist_ordem_servico_itens_data
 set km = tiu.km_correto
-from temp_infos_update tiu
+from backup.correcao_kms_errados_propagacao_pl_3620 tiu
 where checklist_ordem_servico_itens_data.codigo = tiu.cod_item;
 
 -- Aqui corrigimos a info de se é ou não fonte do processo, pois como enviava outra placa todos reboques acoplados
 -- ficavam como se não fossem fonte do processo.
 update veiculo_processo_km_historico
 set veiculo_fonte_processo = true
-from temp_infos_update tiu
+from backup.correcao_kms_errados_propagacao_pl_3620 tiu
 where veiculo_processo_km_historico.codigo = tiu.cod_processo_km_historico;
-
-create table if not exists checklist_ordem_servico_itens_data_bkp
-as
-select *
-from checklist_ordem_servico_itens_data cosid
-where cosid.codigo in (select cod_item from temp_infos_update);
-
-create table if not exists veiculo_processo_km_historico_bkp
-as
-select *
-from veiculo_processo_km_historico
-where codigo in (select cod_processo_km_historico from temp_infos_update);
-
-drop table temp_infos_update;
