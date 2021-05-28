@@ -5,6 +5,9 @@ Change Log
 ### UNRELEASED
 ### 
 
+### Refactors
+* Altera assinatura e otimiza relatórios de previsão de troca (PL-3649)
+
 <a name="v3.3.7"></a>
 ## Version [v3.3.7](https://github.com/luizfp/PrologWebService/compare/v3.3.6...v3.3.7) (2021-05-27)
 
