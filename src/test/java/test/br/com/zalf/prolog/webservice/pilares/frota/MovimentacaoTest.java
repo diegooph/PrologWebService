@@ -20,6 +20,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
@@ -28,6 +29,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import test.br.com.zalf.prolog.webservice.BaseTest;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +51,9 @@ public class MovimentacaoTest extends BaseTest {
     private MovimentacaoService movimentacaoService;
     private PneuService pneuService;
     private Pneu pneuComum;
+
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
     @Override
     @BeforeAll
@@ -126,7 +132,12 @@ public class MovimentacaoTest extends BaseTest {
         pneu.setValor(new BigDecimal(2250));
         pneu.getBanda().setValor(new BigDecimal(399));
         final AbstractResponse response =
-                pneuService.insert(TOKEN_COLABORADOR, 5L, pneu, OrigemAcaoEnum.PROLOG_WEB, false);
+                pneuService.insert(colaboradorAutenticadoProvider.get().getCodigo(),
+                                   TOKEN_COLABORADOR,
+                                   5L,
+                                   pneu,
+                                   OrigemAcaoEnum.PROLOG_WEB,
+                                   false);
         Assert.assertNotNull(response);
         Assert.assertNotNull(response.getStatus());
     }

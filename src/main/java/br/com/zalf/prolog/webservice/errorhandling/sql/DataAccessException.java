@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.errorhandling.sql;
 import br.com.zalf.prolog.webservice.errorhandling.error.ProLogErrorCodes;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.core.Response;
 
@@ -12,6 +13,16 @@ import javax.ws.rs.core.Response;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 class DataAccessException extends ProLogException {
+
+    DataAccessException(@NotNull final String message,
+                        @Nullable final String developerMessage,
+                        @NotNull final Throwable parentException) {
+        super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+              ProLogErrorCodes.GENERIC.errorCode(),
+              message,
+              developerMessage,
+              parentException);
+    }
 
     DataAccessException(@NotNull final String message) {
         this(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), ProLogErrorCodes.GENERIC.errorCode(), message);

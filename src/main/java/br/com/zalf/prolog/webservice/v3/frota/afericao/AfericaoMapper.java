@@ -19,8 +19,7 @@ import static java.util.stream.Collectors.*;
 public class AfericaoMapper {
     @NotNull
     public List<AfericaoPlacaDto> toAfericaoPlacaDto(@NotNull final List<AfericaoPlacaProjection> afericoesPlacas) {
-        final Map<Long, List<MedidaDto>> medidasAgrupadas =
-                this.groupMedidasByAfericoesPlacas(afericoesPlacas);
+        final Map<Long, List<MedidaDto>> medidasAgrupadas = this.groupMedidasByAfericoesPlacas(afericoesPlacas);
         return medidasAgrupadas.keySet().stream()
                 .map(codAfericao -> {
                     final AfericaoPlacaProjection primeiraAfericaoByCodigo = afericoesPlacas.stream()
@@ -36,28 +35,27 @@ public class AfericaoMapper {
     @NotNull
     public AfericaoPlacaDto toAfericaoPlacaDto(@NotNull final AfericaoPlacaProjection afericaoPlaca,
                                                @NotNull final List<MedidaDto> medidas) {
-        return AfericaoPlacaDto.of(afericaoPlaca.getCodVeiculo(),
-                                   afericaoPlaca.getKmVeiculo(),
+        return AfericaoPlacaDto.of(afericaoPlaca.getCodigo(),
+                                   afericaoPlaca.getCodUnidade(),
+                                   afericaoPlaca.getCodColaboradorAferidor(),
+                                   afericaoPlaca.getCpfAferidor(),
+                                   afericaoPlaca.getNomeAferidor(),
+                                   afericaoPlaca.getCodVeiculo(),
                                    afericaoPlaca.getPlacaVeiculo(),
                                    afericaoPlaca.getIdentificadorFrota(),
-                                   afericaoPlaca.getCodigo(),
-                                   afericaoPlaca.getCodUnidade(),
+                                   afericaoPlaca.getKmVeiculo(),
                                    afericaoPlaca.getDataHoraAfericaoUtc(),
                                    afericaoPlaca.getDataHoraAfericaoTzAplicado(),
                                    afericaoPlaca.getTipoMedicaoColetadaAfericao(),
                                    afericaoPlaca.getTipoProcessoColetaAfericao(),
                                    afericaoPlaca.getTempoRealizacaoAfericaoInMillis(),
                                    afericaoPlaca.getFormaColetaDadosAfericao(),
-                                   afericaoPlaca.getCodColaboradorAferidor(),
-                                   afericaoPlaca.getCpfAferidor(),
-                                   afericaoPlaca.getNomeAferidor(),
                                    medidas.isEmpty() ? null : medidas);
     }
 
     @NotNull
     public List<AfericaoAvulsaDto> toAfericaoAvulsaDto(@NotNull final List<AfericaoAvulsaProjection> afericoesAvulsas) {
-        final var medidasAgrupadas =
-                this.groupMedidasByAfericoesAvulsas(afericoesAvulsas);
+        final Map<Long, List<MedidaDto>> medidasAgrupadas = this.groupMedidasByAfericoesAvulsas(afericoesAvulsas);
         return medidasAgrupadas.keySet().stream()
                 .map(codAfericao -> {
                     final AfericaoAvulsaProjection primeiraAfericaoByCodigo = afericoesAvulsas.stream()
@@ -67,7 +65,6 @@ public class AfericaoMapper {
                     return toAfericaoAvulsaDto(primeiraAfericaoByCodigo,
                                                medidasAgrupadas.get(primeiraAfericaoByCodigo.getCodigo()));
                 })
-
                 .collect(toList());
     }
 
@@ -76,15 +73,15 @@ public class AfericaoMapper {
                                                  @NotNull final List<MedidaDto> medidas) {
         return AfericaoAvulsaDto.of(afericaoAvulsa.getCodigo(),
                                     afericaoAvulsa.getCodUnidade(),
+                                    afericaoAvulsa.getCodColaboradroAferidor(),
+                                    afericaoAvulsa.getCpfAferidor(),
+                                    afericaoAvulsa.getNomeAferidor(),
                                     afericaoAvulsa.getDataHoraAfericaoUtc(),
                                     afericaoAvulsa.getDataHoraAfericaoTzAplicado(),
                                     afericaoAvulsa.getTipoMedicaoColetadaAfericao(),
                                     afericaoAvulsa.getTipoProcessoColetaAfericao(),
                                     afericaoAvulsa.getTempoRealizacaoAfericaoInMillis(),
                                     afericaoAvulsa.getFormaColetaDadosAfericao(),
-                                    afericaoAvulsa.getCodColaboradroAferidor(),
-                                    afericaoAvulsa.getCpfAferidor(),
-                                    afericaoAvulsa.getNomeAferidor(),
                                     medidas.isEmpty() ? null : medidas);
     }
 
@@ -117,9 +114,10 @@ public class AfericaoMapper {
     @NotNull
     private MedidaDto generateMedidaFromAfericao(@NotNull final AfericaoAvulsaProjection projection) {
         return MedidaDto.of(projection.getCodPneu(),
+                            projection.getCodigClientePneu(),
                             projection.getPosicao(),
-                            projection.getPsi(),
                             projection.getVidaMomentoAfericao(),
+                            projection.getPsi(),
                             projection.getAlturaSulcoInterno(),
                             projection.getAlturaSulcoCentralInterno(),
                             projection.getAlturaSulcoCentralExterno(),
@@ -129,9 +127,10 @@ public class AfericaoMapper {
     @NotNull
     private MedidaDto generateMedidaFromAfericao(@NotNull final AfericaoPlacaProjection projection) {
         return MedidaDto.of(projection.getCodPneu(),
+                            projection.getCodigClientePneu(),
                             projection.getPosicao(),
-                            projection.getPsi(),
                             projection.getVidaMomentoAfericao(),
+                            projection.getPsi(),
                             projection.getAlturaSulcoInterno(),
                             projection.getAlturaSulcoCentralInterno(),
                             projection.getAlturaSulcoCentralExterno(),

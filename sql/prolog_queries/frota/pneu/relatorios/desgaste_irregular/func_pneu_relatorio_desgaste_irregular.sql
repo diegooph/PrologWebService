@@ -67,7 +67,7 @@ BEGIN
                F_IF(MARB.CODIGO IS NULL, 'Nunca Recapado', MARB.NOME || ' - ' || MODB.NOME) AS BANDA_APLICADA,
                COALESCE(TRUNC(PVV.VALOR :: NUMERIC, 2) :: TEXT, '-')                        AS VALOR_BANDA,
                FUNC_PNEU_FORMAT_DIMENSAO(DP.LARGURA, DP.ALTURA, DP.ARO)                     AS MEDIDAS,
-               COALESCE(VP.PLACA, '-') :: TEXT                                              AS PLACA,
+               COALESCE(V.PLACA, '-') :: TEXT                                              AS PLACA,
                COALESCE(VT.NOME, '-') :: TEXT                                               AS TIPO_VEICULO,
                COALESCE(PPNE.NOMENCLATURA :: TEXT, '-')                                     AS POSICAO_PNEU,
                COALESCE(MODB.QT_SULCOS, MP.QT_SULCOS) :: TEXT                               AS QTD_SULCOS,
@@ -132,7 +132,7 @@ BEGIN
                            ON P.CODIGO = VP.COD_PNEU
                                AND P.COD_UNIDADE = VP.COD_UNIDADE
                  LEFT JOIN VEICULO V
-                           ON VP.PLACA = V.PLACA
+                           ON VP.COD_VEICULO = V.CODIGO
                                AND VP.COD_UNIDADE = V.COD_UNIDADE
                  LEFT JOIN VEICULO_TIPO VT
                            ON V.COD_TIPO = VT.CODIGO

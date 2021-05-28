@@ -46,23 +46,6 @@ begin
         end if;
     end if;
 
-    if exists(select vp.placa from veiculo_pneu vp where vp.placa = f_placa_antiga)
-    then
-        -- Assim conseguimos alterar a placa na VEICULO_PNEU sem ela ainda existir na tabela VEICULO_DATA.
-        set constraints all deferred;
-
-        update veiculo_pneu
-        set placa = f_placa_nova
-        where placa = f_placa_antiga
-          and cod_unidade = f_cod_unidade_veiculo;
-
-        if (not found)
-        then
-            raise exception
-                'Não foi possível modificar a placa para % no vínculo de veículo pneu.', f_placa_nova;
-        end if;
-    end if;
-
     -- Agora alteramos a placa.
     select v.cod_empresa,
            v.identificador_frota,

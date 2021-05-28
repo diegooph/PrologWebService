@@ -117,7 +117,7 @@ public interface VeiculoDao {
 
     void removePneuVeiculo(@NotNull final Connection conn,
                            @NotNull final Long codUnidade,
-                           @NotNull final String placa,
+                           @NotNull final Long codVeiculo,
                            @NotNull final Long codPneu) throws Throwable;
 
     @NotNull

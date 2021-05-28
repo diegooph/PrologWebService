@@ -728,18 +728,18 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     @Override
     public void removePneuVeiculo(@NotNull final Connection conn,
                                   @NotNull final Long codUnidade,
-                                  @NotNull final String placa,
+                                  @NotNull final Long codVeiculo,
                                   @NotNull final Long codPneu) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("DELETE FROM VEICULO_PNEU WHERE COD_UNIDADE = ? AND PLACA = ? AND " +
+            stmt = conn.prepareStatement("DELETE FROM VEICULO_PNEU WHERE COD_UNIDADE = ? AND COD_VEICULO = ? AND " +
                                                  "COD_PNEU = ?;");
             stmt.setLong(1, codUnidade);
-            stmt.setString(2, placa);
+            stmt.setLong(2, codVeiculo);
             stmt.setLong(3, codPneu);
             final int count = stmt.executeUpdate();
             if (count == 0) {
-                throw new SQLException("Erro ao remover o pneu " + codPneu + " da placa " + placa);
+                throw new SQLException("Erro ao remover o pneu " + codPneu + " do veículo com código " + codVeiculo);
             }
         } finally {
             close(stmt);

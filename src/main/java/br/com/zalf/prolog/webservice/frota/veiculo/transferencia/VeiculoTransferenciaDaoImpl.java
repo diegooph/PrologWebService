@@ -584,7 +584,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
         try {
             stmt = conn.prepareStatement("UPDATE VEICULO_PNEU " +
                     "SET COD_UNIDADE = ? " +
-                    "WHERE PLACA = (SELECT PLACA FROM VEICULO WHERE CODIGO = ?) " +
+                    "WHERE COD_VEICULO = ? " +
                     "      AND COD_UNIDADE = ? " +
                     "      AND COD_PNEU = ANY(?);");
             stmt.setLong(1, codUnidadeDestino);

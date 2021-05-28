@@ -7,7 +7,8 @@ create or replace function func_pneu_atualiza(f_cod_cliente text,
                                               f_vida_total int,
                                               f_pressao_recomendada double precision,
                                               f_cod_original_pneu bigint,
-                                              f_cod_unidade bigint)
+                                              f_cod_unidade bigint,
+                                              f_cod_colaborador_responsavel_edicao bigint)
     returns void
     language plpgsql
 as
@@ -55,14 +56,15 @@ begin
         or v_cod_unidade != f_cod_unidade
     then
         update pneu
-        set codigo_cliente      = f_cod_cliente,
-            cod_modelo          = f_cod_modelo,
-            cod_dimensao        = f_cod_dimensao,
-            cod_modelo_banda    = f_cod_modelo_banda,
-            dot                 = f_dot,
-            valor               = f_valor,
-            vida_total          = f_vida_total,
-            pressao_recomendada = f_pressao_recomendada
+        set codigo_cliente                     = f_cod_cliente,
+            cod_modelo                         = f_cod_modelo,
+            cod_dimensao                       = f_cod_dimensao,
+            cod_modelo_banda                   = f_cod_modelo_banda,
+            dot                                = f_dot,
+            valor                              = f_valor,
+            vida_total                         = f_vida_total,
+            pressao_recomendada                = f_pressao_recomendada,
+            cod_colaborador_ultima_atualizacao = f_cod_colaborador_responsavel_edicao
         where codigo = f_cod_original_pneu
           and cod_unidade = f_cod_unidade;
     end if;

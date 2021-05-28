@@ -25,7 +25,7 @@ public final class ChecklistOrdemServicoMapper {
 
         final List<ChecklistOrdemServicoListagemDto> ordensDto = new ArrayList<>();
         ordensServico.stream()
-                .collect(Collectors.groupingBy(ChecklistOrdemServicoProjection::getCodigoOs))
+                .collect(Collectors.groupingBy(ChecklistOrdemServicoProjection::getCodigoOsProlog))
                 .forEach((codigoOs, checklistOrdemServicoProjections) -> ordensDto.add(
                         createChecklistOrdemServicoListagemDto(
                                 checklistOrdemServicoProjections, incluirItensOrdemServico)));
@@ -40,21 +40,22 @@ public final class ChecklistOrdemServicoMapper {
             throw new IllegalStateException("A lista usada neste método não pode ser vazia.");
         }
         return new ChecklistOrdemServicoListagemDto(
+                checklistOrdemServicoProjections.get(0).getCodigoOsProlog(),
                 checklistOrdemServicoProjections.get(0).getCodigoOs(),
                 checklistOrdemServicoProjections.get(0).getCodigoUnidade(),
                 checklistOrdemServicoProjections.get(0).getCodigoChecklist(),
-                StatusOrdemServico.fromString(checklistOrdemServicoProjections.get(0).getStatusOs()),
-                incluirItensOrdemServico
-                        ? createChecklistOrdemServicoItens(checklistOrdemServicoProjections)
-                        : null,
-                checklistOrdemServicoProjections.get(0).getDataHoraFechamentoUtc(),
-                checklistOrdemServicoProjections.get(0).getDataHoraFechamentoTzAplicado(),
                 checklistOrdemServicoProjections.get(0).getCodigoColaboradorAberturaOs(),
                 checklistOrdemServicoProjections.get(0).getCpfColaboradorAberturaOs(),
                 checklistOrdemServicoProjections.get(0).getNomeColaboradorAberturaOs(),
                 checklistOrdemServicoProjections.get(0).getCodigoVeiculo(),
                 checklistOrdemServicoProjections.get(0).getPlacaVeiculo(),
-                checklistOrdemServicoProjections.get(0).getIdentificadorFrota());
+                checklistOrdemServicoProjections.get(0).getIdentificadorFrota(),
+                checklistOrdemServicoProjections.get(0).getDataHoraAberturaUtc(),
+                checklistOrdemServicoProjections.get(0).getDataHoraAberturaTzAplicado(),
+                StatusOrdemServico.fromString(checklistOrdemServicoProjections.get(0).getStatusOs()),
+                checklistOrdemServicoProjections.get(0).getDataHoraFechamentoUtc(),
+                checklistOrdemServicoProjections.get(0).getDataHoraFechamentoTzAplicado(),
+                incluirItensOrdemServico ? createChecklistOrdemServicoItens(checklistOrdemServicoProjections) : null);
     }
 
     @NotNull
@@ -70,9 +71,6 @@ public final class ChecklistOrdemServicoMapper {
             @NotNull final ChecklistOrdemServicoProjection checklistOrdemServicoProjection) {
         return new ChecklistOrdemServicoItemDto(
                 checklistOrdemServicoProjection.getCodigoItemOs(),
-                checklistOrdemServicoProjection.getCodigoOs(),
-                checklistOrdemServicoProjection.getCodigoUnidade(),
-                checklistOrdemServicoProjection.getCpfMecanico(),
                 checklistOrdemServicoProjection.getCodigoPerguntaPrimeiroApontamento(),
                 checklistOrdemServicoProjection.getCodigoContextoPergunta(),
                 checklistOrdemServicoProjection.getCodigoAlternativaPrimeiroApontamento(),
@@ -80,6 +78,9 @@ public final class ChecklistOrdemServicoMapper {
                 checklistOrdemServicoProjection.getCodigoAuxiliarAlternativaPrimeiroApontamento(),
                 StatusItemOrdemServico.fromString(checklistOrdemServicoProjection.getStatusItemOs()),
                 checklistOrdemServicoProjection.getQuantidadeApontamentos(),
+                checklistOrdemServicoProjection.getCodColaboradorFechamento(),
+                checklistOrdemServicoProjection.getCpfColaboradorFechamento(),
+                checklistOrdemServicoProjection.getNomeColaboradorFechamento(),
                 checklistOrdemServicoProjection.getKm(),
                 checklistOrdemServicoProjection.getCodigoAgrupamentoResolucaoEmLote(),
                 checklistOrdemServicoProjection.getDataHoraConsertoUtc(),

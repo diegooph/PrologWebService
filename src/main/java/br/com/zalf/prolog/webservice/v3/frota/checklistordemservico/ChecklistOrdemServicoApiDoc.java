@@ -1,12 +1,14 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoListagemDto;
+import br.com.zalf.prolog.webservice.v3.validation.CodUnidades;
 import io.swagger.annotations.*;
 
 import javax.validation.constraints.Max;
-import javax.ws.rs.DefaultValue;
 import java.util.List;
 
 /**
@@ -17,8 +19,9 @@ import java.util.List;
 @Api(value = "Ordens de Serviço")
 public interface ChecklistOrdemServicoApiDoc {
     @ApiOperation(
-            value = "Lista as ordens de serviço e possivelmente os itens das ordens de serviço por unidade.",
-            response = List.class)
+            value = "Lista as ordens de serviço abertas e fechadas.",
+            response = ChecklistOrdemServicoListagemDto.class,
+            responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200, message = "Operação efetuada com sucesso.",
@@ -29,14 +32,29 @@ public interface ChecklistOrdemServicoApiDoc {
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
     List<ChecklistOrdemServicoListagemDto> getOrdensServico(
-            @ApiParam(value = "Uma lista de código de unidades.", required = true) final List<Long> codUnidades,
-            @ApiParam(value = "Um código de tipo de veículo.") final Long codTipoVeiculo,
-            @ApiParam(value = "Um código de veículo.") final String codVeiculo,
-            @ApiParam(value = "Um status de ordem de serviço.") final StatusOrdemServico statusOrdemServico,
-            @ApiParam(value = "Indica se deve incluir os itens na ordem de serviço.") @DefaultValue(
-                    value = "true") boolean incluirItensOrdemServico,
-            @ApiParam(value = "Uma quantidade de ordens.") @Max(value = 1000,
-                                                                message = "O limite máximo de registros por página é " +
-                                                                        "1000.") final int limit,
-            @ApiParam(value = "O index a partir do qual será contada a limitação.") final int offset);
+            @ApiParam(value = "Lista de códigos de unidade.",
+                      example = "215",
+                      required = true)
+            @Required @CodUnidades final List<Long> codUnidades,
+            @ApiParam(value = "Código de Tipo Veículo - Utilizado para filtrar ordens de serviço de apenas um tipo de" +
+                    " veículo. Caso não deseje filtrar, basta não enviar esse parâmetro.")
+            @Optional final Long codTipoVeiculo,
+            @ApiParam(value = "Código de Veículo - Utilizado para filtrar ordens de serviço de apenas um veículo. " +
+                    "Caso não deseje filtrar, basta não enviar esse parâmetro.")
+            @Optional final String codVeiculo,
+            @ApiParam(value = "Status da ordem de serviço. Podendo ser ABERTA ou FECHADA. Utilizado para filtrar " +
+                    "ordens de serviço de apenas um veículo. Caso não deseje filtrar, basta não enviar esse parâmetro.",
+                      example = "F")
+            @Optional final StatusOrdemServico statusOrdemServico,
+            @ApiParam(value = "Flag utilizada para retornar os itens das ordens de serviço. Por padrão é sempre " +
+                    "retornado, para não retornar envie 'false'.",
+                      required = true,
+                      defaultValue = "true") final boolean incluirItensOrdemServico,
+            @Max(value = 1000, message = "O limite de busca é 1000 registros.")
+            @ApiParam(value = "Limite de ordens de serviço retornados pela busca. O valor máximo é 1000.",
+                      example = "1000",
+                      required = true) final int limit,
+            @ApiParam(value = "Offset de ordens de serviço. A partir de qual checklist deve-se começar a busca.",
+                      example = "0",
+                      required = true) final int offset);
 }

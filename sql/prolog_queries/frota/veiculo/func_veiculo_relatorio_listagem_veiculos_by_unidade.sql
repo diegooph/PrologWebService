@@ -30,14 +30,14 @@ BEGIN
         -- Calcula a quantidade de pneus e estepes que estão vinculados na placa.
         WITH QTD_PNEUS_VINCULADOS_PLACA AS (
             SELECT V.PLACA,
-                   COUNT(VP.PLACA)
+                   COUNT(V.PLACA)
                    FILTER (WHERE VP.POSICAO < ESTEPES)  AS QTD_PNEUS_VINCULADOS,
-                   COUNT(VP.PLACA)
+                   COUNT(VP.COD_VEICULO)
                    FILTER (WHERE VP.POSICAO >= ESTEPES) AS QTD_ESTEPES_VINCULADOS,
                    VT.COD_DIAGRAMA
             FROM VEICULO V
                      JOIN VEICULO_TIPO VT ON V.COD_TIPO = VT.CODIGO
-                     LEFT JOIN VEICULO_PNEU VP ON V.PLACA = VP.PLACA AND V.COD_UNIDADE = VP.COD_UNIDADE
+                     LEFT JOIN VEICULO_PNEU VP ON V.CODIGO = VP.COD_VEICULO AND V.COD_UNIDADE = VP.COD_UNIDADE
             WHERE V.COD_UNIDADE = ANY (F_COD_UNIDADES)
             GROUP BY V.PLACA,
                      VT.COD_DIAGRAMA

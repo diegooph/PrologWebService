@@ -35,13 +35,11 @@ begin
 
     -- Aqui devemos apenas inserir o veículo no prolog.
     insert into veiculo_pneu(cod_unidade,
-                             placa,
                              cod_pneu,
                              posicao,
                              cod_diagrama,
                              cod_veiculo)
     values (f_cod_unidade,
-            f_placa,
             f_cod_pneu,
             f_posicao,
             v_cod_diagrama,

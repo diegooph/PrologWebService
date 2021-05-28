@@ -33,13 +33,15 @@ begin
     perform func_garante_veiculo_existe(f_cod_unidade, f_placa);
 
     -- Verifica se veiculo possui pneus aplicados.
-    if exists(select vp.cod_pneu from veiculo_pneu vp where vp.placa = f_placa and vp.cod_unidade = f_cod_unidade)
+    if exists(select vp.cod_pneu
+              from veiculo_pneu vp
+              where cod_veiculo = v_cod_veiculo and vp.cod_unidade = f_cod_unidade)
     then
         raise exception 'Erro! A Placa: % possui pneus aplicados. Favor removê-los', f_placa;
     end if;
 
     -- Verifica se possui acoplamento.
-    if EXISTS(select vd.codigo
+    if exists(select vd.codigo
               from veiculo_data vd
               where vd.placa = f_placa
                 and vd.cod_unidade = f_cod_unidade
@@ -86,13 +88,13 @@ begin
     end if;
 
     -- Verifica se placa possui checklist. Optamos por usar _DATA para garantir que tudo será deletado.
-    if exists(select c.placa_veiculo from checklist_data c where c.deletado = false and c.placa_veiculo = f_placa)
+    if exists(select c.cod_veiculo from checklist_data c where c.deletado = false and c.cod_veiculo = v_cod_veiculo)
     then
         -- Busca todos os códigos de checklists da placa.
         select array_agg(c.codigo)
         from checklist_data c
         where c.deletado = false
-          and c.placa_veiculo = f_placa
+          and c.cod_veiculo = v_cod_veiculo
         into v_lista_cod_check_placa;
 
         -- Deleta todos os checklists da placa. Usamos deleção lógica em conjunto com uma tabela de deleção específica.

@@ -80,7 +80,8 @@ begin
                 v_cod_empresa_placa
             from veiculo v
             where remove_all_spaces(v.placa) ilike
-                  new.placa_formatada_vinculo;
+                  new.placa_formatada_vinculo
+              and v.cod_empresa = new.cod_empresa;
             if (v_placa is null)
             then
                 v_qtd_erros = v_qtd_erros + 1;
@@ -119,9 +120,9 @@ begin
                               and ppne.cod_empresa = new.cod_empresa;
                             if (v_posicao_prolog is not null)
                             then
-                                if exists(select vp.placa
+                                if exists(select vp.cod_veiculo
                                           from veiculo_pneu vp
-                                          where remove_all_spaces(vp.placa) = new.placa_formatada_vinculo
+                                          where vp.cod_veiculo = v_cod_veiculo
                                             and vp.posicao = v_posicao_prolog
                                             and vp.cod_unidade = new.cod_unidade)
                                 then
@@ -213,14 +214,12 @@ begin
             new.erros_encontrados = v_msgs_erros;
         else
             update pneu_data set status = 'EM_USO' where codigo = v_cod_pneu;
-            insert into veiculo_pneu (placa,
-                                      cod_pneu,
+            insert into veiculo_pneu (cod_pneu,
                                       cod_unidade,
                                       posicao,
                                       cod_diagrama,
                                       cod_veiculo)
-            values (v_placa,
-                    v_cod_pneu,
+            values (v_cod_pneu,
                     new.cod_unidade,
                     v_posicao_prolog,
                     v_cod_diagrama_veiculo,

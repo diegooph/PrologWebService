@@ -4,11 +4,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +40,14 @@ public final class DateUtils {
     @NotNull
     public static LocalDate toLocalDate(@NotNull final Date dateToConvert) {
         return toSqlDate(dateToConvert).toLocalDate();
+    }
+
+    @NotNull
+    public static LocalDate toLocalDateUtc(final long dateInMillisToConvert) {
+        return Instant
+                .ofEpochMilli(dateInMillisToConvert)
+                .atZone(ZoneOffset.UTC)
+                .toLocalDate();
     }
 
     @NotNull
@@ -104,5 +110,9 @@ public final class DateUtils {
                                       final int anoMinimoPermitido) {
         final int anoExtraido = dataASerVerificada.getYear();
         return anoExtraido >= anoMaximoPermitido || anoExtraido <= anoMinimoPermitido;
+    }
+
+    public static boolean isAfterNDays(@NotNull final LocalDateTime date, final long nthDay) {
+        return ChronoUnit.DAYS.between(date, LocalDateTime.now()) > nthDay;
     }
 }

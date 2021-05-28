@@ -1,7 +1,63 @@
 Change Log
 ==========
 
-## UNRELEASED
+### 
+### UNRELEASED
+### 
+
+<a name="v3.3.7"></a>
+## Version [v3.3.7](https://github.com/luizfp/PrologWebService/compare/v3.3.6...v3.3.7) (2021-05-27)
+
+### Refactors
+* Corrige estrutura de testes (PL-3643)
+
+### Bug Fixes
+* Corrige agrupamento dos itens das Ordens de Serviço de checklist
+
+<a name="v3.3.6"></a>
+## Version [v3.3.6](https://github.com/luizfp/PrologWebService/compare/v3.3.5...v3.3.6) (2021-05-22)
+
+### Refactors
+* Otimiza busca dos indicadores individuais
+* Adiciona @Max no Limit de busca de dados dos endpoints da Api.
+
+### Bug Fixes
+* Corrige upload de planilha de tracking
+* Corrige falha ao movimentar pneus na integração com a finatto
+
+<a name="v3.3.5"></a>
+## Version [v3.3.5](https://github.com/luizfp/PrologWebService/compare/v3.3.4...v3.3.5) (2021-05-20)
+
+### Refactors
+* Melhora mapeamento de exceptions do SQL
+* Otimiza geração da produtividade (PL-3648)
+
+<a name="v3.3.4"></a>
+## Version [v3.3.4](https://github.com/luizfp/PrologWebService/compare/v3.3.3...v3.3.4) (2021-05-17)
+
+### Features
+* Cria function para o suporte consultar atualizações num pneu (PL-3490)
+
+### Refactors
+* Atualiza insert/update de pneu para logar o colaborador que inseriu/alterou um pneu (PL-3490)
+* Alterar relatórios e dashboards que utilizam a coluna placa da tabela veiculo_pneu (PL-3617)
+* Remover usos da coluna placa da tabela veiculo_pneu nos fluxos de sistema (WS e BD) (PL-3618)
+* Altera limite máximo permitido na listagem de checklists
+
+### Bug Fixes
+* Erro ao editar diagrama de veiculo (PL-3637)
+
+<a name="v3.3.3"></a>
+## Version [v3.3.3](https://github.com/luizfp/PrologWebService/compare/v3.3.2...v3.3.3) (2021-05-10)
+
+### Refactors
+* Adiciona validação para erros mapeados pelo `SpringDataJpa` (PL-3605)
+
+### Bug Fixes
+* Corrige problema de limpeza de arquivos/pastas temporárias
+
+<a name="v3.3.2"></a>
+## Version [v3.3.2](https://github.com/luizfp/PrologWebService/compare/v3.3.1...v3.3.2) (2021-05-09)
 
 ### Bug Fixes
 * Corrige linha duplicada histórico de veículos (PL-3516)
@@ -9,13 +65,13 @@ Change Log
 
 ### Refactors
 * Remove dependências e configurações não utilizadas do swagger
+* Padroniza documentação da API (PL-3621)
+* Melhora scheduler de limpeza de arquivos (PL-3436)
 
 <a name="v3.3.1"></a>
-
 ## Version [v3.3.1](https://github.com/luizfp/PrologWebService/compare/v3.3.0...v3.3.1) (2021-05-04)
 
 ### Bug Fixes
-
 * Corrige edição de KM de processo de movimentação
 * Corrige KM coletado enviado na listagem de movimentações da API v3
 * Corrige problema ao gerar cronograma de aferição para a Finatto

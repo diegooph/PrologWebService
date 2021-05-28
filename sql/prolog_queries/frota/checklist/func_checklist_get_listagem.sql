@@ -78,47 +78,49 @@ begin
             order by c.data_hora_sincronizacao desc
             limit f_limit offset f_offset
         ),
-             dados_checklists as
-                 (select cf.*,
-                         co.codigo                     as cod_colaborador,
-                         co.cod_equipe                 as cod_equipe_colaborador,
-                         co.nome :: text               as nome_colaborador,
-                         v.placa :: text               as placa,
-                         v.identificador_frota :: text as identificador_frota,
-                         cp.codigo                     as cod_pergunta,
-                         cp.codigo_contexto            as cod_contexto_pergunta,
-                         cp.pergunta                   as descricao_pergunta,
-                         cp.ordem                      as ordem_pergunta,
-                         cp.single_choice              as pergunta_single_choice,
-                         cp.anexo_midia_resposta_ok    as anexo_midia_pergunta_ok,
-                         cap.codigo                    as cod_alternativa,
-                         cap.codigo_contexto           as cod_contexto_alternativa,
-                         cap.alternativa               as descricao_alternativa,
-                         cap.ordem                     as ordem_alternativa,
-                         cap.prioridade ::text         as prioridade_alternativa,
-                         cap.alternativa_tipo_outros   as alternativa_tipo_outros,
-                         cap.deve_abrir_ordem_servico  as deve_abrir_ordem_servico,
-                         cap.anexo_midia               as anexo_midia_alternativa_nok,
-                         cap.cod_auxiliar              as cod_auxiliar_alternativa,
-                         crn.codigo is not null        as alternativa_selecionada,
-                         crn.resposta_outros           as resposta_outros
-                  from checklists_filtrados cf
-                           left join checklist_perguntas cp
-                                     on f_incluir_respostas
-                                         and cp.cod_versao_checklist_modelo = cf.cod_versao_checklist_modelo
-                                         and cp.cod_unidade = any (f_cod_unidades)
-                           left join checklist_alternativa_pergunta cap
-                                     on f_incluir_respostas and cap.cod_pergunta = cp.codigo
-                           left join checklist_respostas_nok crn
-                                     on f_incluir_respostas and cf.codigo = crn.cod_checklist
-                                         and crn.cod_alternativa = cap.codigo
-                           join colaborador co
-                                on co.cpf = cf.cpf_colaborador
-                           join veiculo v
-                                on v.codigo = cf.cod_veiculo
-                  where case when f_cod_colaborador is null then true else co.codigo = f_cod_colaborador end
-                    and case when f_cod_tipo_veiculo is null then true else v.cod_tipo = f_cod_tipo_veiculo end
-                    and case when f_cod_veiculo is null then true else cf.cod_veiculo = f_cod_veiculo end)
+             dados_checklists as (
+                 select cf.*,
+                        co.codigo                     as cod_colaborador,
+                        co.cod_equipe                 as cod_equipe_colaborador,
+                        co.nome :: text               as nome_colaborador,
+                        v.placa :: text               as placa,
+                        v.identificador_frota :: text as identificador_frota,
+                        cp.codigo                     as cod_pergunta,
+                        cp.codigo_contexto            as cod_contexto_pergunta,
+                        cp.pergunta                   as descricao_pergunta,
+                        cp.ordem                      as ordem_pergunta,
+                        cp.single_choice              as pergunta_single_choice,
+                        cp.anexo_midia_resposta_ok    as anexo_midia_pergunta_ok,
+                        cap.codigo                    as cod_alternativa,
+                        cap.codigo_contexto           as cod_contexto_alternativa,
+                        cap.alternativa               as descricao_alternativa,
+                        cap.ordem                     as ordem_alternativa,
+                        cap.prioridade ::text         as prioridade_alternativa,
+                        cap.alternativa_tipo_outros   as alternativa_tipo_outros,
+                        cap.deve_abrir_ordem_servico  as deve_abrir_ordem_servico,
+                        cap.anexo_midia               as anexo_midia_alternativa_nok,
+                        cap.cod_auxiliar              as cod_auxiliar_alternativa,
+                        crn.codigo is not null        as alternativa_selecionada,
+                        crn.resposta_outros           as resposta_outros
+                 from checklists_filtrados cf
+                          left join checklist_perguntas cp
+                                    on f_incluir_respostas
+                                        and cp.cod_versao_checklist_modelo = cf.cod_versao_checklist_modelo
+                                        and cp.cod_unidade = any (f_cod_unidades)
+                          left join checklist_alternativa_pergunta cap
+                                    on f_incluir_respostas and cap.cod_pergunta = cp.codigo
+                          left join checklist_respostas_nok crn
+                                    on f_incluir_respostas and cf.codigo = crn.cod_checklist
+                                        and crn.cod_alternativa = cap.codigo
+                          join colaborador co
+                               on co.cpf = cf.cpf_colaborador
+                          join veiculo v
+                               on v.codigo = cf.cod_veiculo
+                 where case when f_cod_colaborador is null then true else co.codigo = f_cod_colaborador end
+                   and case when f_cod_tipo_veiculo is null then true else v.cod_tipo = f_cod_tipo_veiculo end
+                   and case when f_cod_veiculo is null then true else cf.cod_veiculo = f_cod_veiculo end
+             )
+
         select dc.cod_unidade                                            as cod_unidade,
                dc.codigo                                                 as cod_checklist,
                dc.cod_checklist_modelo                                   as cod_checklist_modelo,
@@ -142,28 +144,28 @@ begin
                dc.total_perguntas_nok                                    as total_perguntas_nok,
                dc.total_alternativas_ok                                  as total_alternativas_ok,
                dc.total_alternativas_nok                                 as total_alternativas_nok,
-               f_if(dc.total_midias_perguntas_ok is null, 0,
+               f_if(dc.total_midias_perguntas_ok is null, 0::smallint,
                     dc.total_midias_perguntas_ok)                        as total_midias_perguntas_ok,
-               f_if(dc.total_midias_alternativas_nok is null, 0,
+               f_if(dc.total_midias_alternativas_nok is null, 0::smallint,
                     dc.total_midias_alternativas_nok)                    as total_midias_alternativas_nok,
                (select count(*)
                 from checklist_respostas_nok crn
                          join checklist_alternativa_pergunta cap
                               on crn.cod_alternativa = cap.codigo
                 where crn.cod_checklist = dc.codigo
-                  and cap.prioridade = 'BAIXA') :: smallint              as total_alternativas_nok_prioridade_baixa,
+                  and cap.prioridade = 'BAIXA')::smallint                as total_alternativas_nok_prioridade_baixa,
                (select count(*)
                 from checklist_respostas_nok crn
                          join checklist_alternativa_pergunta cap
                               on crn.cod_alternativa = cap.codigo
                 where crn.cod_checklist = dc.codigo
-                  and cap.prioridade = 'ALTA') :: smallint               as total_alternativas_nok_prioridade_alta,
+                  and cap.prioridade = 'ALTA')::smallint                 as total_alternativas_nok_prioridade_alta,
                (select count(*)
                 from checklist_respostas_nok crn
                          join checklist_alternativa_pergunta cap
                               on crn.cod_alternativa = cap.codigo
                 where crn.cod_checklist = dc.codigo
-                  and cap.prioridade = 'CRITICA') :: smallint            as total_alternativas_nok_prioridade_critica,
+                  and cap.prioridade = 'CRITICA')::smallint              as total_alternativas_nok_prioridade_critica,
                dc.foi_offline                                            as foi_offline,
                dc.data_hora_sincronizacao                                as data_hora_sincronizacao_utc,
                dc.data_hora_sincronizacao at time zone tz_unidade(dc.cod_unidade)
@@ -173,8 +175,10 @@ begin
                dc.versao_app_momento_sincronizacao                       as versao_app_momento_sincronizacao,
                dc.device_id                                              as device_id,
                dc.device_imei                                            as device_imei,
-               dc.device_uptime_realizacao_millis                        as device_uptime_realizacao_millis,
-               dc.device_uptime_sincronizacao_millis                     as device_uptime_sincronizacao_millis,
+               f_if(dc.device_uptime_realizacao_millis is null, 0::bigint,
+                    dc.device_uptime_realizacao_millis)                  as device_uptime_realizacao_millis,
+               f_if(dc.device_uptime_sincronizacao_millis is null, 0::bigint,
+                    dc.device_uptime_sincronizacao_millis)               as device_uptime_sincronizacao_millis,
                dc.cod_pergunta                                           as cod_pergunta,
                dc.cod_contexto_pergunta                                  as cod_contexto_pergunta,
                dc.descricao_pergunta                                     as descricao_pergunta,

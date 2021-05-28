@@ -1,254 +1,254 @@
-CREATE OR REPLACE FUNCTION INTERNO.FUNC_RESETA_EMPRESA_APRESENTACAO(F_COD_EMPRESA_BASE BIGINT,
-                                                                    F_COD_EMPRESA_USUARIO BIGINT,
-                                                                    OUT MENSAGEM_SUCESSO TEXT)
-    RETURNS TEXT
-    LANGUAGE PLPGSQL
-AS
+create or replace function interno.func_reseta_empresa_apresentacao(f_cod_empresa_base bigint,
+                                                                    f_cod_empresa_usuario bigint,
+                                                                    out mensagem_sucesso text)
+    returns text
+    language plpgsql
+as
 $$
-DECLARE
-    V_COD_UNIDADES_BASE                     BIGINT[] := (SELECT ARRAY_AGG(U.CODIGO)
-                                                         FROM UNIDADE U
-                                                         WHERE U.COD_EMPRESA = F_COD_EMPRESA_BASE);
-    V_COD_UNIDADE_BASE                      BIGINT;
-    V_COD_UNIDADES_USUARIO                  BIGINT[] := (SELECT ARRAY_AGG(U.CODIGO)
-                                                         FROM UNIDADE U
-                                                         WHERE U.COD_EMPRESA = F_COD_EMPRESA_USUARIO);
-    V_COD_UNIDADE_USUARIO_NOVA              BIGINT;
-    V_COD_COLABORADORES_USUARIO             BIGINT[] := (SELECT ARRAY_AGG(CD.CODIGO)
-                                                         FROM COLABORADOR_DATA CD
-                                                         WHERE CD.COD_UNIDADE = ANY (V_COD_UNIDADES_USUARIO));
-    V_COD_AFERICOES                         BIGINT[] := (SELECT ARRAY_AGG(AD.CODIGO)
-                                                         FROM AFERICAO_DATA AD
-                                                         WHERE AD.COD_UNIDADE = ANY (V_COD_UNIDADES_USUARIO));
-    V_COD_CHECKLISTS                        BIGINT[] := (SELECT ARRAY_AGG(CD.CODIGO)
-                                                         FROM CHECKLIST_DATA CD
-                                                         WHERE CD.COD_UNIDADE = ANY (V_COD_UNIDADES_USUARIO));
-    V_COD_CHECKLISTS_MODELO                 BIGINT[] := (SELECT DISTINCT ARRAY_AGG(CMD.CODIGO)
-                                                         FROM CHECKLIST_MODELO_DATA CMD
-                                                         WHERE CMD.COD_UNIDADE = ANY (V_COD_UNIDADES_USUARIO));
-    V_TOKENS_CHECKLISTS_OFF                 TEXT     := (SELECT ARRAY_AGG(CODU.TOKEN_SINCRONIZACAO_CHECKLIST)
-                                                         FROM CHECKLIST_OFFLINE_DADOS_UNIDADE CODU
-                                                         WHERE CODU.COD_UNIDADE = ANY (V_COD_UNIDADES_USUARIO));
-    V_COD_MOVIMENTACOES                     BIGINT[] := (SELECT ARRAY_AGG(MO.CODIGO)
-                                                         FROM MOVIMENTACAO MO
-                                                         WHERE MO.COD_UNIDADE = ANY (V_COD_UNIDADES_USUARIO));
-    V_COD_SOCORROS                          BIGINT[] := (SELECT ARRAY_AGG(SR.CODIGO)
-                                                         FROM SOCORRO_ROTA SR
-                                                         WHERE SR.COD_UNIDADE = ANY (V_COD_UNIDADES_USUARIO));
-    V_COD_VEICULOS_TRANSFERENCIAS_PROCESSOS BIGINT[] := (SELECT ARRAY_AGG(VTP.CODIGO)
-                                                         FROM VEICULO_TRANSFERENCIA_PROCESSO VTP
-                                                         WHERE (VTP.COD_UNIDADE_DESTINO = ANY (V_COD_UNIDADES_USUARIO))
-                                                            OR (VTP.COD_UNIDADE_ORIGEM = ANY (V_COD_UNIDADES_USUARIO)));
-    V_COD_PNEU_TRANSFERENCIAS_PROCESSOS     BIGINT[] := (SELECT ARRAY_AGG(PTP.CODIGO)
-                                                         FROM PNEU_TRANSFERENCIA_PROCESSO PTP
-                                                         WHERE (PTP.COD_UNIDADE_ORIGEM = ANY (V_COD_UNIDADES_USUARIO))
-                                                            OR (PTP.COD_UNIDADE_DESTINO = ANY (V_COD_UNIDADES_USUARIO)));
-    V_COD_COLABORADORES_NPS                 BIGINT[] := (SELECT ARRAY_AGG(COLABORADORES.COD_COLABORADOR_NPS)
-                                                         FROM (SELECT NBPC.COD_COLABORADOR_BLOQUEIO AS COD_COLABORADOR_NPS
-                                                               FROM CS.NPS_BLOQUEIO_PESQUISA_COLABORADOR NBPC
-                                                               WHERE NBPC.COD_COLABORADOR_BLOQUEIO = ANY (V_COD_COLABORADORES_USUARIO)
-                                                               UNION
-                                                               SELECT NR.COD_COLABORADOR_RESPOSTAS AS COD_COLABORADOR_NPS
-                                                               FROM CS.NPS_RESPOSTAS NR
-                                                               WHERE NR.COD_COLABORADOR_RESPOSTAS = ANY (V_COD_COLABORADORES_USUARIO)) COLABORADORES);
-    V_COD_TREINAMENTOS                      BIGINT[] := (SELECT ARRAY_AGG(T.CODIGO)
-                                                         FROM TREINAMENTO T
-                                                         WHERE T.COD_UNIDADE = ANY (V_COD_UNIDADES_USUARIO));
-    V_COD_SERVICOS_REALIZADOS               BIGINT[] := (SELECT ARRAY_AGG(PSR.CODIGO)
-                                                         FROM PNEU_SERVICO_REALIZADO_DATA PSR
-                                                         WHERE PSR.COD_UNIDADE = ANY (V_COD_UNIDADES_USUARIO));
-    V_COD_INTERVALO                         BIGINT[] := (SELECT ARRAY_AGG(IU.COD_UNIDADE)
-                                                         FROM INTERVALO_UNIDADE IU
-                                                         WHERE IU.COD_UNIDADE = ANY (V_COD_UNIDADES_USUARIO));
-    V_COD_MARCACOES                         BIGINT[] := (SELECT ARRAY_AGG(I.CODIGO)
-                                                         FROM INTERVALO I
-                                                         WHERE I.COD_UNIDADE = ANY (V_COD_UNIDADES_USUARIO));
-    V_COD_RELATOS                           BIGINT[] := (SELECT ARRAY_AGG(R.CODIGO)
-                                                         FROM RELATO R
-                                                         WHERE R.COD_UNIDADE = ANY (V_COD_UNIDADES_USUARIO));
-    V_COD_QUIZ                              BIGINT[] := (SELECT ARRAY_AGG(Q.CODIGO)
-                                                         FROM QUIZ Q
-                                                         WHERE Q.COD_UNIDADE = ANY (V_COD_UNIDADES_USUARIO));
-    V_COD_FALE_CONOSCO                      BIGINT[] := (SELECT ARRAY_AGG(FC.CODIGO)
-                                                         FROM FALE_CONOSCO FC
-                                                         WHERE FC.COD_UNIDADE = ANY (V_COD_UNIDADES_USUARIO));
-    V_COD_TESTES_AFERIDOR                   BIGINT[] := (SELECT ARRAY_AGG(PT.CODIGO)
-                                                         FROM AFERIDOR.PROCEDIMENTO_TESTE PT
-                                                         WHERE PT.COD_COLABORADOR_EXECUCAO = ANY (V_COD_COLABORADORES_USUARIO));
-    V_COLABORADORES_CADASTRADOS             TEXT[] ;
-BEGIN
-    -- VERIFICA SE EMPRESAS EXISTEM.
-    PERFORM FUNC_GARANTE_EMPRESA_EXISTE(F_COD_EMPRESA_BASE);
-    PERFORM FUNC_GARANTE_EMPRESA_EXISTE(F_COD_EMPRESA_USUARIO);
+declare
+    v_cod_unidades_base                     bigint[] := (select array_agg(u.codigo)
+                                                         from unidade u
+                                                         where u.cod_empresa = f_cod_empresa_base);
+    v_cod_unidade_base                      bigint;
+    v_cod_unidades_usuario                  bigint[] := (select array_agg(u.codigo)
+                                                         from unidade u
+                                                         where u.cod_empresa = f_cod_empresa_usuario);
+    v_cod_unidade_usuario_nova              bigint;
+    v_cod_colaboradores_usuario             bigint[] := (select array_agg(cd.codigo)
+                                                         from colaborador_data cd
+                                                         where cd.cod_unidade = any (v_cod_unidades_usuario));
+    v_cod_afericoes                         bigint[] := (select array_agg(ad.codigo)
+                                                         from afericao_data ad
+                                                         where ad.cod_unidade = any (v_cod_unidades_usuario));
+    v_cod_checklists                        bigint[] := (select array_agg(cd.codigo)
+                                                         from checklist_data cd
+                                                         where cd.cod_unidade = any (v_cod_unidades_usuario));
+    v_cod_checklists_modelo                 bigint[] := (select distinct array_agg(cmd.codigo)
+                                                         from checklist_modelo_data cmd
+                                                         where cmd.cod_unidade = any (v_cod_unidades_usuario));
+    v_tokens_checklists_off                 text     := (select array_agg(codu.token_sincronizacao_checklist)
+                                                         from checklist_offline_dados_unidade codu
+                                                         where codu.cod_unidade = any (v_cod_unidades_usuario));
+    v_cod_movimentacoes                     bigint[] := (select array_agg(mo.codigo)
+                                                         from movimentacao mo
+                                                         where mo.cod_unidade = any (v_cod_unidades_usuario));
+    v_cod_socorros                          bigint[] := (select array_agg(sr.codigo)
+                                                         from socorro_rota sr
+                                                         where sr.cod_unidade = any (v_cod_unidades_usuario));
+    v_cod_veiculos_transferencias_processos bigint[] := (select array_agg(vtp.codigo)
+                                                         from veiculo_transferencia_processo vtp
+                                                         where (vtp.cod_unidade_destino = any (v_cod_unidades_usuario))
+                                                            or (vtp.cod_unidade_origem = any (v_cod_unidades_usuario)));
+    v_cod_pneu_transferencias_processos     bigint[] := (select array_agg(ptp.codigo)
+                                                         from pneu_transferencia_processo ptp
+                                                         where (ptp.cod_unidade_origem = any (v_cod_unidades_usuario))
+                                                            or (ptp.cod_unidade_destino = any (v_cod_unidades_usuario)));
+    v_cod_colaboradores_nps                 bigint[] := (select array_agg(colaboradores.cod_colaborador_nps)
+                                                         from (select nbpc.cod_colaborador_bloqueio as cod_colaborador_nps
+                                                               from cs.nps_bloqueio_pesquisa_colaborador nbpc
+                                                               where nbpc.cod_colaborador_bloqueio = any (v_cod_colaboradores_usuario)
+                                                               union
+                                                               select nr.cod_colaborador_respostas as cod_colaborador_nps
+                                                               from cs.nps_respostas nr
+                                                               where nr.cod_colaborador_respostas = any (v_cod_colaboradores_usuario)) colaboradores);
+    v_cod_treinamentos                      bigint[] := (select array_agg(t.codigo)
+                                                         from treinamento t
+                                                         where t.cod_unidade = any (v_cod_unidades_usuario));
+    v_cod_servicos_realizados               bigint[] := (select array_agg(psr.codigo)
+                                                         from pneu_servico_realizado_data psr
+                                                         where psr.cod_unidade = any (v_cod_unidades_usuario));
+    v_cod_intervalo                         bigint[] := (select array_agg(iu.cod_unidade)
+                                                         from intervalo_unidade iu
+                                                         where iu.cod_unidade = any (v_cod_unidades_usuario));
+    v_cod_marcacoes                         bigint[] := (select array_agg(i.codigo)
+                                                         from intervalo i
+                                                         where i.cod_unidade = any (v_cod_unidades_usuario));
+    v_cod_relatos                           bigint[] := (select array_agg(r.codigo)
+                                                         from relato r
+                                                         where r.cod_unidade = any (v_cod_unidades_usuario));
+    v_cod_quiz                              bigint[] := (select array_agg(q.codigo)
+                                                         from quiz q
+                                                         where q.cod_unidade = any (v_cod_unidades_usuario));
+    v_cod_fale_conosco                      bigint[] := (select array_agg(fc.codigo)
+                                                         from fale_conosco fc
+                                                         where fc.cod_unidade = any (v_cod_unidades_usuario));
+    v_cod_testes_aferidor                   bigint[] := (select array_agg(pt.codigo)
+                                                         from aferidor.procedimento_teste pt
+                                                         where pt.cod_colaborador_execucao = any (v_cod_colaboradores_usuario));
+    v_colaboradores_cadastrados             text[] ;
+begin
+    -- verifica se empresas existem.
+    perform func_garante_empresa_existe(f_cod_empresa_base);
+    perform func_garante_empresa_existe(f_cod_empresa_usuario);
 
-    -- BUSCA E DELETA VÍNCULOS QUE POSSAM EXISTIR DE COLABORADOR, VEÍCULOS E PNEUS.
-    --- AFERIÇAO.
-    IF (V_COD_AFERICOES IS NOT NULL)
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_AFERICOES_DEPENDENCIAS(V_COD_UNIDADES_USUARIO, V_COD_AFERICOES);
-    END IF;
+    -- busca e deleta vínculos que possam existir de colaborador, veículos e pneus.
+    --- aferiçao.
+    if (v_cod_afericoes is not null)
+    then
+        perform interno.func_deleta_afericoes_dependencias(v_cod_unidades_usuario, v_cod_afericoes);
+    end if;
 
-    --- CHECKLIST.
-    IF ((V_COD_CHECKLISTS IS NOT NULL) OR (V_COD_CHECKLISTS_MODELO IS NOT NULL))
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_CHECKLISTS_DEPENDENCIAS(V_COD_UNIDADES_USUARIO,
-                                                            V_COD_CHECKLISTS,
-                                                            V_COD_CHECKLISTS_MODELO);
-    END IF;
+    --- checklist.
+    if ((v_cod_checklists is not null) or (v_cod_checklists_modelo is not null))
+    then
+        perform interno.func_deleta_checklists_dependencias(v_cod_unidades_usuario,
+                                                            v_cod_checklists,
+                                                            v_cod_checklists_modelo);
+    end if;
 
-    --- DELETA TOKEN CKECKLIST OFFLINE
-    -- (MESMO SEM TER CHECKLIST - PODE HAVER O TOKEN - POIS ELE É CRIADO ASSIM QUE UMA UNIDADE É CADASTRADA)
-    IF (V_TOKENS_CHECKLISTS_OFF IS NOT NULL)
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_TOKENS_CHECKLISTS_OFFLINES(V_COD_UNIDADES_USUARIO);
-    END IF;
+    --- deleta token ckecklist offline
+    -- (mesmo sem ter checklist - pode haver o token - pois ele é criado assim que uma unidade é cadastrada)
+    if (v_tokens_checklists_off is not null)
+    then
+        perform interno.func_deleta_tokens_checklists_offlines(v_cod_unidades_usuario);
+    end if;
 
-    -- MOVIMENTAÇÃO.
-    IF (V_COD_MOVIMENTACOES IS NOT NULL)
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_MOVIMENTACOES_DEPENDENCIAS(V_COD_UNIDADES_USUARIO, V_COD_MOVIMENTACOES);
-    END IF;
+    -- movimentação.
+    if (v_cod_movimentacoes is not null)
+    then
+        perform interno.func_deleta_movimentacoes_dependencias(v_cod_unidades_usuario, v_cod_movimentacoes);
+    end if;
 
-    --- SOCORRO EM ROTA.
-    IF (V_COD_SOCORROS IS NOT NULL)
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_SOCORROS_DEPENDENCIAS(F_COD_EMPRESA_USUARIO, V_COD_SOCORROS);
-    END IF;
+    --- socorro em rota.
+    if (v_cod_socorros is not null)
+    then
+        perform interno.func_deleta_socorros_dependencias(f_cod_empresa_usuario, v_cod_socorros);
+    end if;
 
-    --- TRANSFERENCIA DE VEÍCULOS.
-    IF (V_COD_VEICULOS_TRANSFERENCIAS_PROCESSOS IS NOT NULL)
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_TRANSFERENCIAS_VEICULOS_DEPENDENCIAS(V_COD_VEICULOS_TRANSFERENCIAS_PROCESSOS);
-    END IF;
+    --- transferencia de veículos.
+    if (v_cod_veiculos_transferencias_processos is not null)
+    then
+        perform interno.func_deleta_transferencias_veiculos_dependencias(v_cod_veiculos_transferencias_processos);
+    end if;
 
-    -- TRANSFERENCIA DE PNEU
-    IF (V_COD_PNEU_TRANSFERENCIAS_PROCESSOS IS NOT NULL)
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_TRANSFERENCIAS_PNEUS_DEPENDENCIAS(V_COD_PNEU_TRANSFERENCIAS_PROCESSOS,
-                                                                      V_COD_UNIDADES_USUARIO);
-    END IF;
+    -- transferencia de pneu
+    if (v_cod_pneu_transferencias_processos is not null)
+    then
+        perform interno.func_deleta_transferencias_pneus_dependencias(v_cod_pneu_transferencias_processos,
+                                                                      v_cod_unidades_usuario);
+    end if;
 
-    -- INTERVALO
-    IF (V_COD_INTERVALO IS NOT NULL)
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_INTERVALO_DEPENDENCIAS(V_COD_UNIDADES_USUARIO, V_COD_MARCACOES);
-    END IF;
+    -- intervalo
+    if (v_cod_intervalo is not null)
+    then
+        perform interno.func_deleta_intervalo_dependencias(v_cod_unidades_usuario, v_cod_marcacoes);
+    end if;
 
-    -- NPS
-    IF (V_COD_COLABORADORES_NPS IS NOT NULL)
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_NPS(V_COD_COLABORADORES_NPS);
-    END IF;
+    -- nps
+    if (v_cod_colaboradores_nps is not null)
+    then
+        perform interno.func_deleta_nps(v_cod_colaboradores_nps);
+    end if;
 
-    -- PRODUTIVIDADE
-    IF EXISTS(SELECT AP.COD_UNIDADE FROM ACESSOS_PRODUTIVIDADE AP WHERE AP.COD_UNIDADE = ANY (V_COD_UNIDADES_USUARIO))
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_PRODUTIVIDADES_DEPENDENCIAS(V_COD_UNIDADES_USUARIO);
-    END IF;
+    -- produtividade
+    if exists(select ap.cod_unidade from acessos_produtividade ap where ap.cod_unidade = any (v_cod_unidades_usuario))
+    then
+        perform interno.func_deleta_produtividades_dependencias(v_cod_unidades_usuario);
+    end if;
 
-    -- RELATO
-    IF (V_COD_RELATOS IS NOT NULL)
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_RELATOS_DEPENDENCIAS(V_COD_UNIDADES_USUARIO);
-    END IF;
+    -- relato
+    if (v_cod_relatos is not null)
+    then
+        perform interno.func_deleta_relatos_dependencias(v_cod_unidades_usuario);
+    end if;
 
-    -- QUIZ
-    IF (V_COD_QUIZ IS NOT NULL)
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_QUIZ_DEPENDENCIAS(V_COD_UNIDADES_USUARIO, V_COD_QUIZ);
-    END IF;
+    -- quiz
+    if (v_cod_quiz is not null)
+    then
+        perform interno.func_deleta_quiz_dependencias(v_cod_unidades_usuario, v_cod_quiz);
+    end if;
 
-    -- TREINAMENTO
-    IF (V_COD_TREINAMENTOS IS NOT NULL)
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_TREINAMENTOS_DEPENDENCIAS(V_COD_TREINAMENTOS);
-    END IF;
+    -- treinamento
+    if (v_cod_treinamentos is not null)
+    then
+        perform interno.func_deleta_treinamentos_dependencias(v_cod_treinamentos);
+    end if;
 
-    -- SERVICO PNEU
-    IF (V_COD_SERVICOS_REALIZADOS IS NOT NULL)
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_SERVICOS_PNEU_DEPENDENCIAS(F_COD_EMPRESA_USUARIO, V_COD_SERVICOS_REALIZADOS);
-    END IF;
+    -- servico pneu
+    if (v_cod_servicos_realizados is not null)
+    then
+        perform interno.func_deleta_servicos_pneu_dependencias(f_cod_empresa_usuario, v_cod_servicos_realizados);
+    end if;
 
-    -- FALE CONOSCO
-    IF (V_COD_FALE_CONOSCO IS NOT NULL)
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_FALE_CONOSCO(V_COD_FALE_CONOSCO);
-    END IF;
+    -- fale conosco
+    if (v_cod_fale_conosco is not null)
+    then
+        perform interno.func_deleta_fale_conosco(v_cod_fale_conosco);
+    end if;
 
-    -- TESTES AFERIDOR
-    IF (V_COD_TESTES_AFERIDOR IS NOT NULL)
-    THEN
-        PERFORM INTERNO.FUNC_DELETA_TESTES_AFERIDOR(V_COD_TESTES_AFERIDOR);
-    END IF;
+    -- testes aferidor
+    if (v_cod_testes_aferidor is not null)
+    then
+        perform interno.func_deleta_testes_aferidor(v_cod_testes_aferidor);
+    end if;
 
-    -- DELETA VEÍCULOS
-    PERFORM INTERNO.FUNC_DELETA_VEICULOS(F_COD_EMPRESA_USUARIO, V_COD_UNIDADES_USUARIO);
+    -- deleta veículos
+    perform interno.func_deleta_veiculos(f_cod_empresa_usuario, v_cod_unidades_usuario);
 
-    -- DELETA PNEUS
-    PERFORM INTERNO.FUNC_DELETA_PNEUS(F_COD_EMPRESA_USUARIO, V_COD_UNIDADES_USUARIO);
+    -- deleta pneus
+    perform interno.func_deleta_pneus(f_cod_empresa_usuario, v_cod_unidades_usuario);
 
-    -- DELETA COLABORADORES
-    PERFORM INTERNO.FUNC_DELETA_COLABORADORES(F_COD_EMPRESA_USUARIO, V_COD_UNIDADES_USUARIO);
+    -- deleta colaboradores
+    perform interno.func_deleta_colaboradores(f_cod_empresa_usuario, v_cod_unidades_usuario);
 
-    -- DELETA UNIDADES
-    PERFORM INTERNO.FUNC_DELETA_UNIDADES(F_COD_EMPRESA_USUARIO, V_COD_UNIDADES_USUARIO);
+    -- deleta unidades
+    perform interno.func_deleta_unidades(f_cod_empresa_usuario, v_cod_unidades_usuario);
 
-    -- CLONAGENS
-    --- CLONA UNIDADES
-    PERFORM INTERNO.FUNC_CLONA_UNIDADES(F_COD_EMPRESA_BASE, F_COD_EMPRESA_USUARIO);
+    -- clonagens
+    --- clona unidades
+    perform interno.func_clona_unidades(f_cod_empresa_base, f_cod_empresa_usuario);
 
-    --- CLONA NOMENCLATURAS
-    PERFORM INTERNO.FUNC_CLONA_NOMENCLATURAS(F_COD_EMPRESA_BASE, F_COD_EMPRESA_USUARIO);
+    --- clona nomenclaturas
+    perform interno.func_clona_nomenclaturas(f_cod_empresa_base, f_cod_empresa_usuario);
 
-    FOREACH V_COD_UNIDADE_BASE IN ARRAY V_COD_UNIDADES_BASE
-        LOOP
-            V_COD_UNIDADE_USUARIO_NOVA := (SELECT UNOVA.CODIGO
-                                           FROM UNIDADE UBASE
-                                                    JOIN UNIDADE UNOVA ON UBASE.NOME = UNOVA.NOME
-                                           WHERE UBASE.CODIGO = V_COD_UNIDADE_BASE
-                                             AND UNOVA.COD_EMPRESA = F_COD_EMPRESA_USUARIO);
+    foreach v_cod_unidade_base in array v_cod_unidades_base
+        loop
+            v_cod_unidade_usuario_nova := (select unova.codigo
+                                           from unidade ubase
+                                                    join unidade unova on ubase.nome = unova.nome
+                                           where ubase.codigo = v_cod_unidade_base
+                                             and unova.cod_empresa = f_cod_empresa_usuario);
 
-            --- CLONA VEÍCULOS
-            IF EXISTS(SELECT VD.CODIGO FROM VEICULO_DATA VD WHERE VD.COD_UNIDADE = V_COD_UNIDADE_BASE)
-            THEN
-                PERFORM INTERNO.FUNC_CLONA_VEICULOS(F_COD_EMPRESA_BASE, V_COD_UNIDADE_BASE, F_COD_EMPRESA_USUARIO,
-                                                    V_COD_UNIDADE_USUARIO_NOVA);
+            --- clona veículos
+            if exists(select vd.codigo from veiculo_data vd where vd.cod_unidade = v_cod_unidade_base)
+            then
+                perform interno.func_clona_veiculos(f_cod_empresa_base, v_cod_unidade_base, f_cod_empresa_usuario,
+                                                    v_cod_unidade_usuario_nova);
 
-            END IF;
+            end if;
 
-            --- CLONA PNEUS
-            IF EXISTS(SELECT PD.CODIGO FROM PNEU_DATA PD WHERE PD.COD_UNIDADE = V_COD_UNIDADE_BASE)
-            THEN
-                PERFORM INTERNO.FUNC_CLONA_PNEUS(F_COD_EMPRESA_BASE, V_COD_UNIDADE_BASE, F_COD_EMPRESA_USUARIO,
-                                                 V_COD_UNIDADE_USUARIO_NOVA);
-            END IF;
+            --- clona pneus
+            if exists(select pd.codigo from pneu_data pd where pd.cod_unidade = v_cod_unidade_base)
+            then
+                perform interno.func_clona_pneus(f_cod_empresa_base, v_cod_unidade_base, f_cod_empresa_usuario,
+                                                 v_cod_unidade_usuario_nova);
+            end if;
 
-            --- CLONA VINCULOS
-            IF EXISTS(SELECT VP.PLACA FROM VEICULO_PNEU VP WHERE VP.COD_UNIDADE = V_COD_UNIDADE_BASE)
-            THEN
-                PERFORM INTERNO.FUNC_CLONA_VINCULO_VEICULOS_PNEUS(V_COD_UNIDADE_BASE, V_COD_UNIDADE_USUARIO_NOVA);
-            END IF;
+            --- clona vinculos
+            if exists(select vp.cod_veiculo from veiculo_pneu vp where vp.cod_unidade = v_cod_unidade_base)
+            then
+                perform interno.func_clona_vinculo_veiculos_pneus(v_cod_unidade_base, v_cod_unidade_usuario_nova);
+            end if;
 
-            --- CLONA COLABORADORES
-            IF EXISTS(SELECT CD.CODIGO FROM COLABORADOR_DATA CD WHERE CD.COD_UNIDADE = V_COD_UNIDADE_BASE)
-            THEN
-                PERFORM INTERNO.FUNC_CLONA_COLABORADORES(F_COD_EMPRESA_BASE, V_COD_UNIDADE_BASE,
-                                                         F_COD_EMPRESA_USUARIO,
-                                                         V_COD_UNIDADE_USUARIO_NOVA);
-            END IF;
-        END LOOP;
+            --- clona colaboradores
+            if exists(select cd.codigo from colaborador_data cd where cd.cod_unidade = v_cod_unidade_base)
+            then
+                perform interno.func_clona_colaboradores(f_cod_empresa_base, v_cod_unidade_base,
+                                                         f_cod_empresa_usuario,
+                                                         v_cod_unidade_usuario_nova);
+            end if;
+        end loop;
 
-    V_COLABORADORES_CADASTRADOS = (SELECT ARRAY_AGG(CONCAT('CPF: ', C.CPF,
-                                                           ' | DATA NASCIMENTO: ', C.DATA_NASCIMENTO,
-                                                           ' | NÍVEL DE PERMISSAO: ', C.COD_PERMISSAO,
-                                                           ' | CARGO: ', F.NOME))
-                                   FROM COLABORADOR C
-                                            JOIN FUNCAO F ON F.COD_EMPRESA = C.COD_EMPRESA AND F.CODIGO = C.COD_FUNCAO
-                                   WHERE C.COD_EMPRESA = F_COD_EMPRESA_USUARIO);
+    v_colaboradores_cadastrados = (select array_agg(concat('CPF: ', c.cpf,
+                                                           ' | DATA NASCIMENTO: ', c.data_nascimento,
+                                                           ' | NÍVEL DE PERMISSAO: ', c.cod_permissao,
+                                                           ' | CARGO: ', f.nome))
+                                   from colaborador c
+                                            join funcao f on f.cod_empresa = c.cod_empresa and f.codigo = c.cod_funcao
+                                   where c.cod_empresa = f_cod_empresa_usuario);
 
-    SELECT 'A EMPRESA FOI RESETADA E OS DADOS FORAM CLONADOS COM SUCESSO. OS COLABORADORES CADASTRADOS SÃO: ' ||
-           CONCAT(V_COLABORADORES_CADASTRADOS)
-    INTO MENSAGEM_SUCESSO;
-END ;
+    select 'A EMPRESA FOI RESETADA E OS DADOS FORAM CLONADOS COM SUCESSO. OS COLABORADORES CADASTRADOS SÃO: ' ||
+           concat(v_colaboradores_cadastrados)
+    into mensagem_sucesso;
+end ;
 $$;
