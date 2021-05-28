@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
+import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -34,6 +35,7 @@ public class ServicoPneuResource implements ServicoPneuApiDoc {
     private final ServicoPneuListagemMapper mapper;
 
     @GET
+    @ApiExposed
     @Secured(permissions = Pilares.Frota.OrdemServico.Pneu.VISUALIZAR)
     @Override
     @NotNull
