@@ -7,6 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
+import org.hibernate.engine.spi.PersistentAttributeInterceptable;
+import org.hibernate.engine.spi.PersistentAttributeInterceptor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
@@ -24,19 +28,24 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(schema = "public", name = "movimentacao")
-public final class MovimentacaoEntity {
+public final class MovimentacaoEntity implements PersistentAttributeInterceptable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private Long codigo;
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
-    @OneToOne(mappedBy = "movimentacao", fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn
+    @LazyToOne(LazyToOneOption.NO_PROXY)
+    @MapsId
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "codigo", referencedColumnName = "cod_movimentacao", nullable = false)
     private MovimentacaoOrigemEntity movimentacaoOrigem;
-    @OneToOne(mappedBy = "movimentacao", fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn
+    @LazyToOne(LazyToOneOption.NO_PROXY)
+    @MapsId
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "codigo", referencedColumnName = "cod_movimentacao", nullable = false)
     private MovimentacaoDestinoEntity movimentacaoDestino;
+    @LazyToOne(LazyToOneOption.NO_PROXY)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_movimentacao_processo", nullable = false)
     private MovimentacaoProcessoEntity movimentacaoProcesso;
@@ -62,6 +71,18 @@ public final class MovimentacaoEntity {
                joinColumns = @JoinColumn(name = "cod_movimentacao"),
                inverseJoinColumns = @JoinColumn(name = "cod_servico_realizado"))
     private Set<PneuServicoRealizadoEntity> servicosRealizados;
+    @Transient
+    private PersistentAttributeInterceptor persistentAttributeInterceptor;
+
+    @Override
+    public PersistentAttributeInterceptor $$_hibernate_getInterceptor() {
+        return persistentAttributeInterceptor;
+    }
+
+    @Override
+    public void $$_hibernate_setInterceptor(final PersistentAttributeInterceptor persistentAttributeInterceptor) {
+        this.persistentAttributeInterceptor = persistentAttributeInterceptor;
+    }
 
     public boolean isMovimentacaoNoVeiculo() {
         return movimentacaoOrigem.getVeiculo() != null || movimentacaoDestino.getVeiculo() != null;

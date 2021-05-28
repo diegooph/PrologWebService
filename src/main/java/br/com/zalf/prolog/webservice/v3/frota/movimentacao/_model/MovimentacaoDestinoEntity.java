@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
+import org.hibernate.engine.spi.PersistentAttributeInterceptable;
+import org.hibernate.engine.spi.PersistentAttributeInterceptor;
 import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
@@ -21,7 +25,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "public", name = "movimentacao_destino")
-public final class MovimentacaoDestinoEntity {
+public final class MovimentacaoDestinoEntity implements PersistentAttributeInterceptable {
     @Id
     @Column(name = "cod_movimentacao", nullable = false)
     private Long codMovimentacao;
@@ -39,6 +43,7 @@ public final class MovimentacaoDestinoEntity {
     private Long codMotivoDescarte;
     @Column(name = "cod_coleta")
     private String codColeta;
+    @LazyToOne(LazyToOneOption.NO_PROXY)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_recapadora_destino", referencedColumnName = "codigo")
     private RecapadoraEntity recapadora;
@@ -54,4 +59,16 @@ public final class MovimentacaoDestinoEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_movimentacao")
     private MovimentacaoEntity movimentacao;
+    @Transient
+    private PersistentAttributeInterceptor persistentAttributeInterceptor;
+
+    @Override
+    public PersistentAttributeInterceptor $$_hibernate_getInterceptor() {
+        return persistentAttributeInterceptor;
+    }
+
+    @Override
+    public void $$_hibernate_setInterceptor(final PersistentAttributeInterceptor persistentAttributeInterceptor) {
+        this.persistentAttributeInterceptor = persistentAttributeInterceptor;
+    }
 }

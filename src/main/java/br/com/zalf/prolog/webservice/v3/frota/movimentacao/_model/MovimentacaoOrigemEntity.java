@@ -38,7 +38,6 @@ public final class MovimentacaoOrigemEntity {
     @Column(name = "tipo_origem")
     private OrigemDestinoEnum tipoOrigem;
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cod_movimentacao")
+    @OneToOne(mappedBy = "movimentacaoOrigem", fetch = FetchType.LAZY)
     private MovimentacaoEntity movimentacao;
 }
