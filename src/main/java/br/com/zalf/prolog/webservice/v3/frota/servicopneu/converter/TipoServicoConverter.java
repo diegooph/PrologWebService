@@ -12,7 +12,6 @@ import javax.persistence.Converter;
  */
 @Converter(autoApply = true)
 public class TipoServicoConverter implements AttributeConverter<TipoServico, String> {
-
     @Override
     public String convertToDatabaseColumn(final TipoServico tipoServico) {
         return tipoServico.asString();

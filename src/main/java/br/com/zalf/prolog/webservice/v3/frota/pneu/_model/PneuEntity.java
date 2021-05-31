@@ -77,9 +77,7 @@ public class PneuEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "origem_cadastro", nullable = false)
     private OrigemAcaoEnum origemCadastro;
-    @OneToMany(mappedBy = "pneu",
-               fetch = FetchType.LAZY,
-               targetEntity = AfericaoPneuValorEntity.class)
+    @OneToMany(mappedBy = "pneu", fetch = FetchType.LAZY, targetEntity = AfericaoPneuValorEntity.class)
     private Set<AfericaoPneuValorEntity> valoresPneu;
 
     public boolean isRecapado() {

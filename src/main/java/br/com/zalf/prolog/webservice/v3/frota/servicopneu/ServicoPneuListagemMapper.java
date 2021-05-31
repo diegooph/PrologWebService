@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
  */
 @Component
 public class ServicoPneuListagemMapper {
-
     @NotNull
     public List<ServicoPneuListagemDto> toDto(@NotNull final List<ServicoPneuEntity> servicosPneu) {
         return servicosPneu.stream()

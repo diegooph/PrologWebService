@@ -20,25 +20,20 @@ import javax.persistence.*;
 @Getter
 @IdClass(AfericaoPneuValorId.class)
 public class AfericaoPneuValorEntity {
-
     @Id
     @Column(name = "cod_afericao")
     private Long codAfericao;
-
     @MapsId
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_afericao", referencedColumnName = "codigo")
     private AfericaoEntity afericao;
-
     @MapsId
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo")
     private PneuEntity pneu;
-
     @Id
     @Column(name = "cod_pneu")
     private Long codPneu;
-
     @Column(name = "psi")
     private Double psi;
     @Column(name = "posicao")

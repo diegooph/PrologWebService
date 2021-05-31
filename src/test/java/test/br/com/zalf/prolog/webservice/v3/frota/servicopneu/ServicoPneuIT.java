@@ -21,7 +21,6 @@ import static test.br.com.zalf.prolog.webservice.config.TestConstants.TEST_UNIDA
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 public class ServicoPneuIT extends IntegrationTest {
-
     private static final int LIMIT = 4;
     private static final int OFFSET = 0;
     @Autowired

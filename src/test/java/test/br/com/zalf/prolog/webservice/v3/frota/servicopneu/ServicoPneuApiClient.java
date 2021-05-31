@@ -20,7 +20,6 @@ import java.util.List;
  */
 @TestComponent
 public class ServicoPneuApiClient {
-
     private static final String RESOURCE = "/api/v3/servicos-pneu";
     @Autowired
     private TestRestTemplate restTemplate;

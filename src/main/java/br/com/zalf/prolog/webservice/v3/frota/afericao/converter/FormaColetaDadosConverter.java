@@ -12,7 +12,6 @@ import javax.persistence.Converter;
  */
 @Converter(autoApply = true)
 public class FormaColetaDadosConverter implements AttributeConverter<FormaColetaDadosAfericaoEnum, String> {
-
     @Override
     public String convertToDatabaseColumn(final FormaColetaDadosAfericaoEnum formaColetaDados) {
         if (formaColetaDados == null) {

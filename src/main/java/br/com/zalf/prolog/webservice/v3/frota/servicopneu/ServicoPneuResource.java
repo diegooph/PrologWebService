@@ -30,7 +30,6 @@ import java.util.List;
 @RestController
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ServicoPneuResource implements ServicoPneuApiDoc {
-
     private final ServicoPneuService service;
     private final ServicoPneuListagemMapper mapper;
 

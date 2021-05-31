@@ -17,7 +17,6 @@ import java.util.List;
  */
 @Repository
 public interface ServicoPneuDao extends JpaRepository<ServicoPneuEntity, Long> {
-
     @Query("select sp " +
                    "from ServicoPneuEntity sp join fetch sp.pneu p                                   " +
                    "                          join fetch sp.afericao a                               " +

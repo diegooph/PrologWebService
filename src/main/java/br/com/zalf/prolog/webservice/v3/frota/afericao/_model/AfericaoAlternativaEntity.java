@@ -14,7 +14,6 @@ import javax.persistence.*;
 @Table(name = "afericao_alternativa_manutencao_inspecao", schema = "public")
 @Data
 public class AfericaoAlternativaEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
