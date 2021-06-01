@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.For
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAlternativaEntity;
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.afericao.valores._model.AfericaoPneuValorEntity;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.VeiculoKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.ColaboradorEntity;
@@ -16,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Created on 2021-03-25
@@ -82,5 +85,12 @@ public final class ServicoPneuEntity implements EntityKmColetado {
 
     public boolean isFechadoAutomaticamente() {
         return fechadoAfericao || fechadoMovimentacao || fechadoIntegracao;
+    }
+
+    @NotNull
+    public Optional<AfericaoPneuValorEntity> getValorAfericaoRelatedToPneu() {
+        return afericao.getValoresAfericao().stream()
+                .filter(valor -> Objects.equals(valor.getPneu(), pneu))
+                .findFirst();
     }
 }
