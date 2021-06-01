@@ -48,7 +48,6 @@ public class ServicoPneuResource implements ServicoPneuApiDoc {
                                                                       @Nullable final Long codPneu,
                                                                       @QueryParam("limit") final int limit,
                                                                       @QueryParam("offset") final int offset) {
-
         final FiltroServicoListagemDto filtro = FiltroServicoListagemDto.of(codUnidades,
                                                                             codVeiculo,
                                                                             codPneu,
