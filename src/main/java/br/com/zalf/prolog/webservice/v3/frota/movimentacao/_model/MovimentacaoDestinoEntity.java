@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
+import br.com.zalf.prolog.webservice.v3.BaseEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,8 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.LazyToOne;
 import org.hibernate.annotations.LazyToOneOption;
-import org.hibernate.engine.spi.PersistentAttributeInterceptable;
-import org.hibernate.engine.spi.PersistentAttributeInterceptor;
 import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
@@ -25,7 +24,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "public", name = "movimentacao_destino")
-public final class MovimentacaoDestinoEntity implements PersistentAttributeInterceptable {
+public final class MovimentacaoDestinoEntity extends BaseEntity {
     @Id
     @Column(name = "cod_movimentacao", nullable = false)
     private Long codMovimentacao;
@@ -59,16 +58,4 @@ public final class MovimentacaoDestinoEntity implements PersistentAttributeInter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_movimentacao")
     private MovimentacaoEntity movimentacao;
-    @Transient
-    private PersistentAttributeInterceptor persistentAttributeInterceptor;
-
-    @Override
-    public PersistentAttributeInterceptor $$_hibernate_getInterceptor() {
-        return persistentAttributeInterceptor;
-    }
-
-    @Override
-    public void $$_hibernate_setInterceptor(final PersistentAttributeInterceptor persistentAttributeInterceptor) {
-        this.persistentAttributeInterceptor = persistentAttributeInterceptor;
-    }
 }

@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao._model;
 
+import br.com.zalf.prolog.webservice.v3.BaseEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
@@ -9,8 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.LazyToOne;
 import org.hibernate.annotations.LazyToOneOption;
-import org.hibernate.engine.spi.PersistentAttributeInterceptable;
-import org.hibernate.engine.spi.PersistentAttributeInterceptor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
@@ -28,7 +27,7 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(schema = "public", name = "movimentacao")
-public final class MovimentacaoEntity implements PersistentAttributeInterceptable {
+public final class MovimentacaoEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
@@ -36,12 +35,10 @@ public final class MovimentacaoEntity implements PersistentAttributeInterceptabl
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
     @LazyToOne(LazyToOneOption.NO_PROXY)
-    @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "codigo", referencedColumnName = "cod_movimentacao", nullable = false)
     private MovimentacaoOrigemEntity movimentacaoOrigem;
     @LazyToOne(LazyToOneOption.NO_PROXY)
-    @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "codigo", referencedColumnName = "cod_movimentacao", nullable = false)
     private MovimentacaoDestinoEntity movimentacaoDestino;
@@ -71,18 +68,6 @@ public final class MovimentacaoEntity implements PersistentAttributeInterceptabl
                joinColumns = @JoinColumn(name = "cod_movimentacao"),
                inverseJoinColumns = @JoinColumn(name = "cod_servico_realizado"))
     private Set<PneuServicoRealizadoEntity> servicosRealizados;
-    @Transient
-    private PersistentAttributeInterceptor persistentAttributeInterceptor;
-
-    @Override
-    public PersistentAttributeInterceptor $$_hibernate_getInterceptor() {
-        return persistentAttributeInterceptor;
-    }
-
-    @Override
-    public void $$_hibernate_setInterceptor(final PersistentAttributeInterceptor persistentAttributeInterceptor) {
-        this.persistentAttributeInterceptor = persistentAttributeInterceptor;
-    }
 
     public boolean isMovimentacaoNoVeiculo() {
         return movimentacaoOrigem.getVeiculo() != null || movimentacaoDestino.getVeiculo() != null;
