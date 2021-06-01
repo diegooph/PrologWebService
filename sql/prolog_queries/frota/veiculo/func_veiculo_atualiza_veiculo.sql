@@ -1,19 +1,3 @@
--- Sobre:
---
--- Function para editar um veículo no Prolog. Pode ser chamada tanto pelo fluxo do Prolog quanto pela API ou mesmo
--- suporte. A origem é informada pelo atributo 'f_origem_edicao`.
---
--- A placa é recebida mas ainda não utilizada pois alteração de placa ainda não é permitida.
---
--- Histórico:
--- 2020-02-25 -> Function criada (wvinim - PL-1965).
--- 2020-04-29 -> Altera function para salvar identificador de frota (thaisksf - PL-2691).
--- 2020-09-04 -> Altera function para gerar histórico de edição (luiz_fp - PL-3096).
--- 2020-09-24 -> Corrige function para considerar código da marca no total de edições (luiz_fp).
--- 2020-11-03 -> Atualiza para usar novo formato de geração de histórico de edições (gustavocnp95 - PL-3204)
--- 2020-11-06 -> Adiciona parâmetro f_novo_possui_hubodometro (steinert999 - PL-3223).
--- 2020-11-10 -> Adiciona parâmetro v_novo_motorizado (steinert999 - PL-3223).
--- 2020-12-21 -> Mescla as duas versões da function (thaisksf - PL-3326).
 create or replace function func_veiculo_atualiza_veiculo(f_cod_veiculo bigint,
                                                          f_nova_placa text,
                                                          f_novo_identificador_frota text,
@@ -128,7 +112,6 @@ begin
     -- sobrar apenas as entradas (chave => valor) que mudaram. Depois, aplicamos um akeys(hstore), que retorna um
     -- array das chaves (apenas as que mudaram) (poderia ser um avalues(hstore) também). Por fim, fazemos um
     -- f_size_array para saber o tamanho desse array: isso nos dá o número de edições realizadas.
-    -- IMPORTANTE: como a placa não é atualiza no update abaixo, também ignoramos ela na contagem de total de edições.
     v_total_edicoes := f_size_array(akeys(hstore((f_nova_placa,
                                                   f_novo_identificador_frota,
                                                   f_novo_km,
