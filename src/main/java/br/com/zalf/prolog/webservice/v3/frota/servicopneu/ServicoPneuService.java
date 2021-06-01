@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetad
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.FiltroServicoListagemDto;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuEntity;
+import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuStatus;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created on 2021-03-26
@@ -42,10 +44,12 @@ public class ServicoPneuService implements KmProcessoAtualizavel {
     @NotNull
     @Transactional
     public List<ServicoPneuEntity> findServicosPneuByFilter(@NotNull final FiltroServicoListagemDto filtro) {
+        final Optional<ServicoPneuStatus> status = Optional.ofNullable(filtro.getStatus());
         return servicoPneuDao.findServicosPneuByUnidades(filtro.getCodUnidades(),
                                                          filtro.getCodVeiculo(),
                                                          filtro.getCodPneu(),
-                                                         filtro.getStatus().getFiltroFechado(),
+                                                         status.map(ServicoPneuStatus::getAsBoolean)
+                                                                 .orElse(null),
                                                          PageRequest.of(filtro.getOffset(),
                                                                         filtro.getLimit(),
                                                                         Sort.by("codigo")));

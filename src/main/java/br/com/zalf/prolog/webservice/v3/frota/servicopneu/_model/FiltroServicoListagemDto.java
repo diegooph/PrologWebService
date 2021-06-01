@@ -21,7 +21,7 @@ public class FiltroServicoListagemDto {
     Long codVeiculo;
     @Nullable
     Long codPneu;
-    @NotNull
+    @Nullable
     ServicoPneuStatus status;
     int limit;
     int offset;

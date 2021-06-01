@@ -41,8 +41,7 @@ public class ServicoPneuResource implements ServicoPneuApiDoc {
     public List<ServicoPneuListagemDto> getServicosByUnidadeAndStatus(@QueryParam("codUnidades")
                                                                       @NotNull final List<Long> codUnidades,
                                                                       @QueryParam("statusServicoPneu")
-                                                                      @DefaultValue("DEFAULT")
-                                                                      @NotNull final ServicoPneuStatus status,
+                                                                          @Nullable final ServicoPneuStatus status,
                                                                       @QueryParam("codVeiculo")
                                                                       @Nullable final Long codVeiculo,
                                                                       @QueryParam("codPneu")

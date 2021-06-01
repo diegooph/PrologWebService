@@ -37,7 +37,7 @@ public interface ServicoPneuApiDoc {
             @ApiParam(value = "Status do servico.",
                       allowEmptyValue = true,
                       example = "ABERTO",
-                      allowableValues = "ABERTO, FECHADO") final @NotNull ServicoPneuStatus status,
+                      allowableValues = "ABERTO, FECHADO") final @Nullable ServicoPneuStatus status,
             @ApiParam(value = "Código do veiculo.",
                       allowEmptyValue = true) final @Nullable Long codVeiculo,
             @ApiParam(value = "Código do pneu.",

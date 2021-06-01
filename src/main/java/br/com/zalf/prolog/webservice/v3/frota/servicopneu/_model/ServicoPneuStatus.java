@@ -11,7 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ServicoPneuStatus {
-    ABERTO(false), FECHADO(true), DEFAULT(null);
+    ABERTO(false), FECHADO(true);
 
-    private final Boolean filtroFechado;
+    private final Boolean asBoolean;
 }
