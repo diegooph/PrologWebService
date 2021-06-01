@@ -6,6 +6,10 @@ Change Log
 ### 
 
 ### Refactors
+* Melhora busca de indicadores consolidados e do extrato dos mapas (PL-3613)
+
+
+### Refactors
 * Altera assinatura e otimiza relatórios de previsão de troca (PL-3649)
 
 <a name="v3.3.7"></a>
