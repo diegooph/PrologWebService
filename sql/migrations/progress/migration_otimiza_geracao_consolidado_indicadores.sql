@@ -9,7 +9,7 @@ with internal_tracking as (
              join unidade_metas um on um.cod_unidade = t.cod_unidade
     group by t.mapa, t.cod_unidade
 )
-SELECT dados.cod_unidade,
+select dados.cod_unidade,
        dados.cod_equipe,
        dados.cpf,
        dados.nome,
@@ -81,7 +81,7 @@ SELECT dados.cod_unidade,
        case
            when ((dados.resultado_devolucao_nf)::double precision <= dados.meta_dev_nf) then 'SIM'::text
            else 'NÃO'::text
-           END AS bateu_dev_nf,
+           end as bateu_dev_nf,
        case
            when (dados.resultado_dispersao_tempo <= dados.meta_dispersao_tempo) then 'SIM'::text
            else 'NÃO'::text
@@ -339,7 +339,7 @@ create function func_indicador_relatorio_extrato_mapas_indicadores(f_cod_empresa
     language sql
 as
 $$
-SELECT to_char(v.data, 'DD/MM/YYYY'),
+select to_char(v.data, 'DD/MM/YYYY'),
        v.equipe,
        v.nome,
        v.funcao,
@@ -405,7 +405,7 @@ SELECT to_char(v.data, 'DD/MM/YYYY'),
                to_char((v.tempoprevistoroad || ' second')::interval, 'HH24:MI:SS')
            else 0::text end,
        v.tempo_rota,
-       trunc((v.RESULTADO_DISPERSAO_TEMPO * 100)::numeric, 2) || '%',
+       trunc((v.resultado_dispersao_tempo * 100)::numeric, 2) || '%',
        trunc(trunc((v.meta_dispersao_tempo)::numeric, 3) * 100, 2) || '%',
        v.bateu_dispersao_tempo,
        v.total_tracking,
@@ -557,13 +557,13 @@ with dados as (
            to_char((avg(m.tempoprevistoroad) || ' second')::interval,
                    'HH24:MI:SS')                                                                   as media_tempo_planejado,
            -- Jornada.
-           to_char((avg(m.RESULTADO_tempo_largada_SEGUNDOS + m.RESULTADO_TEMPO_ROTA_SEGUNDOS +
-                        m.RESULTADO_TEMPO_INTERNO_SEGUNDOS) || ' second')::interval, 'HH24:MI:SS') as media_jornada,
+           to_char((avg(m.resultado_tempo_largada_segundos + m.resultado_tempo_rota_segundos +
+                        m.resultado_tempo_interno_segundos) || ' second')::interval, 'HH24:MI:SS') as media_jornada,
            sum(case when m.bateu_jornada = 'SIM' then 1 else 0 end)                                as total_mapas_bateu_jornada,
            -- Tempo Interno.
            sum(case when m.bateu_tempo_interno = 'SIM' then 1 else 0 end)                          as total_mapas_bateu_tempo_interno,
            sum(case
-                   when to_char((m.tempo_interno || ' second')::interval, 'HH24:MI:SS')::TIME <= '05:00' and
+                   when to_char((m.tempo_interno || ' second')::interval, 'HH24:MI:SS')::time <= '05:00' and
                         m.resultado_tempo_interno_segundos > 0 then 1
                    else 0
                end)                                                                                as total_mapas_validos_tempo_interno,
@@ -575,19 +575,19 @@ with dados as (
                    when
                            (case
                                 when m.hr_sai::time < m.hrmatinal then to_char(
-                                        (M.meta_tempo_largada_horas || ' second')::interval, 'HH24:MI:SS')::time
+                                        (m.meta_tempo_largada_horas || ' second')::interval, 'HH24:MI:SS')::time
                                 else (m.hr_sai - m.hrmatinal)::time
                                end) <= '05:00' then 1
                    else 0 end)                                                                     as total_mapas_validos_tempo_largada,
-           to_char((AVG(resultado_tempo_largada_segundos) || ' second')::interval,
+           to_char((avg(resultado_tempo_largada_segundos) || ' second')::interval,
                    'HH24:MI:SS')                                                                   as media_tempo_largada,
            -- Tempo Rota.
            sum(case when m.bateu_tempo_rota = 'SIM' then 1 else 0 end)                             as total_mapas_bateu_tempo_rota,
            to_char((avg(m.resultado_tempo_rota_segundos) || ' second')::interval,
                    'HH24:MI:SS')                                                                   as media_tempo_rota,
            -- Tracking.
-           sum(M.apontamentos_ok)                                                                  as total_apontamentos_ok,
-           sum(M.total_tracking)                                                                   as total_apontamentos,
+           sum(m.apontamentos_ok)                                                                  as total_apontamentos_ok,
+           sum(m.total_tracking)                                                                   as total_apontamentos,
            m.meta_tracking                                                                         as meta_tracking,
            m.meta_tempo_rota_mapas                                                                 as meta_tempo_rota_mapas,
            m.meta_dev_hl                                                                           as meta_dev_hl,
@@ -611,7 +611,10 @@ with dados as (
     from view_extrato_indicadores m
     where case
               when f_cod_unidade is null
-                  then m.cod_unidade in (select u.codigo from unidade u where u.cod_empresa = f_cod_empresa)
+                  then m.cod_unidade in (select u.codigo
+                                         from unidade u
+                                         where u.cod_empresa = f_cod_empresa
+                                           and status_ativo is true)
               else m.cod_unidade = f_cod_unidade
         end
       and m.data between f_data_inicial and f_data_final

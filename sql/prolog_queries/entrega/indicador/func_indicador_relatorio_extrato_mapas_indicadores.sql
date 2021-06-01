@@ -69,7 +69,7 @@ create function func_indicador_relatorio_extrato_mapas_indicadores(f_cod_empresa
     language sql
 as
 $$
-SELECT to_char(v.data, 'DD/MM/YYYY'),
+select to_char(v.data, 'DD/MM/YYYY'),
        v.equipe,
        v.nome,
        v.funcao,
@@ -135,7 +135,7 @@ SELECT to_char(v.data, 'DD/MM/YYYY'),
                to_char((v.tempoprevistoroad || ' second')::interval, 'HH24:MI:SS')
            else 0::text end,
        v.tempo_rota,
-       trunc((v.RESULTADO_DISPERSAO_TEMPO * 100)::numeric, 2) || '%',
+       trunc((v.resultado_dispersao_tempo * 100)::numeric, 2) || '%',
        trunc(trunc((v.meta_dispersao_tempo)::numeric, 3) * 100, 2) || '%',
        v.bateu_dispersao_tempo,
        v.total_tracking,

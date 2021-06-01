@@ -18,7 +18,7 @@ with internal_tracking as (
              join unidade_metas um on um.cod_unidade = t.cod_unidade
     group by t.mapa, t.cod_unidade
 )
-SELECT dados.cod_unidade,
+select dados.cod_unidade,
        dados.cod_equipe,
        dados.cpf,
        dados.nome,
@@ -90,7 +90,7 @@ SELECT dados.cod_unidade,
        case
            when ((dados.resultado_devolucao_nf)::double precision <= dados.meta_dev_nf) then 'SIM'::text
            else 'NÃO'::text
-           END AS bateu_dev_nf,
+           end as bateu_dev_nf,
        case
            when (dados.resultado_dispersao_tempo <= dados.meta_dispersao_tempo) then 'SIM'::text
            else 'NÃO'::text
