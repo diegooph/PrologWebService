@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.afericao._model;
 
+import br.com.zalf.prolog.webservice.v3.LocalDateTimeUtcAttributeConverter;
 import br.com.zalf.prolog.webservice.v3.frota.afericao.valores._model.AfericaoPneuValorEntity;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.VeiculoKmColetado;
@@ -40,6 +41,7 @@ public final class AfericaoEntity implements EntityKmColetado {
     private Long kmColetadoVeiculo;
     @OneToMany(mappedBy = "afericao", fetch = FetchType.LAZY)
     private Set<ServicoPneuEntity> servicosGeradosPneu;
+    @Convert(converter = LocalDateTimeUtcAttributeConverter.class)
     @Column(name = "data_hora")
     private LocalDateTime dataHora;
     @OneToMany(mappedBy = "afericao", fetch = FetchType.LAZY, targetEntity = AfericaoPneuValorEntity.class)

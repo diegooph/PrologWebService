@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.v3.frota.servicopneu._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
+import br.com.zalf.prolog.webservice.v3.LocalDateTimeUtcAttributeConverter;
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAlternativaEntity;
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.afericao.valores._model.AfericaoPneuValorEntity;
@@ -51,6 +52,7 @@ public final class ServicoPneuEntity implements EntityKmColetado {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cpf_mecanico", referencedColumnName = "cpf")
     private ColaboradorEntity mecanico;
+    @Convert(converter = LocalDateTimeUtcAttributeConverter.class)
     @Column(name = "data_hora_resolucao")
     private LocalDateTime dataHoraResolucao;
     @Column(name = "qt_apontamentos", nullable = false, columnDefinition = "default 1")
