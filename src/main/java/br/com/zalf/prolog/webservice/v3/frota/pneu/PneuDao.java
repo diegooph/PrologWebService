@@ -31,9 +31,15 @@ public interface PneuDao extends JpaRepository<PneuEntity, Long> {
                    "left join fetch psr.tipoServico " +
                    "left join fetch p.veiculoPneuAplicado " +
                    "left join fetch p.movimentacoesPneu mov " +
-                   "left join fetch mov.movimentacaoDestino " +
+                   "left join fetch mov.movimentacaoDestino movD " +
+                   "left join fetch movD.recapadora " +
+                   // Fizemos JOIN com essas propriedades por mais que não precisava, para não gerar N+1 requests ao BD.
+                   "left join fetch mov.movimentacaoOrigem " +
+                   "left join fetch mov.movimentacaoProcesso movP " +
+                   "left join fetch movP.colaboradorRealizacaoProcesso c " +
                    "where u.codigo in :codUnidades " +
-                   "and (:statusPneu is null or p.status = :statusPneu)")
+                   "and (:statusPneu is null or p.status = :statusPneu) " +
+                   "order by p.codigo asc")
     List<PneuEntity> getPneusByStatus(@NotNull final List<Long> codUnidades,
                                       @Nullable final StatusPneu statusPneu,
                                       @NotNull final Pageable pageable);

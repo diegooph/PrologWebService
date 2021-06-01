@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.v3.frota.pneu;
 
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
+import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoDestinoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.*;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
@@ -48,6 +49,8 @@ public class PneuMapper {
     public PneuListagemDto toPneuListagemDto(@NotNull final PneuEntity pneu) {
         final ModeloBandaEntity modeloBanda = pneu.getModeloBanda();
         final VeiculoEntity veiculo = pneu.getVeiculoPneuAplicado();
+        final MovimentacaoDestinoEntity movimentacaoAnalise = pneu.getUltimaMovimentacaoAnalise();
+        final MovimentacaoDestinoEntity movimentacaoDescarte = pneu.getUltimaMovimentacaoDescarte();
         return PneuListagemDto.of(pneu.getCodigo(),
                                   pneu.getCodigoCliente(),
                                   pneu.getUnidade().getGrupo().getCodigo(),
@@ -86,7 +89,14 @@ public class PneuMapper {
                                   veiculo == null ? null : veiculo.getCodigo(),
                                   veiculo == null ? null : veiculo.getPlaca(),
                                   veiculo == null ? null : veiculo.getIdentificadorFrota(),
-                                  pneu.getPosicaoAplicado());
+                                  pneu.getPosicaoAplicado(),
+                                  movimentacaoAnalise == null ? null : movimentacaoAnalise.getRecapadora().getCodigo(),
+                                  movimentacaoAnalise == null ? null : movimentacaoAnalise.getRecapadora().getNome(),
+                                  movimentacaoAnalise == null ? null : movimentacaoAnalise.getCodColeta(),
+                                  movimentacaoDescarte == null ? null : movimentacaoDescarte.getCodMotivoDescarte(),
+                                  movimentacaoDescarte == null ? null : movimentacaoDescarte.getUrlImagemDescarte1(),
+                                  movimentacaoDescarte == null ? null : movimentacaoDescarte.getUrlImagemDescarte2(),
+                                  movimentacaoDescarte == null ? null : movimentacaoDescarte.getUrlImagemDescarte3());
     }
 
     @NotNull

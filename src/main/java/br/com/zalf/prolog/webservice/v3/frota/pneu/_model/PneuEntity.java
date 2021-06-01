@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.v3.frota.pneu._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
+import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoDestinoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
@@ -111,6 +113,24 @@ public class PneuEntity {
                 .filter(PneuServicoRealizadoEntity::isIncrementaVida)
                 .max(Comparator.comparing(PneuServicoRealizadoEntity::getCodigo))
                 .map(PneuServicoRealizadoEntity::getCusto)
+                .orElse(null);
+    }
+
+    @Nullable
+    public MovimentacaoDestinoEntity getUltimaMovimentacaoAnalise() {
+        return movimentacoesPneu.stream()
+                .map(MovimentacaoEntity::getMovimentacaoDestino)
+                .filter(destino -> destino.getTipoDestino().equals(OrigemDestinoEnum.ANALISE))
+                .max(Comparator.comparing(MovimentacaoDestinoEntity::getCodMovimentacao))
+                .orElse(null);
+    }
+
+    @Nullable
+    public MovimentacaoDestinoEntity getUltimaMovimentacaoDescarte() {
+        return movimentacoesPneu.stream()
+                .map(MovimentacaoEntity::getMovimentacaoDestino)
+                .filter(destino -> destino.getTipoDestino().equals(OrigemDestinoEnum.DESCARTE))
+                .max(Comparator.comparing(MovimentacaoDestinoEntity::getCodMovimentacao))
                 .orElse(null);
     }
 }

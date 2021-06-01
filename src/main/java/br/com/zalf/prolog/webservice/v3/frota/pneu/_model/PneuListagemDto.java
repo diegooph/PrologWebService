@@ -92,4 +92,20 @@ public class PneuListagemDto {
     String identificadorFrotaVeiculoPneuAplicado;
     @Nullable
     Integer posicaoAplicado;
+
+    @Nullable
+    Long codRecapadora;
+    @Nullable
+    String nomeRecapadora;
+    @Nullable
+    String codigoColeta;
+
+    @Nullable
+    Long codMotivoDescarte;
+    @Nullable
+    String urlFotoDescarte1;
+    @Nullable
+    String urlFotoDescarte2;
+    @Nullable
+    String urlFotoDescarte3;
 }

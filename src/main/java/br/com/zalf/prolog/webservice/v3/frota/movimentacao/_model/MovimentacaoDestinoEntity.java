@@ -1,14 +1,11 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.v3.BaseEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.LazyToOne;
-import org.hibernate.annotations.LazyToOneOption;
 import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
@@ -24,7 +21,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "public", name = "movimentacao_destino")
-public final class MovimentacaoDestinoEntity extends BaseEntity {
+public final class MovimentacaoDestinoEntity {
     @Id
     @Column(name = "cod_movimentacao", nullable = false)
     private Long codMovimentacao;
@@ -42,7 +39,6 @@ public final class MovimentacaoDestinoEntity extends BaseEntity {
     private Long codMotivoDescarte;
     @Column(name = "cod_coleta")
     private String codColeta;
-    @LazyToOne(LazyToOneOption.NO_PROXY)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_recapadora_destino", referencedColumnName = "codigo")
     private RecapadoraEntity recapadora;
