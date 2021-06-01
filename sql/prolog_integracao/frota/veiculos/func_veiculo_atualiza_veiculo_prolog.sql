@@ -1,12 +1,3 @@
--- Sobre:
--- Function para atualizar um veículo integrado no Prolog, alterando tanto na tabela VEICULO_DATA quanto na
--- INTEGRACAO.VEICULO_CADASTRADO.
---
--- Histórico:
--- 2020-02-26 -> Adiciona a manipulação do código de diagrama (wvinim - PL-1965).
--- 2020-08-05 -> Adapta function para token duplicado (diogenesvanzella - PLI-175).
--- 2020-09-10 -> Altera function para utilizar function de update de veículo padrão (luiz_fp - PL-3097).
--- 2020-11-09 -> Adiciona parametro default false para hubodometro (steinert999 - PL-3223).
 create or replace function
     integracao.func_veiculo_atualiza_veiculo_prolog(f_cod_unidade_original_alocado bigint,
                                                     f_placa_original_veiculo text,
