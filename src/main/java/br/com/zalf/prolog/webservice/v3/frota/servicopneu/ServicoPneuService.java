@@ -41,13 +41,13 @@ public class ServicoPneuService implements KmProcessoAtualizavel {
 
     @NotNull
     @Transactional
-    public List<ServicoPneuEntity> findServicosPneuByFilter(@NotNull final FiltroServicoListagemDto dto) {
-        return servicoPneuDao.findServicosPneuByUnidades(dto.getCodUnidades(),
-                                                         dto.getCodVeiculo(),
-                                                         dto.getCodPneu(),
-                                                         dto.getStatus().getFiltroFechado(),
-                                                         PageRequest.of(dto.getOffset(),
-                                                                        dto.getLimit(),
+    public List<ServicoPneuEntity> findServicosPneuByFilter(@NotNull final FiltroServicoListagemDto filtro) {
+        return servicoPneuDao.findServicosPneuByUnidades(filtro.getCodUnidades(),
+                                                         filtro.getCodVeiculo(),
+                                                         filtro.getCodPneu(),
+                                                         filtro.getStatus().getFiltroFechado(),
+                                                         PageRequest.of(filtro.getOffset(),
+                                                                        filtro.getLimit(),
                                                                         Sort.by("codigo")));
     }
 
