@@ -51,8 +51,8 @@ public class ServicoPneuListagemMapper {
                 .vidaAtual(servicoPneu.getPneu().getVidaAtual())
                 .vidaTotal(servicoPneu.getPneu().getVidaTotal())
                 .psiAfericao(valor.map(AfericaoPneuValorEntity::getPsi).orElse(null))
-                .posicaoPneuAberturaServico(valor.map(AfericaoPneuValorEntity::getPosicao).orElse(null));
-        builder.codAfericao(servicoPneu.getAfericao().getCodigo())
+                .posicaoPneuAberturaServico(valor.map(AfericaoPneuValorEntity::getPosicao).orElse(null))
+                .codAfericao(servicoPneu.getAfericao().getCodigo())
                 .dataHoraAbertura(servicoPneu.getAfericao().getDataHora())
                 .codVeiculo(servicoPneu.getAfericao().getVeiculo().getCodigo())
                 .placa(servicoPneu.getAfericao().getVeiculo().getPlaca())
