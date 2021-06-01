@@ -37,13 +37,6 @@ begin
                 '[ERRO DE OPERAÇÃO] Para mudar a Unidade do veículo, utilize a transferência de veículo');
     end if;
 
-    -- Validamos se o usuário trocou a placa do veículo.
-    if (f_placa_original_veiculo <> f_nova_placa_veiculo)
-    then
-        perform public.throw_generic_error(
-                '[ERRO DE OPERAÇÃO] O ProLog não permite a edição da placa do veículo');
-    end if;
-
     -- Validamos se a Unidade do veículo trocou.
     if ((select v.cod_unidade
          from public.veiculo_data v
