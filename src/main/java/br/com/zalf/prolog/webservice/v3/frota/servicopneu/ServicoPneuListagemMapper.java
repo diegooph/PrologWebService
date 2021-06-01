@@ -31,7 +31,7 @@ public class ServicoPneuListagemMapper {
         final Optional<AfericaoPneuValorEntity> valor = servicoPneu.getValorAfericaoRelatedToPneu();
         final Optional<ColaboradorEntity> mecanico = Optional.ofNullable(servicoPneu.getMecanico());
         final Optional<AfericaoAlternativaEntity> alternativa = Optional.ofNullable(servicoPneu.getAlternativa());
-        final ServicoPneuListagemDto.ServicoPneuListagemDtoBuilder builder = ServicoPneuListagemDto.builder()
+        return ServicoPneuListagemDto.builder()
                 .codServico(servicoPneu.getCodigo())
                 .codUnidadeServico(servicoPneu.getCodUnidade())
                 .tipoServico(servicoPneu.getTipoServico())
@@ -64,7 +64,7 @@ public class ServicoPneuListagemMapper {
                 .codMecanico(mecanico.map(ColaboradorEntity::getCodigo).orElse(null))
                 .nomeMecanico(mecanico.map(ColaboradorEntity::getNome).orElse(null))
                 .cpfMecanico(mecanico.map(ColaboradorEntity::getCpfFormatado).orElse(null))
-                .problemaApontado(alternativa.map(AfericaoAlternativaEntity::getAlternativa).orElse(null));
-        return builder.build();
+                .problemaApontado(alternativa.map(AfericaoAlternativaEntity::getAlternativa).orElse(null))
+                .build();
     }
 }
