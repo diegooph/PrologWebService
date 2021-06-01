@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAlternativaEntity;
 import br.com.zalf.prolog.webservice.v3.frota.afericao.valores._model.AfericaoPneuValorEntity;
+import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.ColaboradorEntity;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuListagemDto;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +29,8 @@ public class ServicoPneuListagemMapper {
     @NotNull
     private ServicoPneuListagemDto toDto(@NotNull final ServicoPneuEntity servicoPneu) {
         final Optional<AfericaoPneuValorEntity> valor = servicoPneu.getValorAfericaoRelatedToPneu();
+        final Optional<ColaboradorEntity> mecanico = Optional.ofNullable(servicoPneu.getMecanico());
+        final Optional<AfericaoAlternativaEntity> alternativa = Optional.ofNullable(servicoPneu.getAlternativa());
         final ServicoPneuListagemDto.ServicoPneuListagemDtoBuilder builder = ServicoPneuListagemDto.builder()
                 .codServico(servicoPneu.getCodigo())
                 .codUnidadeServico(servicoPneu.getCodUnidade())
@@ -56,15 +60,11 @@ public class ServicoPneuListagemMapper {
                 .dataHoraAbertura(servicoPneu.getAfericao().getDataHora())
                 .codVeiculo(servicoPneu.getAfericao().getVeiculo().getCodigo())
                 .placa(servicoPneu.getAfericao().getVeiculo().getPlaca())
-                .identificadorFrota(servicoPneu.getAfericao().getVeiculo().getIdentificadorFrota());
-        if (servicoPneu.getMecanico() != null) {
-            builder.codMecanico(servicoPneu.getMecanico().getCodigo())
-                    .nomeMecanico(servicoPneu.getMecanico().getNome())
-                    .cpfMecanico(servicoPneu.getMecanico().getCpfFormatado());
-        }
-        if (servicoPneu.getAlternativa() != null) {
-            builder.problemaApontado(servicoPneu.getAlternativa().getAlternativa());
-        }
+                .identificadorFrota(servicoPneu.getAfericao().getVeiculo().getIdentificadorFrota())
+                .codMecanico(mecanico.map(ColaboradorEntity::getCodigo).orElse(null))
+                .nomeMecanico(mecanico.map(ColaboradorEntity::getNome).orElse(null))
+                .cpfMecanico(mecanico.map(ColaboradorEntity::getCpfFormatado).orElse(null))
+                .problemaApontado(alternativa.map(AfericaoAlternativaEntity::getAlternativa).orElse(null));
         return builder.build();
     }
 }
