@@ -38,11 +38,15 @@ public class ServicoPneuResource implements ServicoPneuApiDoc {
     @Secured(permissions = Pilares.Frota.OrdemServico.Pneu.VISUALIZAR)
     @Override
     @NotNull
-    public List<ServicoPneuListagemDto> getServicosByUnidadeAndStatus(@QueryParam("codUnidades") @NotNull final List<Long> codUnidades,
+    public List<ServicoPneuListagemDto> getServicosByUnidadeAndStatus(@QueryParam("codUnidades")
+                                                                      @NotNull final List<Long> codUnidades,
                                                                       @QueryParam("statusServicoPneu")
-                                                                      @DefaultValue("DEFAULT") @NotNull final ServicoPneuStatus status,
-                                                                      @QueryParam("codVeiculo") @Nullable final Long codVeiculo,
-                                                                      @QueryParam("codPneu") @Nullable final Long codPneu,
+                                                                      @DefaultValue("DEFAULT")
+                                                                      @NotNull final ServicoPneuStatus status,
+                                                                      @QueryParam("codVeiculo")
+                                                                      @Nullable final Long codVeiculo,
+                                                                      @QueryParam("codPneu")
+                                                                      @Nullable final Long codPneu,
                                                                       @QueryParam("limit") final int limit,
                                                                       @QueryParam("offset") final int offset) {
 
