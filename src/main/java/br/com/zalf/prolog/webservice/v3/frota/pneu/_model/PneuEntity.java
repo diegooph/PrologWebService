@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Set;
 
@@ -110,8 +109,7 @@ public class PneuEntity {
     public BigDecimal getValorUltimaBandaAplicada() {
         return servicosRealizados.stream()
                 .filter(PneuServicoRealizadoEntity::isIncrementaVida)
-                .sorted(Comparator.comparing(PneuServicoRealizadoEntity::getCodigo))
-                .min(Collections.reverseOrder())
+                .max(Comparator.comparing(PneuServicoRealizadoEntity::getCodigo))
                 .map(PneuServicoRealizadoEntity::getCusto)
                 .orElse(null);
     }
