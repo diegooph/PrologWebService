@@ -129,14 +129,16 @@ begin
     -- array das chaves (apenas as que mudaram) (poderia ser um avalues(hstore) também). Por fim, fazemos um
     -- f_size_array para saber o tamanho desse array: isso nos dá o número de edições realizadas.
     -- IMPORTANTE: como a placa não é atualiza no update abaixo, também ignoramos ela na contagem de total de edições.
-    v_total_edicoes := f_size_array(akeys(hstore((f_novo_identificador_frota,
+    v_total_edicoes := f_size_array(akeys(hstore((f_nova_placa,
+                                                  f_novo_identificador_frota,
                                                   f_novo_km,
                                                   v_novo_cod_diagrama,
                                                   f_novo_cod_tipo,
                                                   v_novo_cod_marca,
                                                   f_novo_cod_modelo,
                                                   f_novo_status,
-                                                  f_novo_possui_hubodometro)) - hstore((v_antigo_identificador_frota,
+                                                  f_novo_possui_hubodometro)) - hstore((v_antiga_placa,
+                                                                                        v_antigo_identificador_frota,
                                                                                         v_antigo_km,
                                                                                         v_antigo_cod_diagrama,
                                                                                         v_antigo_cod_tipo,
@@ -167,7 +169,8 @@ begin
                                                      v_total_edicoes);
 
         update veiculo
-        set identificador_frota = f_novo_identificador_frota,
+        set placa               = f_nova_placa,
+            identificador_frota = f_novo_identificador_frota,
             km                  = f_novo_km,
             cod_modelo          = f_novo_cod_modelo,
             cod_tipo            = f_novo_cod_tipo,
