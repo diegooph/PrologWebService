@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.afericao.converter;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -13,7 +14,8 @@ import javax.persistence.Converter;
 @Converter(autoApply = true)
 public class FormaColetaDadosConverter implements AttributeConverter<FormaColetaDadosAfericaoEnum, String> {
     @Override
-    public String convertToDatabaseColumn(final FormaColetaDadosAfericaoEnum formaColetaDados) {
+    @Nullable
+    public String convertToDatabaseColumn(@Nullable final FormaColetaDadosAfericaoEnum formaColetaDados) {
         if (formaColetaDados == null) {
             return null;
         }
@@ -21,7 +23,8 @@ public class FormaColetaDadosConverter implements AttributeConverter<FormaColeta
     }
 
     @Override
-    public FormaColetaDadosAfericaoEnum convertToEntityAttribute(final String s) {
+    @Nullable
+    public FormaColetaDadosAfericaoEnum convertToEntityAttribute(@Nullable final String s) {
         if (s == null || s.equals("")) {
             return null;
         }
