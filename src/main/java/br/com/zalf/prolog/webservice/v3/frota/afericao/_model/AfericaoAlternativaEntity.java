@@ -21,5 +21,5 @@ public class AfericaoAlternativaEntity {
     @Column(name = "alternativa", nullable = false)
     private String alternativa;
     @Column(name = "status_ativo", nullable = false)
-    private boolean ativo;
+    private Boolean ativo;
 }

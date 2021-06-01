@@ -63,11 +63,11 @@ public final class ServicoPneuEntity implements EntityKmColetado {
     @Column(name = "tempo_realizacao_millis")
     private Long tempoRealizacaoMillis;
     @Column(name = "fechado_automaticamente_movimentacao", nullable = false, columnDefinition = "default false")
-    private boolean fechadoMovimentacao;
+    private Boolean fechadoMovimentacao;
     @Column(name = "fechado_automaticamente_integracao", nullable = false, columnDefinition = "default false")
-    private boolean fechadoIntegracao;
+    private Boolean fechadoIntegracao;
     @Column(name = "fechado_automaticamente_afericao", nullable = false, columnDefinition = "default false")
-    private boolean fechadoAfericao;
+    private Boolean fechadoAfericao;
     @Column(name = "forma_coleta_dados_fechamento")
     private FormaColetaDadosAfericaoEnum formaColetaDadosFechamento;
 
