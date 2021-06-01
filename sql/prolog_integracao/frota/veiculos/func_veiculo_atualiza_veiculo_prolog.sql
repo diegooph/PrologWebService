@@ -111,7 +111,8 @@ begin
                                           f_token_integracao);
 
     update integracao.veiculo_cadastrado
-    set data_hora_ultima_edicao = f_data_hora_edicao_veiculo
+    set data_hora_ultima_edicao = f_data_hora_edicao_veiculo,
+        placa_veiculo_cadastro  = f_nova_placa_veiculo
     where cod_empresa_cadastro = v_cod_empresa_veiculo
       and placa_veiculo_cadastro = f_placa_original_veiculo;
 
