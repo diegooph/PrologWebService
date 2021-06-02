@@ -73,7 +73,6 @@ begin
         -- VERIFICAÇÕES PLACA.
         -- Placa sem 7 dígitos: Erro.
         -- Placa cadastrada mas deletada.
-        -- Pĺaca cadastrada em outra empresa: Erro.
         -- Pĺaca cadastrada em outra unidade da mesma empresa: Erro.
         -- Pĺaca cadastrada na mesma unidade: Atualiza informações.
         if (new.placa_formatada_import is not null) then
@@ -82,34 +81,28 @@ begin
                 v_qtd_erros = v_qtd_erros + 1;
                 v_msgs_erros = concat(v_msgs_erros, v_qtd_erros, '- A PLACA NÃO POSSUI 7 CARACTERES', v_quebra_linha);
             else
-                if exists(select vd.placa from veiculo_data vd where vd.placa = new.placa_formatada_import)
+                if exists(select vd.placa
+                          from veiculo_data vd
+                          where vd.cod_empresa = new.cod_empresa
+                            and vd.deletado is true
+                            and cod_unidade != new.cod_unidade
+                            and vd.placa = new.placa_formatada_import)
                 then
                     v_qtd_erros = v_qtd_erros + 1;
-                    v_msgs_erros = concat(v_msgs_erros, v_qtd_erros, '- A PLAJA JÁ EXISTE NO BANCO E ESTÁ DELETADA',
+                    v_msgs_erros = concat(v_msgs_erros, v_qtd_erros, '- A PLAJA JÁ EXISTE NO BANCO, PERTENCE A ' ||
+                                                                     'OUTRA UNIDADE E ESTÁ DELETADA',
                                           v_quebra_linha);
                 else
                     if EXISTS(select v.placa
                               from veiculo v
                               where v.placa = new.placa_formatada_import
-                                and v.cod_empresa != new.cod_empresa)
+                                and v.cod_empresa = new.cod_empresa
+                                and cod_unidade != new.cod_unidade)
                     then
                         v_qtd_erros = v_qtd_erros + 1;
-                        v_msgs_erros =
-                                concat(v_msgs_erros, v_qtd_erros,
-                                       '- A PLACA JÁ ESTÁ CADASTRADA E PERTENCE A OUTRA EMPRESA',
-                                       v_quebra_linha);
-                    else
-                        if EXISTS(select v.placa
-                                  from veiculo v
-                                  where v.placa = new.placa_formatada_import
-                                    and v.cod_empresa = new.cod_empresa
-                                    and cod_unidade != new.cod_unidade)
-                        then
-                            v_qtd_erros = v_qtd_erros + 1;
-                            v_msgs_erros = concat(v_msgs_erros, v_qtd_erros,
-                                                  '- A PLACA JÁ ESTÁ CADASTRADA E PERTENCE A OUTRA UNIDADE',
-                                                  v_quebra_linha);
-                        end if;
+                        v_msgs_erros = concat(v_msgs_erros, v_qtd_erros,
+                                              '- A PLACA JÁ ESTÁ CADASTRADA, MAS PERTENCE A OUTRA UNIDADE',
+                                              v_quebra_linha);
                     end if;
                 end if;
             end if;
@@ -276,7 +269,8 @@ begin
             else
                 if (v_qtd_erros = 0 and not EXISTS(select vd.placa
                                                    from veiculo_data vd
-                                                   where vd.placa = new.placa_formatada_import))
+                                                   where vd.cod_unidade = new.cod_unidade
+                                                     and vd.placa = new.placa_formatada_import))
                 then
                     -- CADASTRA VEÍCULO.
                     insert into veiculo (placa,
