@@ -269,7 +269,7 @@ begin
             else
                 if (v_qtd_erros = 0 and not EXISTS(select vd.placa
                                                    from veiculo_data vd
-                                                   where vd.cod_unidade = new.cod_unidade
+                                                   where vd.cod_empresa = new.cod_empresa
                                                      and vd.placa = new.placa_formatada_import))
                 then
                     -- CADASTRA VEÍCULO.
