@@ -65,15 +65,24 @@ public interface RelatorioEntregaDao {
 
     Report getEstratificacaoMapasReport(Long codUnidade, Date dataInicial, Date dataFinal) throws SQLException;
 
-    void getExtratoMapasIndicadorCsv(Long codEmpresa, String codRegional, String codUnidade, String cpf,
-                                     Date dataInicial, Date dataFinal, String equipe, OutputStream out) throws SQLException, IOException;
+    void getExtratoMapasIndicadorCsv(@NotNull final OutputStream out,
+                                     @NotNull final Long codEmpresa,
+                                     @NotNull final String codUnidade,
+                                     @NotNull final String codEquipe,
+                                     @NotNull final String cpf,
+                                     @NotNull final LocalDate dataInicial,
+                                     @NotNull final LocalDate dataFinal) throws SQLException, IOException;
 
-    Report getExtratoMapasIndicadorReport(Long codEmpresa, String codRegional, String codUnidade, String cpf,
-                                          Date dataInicial, Date dataFinal, String equipe) throws SQLException;
+    @NotNull
+    Report getExtratoMapasIndicadorReport(@NotNull final Long codEmpresa,
+                                          @NotNull final String codUnidade,
+                                          @NotNull final String codEquipe,
+                                          @NotNull final String cpf,
+                                          @NotNull final LocalDate dataInicial,
+                                          @NotNull final LocalDate dataFinal) throws SQLException;
 
     void getConsolidadoMapasIndicadorCsv(@NotNull final OutputStream out,
                                          @NotNull final Long codEmpresa,
-                                         @NotNull final String codRegional,
                                          @NotNull final String codUnidade,
                                          @NotNull final String equipe,
                                          @NotNull final String cpf,
@@ -82,7 +91,6 @@ public interface RelatorioEntregaDao {
 
     @NotNull
     Report getConsolidadoMapasIndicadorReport(@NotNull final Long codEmpresa,
-                                              @NotNull final String codRegional,
                                               @NotNull final String codUnidade,
                                               @NotNull final String equipe,
                                               @NotNull final String cpf,
