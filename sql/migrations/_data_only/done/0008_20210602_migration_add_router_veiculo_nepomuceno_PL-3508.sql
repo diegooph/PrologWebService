@@ -57,7 +57,7 @@ begin
     if (not v_motorizado and not v_possui_hubodometro)
     then
         select vaa.cod_veiculo
-        from veiculo_acoplamento_historico vaa
+        from veiculo_acoplamento_atual vaa
         where vaa.cod_processo = v_cod_processo
           and vaa.cod_posicao = v_posicao_trator
         into v_cod_veiculo_trator_processo;
@@ -92,4 +92,4 @@ begin
                v_km_atual_trator_processo,
                v_identificador_frota_trator_processo;
 end;
-$$
+$$;
