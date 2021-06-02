@@ -5,6 +5,9 @@ Change Log
 ### UNRELEASED
 ###
 
+### Features
+* Cria endpoint para listagem de pneus na API (PL-3646)
+
 ### Refactors
 * Corrige estrutura de testes (PL-3643)
 
