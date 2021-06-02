@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.v3.frota.pneu;
 import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -11,7 +12,6 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuListagemDto;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -62,8 +62,8 @@ public class PneuResource implements PneuApiDoc {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     public List<PneuListagemDto> getPneusByStatus(
-            @QueryParam("codUnidades") @NotNull final List<Long> codUnidades,
-            @QueryParam("statusPneu") @Nullable final StatusPneu statusPneu,
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("statusPneu") @Optional final StatusPneu statusPneu,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
         return service.getPneusByStatus(codUnidades, statusPneu, limit, offset);

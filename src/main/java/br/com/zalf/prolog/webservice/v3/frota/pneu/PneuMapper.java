@@ -46,7 +46,7 @@ public class PneuMapper {
     }
 
     @NotNull
-    public PneuListagemDto toPneuListagemDto(@NotNull final PneuEntity pneu) {
+    private PneuListagemDto toPneuListagemDto(@NotNull final PneuEntity pneu) {
         final ModeloBandaEntity modeloBanda = pneu.getModeloBanda();
         final VeiculoEntity veiculo = pneu.getVeiculoPneuAplicado();
         final MovimentacaoDestinoEntity movimentacaoAnalise = pneu.getUltimaMovimentacaoAnalise();
