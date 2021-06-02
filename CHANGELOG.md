@@ -1,21 +1,27 @@
 Change Log
 ==========
 
-### 
+###  
+
 ### UNRELEASED
-### 
+
+###  
+
+### Features
+
+* Adiciona endpoint de servico de pneus na API (PL-3645)
 
 ### Refactors
+
 * Melhora busca de indicadores consolidados e do extrato dos mapas (PL-3613)
-
-
-### Refactors
 * Altera assinatura e otimiza relatórios de previsão de troca (PL-3649)
 
 <a name="v3.3.7"></a>
+
 ## Version [v3.3.7](https://github.com/luizfp/PrologWebService/compare/v3.3.6...v3.3.7) (2021-05-27)
 
 ### Refactors
+
 * Corrige estrutura de testes (PL-3643)
 
 ### Bug Fixes
