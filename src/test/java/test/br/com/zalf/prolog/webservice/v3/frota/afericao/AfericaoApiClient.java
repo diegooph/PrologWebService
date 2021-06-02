@@ -35,7 +35,6 @@ public class AfericaoApiClient {
                                                                      @NotNull final String dataFinal,
                                                                      final int limit,
                                                                      final int offset) {
-
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
                 .path("/veiculos")
