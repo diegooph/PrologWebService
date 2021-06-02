@@ -62,14 +62,15 @@ public class ServicoPneuListagemDto {
     Double psiRecomendada;
     int vidaAtual;
     int vidaTotal;
-    @Nullable
+    @NotNull
     Long codAfericao;
-    @Nullable
+    @NotNull
     Double psiAfericao;
+    @NotNull
     LocalDateTime dataHoraAbertura;
-    @Nullable
+    @NotNull
     Long codVeiculo;
-    @Nullable
+    @NotNull
     String placa;
     @Nullable
     String identificadorFrota;

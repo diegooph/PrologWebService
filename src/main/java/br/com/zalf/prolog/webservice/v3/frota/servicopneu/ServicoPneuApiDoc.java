@@ -6,6 +6,7 @@ import io.swagger.annotations.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.Max;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
@@ -42,6 +43,7 @@ public interface ServicoPneuApiDoc {
                       allowEmptyValue = true) final @Nullable Long codVeiculo,
             @ApiParam(value = "Código do pneu.",
                       allowEmptyValue = true) final @Nullable Long codPneu,
+            @Max(value = 1000, message = "O limite de busca é 1000 registros.")
             @ApiParam(value = "limite de ordens de serviço retornados pela busca. O valor máximo é 1000.",
                       example = "1000",
                       required = true) final int limit,

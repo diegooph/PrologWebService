@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
+import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
@@ -10,7 +11,6 @@ import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuList
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuStatus;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,13 +39,13 @@ public class ServicoPneuResource implements ServicoPneuApiDoc {
     @Override
     @NotNull
     public List<ServicoPneuListagemDto> getServicosByUnidadeAndStatus(@QueryParam("codUnidades")
-                                                                      @NotNull final List<Long> codUnidades,
+                                                                          @NotNull final List<Long> codUnidades,
                                                                       @QueryParam("statusServicoPneu")
-                                                                          @Nullable final ServicoPneuStatus status,
+                                                                          @Optional final ServicoPneuStatus status,
                                                                       @QueryParam("codVeiculo")
-                                                                      @Nullable final Long codVeiculo,
+                                                                          @Optional final Long codVeiculo,
                                                                       @QueryParam("codPneu")
-                                                                      @Nullable final Long codPneu,
+                                                                          @Optional final Long codPneu,
                                                                       @QueryParam("limit") final int limit,
                                                                       @QueryParam("offset") final int offset) {
         final FiltroServicoListagemDto filtro = FiltroServicoListagemDto.of(codUnidades,
