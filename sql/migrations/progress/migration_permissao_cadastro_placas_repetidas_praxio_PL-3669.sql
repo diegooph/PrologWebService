@@ -50,13 +50,6 @@ begin
                         f_novo_cod_unidade_alocado));
     end if;
 
-    -- Validamos se a placa já existe no ProLog.
-    if (select not exists(select v.codigo from public.veiculo_data v where v.placa::text = f_nova_placa_veiculo))
-    then
-        perform public.throw_generic_error(
-                format('[ERRO DE DADOS] A placa "%s" não existe no Sistema ProLog', f_nova_placa_veiculo));
-    end if;
-
     -- Validamos se o modelo do veículo está mapeado.
     if (select not exists(select codigo
                           from public.modelo_veiculo mv
