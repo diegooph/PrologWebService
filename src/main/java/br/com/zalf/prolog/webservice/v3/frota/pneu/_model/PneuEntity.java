@@ -2,15 +2,20 @@ package br.com.zalf.prolog.webservice.v3.frota.pneu._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
+import br.com.zalf.prolog.webservice.v3.frota.afericao.valores._model.AfericaoPneuValorEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Created on 2021-03-10
@@ -72,6 +77,8 @@ public class PneuEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "origem_cadastro", nullable = false)
     private OrigemAcaoEnum origemCadastro;
+    @OneToMany(mappedBy = "pneu", fetch = FetchType.LAZY, targetEntity = AfericaoPneuValorEntity.class)
+    private Set<AfericaoPneuValorEntity> valoresPneu;
 
     public boolean isRecapado() {
         return vidaAtual > 1;
@@ -80,5 +87,14 @@ public class PneuEntity {
     @NotNull
     public Integer getVidaAnterior() {
         return this.vidaAtual - 1;
+    }
+
+    @Transient
+    @Nullable
+    public Double getMenorSulco() {
+        return Stream.of(alturaSulcoInterno, alturaSulcoCentralInterno, alturaSulcoCentralExterno, alturaSulcoExterno)
+                .filter(Objects::nonNull)
+                .min(Double::compareTo)
+                .orElse(null);
     }
 }
