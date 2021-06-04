@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico;
 
+import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico.PneuTipoServicoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,12 +31,17 @@ public class PneuServicoRealizadoEntity {
     private PneuTipoServicoEntity tipoServico;
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
-    @Column(name = "cod_pneu", nullable = false)
-    private Long codPneu;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo")
+    private PneuEntity pneuServicoRealizado;
     @Column(name = "custo", nullable = false)
     private BigDecimal custo;
     @Column(name = "vida", nullable = false)
     private Integer vida;
     @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
     private String fonteServicoRealizado;
+
+    public boolean isIncrementaVida() {
+        return tipoServico.isIncrementaVida();
+    }
 }

@@ -55,6 +55,6 @@ public class ServicoPneuApiClient {
         final RequestEntity<Void> requestEntity = RequestEntity
                 .get(components.toUri())
                 .build();
-        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>() {});
+        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<ServicoPneuListagemDto>>() {});
     }
 }

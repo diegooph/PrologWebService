@@ -11,6 +11,9 @@ Change Log
 
 * Adiciona endpoint de servico de pneus na API (PL-3645)
 
+### Features
+* Cria endpoint para listagem de pneus na API (PL-3646)
+
 ### Refactors
 
 * Melhora busca de indicadores consolidados e do extrato dos mapas (PL-3613)

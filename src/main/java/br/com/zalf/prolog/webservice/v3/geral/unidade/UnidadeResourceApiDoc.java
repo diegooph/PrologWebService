@@ -63,7 +63,7 @@ public interface UnidadeResourceApiDoc {
     })
     List<UnidadeVisualizacaoListagemDto> getUnidadesListagem(
             @ApiParam(value = "Código de empresa.", required = true, example = "10") @CodEmpresa final Long codEmpresa,
-            @ApiParam(value = "Lista de códigos de regional - Utilizado para filtrar unidades de grupos específicos. " +
+            @ApiParam(value = "Lista de códigos de grupos - Utilizado para filtrar unidades de grupos específicos. " +
                     "Caso não deseje filtrar, basta não enviar esse parâmetro.",
-                      example = "1") final List<Long> codigosRegionais);
+                      example = "1") final List<Long> codGrupos);
 }

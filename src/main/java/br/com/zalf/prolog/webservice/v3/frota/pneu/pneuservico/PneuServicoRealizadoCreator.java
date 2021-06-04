@@ -15,8 +15,8 @@ public class PneuServicoRealizadoCreator {
             @NotNull final BigDecimal valorBanda) {
         return PneuServicoRealizadoEntity.builder()
                 .tipoServico(tipoServicoIncrementaVidaCadastroPneu)
-                .codUnidade(pneuCadastrado.getCodUnidade())
-                .codPneu(pneuCadastrado.getCodigo())
+                .codUnidade(pneuCadastrado.getUnidade().getCodigo())
+                .pneuServicoRealizado(createPneuEntity(pneuCadastrado.getCodigo()))
                 .custo(valorBanda)
                 .vida(pneuCadastrado.getVidaAnterior())
                 .fonteServicoRealizado(fonteCadastro)
@@ -30,7 +30,7 @@ public class PneuServicoRealizadoCreator {
             @NotNull final String fonteCadastro) {
         return PneuServicoRealizadoIncrementaVidaEntity.builder()
                 .codServicoRealizado(servicoRealizado.getCodigo())
-                .codModeloBanda(pneuCadastrado.getCodModeloBanda())
+                .codModeloBanda(pneuCadastrado.getModeloBanda().getCodigo())
                 .vidaNovaPneu(pneuCadastrado.getVidaAtual())
                 .fonteServicoRealizado(fonteCadastro)
                 .build();
@@ -41,9 +41,14 @@ public class PneuServicoRealizadoCreator {
             @NotNull final PneuServicoRealizadoEntity servicoRealizado,
             @NotNull final String fonteCadastro) {
         return PneuServicoCadastroEntity.builder()
-                .codPneu(servicoRealizado.getCodPneu())
+                .codPneu(servicoRealizado.getPneuServicoRealizado().getCodigo())
                 .codServicoRealizado(servicoRealizado.getCodigo())
                 .fonteServicoRealizado(fonteCadastro)
                 .build();
+    }
+
+    @NotNull
+    private static PneuEntity createPneuEntity(@NotNull final Long codigo) {
+        return PneuEntity.builder().codigo(codigo).build();
     }
 }

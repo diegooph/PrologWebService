@@ -65,7 +65,7 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
     @Override
     public List<UnidadeVisualizacaoListagemDto> getUnidadesListagem(
             @QueryParam("codEmpresa") final Long codEmpresa,
-            @QueryParam("codsRegionais") final List<Long> codsRegionais) {
-        return mapper.toDto(service.getUnidadesListagem(codEmpresa, codsRegionais));
+            @QueryParam("codGrupos") final List<Long> codGrupos) {
+        return mapper.toDto(service.getUnidadesListagem(codEmpresa, codGrupos));
     }
 }

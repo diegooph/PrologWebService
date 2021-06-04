@@ -51,7 +51,7 @@ public final class MovimentacaoDestinoEntity {
     @Column(name = "tipo_destino")
     private OrigemDestinoEnum tipoDestino;
     @MapsId
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_movimentacao")
     private MovimentacaoEntity movimentacao;
 }
