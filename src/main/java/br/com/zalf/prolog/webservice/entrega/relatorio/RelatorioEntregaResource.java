@@ -1,11 +1,12 @@
 package br.com.zalf.prolog.webservice.entrega.relatorio;
 
-import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.entrega.indicador.Indicador;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.ws.rs.*;
@@ -20,6 +21,7 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Secured(permissions = Pilares.Entrega.Relatorios.INDICADORES)
+@ConsoleDebugLog
 public class RelatorioEntregaResource {
 
     private final RelatorioEntregaService service = new RelatorioEntregaService();
@@ -120,29 +122,39 @@ public class RelatorioEntregaResource {
 
     @GET
     @Secured(permissions = {Pilares.Entrega.Relatorios.PRODUTIVIDADE, Pilares.Entrega.Relatorios.INDICADORES})
-    @Path("/indicadores/extratos/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}/{cpf}/csv")
+    @Path("/indicadores/extratos/{codEmpresa}/{codRegional}/{codUnidade}/{codEquipe}/{cpf}/csv")
     public StreamingOutput getExtratoMapasIndicadorCsv(@PathParam("codEmpresa") final Long codEmpresa,
                                                        @PathParam("codRegional") final String codRegional,
                                                        @PathParam("codUnidade") final String codUnidade,
+                                                       @PathParam("codEquipe") final String codEquipe,
                                                        @PathParam("cpf") final String cpf,
-                                                       @QueryParam("dataInicial") final Long dataInicial,
-                                                       @QueryParam("dataFinal") final Long dataFinal,
-                                                       @PathParam("equipe") final String equipe) {
-        return outputstream -> service.getExtratoMapasIndicadorCsv(codEmpresa, codRegional, codUnidade, cpf,
-                dataInicial, dataFinal, equipe, outputstream);
+                                                       @QueryParam("dataInicial") final long dataInicial,
+                                                       @QueryParam("dataFinal") final long dataFinal) {
+        return outputstream -> service.getExtratoMapasIndicadorCsv(outputstream,
+                                                                   codEmpresa,
+                                                                   codUnidade,
+                                                                   codEquipe,
+                                                                   cpf,
+                                                                   dataInicial,
+                                                                   dataFinal);
     }
 
     @GET
     @Secured(permissions = {Pilares.Entrega.Relatorios.PRODUTIVIDADE, Pilares.Entrega.Relatorios.INDICADORES})
-    @Path("/indicadores/extratos/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}/{cpf}/report")
+    @Path("/indicadores/extratos/{codEmpresa}/{codRegional}/{codUnidade}/{codEquipe}/{cpf}/report")
     public Report getExtratoMapasIndicadorReport(@PathParam("codEmpresa") final Long codEmpresa,
                                                  @PathParam("codRegional") final String codRegional,
                                                  @PathParam("codUnidade") final String codUnidade,
+                                                 @PathParam("codEquipe") final String codEquipe,
                                                  @PathParam("cpf") final String cpf,
-                                                 @QueryParam("dataInicial") final Long dataInicial,
-                                                 @QueryParam("dataFinal") final Long dataFinal,
-                                                 @PathParam("equipe") final String equipe) {
-        return service.getExtratoMapasIndicadorReport(codEmpresa, codRegional, codUnidade, cpf, dataInicial, dataFinal, equipe);
+                                                 @QueryParam("dataInicial") final long dataInicial,
+                                                 @QueryParam("dataFinal") final long dataFinal) {
+        return service.getExtratoMapasIndicadorReport(codEmpresa,
+                                                      codUnidade,
+                                                      codEquipe,
+                                                      cpf,
+                                                      dataInicial,
+                                                      dataFinal);
     }
 
     @GET
@@ -158,7 +170,6 @@ public class RelatorioEntregaResource {
         return outputstream -> service.getConsolidadoMapasIndicadorCsv(
                 outputstream,
                 codEmpresa,
-                codRegional,
                 codUnidade,
                 codEquipe,
                 cpf,
@@ -178,7 +189,6 @@ public class RelatorioEntregaResource {
                                                      @QueryParam("dataFinal") final Long dataFinal) {
         return service.getConsolidadoMapasIndicadorReport(
                 codEmpresa,
-                codRegional,
                 codUnidade,
                 codEquipe,
                 cpf,

@@ -25,7 +25,7 @@ public final class ChecklistOrdemServicoMapper {
 
         final List<ChecklistOrdemServicoListagemDto> ordensDto = new ArrayList<>();
         ordensServico.stream()
-                .collect(Collectors.groupingBy(ChecklistOrdemServicoProjection::getCodigoOs))
+                .collect(Collectors.groupingBy(ChecklistOrdemServicoProjection::getCodigoOsProlog))
                 .forEach((codigoOs, checklistOrdemServicoProjections) -> ordensDto.add(
                         createChecklistOrdemServicoListagemDto(
                                 checklistOrdemServicoProjections, incluirItensOrdemServico)));
@@ -40,6 +40,7 @@ public final class ChecklistOrdemServicoMapper {
             throw new IllegalStateException("A lista usada neste método não pode ser vazia.");
         }
         return new ChecklistOrdemServicoListagemDto(
+                checklistOrdemServicoProjections.get(0).getCodigoOsProlog(),
                 checklistOrdemServicoProjections.get(0).getCodigoOs(),
                 checklistOrdemServicoProjections.get(0).getCodigoUnidade(),
                 checklistOrdemServicoProjections.get(0).getCodigoChecklist(),

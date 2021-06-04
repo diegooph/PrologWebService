@@ -53,6 +53,7 @@ create or replace function func_get_produtividade_colaborador(f_mes integer, f_a
                 meta_tempo_largada_horas   bigint,
                 meta_jornada_liquida_horas bigint,
                 rm_numero_viagens          smallint,
+                diferenca_eld_soma_total   boolean,
                 valor_rota                 real,
                 valor_recarga              real,
                 valor_diferenca_eld        double precision,

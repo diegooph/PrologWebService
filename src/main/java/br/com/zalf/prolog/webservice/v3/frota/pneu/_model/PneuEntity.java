@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoEn
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.frota.afericao.valores._model.AfericaoPneuValorEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +22,9 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.Set;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Created on 2021-03-10
@@ -86,6 +90,8 @@ public class PneuEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "origem_cadastro", nullable = false)
     private OrigemAcaoEnum origemCadastro;
+    @OneToMany(mappedBy = "pneu", fetch = FetchType.LAZY, targetEntity = AfericaoPneuValorEntity.class)
+    private Set<AfericaoPneuValorEntity> valoresPneu;
     @OneToMany(mappedBy = "pneuServicoRealizado", fetch = FetchType.LAZY)
     private Set<PneuServicoRealizadoEntity> servicosRealizados;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -105,6 +111,15 @@ public class PneuEntity {
     @NotNull
     public Integer getVidaAnterior() {
         return this.vidaAtual - 1;
+    }
+
+    @Transient
+    @Nullable
+    public Double getMenorSulco() {
+        return Stream.of(alturaSulcoInterno, alturaSulcoCentralInterno, alturaSulcoCentralExterno, alturaSulcoExterno)
+                .filter(Objects::nonNull)
+                .min(Double::compareTo)
+                .orElse(null);
     }
 
     @Nullable

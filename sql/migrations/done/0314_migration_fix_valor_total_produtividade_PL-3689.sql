@@ -1,3 +1,5 @@
+drop view view_produtividade_extrato_com_total;
+drop view view_produtividade_extrato;
 create or replace view view_produtividade_extrato
             (cod_unidade, matricula_ambev, data, cpf, nome_colaborador, data_nascimento,
              funcao, cod_funcao, nome_equipe, fator, cargaatual, entrega, mapa, placa,
@@ -92,7 +94,7 @@ select vmc.cod_unidade                                    as cod_unidade,
                          -- Ajudante.
                          when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                               c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0 then
-                                 (m.vlbateujornaju + m.vlnaobateujornaju) / fator
+                             (m.vlbateujornaju + m.vlnaobateujornaju) / fator
                          else 0
                          end
                  else 0
@@ -112,7 +114,7 @@ select vmc.cod_unidade                                    as cod_unidade,
                           -- Ajudante.
                           when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                                c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0 then
-                                  m.vlrecargaaju / m.fator
+                              m.vlrecargaaju / m.fator
                           else 0
                           end
                   else 0
@@ -132,11 +134,11 @@ select vmc.cod_unidade                                    as cod_unidade,
                                           -- Motorista.
                                           when c.matricula_ambev = m.matricmotorista and
                                                c.cod_funcao = ufp.cod_funcao_motorista then
-                                                  m.cxentreg * uv.rm_motorista_as_recarga_cx_fator1
+                                              m.cxentreg * uv.rm_motorista_as_recarga_cx_fator1
                                           -- ajudante.
                                           when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                                                c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0 then
-                                                  m.cxentreg * uv.rm_ajudante_as_recarga_cx_fator1
+                                              m.cxentreg * uv.rm_ajudante_as_recarga_cx_fator1
                                           else 0
                                           end
                                   when m.fator = 2 then
@@ -145,11 +147,11 @@ select vmc.cod_unidade                                    as cod_unidade,
                                           -- Motorista.
                                           when c.matricula_ambev = m.matricmotorista and
                                                c.cod_funcao = ufp.cod_funcao_motorista then
-                                                  m.cxentreg * uv.rm_motorista_as_recarga_cx_fator2
+                                              m.cxentreg * uv.rm_motorista_as_recarga_cx_fator2
                                           -- Ajudante.
                                           when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                                                c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0 then
-                                                  m.cxentreg * uv.rm_ajudante_as_recarga_cx_fator2
+                                              m.cxentreg * uv.rm_ajudante_as_recarga_cx_fator2
                                           else 0
                                           end
                                   else 0
@@ -184,7 +186,7 @@ select vmc.cod_unidade                                    as cod_unidade,
                          -- Motorista
                          when c.matricula_ambev = m.matricmotorista and c.cod_funcao = ufp.cod_funcao_motorista
                              then
-                                 (m.cxentreg * uv.rm_motorista_rota_jornada) - m.vlnaobateujornmot
+                             (m.cxentreg * uv.rm_motorista_rota_jornada) - m.vlnaobateujornmot
                          when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                               c.cod_funcao = ufp.cod_funcao_ajudante then
                                  (m.cxentreg * uv.rm_ajudante_rota_jornada) - (m.vlnaobateujornaju / m.fator)
@@ -212,12 +214,12 @@ select vmc.cod_unidade                                    as cod_unidade,
                                                  -- Motorista.
                                                  when c.matricula_ambev = m.matricmotorista and
                                                       c.cod_funcao = ufp.cod_funcao_motorista then
-                                                         m.cxentreg * uv.rm_motorista_as_cx_jornada_fator1
+                                                     m.cxentreg * uv.rm_motorista_as_cx_jornada_fator1
                                                  -- Ajudante.
                                                  when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                                                       c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0
                                                      then
-                                                         m.cxentreg * uv.rm_ajudante_as_cx_jornada_fator1
+                                                     m.cxentreg * uv.rm_ajudante_as_cx_jornada_fator1
                                                  else 0
                                                  end
                                          when m.hrjornadaliq > m.hrmetajornada then
@@ -226,12 +228,12 @@ select vmc.cod_unidade                                    as cod_unidade,
                                                  -- Motorista.
                                                  when c.matricula_ambev = m.matricmotorista and
                                                       c.cod_funcao = ufp.cod_funcao_motorista then
-                                                         m.cxentreg * uv.rm_motorista_as_cx_sem_jornada_fator1
+                                                     m.cxentreg * uv.rm_motorista_as_cx_sem_jornada_fator1
                                                  -- Ajudante.
                                                  when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                                                       c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0
                                                      then
-                                                         m.cxentreg * uv.rm_ajudante_as_cx_sem_jornada_fator1
+                                                     m.cxentreg * uv.rm_ajudante_as_cx_sem_jornada_fator1
                                                  else 0
                                                  end
                                          else 0
@@ -245,12 +247,12 @@ select vmc.cod_unidade                                    as cod_unidade,
                                                  -- Motorista.
                                                  when c.matricula_ambev = m.matricmotorista and
                                                       c.cod_funcao = ufp.cod_funcao_motorista then
-                                                         m.cxentreg * uv.rm_motorista_as_cx_jornada_fator2
+                                                     m.cxentreg * uv.rm_motorista_as_cx_jornada_fator2
                                                  -- Ajudante.
                                                  when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                                                       c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0
                                                      then
-                                                         m.cxentreg * uv.rm_ajudante_as_cx_jornada_fator2
+                                                     m.cxentreg * uv.rm_ajudante_as_cx_jornada_fator2
                                                  else 0
                                                  end
                                          when m.hrjornadaliq > m.hrmetajornada then
@@ -259,12 +261,12 @@ select vmc.cod_unidade                                    as cod_unidade,
                                                  -- Motorista.
                                                  when c.matricula_ambev = m.matricmotorista and
                                                       c.cod_funcao = ufp.cod_funcao_motorista then
-                                                         m.cxentreg * uv.rm_motorista_as_cx_sem_jornada_fator2
+                                                     m.cxentreg * uv.rm_motorista_as_cx_sem_jornada_fator2
                                                  -- ajudante
                                                  when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                                                       c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0
                                                      then
-                                                         m.cxentreg * uv.rm_ajudante_as_cx_sem_jornada_fator2
+                                                     m.cxentreg * uv.rm_ajudante_as_cx_sem_jornada_fator2
                                                  else 0
                                                  end
                                          else 0
@@ -325,3 +327,89 @@ from view_mapa_colaborador vmc
          left join internal_tracking it
                    on it.tracking_mapa = m.mapa
                        and it.cod_unidade = m.cod_unidade;
+
+
+
+create view view_produtividade_extrato_com_total
+as
+select vpe.*,
+       round((vpe.valor_rota + vpe.valor_as + vpe.valor_recarga
+           + f_if(vpe.diferenca_eld_soma_total, vpe.valor_diferenca_eld, 0::double precision))::numeric,
+             2)::double precision as valor
+from view_produtividade_extrato vpe;
+
+
+drop function func_get_produtividade_colaborador(f_mes integer, f_ano integer, f_cpf bigint);
+create or replace function func_get_produtividade_colaborador(f_mes integer, f_ano integer, f_cpf bigint)
+    returns table
+            (
+                cod_unidade                integer,
+                matricula_ambev            integer,
+                data                       date,
+                cpf                        bigint,
+                nome_colaborador           character varying,
+                data_nascimento            date,
+                funcao                     character varying,
+                cod_funcao                 bigint,
+                nome_equipe                character varying,
+                fator                      real,
+                cargaatual                 character varying,
+                entrega                    character varying,
+                mapa                       integer,
+                placa                      character varying,
+                cxcarreg                   real,
+                cxentreg                   real,
+                qthlcarregados             real,
+                qthlentregues              real,
+                qtnfcarregadas             integer,
+                qtnfentregues              integer,
+                entregascompletas          integer,
+                entregasnaorealizadas      integer,
+                entregasparciais           integer,
+                kmprevistoroad             real,
+                kmsai                      integer,
+                kmentr                     integer,
+                tempoprevistoroad          bigint,
+                hrsai                      timestamp without time zone,
+                hrentr                     timestamp without time zone,
+                tempo_rota                 bigint,
+                tempointerno               bigint,
+                hrmatinal                  time without time zone,
+                apontamentos_ok            bigint,
+                total_tracking             bigint,
+                tempo_largada              bigint,
+                meta_tracking              real,
+                meta_tempo_rota_mapas      real,
+                meta_caixa_viagem          real,
+                meta_dev_hl                real,
+                meta_dev_nf                real,
+                meta_dev_pdv               real,
+                meta_dispersao_km          real,
+                meta_dispersao_tempo       real,
+                meta_jornada_liquida_mapas real,
+                meta_raio_tracking         real,
+                meta_tempo_interno_mapas   real,
+                meta_tempo_largada_mapas   real,
+                meta_tempo_rota_horas      bigint,
+                meta_tempo_interno_horas   bigint,
+                meta_tempo_largada_horas   bigint,
+                meta_jornada_liquida_horas bigint,
+                rm_numero_viagens          smallint,
+                diferenca_eld_soma_total   boolean,
+                valor_rota                 real,
+                valor_recarga              real,
+                valor_diferenca_eld        double precision,
+                valor_as                   real,
+                valor                      double precision
+            )
+    language sql
+as
+$$
+select *
+from view_produtividade_extrato_com_total vpe
+where vpe.data between func_get_data_inicio_produtividade(f_ano, f_mes, f_cpf, null) and
+    func_get_data_fim_produtividade(f_ano, f_mes, f_cpf, null)
+  and vpe.cod_unidade = (select c.cod_unidade from colaborador c where c.cpf = f_cpf)
+  and vpe.cpf = f_cpf
+order by vpe.data
+$$;

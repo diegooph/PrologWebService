@@ -1,3 +1,8 @@
+-- roteia métodos de veículos para o sistema Nepomuceno.
+insert into integracao.empresa_integracao_sistema (cod_empresa, chave_sistema, recurso_integrado)
+values (15, 'PROTHEUS_NEPOMUCENO', 'VEICULOS');
+
+-- recria a function no padrão correto.
 create or replace function func_veiculo_busca_dados_coleta_km_por_cod_veiculo(f_cod_veiculo bigint)
     returns table
             (
@@ -87,4 +92,4 @@ begin
                v_km_atual_trator_processo,
                v_identificador_frota_trator_processo;
 end;
-$$
+$$;

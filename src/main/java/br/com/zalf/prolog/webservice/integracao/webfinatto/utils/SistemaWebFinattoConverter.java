@@ -410,7 +410,7 @@ public class SistemaWebFinattoConverter {
                                        true,
                                        false,
                                        true,
-                                       VeiculoDadosColetaKm.VeiculoDadosTratorColetaKm.builder().build());
+                                       null);
     }
 
     @NotNull

@@ -233,22 +233,7 @@ public final class VeiculoConverter {
     @NotNull
     public static VeiculoDadosColetaKm createVeiculoDadosColetaKm(@NotNull final ResultSet rSet)
             throws SQLException {
-        final VeiculoDadosColetaKm.VeiculoDadosTratorColetaKm.Builder builder = VeiculoDadosColetaKm
-                .VeiculoDadosTratorColetaKm
-                .builder()
-                .withPlacaTrator(rSet.getString("PLACA_TRATOR"))
-                .withIdentificadorFrotaTrator(rSet.getString("IDENTIFICADOR_FROTA_TRATOR"));
-
-        final long codVeiculoTrator = rSet.getLong("COD_VEICULO_TRATOR");
-        final long kmAtualTrator = rSet.getLong("KM_ATUAL_TRATOR");
-
-        if (codVeiculoTrator != 0) {
-            builder.withCodVeiculoTrator(codVeiculoTrator);
-        }
-        if (kmAtualTrator != 0) {
-            builder.withKmAtualTrator(kmAtualTrator);
-        }
-
+        final boolean possuiTrator = rSet.getLong("COD_VEICULO_TRATOR") != 0;
         return VeiculoDadosColetaKm.of(
                 rSet.getLong("COD_VEICULO"),
                 rSet.getString("PLACA"),
@@ -258,6 +243,16 @@ public final class VeiculoConverter {
                 rSet.getBoolean("POSSUI_HUBODOMETRO"),
                 rSet.getBoolean("ACOPLADO"),
                 rSet.getBoolean("DEVE_COLETAR_KM"),
-                builder.build());
+                possuiTrator ? createVeiculoDadosTratorColetaKm(rSet) : null);
+    }
+
+    @NotNull
+    private static VeiculoDadosTratorColetaKm createVeiculoDadosTratorColetaKm(@NotNull final ResultSet rSet)
+            throws SQLException {
+        return VeiculoDadosTratorColetaKm.of(
+                rSet.getLong("COD_VEICULO_TRATOR"),
+                rSet.getString("PLACA_TRATOR"),
+                rSet.getString("IDENTIFICADOR_FROTA_TRATOR"),
+                rSet.getLong("KM_ATUAL_TRATOR"));
     }
 }
