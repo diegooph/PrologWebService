@@ -48,6 +48,6 @@ public class PneuIT extends IntegrationTest {
     void givenWrongParametersToSearch_ThenReturnError() {
         final ResponseEntity<ClientSideErrorException> error =
                 client.getPneusByStatusWithError(List.of(215212L), null, 1000, 0);
-        assertThat(error.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(error.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
