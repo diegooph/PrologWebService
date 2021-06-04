@@ -117,19 +117,10 @@ public class PneuEntity {
     }
 
     @Nullable
-    public MovimentacaoDestinoEntity getUltimaMovimentacaoAnalise() {
+    public MovimentacaoDestinoEntity getUltimaMovimentacaoByStatus(@NotNull final OrigemDestinoEnum statusPneu) {
         return movimentacoesPneu.stream()
                 .map(MovimentacaoEntity::getMovimentacaoDestino)
-                .filter(destino -> destino.getTipoDestino().equals(OrigemDestinoEnum.ANALISE))
-                .max(Comparator.comparing(MovimentacaoDestinoEntity::getCodMovimentacao))
-                .orElse(null);
-    }
-
-    @Nullable
-    public MovimentacaoDestinoEntity getUltimaMovimentacaoDescarte() {
-        return movimentacoesPneu.stream()
-                .map(MovimentacaoEntity::getMovimentacaoDestino)
-                .filter(destino -> destino.getTipoDestino().equals(OrigemDestinoEnum.DESCARTE))
+                .filter(destino -> destino.getTipoDestino().equals(statusPneu))
                 .max(Comparator.comparing(MovimentacaoDestinoEntity::getCodMovimentacao))
                 .orElse(null);
     }

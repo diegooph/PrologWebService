@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.v3.frota.pneu;
 
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoDestinoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.*;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
@@ -49,8 +50,14 @@ public class PneuMapper {
     private PneuListagemDto toPneuListagemDto(@NotNull final PneuEntity pneu) {
         final ModeloBandaEntity modeloBanda = pneu.getModeloBanda();
         final VeiculoEntity veiculo = pneu.getVeiculoPneuAplicado();
-        final MovimentacaoDestinoEntity movimentacaoAnalise = pneu.getUltimaMovimentacaoAnalise();
-        final MovimentacaoDestinoEntity movimentacaoDescarte = pneu.getUltimaMovimentacaoDescarte();
+        final MovimentacaoDestinoEntity movimentacaoAnalise =
+                pneu.getStatus().equals(StatusPneu.ANALISE)
+                        ? pneu.getUltimaMovimentacaoByStatus(OrigemDestinoEnum.ANALISE)
+                        : null;
+        final MovimentacaoDestinoEntity movimentacaoDescarte =
+                pneu.getStatus().equals(StatusPneu.DESCARTE)
+                        ? pneu.getUltimaMovimentacaoByStatus(OrigemDestinoEnum.DESCARTE)
+                        : null;
         return PneuListagemDto.of(pneu.getCodigo(),
                                   pneu.getCodigoCliente(),
                                   pneu.getUnidade().getGrupo().getCodigo(),
