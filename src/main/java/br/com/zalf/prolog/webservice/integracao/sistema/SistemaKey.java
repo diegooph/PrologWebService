@@ -13,7 +13,8 @@ public enum SistemaKey {
     GLOBUS_PICCOLOTUR("GLOBUS_PICCOLOTUR"),
     RODOPAR_HORIZONTE("RODOPAR_HORIZONTE"),
     API_PROLOG("API_PROLOG"),
-    WEB_FINATTO("WEB_FINATTO");
+    WEB_FINATTO("WEB_FINATTO"),
+    PROLOG("PROLOG");
 
     @NotNull
     private final String key;

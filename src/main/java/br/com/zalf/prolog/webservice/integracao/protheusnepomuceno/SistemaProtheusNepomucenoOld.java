@@ -41,19 +41,19 @@ import java.util.stream.Collectors;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-public final class SistemaProtheusNepomuceno extends Sistema {
+public final class SistemaProtheusNepomucenoOld extends Sistema {
     @NotNull
-    private static final String TAG = SistemaProtheusNepomuceno.class.getSimpleName();
+    private static final String TAG = SistemaProtheusNepomucenoOld.class.getSimpleName();
     @NotNull
     private final ProtheusNepomucenoRequesterImpl requester;
     @NotNull
     private final IntegracaoDao integracaoDao;
 
-    public SistemaProtheusNepomuceno(@NotNull final ProtheusNepomucenoRequesterImpl requester,
-                                     @NotNull final SistemaKey sistemaKey,
-                                     @NotNull final RecursoIntegrado recursoIntegrado,
-                                     @NotNull final IntegradorProLog integradorProLog,
-                                     @NotNull final String userToken) {
+    public SistemaProtheusNepomucenoOld(@NotNull final ProtheusNepomucenoRequesterImpl requester,
+                                        @NotNull final SistemaKey sistemaKey,
+                                        @NotNull final RecursoIntegrado recursoIntegrado,
+                                        @NotNull final IntegradorProLog integradorProLog,
+                                        @NotNull final String userToken) {
         super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
         this.integracaoDao = Injection.provideIntegracaoDao();
         this.requester = requester;
@@ -324,7 +324,25 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         }
     }
 
+    @NotNull
     @Override
+    public Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
+        // Validamos se o codAuxiliar está dentro dos padrões. Uma exception personalizada é lançada caso não estiver
+        // de acordo.
+        validateCodAuxiliar(tipoVeiculo.getCodEmpresa(), tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
+        // Usamos o fluxo padrão do Prolog, apenas validamos antes
+        return getIntegradorProLog().insertTipoVeiculo(tipoVeiculo);
+    }
+
+    @Override
+    public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
+        // Validamos se o codAuxiliar está dentro dos padrões. Uma exception personalizada é lançada caso não estiver
+        // de acordo.
+        validateCodAuxiliar(tipoVeiculo.getCodEmpresa(), tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
+        // Usamos o fluxo padrão do Prolog, apenas validamos antes
+        getIntegradorProLog().updateTipoVeiculo(tipoVeiculo);
+    }
+
     @NotNull
     public Long insertAfericao(@NotNull final Long codUnidade,
                                @NotNull final Afericao afericao,
@@ -400,25 +418,6 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                        false,
                                        true,
                                        null);
-    }
-
-    @NotNull
-    @Override
-    public Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
-        // Validamos se o codAuxiliar está dentro dos padrões. Uma exception personalizada é lançada caso não estiver
-        // de acordo.
-        validateCodAuxiliar(tipoVeiculo.getCodEmpresa(), tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
-        // Usamos o fluxo padrão do Prolog, apenas validamos antes
-        return getIntegradorProLog().insertTipoVeiculo(tipoVeiculo);
-    }
-
-    @Override
-    public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
-        // Validamos se o codAuxiliar está dentro dos padrões. Uma exception personalizada é lançada caso não estiver
-        // de acordo.
-        validateCodAuxiliar(tipoVeiculo.getCodEmpresa(), tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
-        // Usamos o fluxo padrão do Prolog, apenas validamos antes
-        getIntegradorProLog().updateTipoVeiculo(tipoVeiculo);
     }
 
     /**

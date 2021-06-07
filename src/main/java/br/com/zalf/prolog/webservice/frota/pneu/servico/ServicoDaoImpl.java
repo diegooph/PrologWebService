@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoV2;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
@@ -182,7 +182,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             List<Alternativa> alternativasInspecao = null;
             if (!servicos.isEmpty()) {
                 Log.d(TAG, "Existem serviços para o codVeículo: " + filtro.getCodVeiculo());
-                final AfericaoDao afericaoDao = Injection.provideAfericaoDao();
+                final AfericaoDaoV2 afericaoDao = Injection.provideAfericaoDao();
                 restricao = afericaoDao.getRestricaoByCodUnidade(conn, filtro.getCodUnidade());
                 formaColetaDadosAfericaoEnum = getFormaColetaDadosFechamentoServico(conn, filtro.getCodVeiculo());
                 if (contains(servicos, TipoServico.INSPECAO)) {

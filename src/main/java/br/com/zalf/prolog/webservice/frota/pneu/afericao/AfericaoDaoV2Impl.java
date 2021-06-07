@@ -31,9 +31,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
+public class AfericaoDaoV2Impl extends DatabaseConnection implements AfericaoDaoV2 {
 
-    public AfericaoDaoImpl() {
+    public AfericaoDaoV2Impl() {
 
     }
 

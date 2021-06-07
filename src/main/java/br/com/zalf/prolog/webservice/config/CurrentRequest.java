@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3;
+package br.com.zalf.prolog.webservice.config;
 
 import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
