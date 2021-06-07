@@ -10,6 +10,7 @@ Change Log
 ### Features
 
 * Adiciona endpoint de servico de pneus na API (PL-3645)
+* Cria DTO para a listagem de veículos na API (PL-3672)
 
 ### Refactors
 
