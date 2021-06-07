@@ -1,16 +1,30 @@
 package br.com.zalf.prolog.webservice.v3.frota.pneu._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
+import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoDestinoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoRealizadoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.frota.afericao.valores._model.AfericaoPneuValorEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Created on 2021-03-10
@@ -30,14 +44,17 @@ public class PneuEntity {
     private Long codigo;
     @Column(name = "cod_empresa", nullable = false)
     private Long codEmpresa;
-    @Column(name = "cod_unidade", nullable = false)
-    private Long codUnidade;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_unidade", referencedColumnName = "codigo")
+    private UnidadeEntity unidade;
     @Column(name = "codigo_cliente", nullable = false)
     private String codigoCliente;
-    @Column(name = "cod_modelo", nullable = false)
-    private Long codModelo;
-    @Column(name = "cod_dimensao", nullable = false)
-    private Long codDimensao;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_modelo", referencedColumnName = "codigo")
+    private ModeloPneuEntity modeloPneu;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_dimensao", referencedColumnName = "codigo")
+    private DimensaoPneuEntity dimensaoPneu;
     @Column(name = "pressao_recomendada", nullable = false)
     private Double pressaoRecomendada;
     @Column(name = "pressao_atual")
@@ -57,8 +74,9 @@ public class PneuEntity {
     private Integer vidaAtual;
     @Column(name = "vida_total")
     private Integer vidaTotal;
-    @Column(name = "cod_modelo_banda")
-    private Long codModeloBanda;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_modelo_banda", referencedColumnName = "codigo")
+    private ModeloBandaEntity modeloBanda;
     @Column(name = "dot", length = 20)
     private String dot;
     @Column(name = "valor", nullable = false)
@@ -72,6 +90,19 @@ public class PneuEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "origem_cadastro", nullable = false)
     private OrigemAcaoEnum origemCadastro;
+    @OneToMany(mappedBy = "pneu", fetch = FetchType.LAZY, targetEntity = AfericaoPneuValorEntity.class)
+    private Set<AfericaoPneuValorEntity> valoresPneu;
+    @OneToMany(mappedBy = "pneuServicoRealizado", fetch = FetchType.LAZY)
+    private Set<PneuServicoRealizadoEntity> servicosRealizados;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(name = "veiculo_pneu",
+               joinColumns = @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo"),
+               inverseJoinColumns = @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo"))
+    private VeiculoEntity veiculoPneuAplicado;
+    @Formula(value = "(select vp.posicao from veiculo_pneu vp where vp.cod_pneu = codigo)")
+    private Integer posicaoAplicado;
+    @OneToMany(mappedBy = "pneu", fetch = FetchType.LAZY)
+    private Set<MovimentacaoEntity> movimentacoesPneu;
 
     public boolean isRecapado() {
         return vidaAtual > 1;
@@ -80,5 +111,32 @@ public class PneuEntity {
     @NotNull
     public Integer getVidaAnterior() {
         return this.vidaAtual - 1;
+    }
+
+    @Transient
+    @Nullable
+    public Double getMenorSulco() {
+        return Stream.of(alturaSulcoInterno, alturaSulcoCentralInterno, alturaSulcoCentralExterno, alturaSulcoExterno)
+                .filter(Objects::nonNull)
+                .min(Double::compareTo)
+                .orElse(null);
+    }
+
+    @Nullable
+    public BigDecimal getValorUltimaBandaAplicada() {
+        return servicosRealizados.stream()
+                .filter(PneuServicoRealizadoEntity::isIncrementaVida)
+                .max(Comparator.comparing(PneuServicoRealizadoEntity::getCodigo))
+                .map(PneuServicoRealizadoEntity::getCusto)
+                .orElse(null);
+    }
+
+    @Nullable
+    public MovimentacaoDestinoEntity getUltimaMovimentacaoByStatus(@NotNull final OrigemDestinoEnum statusPneu) {
+        return movimentacoesPneu.stream()
+                .map(MovimentacaoEntity::getMovimentacaoDestino)
+                .filter(destino -> destino.getTipoDestino().equals(statusPneu))
+                .max(Comparator.comparing(MovimentacaoDestinoEntity::getCodMovimentacao))
+                .orElse(null);
     }
 }

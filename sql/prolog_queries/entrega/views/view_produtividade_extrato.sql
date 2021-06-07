@@ -9,8 +9,8 @@ create or replace view view_produtividade_extrato
              meta_dispersao_km, meta_dispersao_tempo, meta_jornada_liquida_mapas,
              meta_raio_tracking, meta_tempo_interno_mapas, meta_tempo_largada_mapas,
              meta_tempo_rota_horas, meta_tempo_interno_horas, meta_tempo_largada_horas,
-             meta_jornada_liquida_horas, rm_numero_viagens, valor_rota, valor_recarga, valor_diferenca_eld,
-             valor_as)
+             meta_jornada_liquida_horas, rm_numero_viagens, diferenca_eld_soma_total, valor_rota, valor_recarga,
+             valor_diferenca_eld, valor_as)
 as
 with internal_tracking as (
     select t.mapa                                                                 as tracking_mapa,
@@ -79,6 +79,7 @@ select vmc.cod_unidade                                    as cod_unidade,
        to_seconds(um.meta_tempo_largada_horas)            as meta_tempo_largada_horas,
        to_seconds(m.hrmetajornada)                        as meta_jornada_liquida_horas,
        uv.rm_numero_viagens                               as rm_numero_viagens,
+       uv.diferenca_eld_soma_total                        as diferenca_eld_soma_total,
        -- Verifica se o mapa é de DISTRIBUIÇÃO e NÃO é RECARGA.
        round(case
                  when m.entrega <> 'AS' and m.cargaatual <> 'Recarga' then
@@ -87,7 +88,7 @@ select vmc.cod_unidade                                    as cod_unidade,
                          -- Motorista.
                          when c.matricula_ambev = m.matricmotorista and c.cod_funcao = ufp.cod_funcao_motorista
                              then
-                                 m.vlbateujornmot + m.vlnaobateujornmot
+                             m.vlbateujornmot + m.vlnaobateujornmot
                          -- Ajudante.
                          when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                               c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0 then

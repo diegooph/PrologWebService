@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao;
 
-import lombok.Builder;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
  */
 @Data(staticConstructor = "of")
 public class VeiculoDadosColetaKm {
-
     @NotNull
     private final Long codigo;
     @NotNull
@@ -24,20 +22,6 @@ public class VeiculoDadosColetaKm {
     private final boolean possuiHubodometro;
     private final boolean acoplado;
     private final boolean deveColetarKm;
-    @NotNull
+    @Nullable
     private final VeiculoDadosTratorColetaKm dadosTrator;
-
-    @Builder(setterPrefix = "with", builderClassName = "Builder")
-    public static class VeiculoDadosTratorColetaKm {
-        @Nullable
-        private final Long codVeiculoTrator;
-        @Nullable
-        private final String placaTrator;
-        @Nullable
-        private final Long kmAtualTrator;
-        @Nullable
-        private final String identificadorFrotaTrator;
-
-    }
-
 }

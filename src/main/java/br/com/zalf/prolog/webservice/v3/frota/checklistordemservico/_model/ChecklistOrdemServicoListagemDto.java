@@ -11,7 +11,16 @@ import java.util.List;
 
 @Data
 public class ChecklistOrdemServicoListagemDto {
-    @ApiModelProperty(value = "Código da ordem de serviço", required = true, example = "12345")
+    @ApiModelProperty(value = "Código interno da ordem de serviço. Código único de identificação da ordem de serviço " +
+            "a nível de sistema.",
+                      required = true,
+                      example = "732164")
+    @NotNull
+    private final Long codOrdemServicoProlog;
+    @ApiModelProperty(value = "Código da ordem de serviço. Esse código é sequencial, gerado com base em cada unidade " +
+            "da empresa, isso quer dizer que esse código poderá se repetir para cada unidade.",
+                      required = true,
+                      example = "12345")
     @NotNull
     private final Long codOrdemServico;
     @ApiModelProperty(value = "Código da unidade da ordem de serviço", required = true, example = "215")

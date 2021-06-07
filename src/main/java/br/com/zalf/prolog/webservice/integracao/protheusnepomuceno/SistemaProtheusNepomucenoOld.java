@@ -414,13 +414,10 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
                                        0L,
                                        null,
                                        true,
-                                       false,
+                                       true,
                                        false,
                                        true,
-                                       VeiculoDadosColetaKm
-                                               .VeiculoDadosTratorColetaKm
-                                               .builder()
-                                               .build());
+                                       null);
     }
 
     /**
