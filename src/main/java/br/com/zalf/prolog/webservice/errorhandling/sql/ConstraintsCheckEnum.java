@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.errorhandling.sql;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.stream.Stream;
+
 /**
  * Created on 2020-10-15
  *
@@ -26,17 +28,11 @@ public enum ConstraintsCheckEnum {
 
     private final String constraintCheckName;
 
-    public static ConstraintsCheckEnum fromString(@Nullable final String constraintCheckName) {
-        if (constraintCheckName != null) {
-            for (final ConstraintsCheckEnum constraintsCheckEnum : ConstraintsCheckEnum.values()) {
-                if (constraintsCheckEnum != DEFAULT) {
-                    if (constraintsCheckEnum.toString().equalsIgnoreCase(constraintCheckName)) {
-                        return constraintsCheckEnum;
-                    }
-                }
-            }
-        }
-        return DEFAULT;
+    public static ConstraintsCheckEnum fromString(@NotNull final String constraintCheckName) {
+        return Stream.of(ConstraintsCheckEnum.values())
+                .filter(e -> e.constraintCheckName.equalsIgnoreCase(constraintCheckName))
+                .findFirst()
+                .orElse(DEFAULT);
     }
 
     @Override
