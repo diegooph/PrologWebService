@@ -1,3 +1,4 @@
+drop function func_pneu_relatorio_previsao_troca(f_cod_unidades bigint[], f_status_pneu text, f_data_final date);
 create or replace function func_pneu_relatorio_previsao_troca(f_cod_unidades bigint[],
                                                               f_status_pneu text,
                                                               f_data_final date)
