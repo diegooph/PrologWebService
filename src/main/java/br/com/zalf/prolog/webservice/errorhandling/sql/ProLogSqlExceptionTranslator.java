@@ -119,8 +119,8 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
     }
 
     @NotNull
-    private String getPSQLErrorDetail(@NotNull final SQLException sqlException) {
         return ((PSQLException) sqlException).getServerErrorMessage().getDetail();
+    private String getDetailMessage(@NotNull final SQLException sqlException) {
     }
 
     @NotNull
