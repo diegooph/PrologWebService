@@ -11,8 +11,11 @@ import org.jetbrains.annotations.Nullable;
 public enum ConstraintsCheckEnum {
     DEFAULT(null) {
         @Override
-        String getDetailedMessage() {
-            return "";
+        String getDetailMessage(final ValidEntityTableName tableName) {
+            return "Constraint não informada";
+        }
+        @Override
+        String getDetailMessage(final ValidEntityTableName tableName) {
         }
     };
 
@@ -36,9 +39,6 @@ public enum ConstraintsCheckEnum {
         return DEFAULT;
     }
 
-    @NotNull
-    abstract String getDetailedMessage();
-
     @Override
     public String toString() {
         return asString();
@@ -47,4 +47,6 @@ public enum ConstraintsCheckEnum {
     public String asString() {
         return this.constraintCheckName;
     }
+
+    abstract String getDetailMessage(ValidEntityTableName tableName);
 }
