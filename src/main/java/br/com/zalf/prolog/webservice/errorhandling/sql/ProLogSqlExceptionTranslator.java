@@ -124,7 +124,11 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
     }
 
     @NotNull
-    private String getPSQLErrorConstraint(@NotNull final SQLException sqlException) {
-        return ((PSQLException) sqlException).getServerErrorMessage().getConstraint();
+    private ConstraintsCheckEnum getPSQLErrorConstraint(@NotNull final SQLException sqlException) {
+        if (sqlException instanceof PSQLException) {
+            return ConstraintsCheckEnum.fromString(((PSQLException) sqlException).getServerErrorMessage()
+                                                           .getConstraint());
+        }
+        return ConstraintsCheckEnum.DEFAULT;
     }
 }
