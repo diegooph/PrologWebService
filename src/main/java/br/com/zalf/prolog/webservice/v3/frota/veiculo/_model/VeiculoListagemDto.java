@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.v3.frota.veiculo._model;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculosAcopladosListagem;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -88,5 +87,5 @@ public class VeiculoListagemDto {
     int totalPneusAplicados;
     @ApiModelProperty(value = "Caso hajam veículos acoplados, lista quais são.")
     @Nullable
-    VeiculosAcopladosListagem veiculosAcoplados;
+    VeiculosAcopladosListagemDto veiculosAcoplados;
 }

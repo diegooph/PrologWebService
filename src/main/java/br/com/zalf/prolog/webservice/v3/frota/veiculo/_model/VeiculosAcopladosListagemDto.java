@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.v3.frota.veiculo._model;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoAcopladoListagem;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -19,5 +18,5 @@ public class VeiculosAcopladosListagemDto {
     Long codProcessoAcoplamento;
     @ApiModelProperty(value = "Caso hajam veículos acoplados, lista quais são separados pelo código de acoplamento.")
     @NotNull
-    List<VeiculoAcopladoListagem> veiculosAcoplados;
+    List<VeiculoAcopladoListagemDto> veiculosAcoplados;
 }
