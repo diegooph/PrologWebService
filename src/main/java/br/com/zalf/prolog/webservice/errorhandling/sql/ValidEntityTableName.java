@@ -2,7 +2,10 @@ package br.com.zalf.prolog.webservice.errorhandling.sql;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created on 2021-06-08
@@ -38,6 +41,12 @@ public enum ValidEntityTableName {
 
     private final String tableName;
 
+    @NotNull
+    public static String getTableNamesConcatenated(@NotNull final String delimiter) {
+        return Stream.of(ValidEntityTableName.values())
+                .map(ValidEntityTableName::getTableName)
+                .collect(Collectors.joining(delimiter));
+    }
 
 
     @NotNull
