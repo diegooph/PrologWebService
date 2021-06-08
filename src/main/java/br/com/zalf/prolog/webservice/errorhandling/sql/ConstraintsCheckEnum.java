@@ -16,8 +16,11 @@ public enum ConstraintsCheckEnum {
         String getDetailMessage(final ValidEntityTableName tableName) {
             return "Constraint não informada";
         }
+    },
+    CHECK_STATUS_ATIVO_ACOPLAMENTO("check_status_ativo_acoplamento") {
         @Override
         String getDetailMessage(final ValidEntityTableName tableName) {
+            return String.format("%s contém acoplamento.", tableName.getTableName());
         }
     };
 
