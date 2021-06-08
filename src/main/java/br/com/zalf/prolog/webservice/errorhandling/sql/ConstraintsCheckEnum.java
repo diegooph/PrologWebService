@@ -1,13 +1,14 @@
 package br.com.zalf.prolog.webservice.errorhandling.sql;
 
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 2020-10-15
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
+@AllArgsConstructor
 public enum ConstraintsCheckEnum {
 
     DEFAULT("") {
@@ -20,12 +21,7 @@ public enum ConstraintsCheckEnum {
         }
     };
 
-    @Nullable
     private final String constraintCheckName;
-
-    ConstraintsCheckEnum(@Nullable final String constraintCheckName) {
-        this.constraintCheckName = constraintCheckName;
-    }
 
     public static ConstraintsCheckEnum fromString(@Nullable final String constraintCheckName) {
         if (constraintCheckName != null) {
