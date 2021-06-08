@@ -1,14 +1,13 @@
 Change Log
 ==========
 
-###
-### UNRELEASED
-###  
+<a name="v3.4.0"></a>
+## Version [v3.4.0](https://github.com/luizfp/PrologWebService/compare/v3.3.7...v3.4.0) (2021-06-07)
 
 ### Features
 * Cria nova estrutura de roteamento (PL-3623)
 * Implementa nova estrutura de roteamento para o insert de aferição (PL-3623)
-* Adiciona endpoint de servico de pneus na API (PL-3645)
+* Adiciona endpoint de serviço de pneus na API (PL-3645)
 * Cria endpoint para listagem de pneus na API (PL-3646)
 
 ### Refactors
