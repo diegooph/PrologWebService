@@ -3,7 +3,10 @@ package br.com.zalf.prolog.webservice.errorhandling.sql;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -48,6 +51,15 @@ public enum ValidEntityTableName {
                 .collect(Collectors.joining(delimiter));
     }
 
+    @Nullable
+    public static ValidEntityTableName getTableNameFromMessage(@NotNull final String phrase) {
+        final Pattern validPatternOfEntities = Pattern.compile("(" + getTableNamesConcatenated("|") + ")");
+        final Matcher matcher = validPatternOfEntities.matcher(phrase);
+        if (matcher.find()) {
+            return fromString(matcher.group(1));
+        }
+        return null;
+    }
 
     @NotNull
     public static ValidEntityTableName fromString(@NotNull final String str) {
