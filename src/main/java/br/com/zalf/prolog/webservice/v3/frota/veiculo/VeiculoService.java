@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.v3.TipoVeiculoV3Service;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.v3._model.TipoVeiculoEntity;
 import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoValidator;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.OffsetDateTime;
 
 @Service
 public class VeiculoService {
@@ -76,5 +78,22 @@ public class VeiculoService {
     @NotNull
     private OrigemAcaoEnum getOrigemCadastro(@Nullable final String tokenIntegracao) {
         return tokenIntegracao != null ? OrigemAcaoEnum.API : OrigemAcaoEnum.PROLOG_WEB;
+    }
+
+    @NotNull
+    public Long updateKmVeiculo(@NotNull final Long codUnidade,
+                                @NotNull final Long codVeiculo,
+                                @NotNull final Long veiculoCodProcesso,
+                                @NotNull final VeiculoTipoProcesso veiculoTipoProcesso,
+                                @NotNull final OffsetDateTime dataHoraProcesso,
+                                final long kmVeiculo,
+                                final boolean devePropagarKmParaReboques) {
+        return veiculoDao.updateKmByCodVeiculo(codUnidade,
+                                               codVeiculo,
+                                               veiculoCodProcesso,
+                                               VeiculoTipoProcesso.valueOf(veiculoTipoProcesso.toString()),
+                                               dataHoraProcesso,
+                                               kmVeiculo,
+                                               devePropagarKmParaReboques);
     }
 }
