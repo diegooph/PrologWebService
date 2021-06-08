@@ -9,7 +9,8 @@ import org.jetbrains.annotations.Nullable;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public enum ConstraintsCheckEnum {
-    DEFAULT(null) {
+
+    DEFAULT("") {
         @Override
         String getDetailMessage(final ValidEntityTableName tableName) {
             return "Constraint não informada";
