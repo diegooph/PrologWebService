@@ -53,6 +53,10 @@ public enum ValidEntityTableName {
 
     @Nullable
     public static ValidEntityTableName getTableNameFromMessage(@NotNull final String phrase) {
+        /*
+           Aqui o pattern fica algo como: "(afericao|cargo...)", baseado na implementação de validação do checkstyle.
+           Os parenteses no pattern são necessários para validar o regex corretamente.
+         */
         final Pattern validPatternOfEntities = Pattern.compile("(" + getTableNamesConcatenated("|") + ")");
         final Matcher matcher = validPatternOfEntities.matcher(phrase);
         if (matcher.find()) {
