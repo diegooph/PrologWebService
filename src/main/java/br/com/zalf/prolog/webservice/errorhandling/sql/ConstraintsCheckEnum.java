@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.errorhandling.sql;
 
+import com.google.api.client.util.Preconditions;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
 
@@ -15,13 +17,16 @@ public enum ConstraintsCheckEnum {
 
     DEFAULT("") {
         @Override
-        String getDetailMessage(final ValidEntityTableName tableName) {
+        @NotNull
+        String getDetailMessage(@Nullable final ValidEntityTableName tableName) {
             return "Constraint não informada";
         }
     },
     CHECK_STATUS_ATIVO_ACOPLAMENTO("check_status_ativo_acoplamento") {
         @Override
-        String getDetailMessage(final ValidEntityTableName tableName) {
+        @NotNull
+        String getDetailMessage(@Nullable final ValidEntityTableName tableName) {
+            Preconditions.checkNotNull(tableName);
             return String.format("%s contém acoplamento.", tableName.getTableName());
         }
     };
@@ -44,5 +49,6 @@ public enum ConstraintsCheckEnum {
         return this.constraintCheckName;
     }
 
-    abstract String getDetailMessage(ValidEntityTableName tableName);
+    @NotNull
+    abstract String getDetailMessage(@Nullable ValidEntityTableName tableName);
 }
