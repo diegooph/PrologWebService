@@ -1,13 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
-import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.VersaoAppBloqueadaException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
@@ -21,11 +21,13 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCode
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,6 +36,7 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@Controller
 @Path("/v2/afericoes")
 @ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -42,13 +45,14 @@ import java.util.List;
         targetVersionCode = 64,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-public class AfericaoResource {
-
+public class AfericaoResourceV2 {
     @NotNull
-    private final AfericaoService service = new AfericaoService();
+    private final AfericaoServiceV2 service;
 
-    @Inject
-    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
+    @Autowired
+    public AfericaoResourceV2(@NotNull final AfericaoServiceV2 service) {
+        this.service = service;
+    }
 
     @POST
     @Secured(permissions = {
@@ -59,12 +63,9 @@ public class AfericaoResource {
     public AbstractResponse insert(@HeaderParam("Authorization") @Required final String userToken,
                                    @PathParam("codUnidade") @Required final Long codUnidade,
                                    @Required final Afericao afericao) throws ProLogException {
-        final Long codAfericao = service.insert(userToken, codUnidade, afericao);
-        if (codAfericao != null) {
-            return ResponseWithCod.ok("Aferição inserida com sucesso", codAfericao);
-        } else {
-            return Response.error("Erro ao inserir aferição");
-        }
+        afericao.setDataHora(Now.getLocalDateTimeUtc());
+        final Long codAfericao = service.insertAfericao(codUnidade, afericao, true);
+        return ResponseWithCod.ok("Aferição inserida com sucesso", codAfericao);
     }
 
     @GET
@@ -117,9 +118,10 @@ public class AfericaoResource {
             @HeaderParam("Authorization") @Required final String userToken,
             @PathParam("codUnidade") @Required final Long codUnidade,
             @PathParam("placaVeiculo") @Required final String placa,
-            @QueryParam("tipoAfericao") @Required final String tipoAfericao) throws ProLogException {
-
-        final Long codigoColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+            @QueryParam("tipoAfericao") @Required final String tipoAfericao,
+            @Context final SecurityContext securityContext) throws ProLogException {
+        final ColaboradorAutenticado colaborador = (ColaboradorAutenticado) securityContext.getUserPrincipal();
+        final Long codigoColaborador = colaborador.getCodigo();
         final Long codigoVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codigoColaborador, placa);
         final TipoMedicaoColetadaAfericao tipoAfericaoEnum = TipoMedicaoColetadaAfericao.fromString(tipoAfericao);
         final AfericaoBuscaFiltro afericaoBusca =

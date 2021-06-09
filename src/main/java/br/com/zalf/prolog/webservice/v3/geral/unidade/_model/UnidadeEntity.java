@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.geral.unidade._model;
 
+import br.com.zalf.prolog.webservice.v3.geral.grupo.GrupoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,44 +23,27 @@ import java.time.LocalDateTime;
 public class UnidadeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "codigo",
-            nullable = false)
+    @Column(name = "codigo", nullable = false)
     private Long codigo;
-
-    @Column(name = "nome",
-            length = 40,
-            nullable = false)
+    @Column(name = "nome", length = 40, nullable = false)
     private String nome;
-
     @Column(name = "total_colaboradores")
     private Integer totalColaboradores;
-
-    @Column(name = "cod_regional",
-            nullable = false)
-    private Long regional;
-
-    @Column(name = "cod_empresa",
-            nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_regional", referencedColumnName = "codigo")
+    private GrupoEntity grupo;
+    @Column(name = "cod_empresa", nullable = false)
     private Long codEmpresa;
-
-    @Column(name = "timezone",
-            nullable = false)
+    @Column(name = "timezone", nullable = false)
     private String timezone;
-
-    @Column(name = "data_hora_cadastro",
-            nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "data_hora_cadastro", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime dataHoraCadastro;
-
-    @Column(name = "status_ativo",
-            nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(name = "status_ativo", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private boolean ativo;
-
     @Column(name = "cod_auxiliar")
     private String codAuxiliar;
-
     @Column(name = "latitude_unidade")
     private String latitudeUnidade;
-
     @Column(name = "longitude_unidade")
     private String longitudeUnidade;
 }

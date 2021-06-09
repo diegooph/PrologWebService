@@ -3,37 +3,46 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
+import br.com.zalf.prolog.webservice.integracao.newimpl.AfericaoIntegrada;
+import br.com.zalf.prolog.webservice.integracao.newimpl.Integrado;
 import br.com.zalf.prolog.webservice.integracao.router.RouterAfericao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Classe AfericaoService responsavel por comunicar-se com a interface DAO
  */
-public class AfericaoService {
-    private static final String TAG = AfericaoService.class.getSimpleName();
-    @NotNull
-    private final AfericaoDao dao = Injection.provideAfericaoDao();
+@Service
+public class AfericaoServiceV2 implements AfericaoIntegrada {
+    private static final String TAG = AfericaoServiceV2.class.getSimpleName();
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
+    @NotNull
+    private final AfericaoDaoV2 dao;
 
-    @Nullable
-    public Long insert(@NotNull final String userToken,
-                       @NotNull final Long codUnidade,
-                       @NotNull final Afericao afericao) throws ProLogException {
+    @Autowired
+    public AfericaoServiceV2(@NotNull final AfericaoDaoV2 dao) {
+        this.dao = dao;
+    }
+
+    @NotNull
+    @Override
+    @Integrado(recursoIntegrado = RecursoIntegrado.AFERICAO)
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws ProLogException {
         try {
-            afericao.setDataHora(Now.getLocalDateTimeUtc());
-            return RouterAfericao
-                    .create(dao, userToken)
-                    .insertAfericao(codUnidade, afericao, true);
+            return dao.insert(codUnidade, afericao, deveAbrirServico);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao inserir aferição", e);
             throw exceptionHandler.map(e, "Erro ao inserir aferição, tente novamente");

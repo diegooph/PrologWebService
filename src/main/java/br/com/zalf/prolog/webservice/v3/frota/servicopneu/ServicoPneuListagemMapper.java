@@ -44,7 +44,7 @@ public class ServicoPneuListagemMapper {
                 .status(servicoPneu.getStatus())
                 .codPneu(servicoPneu.getPneu().getCodigo())
                 .codCliente(servicoPneu.getPneu().getCodigoCliente())
-                .codDimensaoPneu(servicoPneu.getPneu().getCodDimensao())
+                .codDimensaoPneu(servicoPneu.getPneu().getDimensaoPneu().getCodigo())
                 .sulcoInterno(servicoPneu.getPneu().getAlturaSulcoInterno())
                 .sulcoCentralInterno(servicoPneu.getPneu().getAlturaSulcoCentralInterno())
                 .sulcoCentralExterno(servicoPneu.getPneu().getAlturaSulcoCentralExterno())

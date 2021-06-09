@@ -58,10 +58,9 @@ public final class MovimentacaoEntity {
     @Column(name = "observacao")
     private String observacao;
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "movimentacao_pneu_servico_realizado",
-            joinColumns = @JoinColumn(name = "cod_movimentacao"),
-            inverseJoinColumns = @JoinColumn(name = "cod_servico_realizado"))
+    @JoinTable(name = "movimentacao_pneu_servico_realizado",
+               joinColumns = @JoinColumn(name = "cod_movimentacao"),
+               inverseJoinColumns = @JoinColumn(name = "cod_servico_realizado"))
     private Set<PneuServicoRealizadoEntity> servicosRealizados;
 
     public boolean isMovimentacaoNoVeiculo() {

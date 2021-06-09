@@ -27,7 +27,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoV2;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
@@ -90,7 +90,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     private ServicoDao afericaoServicoDao;
     private MovimentacaoDao movimentacaoDao;
     private VeiculoDao veiculoDao;
-    private AfericaoDao afericaoDao;
+    private AfericaoDaoV2 afericaoDao;
     private ColaboradorDao colaboradorDao;
     private EmpresaDao empresaDao;
     private IntegracaoDao integracaoDao;
@@ -105,7 +105,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                              final ChecklistOfflineDao checklistOfflineDao,
                              final ChecklistModeloDao checklistModeloDao,
                              final OrdemServicoDao ordemServicoDao,
-                             final AfericaoDao afericaoDao,
+                             final AfericaoDaoV2 afericaoDao,
                              final ServicoDao afericaoServicoDao,
                              final MovimentacaoDao movimentacaoDao,
                              final ColaboradorDao colaboradorDao,
@@ -417,17 +417,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             afericaoDao = Injection.provideAfericaoDao();
         }
         return afericaoDao.getAfericoesAvulsas(codUnidade, codColaborador, dataInicial, dataFinal);
-    }
-
-    @NotNull
-    @Override
-    public Long insertAfericao(@NotNull final Long codUnidade,
-                               @NotNull final Afericao afericao,
-                               final boolean deveAbrirServico) throws Throwable {
-        if (afericaoDao == null) {
-            afericaoDao = Injection.provideAfericaoDao();
-        }
-        return afericaoDao.insert(codUnidade, afericao, deveAbrirServico);
     }
 
     @NotNull
@@ -776,6 +765,16 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return empresaDao.getFiltros(cpf);
     }
 
+    @NotNull
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
+        if (afericaoDao == null) {
+            afericaoDao = Injection.provideAfericaoDao();
+        }
+        return afericaoDao.insert(codUnidade, afericao, deveAbrirServico);
+    }
+
     public static final class Builder {
         private final String userToken;
         private VeiculoDao veiculoDao;
@@ -787,7 +786,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         private ChecklistOfflineDao checklistOfflineDao;
         private ChecklistModeloDao checklistModeloDao;
         private OrdemServicoDao ordemServicoDao;
-        private AfericaoDao afericaoDao;
+        private AfericaoDaoV2 afericaoDao;
         private ServicoDao afericaoServicoDao;
         private MovimentacaoDao movimentacaoDao;
         private ColaboradorDao colaboradorDao;
@@ -843,7 +842,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             return this;
         }
 
-        public Builder withAfericaoDao(final AfericaoDao afericaoDao) {
+        public Builder withAfericaoDao(final AfericaoDaoV2 afericaoDao) {
             this.afericaoDao = afericaoDao;
             return this;
         }
