@@ -324,6 +324,25 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
         }
     }
 
+    @Override
+    @NotNull
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+        // Esse método recebe requisições vindas de todas as funcionalidades (checklist, os, aferição, etc). A aferição
+        // é integrada e envia codVeiculo como -1, por isso, retornamos valores padrões nesse caso.
+        if (codVeiculo == -1) {
+            return VeiculoDadosColetaKm.of(codVeiculo,
+                                           ProtheusNepomucenoEncoderDecoder.decode(codVeiculo),
+                                           0L,
+                                           null,
+                                           true,
+                                           true,
+                                           false,
+                                           true,
+                                           null);
+        }
+        return getIntegradorProLog().getDadosColetaKmByCodigo(codVeiculo);
+    }
+
     @NotNull
     @Override
     public Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
@@ -404,20 +423,6 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
         } finally {
             connectionProvider.closeResources(conn);
         }
-    }
-
-    @Override
-    @NotNull
-    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
-        return VeiculoDadosColetaKm.of(codVeiculo,
-                                       ProtheusNepomucenoEncoderDecoder.decode(codVeiculo),
-                                       0L,
-                                       null,
-                                       true,
-                                       true,
-                                       false,
-                                       true,
-                                       null);
     }
 
     /**
