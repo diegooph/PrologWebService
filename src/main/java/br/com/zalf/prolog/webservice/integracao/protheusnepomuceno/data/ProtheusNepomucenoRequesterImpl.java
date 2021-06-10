@@ -4,6 +4,11 @@ import br.com.zalf.prolog.webservice.integracao.network.RestClient;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.CausaSucataPneuProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.FilialProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.LipPneuProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.PneuListagemInspecaoRemovido;
+import io.reactivex.rxjava3.core.Observable;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,6 +16,8 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConstants.*;
 
 /**
  * Created on 3/10/20
@@ -61,14 +68,14 @@ public final class ProtheusNepomucenoRequesterImpl implements ProtheusNepomuceno
 
     @NotNull
     @Override
-    public List<PneuEstoqueProtheusNepomuceno> getListagemPneusEmEstoque(
+    public List<PneuListagemInspecaoRemovido> getListagemPneusInspecaoRemovido(
             @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
             @NotNull final String codFiliais) throws Throwable {
         final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
-        final Call<List<PneuEstoqueProtheusNepomuceno>> call =
-                service.getListagemPneusEmEstoque(apiAutenticacaoHolder.getPrologTokenIntegracao(),
-                                                  apiAutenticacaoHolder.getUrl(),
-                                                  codFiliais);
+        final Call<List<PneuListagemInspecaoRemovido>> call =
+                service.getListagemPneusInspecaoRemovido(apiAutenticacaoHolder.getPrologTokenIntegracao(),
+                                                         apiAutenticacaoHolder.getUrl(),
+                                                         codFiliais);
         return handleResponse(call.execute());
     }
 
@@ -89,15 +96,51 @@ public final class ProtheusNepomucenoRequesterImpl implements ProtheusNepomuceno
 
     @NotNull
     @Override
-    public ResponseAfericaoProtheusNepomuceno insertAfericaoAvulsa(
+    public ResponseAfericaoProtheusNepomuceno insertInspecaoRemovido(
             @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
             @NotNull final AfericaoAvulsaProtheusNepomuceno afericaoAvulsa) throws Throwable {
         final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
         final Call<ResponseAfericaoProtheusNepomuceno> call =
-                service.insertAfericaoAvulsa(apiAutenticacaoHolder.getPrologTokenIntegracao(),
-                                             apiAutenticacaoHolder.getUrl(),
-                                             afericaoAvulsa);
+                service.insertInspecaoRemovido(apiAutenticacaoHolder.getPrologTokenIntegracao(),
+                                               apiAutenticacaoHolder.getUrl(),
+                                               afericaoAvulsa);
         return handleResponse(call.execute());
+    }
+
+    @Override
+    @NotNull
+    public Observable<List<LipPneuProtheusNepomuceno>> getLips(
+            @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
+            @NotNull final String codFilial) {
+        final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
+        return service.getLips(apiAutenticacaoHolder.getPrologTokenIntegracao(),
+                               apiAutenticacaoHolder.getUrl(),
+                               DEFAULT_QUERY_PARAM_LIPS,
+                               codFilial);
+    }
+
+    @Override
+    @NotNull
+    public Observable<List<FilialProtheusNepomuceno>> getFiliais(
+            @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
+            @NotNull final String codFilial) {
+        final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
+        return service.getFiliais(apiAutenticacaoHolder.getPrologTokenIntegracao(),
+                                  apiAutenticacaoHolder.getUrl(),
+                                  DEFAULT_QUERY_PARAM_FILIAIS,
+                                  codFilial);
+    }
+
+    @Override
+    @NotNull
+    public Observable<List<CausaSucataPneuProtheusNepomuceno>> getCausasSucata(
+            @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
+            @NotNull final String codFilial) {
+        final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
+        return service.getCausasSucata(apiAutenticacaoHolder.getPrologTokenIntegracao(),
+                                       apiAutenticacaoHolder.getUrl(),
+                                       DEFAULT_QUERY_PARAM_SUCATA,
+                                       codFilial);
     }
 
     @NotNull

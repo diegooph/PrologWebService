@@ -447,6 +447,15 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
+    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoAfericao(
+            @NotNull final Long codUnidade,
+            @NotNull final TipoProcessoColetaAfericao tipoProcessoColetaAfericao,
+            @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable {
+        return campoPersonalizadoDao.getCamposParaRealizacaoAfericao(codUnidade, tipoProcessoColetaAfericao);
+    }
+
+    @NotNull
+    @Override
     public ResultInsertModeloChecklist insertModeloChecklist(
             @NotNull final ModeloChecklistInsercao modeloChecklist,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,

@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
@@ -19,15 +21,21 @@ import br.com.zalf.prolog.webservice.integracao.integrador._model.AfericaoRealiz
 import br.com.zalf.prolog.webservice.integracao.integrador._model.TipoVeiculoConfigAfericao;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoAvulsaProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoPlacaProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoAfericaoProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoListagemProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.DeParaCamposPersonalizadosEnum;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.PneuListagemInspecaoRemovido;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConverter;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoEncoderDecoder;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoUtils;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.google.common.collect.Table;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,6 +43,11 @@ import java.sql.Connection;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.DeParaCamposPersonalizadosEnum.*;
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConstants.DEFAULT_CODIGOS_FILIAIS_RESQUEST_SEPARATOR;
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConstants.DEFAULT_CODIGOS_SEPARATOR;
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConverter.*;
 
 /**
  * Created on 3/10/20
@@ -72,7 +85,7 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
             if (codUnidadesMapeadas.isEmpty()) {
                 // Se, das unidades filtradas, nenhuma tiver cod_auxiliar mapeado, retornamos um Cronograma Vazio.
                 // Fazemos isso para não mostrar ao usuário uma tela de erro sempre que ele entrar no Cronograma.
-                return ProtheusNepomucenoConverter.createEmptyCronogramaAfericaoProlog();
+                return createEmptyCronogramaAfericaoProlog();
             }
             // Podemos, com toda certeza, utilizar codUnidades.get(0) pois no mínimo teremos uma unidade nesta lista.
             final Long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidades.get(0));
@@ -116,7 +129,7 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
                     placasEstruturaVeiculo.put(veiculo.getCodModeloVeiculo(), new ArrayList<>());
                 }
                 placasEstruturaVeiculo.get(veiculo.getCodModeloVeiculo()).add(
-                        ProtheusNepomucenoConverter.createPlacaAfericaoProlog(
+                        createPlacaAfericaoProlog(
                                 veiculo,
                                 unidadeRestricao.get(veiculo.getCodEmpresaFilialVeiculo()),
                                 tipoVeiculoConfiguracao.get(
@@ -127,7 +140,7 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
                 if (!modelosEstruturaVeiculo.containsKey(veiculo.getCodModeloVeiculo())) {
                     modelosEstruturaVeiculo.put(
                             veiculo.getCodModeloVeiculo(),
-                            ProtheusNepomucenoConverter.createModeloPlacasAfericaoProlog(
+                            createModeloPlacasAfericaoProlog(
                                     veiculo,
                                     placasEstruturaVeiculo.get(veiculo.getCodModeloVeiculo())));
                 }
@@ -140,7 +153,7 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
                 logEstruturasNaoMapeadas(estruturasNaoMapeadas);
             }
 
-            return ProtheusNepomucenoConverter.createCronogramaAfericaoProlog(modelosEstruturaVeiculo);
+            return createCronogramaAfericaoProlog(modelosEstruturaVeiculo);
         } finally {
             connectionProvider.closeResources(conn);
         }
@@ -208,13 +221,12 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
                             posicaoPneuMapper);
 
             final Veiculo veiculo =
-                    ProtheusNepomucenoConverter
-                            .createVeiculoProlog(
-                                    afericaoBusca.getCodUnidade(),
-                                    codDiagramaProlog,
-                                    veiculoAfericao,
-                                    posicaoPneuMapper);
-            return ProtheusNepomucenoConverter.createNovaAfericaoPlacaProlog(veiculo, configuracaoAfericao);
+                    createVeiculoProlog(
+                            afericaoBusca.getCodUnidade(),
+                            codDiagramaProlog,
+                            veiculoAfericao,
+                            posicaoPneuMapper);
+            return createNovaAfericaoPlacaProlog(veiculo, configuracaoAfericao);
         } finally {
             connectionProvider.closeResources(conn);
         }
@@ -227,21 +239,14 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
-            final SistemaProtheusNepomucenoDaoImpl sistema = new SistemaProtheusNepomucenoDaoImpl();
             final String codAuxiliarUnidade = getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, codUnidade);
             final Long codEmpresaProlog = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade);
 
             // Busca a lista de pneus em estoque do Protheus.
-            final ApiAutenticacaoHolder apiAutenticacaoHolder =
-                    integracaoDao.getApiAutenticacaoHolder(conn,
-                                                           codEmpresaProlog,
-                                                           getSistemaKey(),
-                                                           MetodoIntegrado.GET_PNEUS_AFERICAO_AVULSA);
-            final List<PneuEstoqueProtheusNepomuceno> pneusEstoqueNepomuceno =
-                    requester.getListagemPneusEmEstoque(apiAutenticacaoHolder, codAuxiliarUnidade);
-
-            final List<String> codPneus = pneusEstoqueNepomuceno.stream()
-                    .map(PneuEstoqueProtheusNepomuceno::getCodigoCliente)
+            final List<PneuListagemInspecaoRemovido> pneusInspecaoRemovido =
+                    getPneuListagemInspecaoRemovidos(conn, codAuxiliarUnidade, codEmpresaProlog);
+            final List<String> codPneus = pneusInspecaoRemovido.stream()
+                    .map(PneuListagemInspecaoRemovido::getCodigoCliente)
                     .collect(Collectors.toList());
 
             // Busca as infos de aferição com base nos pneus da lista codPneus.
@@ -251,18 +256,15 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
                             .getAfericoesRealizadasAvulsas();
 
             final List<PneuAfericaoAvulsa> pneusAfericaoAvulsa = new ArrayList<>();
-            for (final PneuEstoqueProtheusNepomuceno pneuEstoqueNepomuceno : pneusEstoqueNepomuceno) {
+            for (final PneuListagemInspecaoRemovido pneuInspecaoRemovido : pneusInspecaoRemovido) {
                 final AfericaoRealizadaAvulsa pneuInfoAfericaoAvulsa = infosAfericaoAvulsa.stream()
                         .filter(infoPneu ->
-                                        infoPneu.getCodPneuCliente().equals(pneuEstoqueNepomuceno.getCodigoCliente()))
+                                        infoPneu.getCodPneuCliente().equals(pneuInspecaoRemovido.getCodigoCliente()))
                         .findFirst()
                         .orElse(null);
-                pneusAfericaoAvulsa.add(
-                        ProtheusNepomucenoConverter
-                                .createPneuAfericaoAvulsaProlog(
-                                        codUnidade,
-                                        pneuEstoqueNepomuceno,
-                                        pneuInfoAfericaoAvulsa));
+                pneusAfericaoAvulsa.add(createPneuAfericaoAvulsaProlog(codUnidade,
+                                                                       pneuInspecaoRemovido,
+                                                                       pneuInfoAfericaoAvulsa));
             }
             return pneusAfericaoAvulsa;
         } finally {
@@ -280,45 +282,91 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
-            final SistemaProtheusNepomucenoDaoImpl sistema = new SistemaProtheusNepomucenoDaoImpl();
             final String codAuxiliarUnidade = getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, codUnidade);
             final Long codEmpresaProlog = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade);
 
             // Busca a lista de pneus em estoque do Protheus.
-            final ApiAutenticacaoHolder apiAutenticacaoHolder =
-                    integracaoDao.getApiAutenticacaoHolder(conn,
-                                                           codEmpresaProlog,
-                                                           getSistemaKey(),
-                                                           MetodoIntegrado.GET_PNEU_NOVA_AFERICAO_AVULSA);
-            final PneuEstoqueProtheusNepomuceno pneuEstoqueNepomuceno =
-                    requester.getPneuEmEstoqueAfericaoAvulsa(
-                            apiAutenticacaoHolder,
-                            codAuxiliarUnidade,
-                            ProtheusNepomucenoEncoderDecoder.decode(codPneu));
+            final List<PneuListagemInspecaoRemovido> pneusInspecaoRemovido =
+                    getPneuListagemInspecaoRemovidos(conn, codAuxiliarUnidade, codEmpresaProlog);
+            final PneuListagemInspecaoRemovido pneuInspecaoRemovido = pneusInspecaoRemovido.stream()
+                    .filter(pneu -> pneu.getCodPneu()
+                            .equalsIgnoreCase(ProtheusNepomucenoEncoderDecoder.decode(codPneu)))
+                    .findFirst()
+                    .orElseThrow(() -> new ProtheusNepomucenoException(String.format(
+                            "Nenhum pneu de código %s encontrado para realizar a aferição",
+                            ProtheusNepomucenoEncoderDecoder.decode(codPneu))));
 
             // Busca as infos de aferição com base nos pneus da lista codPneus.
             final List<AfericaoRealizadaAvulsa> infosAfericaoAvulsa =
                     integracaoDao
                             .getAfericaoRealizadaAvulsaHolder(conn,
                                                               codEmpresaProlog,
-                                                              Collections.singletonList(pneuEstoqueNepomuceno.getCodigoCliente()))
+                                                              Collections.singletonList(pneuInspecaoRemovido.getCodigoCliente()))
                             .getAfericoesRealizadasAvulsas();
 
             final AfericaoRealizadaAvulsa pneuInfoAfericaoAvulsa = infosAfericaoAvulsa.stream()
                     .filter(infoPneu ->
-                                    infoPneu.getCodPneuCliente().equals(pneuEstoqueNepomuceno.getCodigoCliente()))
+                                    infoPneu.getCodPneuCliente().equals(pneuInspecaoRemovido.getCodigoCliente()))
                     .findFirst()
                     .orElse(null);
 
             final ConfiguracaoNovaAfericaoAvulsa configuracaoAfericao =
                     integracaoDao.getConfigNovaAfericaoAvulsa(conn, codUnidade);
 
-            return ProtheusNepomucenoConverter
-                    .createNovaAfericaoAvulsaProlog(
-                            codUnidade,
-                            pneuEstoqueNepomuceno,
-                            configuracaoAfericao,
-                            pneuInfoAfericaoAvulsa);
+            return createNovaAfericaoAvulsaProlog(codUnidade,
+                                                  pneuInspecaoRemovido,
+                                                  configuracaoAfericao,
+                                                  pneuInfoAfericaoAvulsa);
+        } finally {
+            connectionProvider.closeResources(conn);
+        }
+    }
+
+    @Override
+    @NotNull
+    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoAfericao(
+            @NotNull final Long codUnidade,
+            @NotNull final TipoProcessoColetaAfericao tipoProcessoColetaAfericao,
+            @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable {
+        Connection conn = null;
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            final Long codEmpresaProlog = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade);
+            final String codAuxiliarUnidade =
+                    getIntegradorProLog()
+                            .getCodAuxiliarByCodUnidadeProlog(conn, codUnidade)
+                            .replace(DEFAULT_CODIGOS_SEPARATOR, DEFAULT_CODIGOS_FILIAIS_RESQUEST_SEPARATOR);
+
+            final ApiAutenticacaoHolder holderRequest =
+                    integracaoDao.getApiAutenticacaoHolder(conn,
+                                                           codEmpresaProlog,
+                                                           getSistemaKey(),
+                                                           MetodoIntegrado.GET_CAMPOS_PERSONALIZADOS_AFERICAO);
+            final List<CampoPersonalizadoParaRealizacao> camposPersonalizados =
+                    campoPersonalizadoDao.getCamposParaRealizacaoAfericao(codUnidade, tipoProcessoColetaAfericao);
+            Observable.zip(
+                    requester.getLips(holderRequest, codAuxiliarUnidade).subscribeOn(Schedulers.newThread()),
+                    requester.getFiliais(holderRequest, codAuxiliarUnidade).subscribeOn(Schedulers.newThread()),
+                    requester.getCausasSucata(holderRequest, codAuxiliarUnidade).subscribeOn(Schedulers.newThread()),
+                    (lipsPneu, filiais, causasSucataPneu) -> {
+                        final Map<DeParaCamposPersonalizadosEnum, Long> deParaCamposPersonalizados =
+                                ProtheusNepomucenoUtils.getDeParaCamposPersonalizados();
+                        for (int i = 0; i < camposPersonalizados.size(); i++) {
+                            final CampoPersonalizadoParaRealizacao campo = camposPersonalizados.get(i);
+                            if (campo.getCodigo().equals(deParaCamposPersonalizados.get(CODIGO_LIP_PNEU))) {
+                                camposPersonalizados.set(i, createCampoPersonalizado(campo, lipsPneu));
+                            }
+                            if (campo.getCodigo().equals(deParaCamposPersonalizados.get(CODIGO_ORIGEM_FILIAL))) {
+                                camposPersonalizados.set(i, createCampoPersonalizado(campo, filiais));
+                            }
+                            if (campo.getCodigo().equals(deParaCamposPersonalizados.get(CODIGO_CAUSA_SUCATA_PNEU))) {
+                                camposPersonalizados.set(i, createCampoPersonalizado(campo, causasSucataPneu));
+                            }
+                        }
+                        return camposPersonalizados;
+                    }).blockingSubscribe();
+            return camposPersonalizados;
         } finally {
             connectionProvider.closeResources(conn);
         }
@@ -400,8 +448,8 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
                                                                codEmpresaProlog,
                                                                getSistemaKey(),
                                                                MetodoIntegrado.INSERT_AFERICAO_PLACA);
-                final AfericaoPlacaProtheusNepomuceno afericaoPlacaProtheusNepomuceno = ProtheusNepomucenoConverter
-                        .convert(codAuxiliarUnidade, (AfericaoPlaca) afericao, zoneIdForCodUnidade);
+                final AfericaoPlacaProtheusNepomuceno afericaoPlacaProtheusNepomuceno =
+                        convert(codAuxiliarUnidade, (AfericaoPlaca) afericao, zoneIdForCodUnidade);
                 requester.insertAfericaoPlaca(apiAutenticacaoHolder, afericaoPlacaProtheusNepomuceno);
             } else {
                 final ApiAutenticacaoHolder apiAutenticacaoHolder =
@@ -409,9 +457,9 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
                                                                codEmpresaProlog,
                                                                getSistemaKey(),
                                                                MetodoIntegrado.INSERT_AFERICAO_AVULSA);
-                final AfericaoAvulsaProtheusNepomuceno afericaoAvulsaProtheusNepomuceno = ProtheusNepomucenoConverter
-                        .convert(codAuxiliarUnidade, (AfericaoAvulsa) afericao);
-                requester.insertAfericaoAvulsa(apiAutenticacaoHolder, afericaoAvulsaProtheusNepomuceno);
+                final AfericaoAvulsaProtheusNepomuceno afericaoAvulsaProtheusNepomuceno =
+                        convert(codAuxiliarUnidade, (AfericaoAvulsa) afericao);
+                requester.insertInspecaoRemovido(apiAutenticacaoHolder, afericaoAvulsaProtheusNepomuceno);
             }
             conn.commit();
             return codAfericaoInserida;
@@ -462,6 +510,19 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
                 .orElseThrow(() -> {
                     throw new ProtheusNepomucenoException("Placa não encontrada para Aferir");
                 });
+    }
+
+    @NotNull
+    private List<PneuListagemInspecaoRemovido> getPneuListagemInspecaoRemovidos(
+            @NotNull final Connection conn,
+            @NotNull final String codAuxiliarUnidade,
+            @NotNull final Long codEmpresaProlog) throws Throwable {
+        final ApiAutenticacaoHolder apiAutenticacaoHolder =
+                integracaoDao.getApiAutenticacaoHolder(conn,
+                                                       codEmpresaProlog,
+                                                       getSistemaKey(),
+                                                       MetodoIntegrado.GET_PNEUS_AFERICAO_AVULSA);
+        return requester.getListagemPneusInspecaoRemovido(apiAutenticacaoHolder, codAuxiliarUnidade);
     }
 
     @NotNull

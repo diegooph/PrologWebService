@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaR
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoResposta;
 import br.com.zalf.prolog.webservice.customfields._model.ColunaTabelaResposta;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoColetaAfericao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,18 +41,32 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CAMPO_GET_DISPONIVEIS_MOVIMENTACAO(" +
-                    "F_COD_UNIDADE => ?);");
+                                                 "F_COD_UNIDADE => ?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final List<CampoPersonalizadoParaRealizacao> campos = new ArrayList<>();
-                do {
-                    campos.add(CampoPersonalizadoConverter.createCampoPersonalizadoParaRealizacao(rSet));
-                } while (rSet.next());
-                return campos;
-            } else {
-                return Collections.emptyList();
-            }
+            return internalGetCamposPersonalizados(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoAfericao(
+            @NotNull final Long codUnidade,
+            @NotNull final TipoProcessoColetaAfericao tipoProcessoColetaAfericao) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CAMPO_GET_DISPONIVEIS_AFERICAO(" +
+                                                 "F_COD_UNIDADE => ?, " +
+                                                 "F_TIPO_PROCESSO_COLETA_AFERICAO => ?);");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, tipoProcessoColetaAfericao.asString());
+            rSet = stmt.executeQuery();
+            return internalGetCamposPersonalizados(rSet);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -63,7 +78,6 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
             @NotNull final CampoPersonalizadoFuncaoProlog funcaoProlog,
             @NotNull final List<CampoPersonalizadoResposta> respostas,
             @Nullable final List<ColunaTabelaResposta> colunasEspecificas) throws Throwable {
-
         final List<CampoPersonalizadoResposta> respostasFiltradas = respostas
                 .stream()
                 .filter(CampoPersonalizadoResposta::temResposta)
@@ -89,8 +103,7 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
                     .stream()
                     .map(coluna -> ", " + coluna.getNomeColuna())
                     .collect(Collectors.joining());
-            final String questionMarks = colunasEspecificas.
-                    stream()
+            final String questionMarks = colunasEspecificas.stream()
                     .map(coluna -> ", ?")
                     .collect(Collectors.joining());
             sql = String.format(sql, funcaoProlog.getTableNameRespostas(), nomesColunas, questionMarks);
@@ -126,8 +139,8 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
             if (batchResult.length != respostasFiltradas.size()) {
                 throw new IllegalStateException(
                         String.format("Insert affected incorrect number of rows. Expected: %d - Actual: %d",
-                                respostasFiltradas.size(),
-                                batchResult.length));
+                                      respostasFiltradas.size(),
+                                      batchResult.length));
             }
 
             final boolean everyBatchAffectsOneRow = IntStream
@@ -138,6 +151,20 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
             }
         } finally {
             close(stmt);
+        }
+    }
+
+    @NotNull
+    private List<CampoPersonalizadoParaRealizacao> internalGetCamposPersonalizados(
+            @NotNull final ResultSet rSet) throws Throwable {
+        if (rSet.next()) {
+            final List<CampoPersonalizadoParaRealizacao> campos = new ArrayList<>();
+            do {
+                campos.add(CampoPersonalizadoConverter.createCampoPersonalizadoParaRealizacao(rSet));
+            } while (rSet.next());
+            return campos;
+        } else {
+            return Collections.emptyList();
         }
     }
 }

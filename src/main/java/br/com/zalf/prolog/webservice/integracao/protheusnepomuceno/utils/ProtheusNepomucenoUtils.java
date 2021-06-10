@@ -2,12 +2,10 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils;
 
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.DeParaCamposPersonalizadosEnum;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConstants.*;
@@ -88,5 +86,19 @@ public final class ProtheusNepomucenoUtils {
 
     public static boolean containsMoreThanOneCodAuxiliar(@NotNull final String codEmpresaFilial) {
         return codEmpresaFilial.split(DEFAULT_COD_AUXILIAR_UNIDADE_SEPARATOR).length > 1;
+    }
+
+    @NotNull
+    public static Map<DeParaCamposPersonalizadosEnum, Long> getDeParaCamposPersonalizados() {
+        final Map<DeParaCamposPersonalizadosEnum, Long> deParaCamposPersonalizados = new HashMap<>();
+        ConfigIntegracaoNepomucenoLoader.getConfigIntegracaoNepomuceno()
+                .getDeParaCamposPersonalizados()
+                .forEach(dePara -> {
+                    final String[] splittedDePara = dePara.split(DEFAULT_CODIGOS_SEPARATOR);
+                    deParaCamposPersonalizados.put(
+                            DeParaCamposPersonalizadosEnum.fromString(splittedDePara[1]),
+                            Long.parseLong(splittedDePara[0]));
+                });
+        return deParaCamposPersonalizados;
     }
 }
