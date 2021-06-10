@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.customfields._model;
 
+import br.com.zalf.prolog.webservice.commons.util.ListUtils;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,5 +25,10 @@ public final class CampoPersonalizadoResposta {
 
     public boolean temResposta() {
         return resposta != null || respostaListaSelecao != null;
+    }
+
+    @Nullable
+    public String getRespostaAsString() {
+        return ListUtils.hasElements(respostaListaSelecao) ? respostaListaSelecao.get(0) : resposta;
     }
 }

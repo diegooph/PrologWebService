@@ -21,12 +21,12 @@ import br.com.zalf.prolog.webservice.integracao.integrador._model.AfericaoRealiz
 import br.com.zalf.prolog.webservice.integracao.integrador._model.TipoVeiculoConfigAfericao;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoAvulsaProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoPlacaProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoAfericaoProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoListagemProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.DeParaCamposPersonalizadosEnum;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.InspecaoRemovidoRealizada;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.PneuListagemInspecaoRemovido;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoEncoderDecoder;
@@ -305,8 +305,7 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
                             .getAfericoesRealizadasAvulsas();
 
             final AfericaoRealizadaAvulsa pneuInfoAfericaoAvulsa = infosAfericaoAvulsa.stream()
-                    .filter(infoPneu ->
-                                    infoPneu.getCodPneuCliente().equals(pneuInspecaoRemovido.getCodigoCliente()))
+                    .filter(infoPneu -> infoPneu.getCodPneuCliente().equals(pneuInspecaoRemovido.getCodigoCliente()))
                     .findFirst()
                     .orElse(null);
 
@@ -457,9 +456,9 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
                                                                codEmpresaProlog,
                                                                getSistemaKey(),
                                                                MetodoIntegrado.INSERT_AFERICAO_AVULSA);
-                final AfericaoAvulsaProtheusNepomuceno afericaoAvulsaProtheusNepomuceno =
-                        convert(codAuxiliarUnidade, (AfericaoAvulsa) afericao);
-                requester.insertInspecaoRemovido(apiAutenticacaoHolder, afericaoAvulsaProtheusNepomuceno);
+                final InspecaoRemovidoRealizada inspecaoRemovidoRealizada =
+                        convert((AfericaoAvulsa) afericao, zoneIdForCodUnidade);
+                requester.insertInspecaoRemovido(apiAutenticacaoHolder, inspecaoRemovidoRealizada);
             }
             conn.commit();
             return codAfericaoInserida;

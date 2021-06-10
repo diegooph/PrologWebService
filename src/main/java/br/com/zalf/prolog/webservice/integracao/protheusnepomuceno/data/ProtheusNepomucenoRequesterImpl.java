@@ -2,12 +2,12 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data;
 
 import br.com.zalf.prolog.webservice.integracao.network.RestClient;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoPlacaProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.PneuEstoqueProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoAfericaoProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoListagemProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.CausaSucataPneuProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.FilialProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.LipPneuProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.PneuListagemInspecaoRemovido;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.*;
 import io.reactivex.rxjava3.core.Observable;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
@@ -98,12 +98,12 @@ public final class ProtheusNepomucenoRequesterImpl implements ProtheusNepomuceno
     @Override
     public ResponseAfericaoProtheusNepomuceno insertInspecaoRemovido(
             @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
-            @NotNull final AfericaoAvulsaProtheusNepomuceno afericaoAvulsa) throws Throwable {
+            @NotNull final InspecaoRemovidoRealizada inspecaoRemovido) throws Throwable {
         final ProtheusNepomucenoRest service = RestClient.getService(ProtheusNepomucenoRest.class);
         final Call<ResponseAfericaoProtheusNepomuceno> call =
                 service.insertInspecaoRemovido(apiAutenticacaoHolder.getPrologTokenIntegracao(),
                                                apiAutenticacaoHolder.getUrl(),
-                                               afericaoAvulsa);
+                                               inspecaoRemovido);
         return handleResponse(call.execute());
     }
 

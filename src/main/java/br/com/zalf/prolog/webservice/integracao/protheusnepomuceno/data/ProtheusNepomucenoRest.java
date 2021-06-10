@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data;
 
 import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.CausaSucataPneuProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.FilialProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.LipPneuProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.PneuListagemInspecaoRemovido;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoPlacaProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.PneuEstoqueProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoAfericaoProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoListagemProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.*;
 import io.reactivex.rxjava3.core.Observable;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
@@ -56,7 +56,7 @@ public interface ProtheusNepomucenoRest {
     Call<ResponseAfericaoProtheusNepomuceno> insertInspecaoRemovido(
             @Header(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
             @Url @NotNull final String url,
-            @Body @NotNull final AfericaoAvulsaProtheusNepomuceno afericaoAvulsa);
+            @Body @NotNull final InspecaoRemovidoRealizada inspecaoRemovido);
 
     @GET()
     Observable<List<LipPneuProtheusNepomuceno>> getLips(

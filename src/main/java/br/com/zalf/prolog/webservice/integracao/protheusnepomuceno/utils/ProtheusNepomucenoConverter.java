@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils;
 
+import br.com.zalf.prolog.webservice.commons.util.ListUtils;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
@@ -13,7 +15,10 @@ import br.com.zalf.prolog.webservice.integracao.integrador._model.AfericaoRealiz
 import br.com.zalf.prolog.webservice.integracao.integrador._model.TipoVeiculoConfigAfericao;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.CamposPersonalizadosResposta;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.DeParaCamposPersonalizadosEnum;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.InspecaoRemovidoRealizada;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.PneuListagemInspecaoRemovido;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +27,9 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
 
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ConfigIntegracaoNepomucenoLoader.getConfigIntegracaoNepomuceno;
 import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConstants.*;
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoUtils.getDeParaCamposPersonalizados;
 
 /**
  * Created on 3/10/20
@@ -59,21 +66,54 @@ public final class ProtheusNepomucenoConverter {
     }
 
     @NotNull
-    public static AfericaoAvulsaProtheusNepomuceno convert(@NotNull final String codAuxiliarUnidade,
-                                                           @NotNull final AfericaoAvulsa afericaoAvulsa) {
-        // Separa o código de empresa e unidade do campo auxiliar.
-        final String[] empresaUnidade = codAuxiliarUnidade.split(DEFAULT_CODIGOS_SEPARATOR);
-        return new AfericaoAvulsaProtheusNepomuceno(
-                empresaUnidade[COD_EMPRESA_INDEX],
-                empresaUnidade[COD_UNIDADE_INDEX],
-                Colaborador.formatCpf(afericaoAvulsa.getColaborador().getCpf()),
-                afericaoAvulsa.getTempoRealizacaoAfericaoInMillis(),
-                afericaoAvulsa.getDataHora(),
-                afericaoAvulsa.getTipoMedicaoColetadaAfericao(),
-                Collections.singletonList(
-                        createMedicaoAfericaoProtheusNepomuceno(
-                                afericaoAvulsa.getPneuAferido(),
-                                afericaoAvulsa.getTipoMedicaoColetadaAfericao())));
+    public static InspecaoRemovidoRealizada convert(@NotNull final AfericaoAvulsa afericaoAvulsa,
+                                                    @NotNull final ZoneId zoneId) {
+        if (ListUtils.hasElements(afericaoAvulsa.getRespostasCamposPersonalizados())) {
+            final Map<DeParaCamposPersonalizadosEnum, Long> deParaCamposPersonalizados =
+                    getDeParaCamposPersonalizados();
+            final Map<DeParaCamposPersonalizadosEnum, String> respostasCamposPersonalizados = new HashMap<>();
+            deParaCamposPersonalizados.keySet()
+                    .forEach(key -> afericaoAvulsa.getRespostasCamposPersonalizados()
+                            .stream()
+                            .filter(campo -> campo.getCodCampo().equals(deParaCamposPersonalizados.get(key))
+                                    && campo.temResposta())
+                            .findFirst()
+                            .ifPresent(campoPersonalizadoResposta ->
+                                               respostasCamposPersonalizados.put(key,
+                                                                                 campoPersonalizadoResposta.getRespostaAsString())));
+            final String codigoDestinoPneu = getCodigoFromResposta(
+                    respostasCamposPersonalizados.get(DeParaCamposPersonalizadosEnum.CODIGO_DESTINO_PNEU));
+            final String codigoCausaSucataPneu = getCodigoFromRespostaIfExists(
+                    respostasCamposPersonalizados.get(DeParaCamposPersonalizadosEnum.CODIGO_CAUSA_SUCATA_PNEU));
+
+            if (codigoDestinoPneu.equals(getConfigIntegracaoNepomuceno().getCodSucataPneu())
+                    && StringUtils.isNullOrEmpty(codigoCausaSucataPneu)) {
+                throw new ProtheusNepomucenoException(
+                        "É obrigatório fornecer a causa da sucata quando o DESTINO do pneu for D3");
+            }
+
+            return new InspecaoRemovidoRealizada(
+                    afericaoAvulsa.getPneuAferido().getCodigoCliente(),
+                    afericaoAvulsa.getPneuAferido().getCodigoCliente(),
+                    afericaoAvulsa.getPneuAferido().getValorMenorSulcoAtual(),
+                    afericaoAvulsa.getPneuAferido().getValorMaiorSulcoAtual(),
+                    afericaoAvulsa.getPneuAferido().getPressaoAtual(),
+                    getCodigoFromResposta(
+                            respostasCamposPersonalizados.get(DeParaCamposPersonalizadosEnum.CODIGO_LIP_PNEU)),
+                    getCodigoFromResposta(
+                            respostasCamposPersonalizados.get(DeParaCamposPersonalizadosEnum.CODIGO_ORIGEM_FILIAL)),
+                    codigoDestinoPneu,
+                    codigoCausaSucataPneu,
+                    afericaoAvulsa.getDataHora(),
+                    afericaoAvulsa.getDataHora()
+                            .atOffset(ZoneOffset.UTC)
+                            .atZoneSameInstant(zoneId)
+                            .toLocalDateTime(),
+                    afericaoAvulsa.getColaborador().getCpfAsString(),
+                    afericaoAvulsa.getColaborador().getNome(),
+                    respostasCamposPersonalizados.get(DeParaCamposPersonalizadosEnum.OBSERVACAO));
+        }
+        throw new ProtheusNepomucenoException("Os campos personalizados devem ser preenchidos");
     }
 
     @NotNull
@@ -418,5 +458,22 @@ public final class ProtheusNepomucenoConverter {
                 codEstruturaVeiculo,
                 new HashSet<>(),
                 "");
+    }
+
+    @NotNull
+    private static String getCodigoFromResposta(@NotNull final String resposta) {
+        final String[] respostaSplitted = resposta.split(DEFAULT_COD_RESPOSTA_SEPARATOR);
+        if (respostaSplitted.length > 0) {
+            return respostaSplitted[0].trim();
+        }
+        throw new ProtheusNepomucenoException("A resposta não contém código!");
+    }
+
+    @Nullable
+    private static String getCodigoFromRespostaIfExists(@Nullable final String resposta) {
+        if (resposta == null) {
+            return null;
+        }
+        return getCodigoFromResposta(resposta);
     }
 }

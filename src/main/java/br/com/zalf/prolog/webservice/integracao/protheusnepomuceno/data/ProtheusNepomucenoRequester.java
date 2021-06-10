@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data;
 
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.CausaSucataPneuProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.FilialProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.LipPneuProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.PneuListagemInspecaoRemovido;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoPlacaProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.PneuEstoqueProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoAfericaoProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoListagemProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.*;
 import br.com.zalf.prolog.webservice.integracao.sistema.Requester;
 import io.reactivex.rxjava3.core.Observable;
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +48,7 @@ public interface ProtheusNepomucenoRequester extends Requester {
     @NotNull
     ResponseAfericaoProtheusNepomuceno insertInspecaoRemovido(
             @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
-            @NotNull final AfericaoAvulsaProtheusNepomuceno afericaoAvulsa) throws Throwable;
+            @NotNull final InspecaoRemovidoRealizada inspecaoRemovido) throws Throwable;
 
     @NotNull
     Observable<List<LipPneuProtheusNepomuceno>> getLips(@NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
