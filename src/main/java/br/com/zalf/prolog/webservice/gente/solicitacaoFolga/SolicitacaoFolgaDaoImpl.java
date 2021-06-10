@@ -34,7 +34,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
             stmt = conn.prepareStatement("INSERT INTO SOLICITACAO_FOLGA ( "
                     + "COD_COLABORADOR, DATA_SOLICITACAO, DATA_FOLGA, "
                     + "MOTIVO_FOLGA, STATUS, PERIODO) VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO");
-            final ZoneId zoneId = TimeZoneManager.getZoneIdForCpf(s.getColaborador().getCpf(), conn);
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodColaborador(s.getColaborador().getCodigo(), conn);
             stmt.setLong(1, s.getColaborador().getCodigo());
             stmt.setObject(2, LocalDate.now(zoneId));
             stmt.setObject(3, s.getDataFolga().toInstant().atZone(zoneId).toLocalDate());
@@ -90,7 +90,8 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
             if (solicitacaoFolga.getDataFeedback() != null) {
                 stmt.setObject(5, DateUtils.toLocalDate(solicitacaoFolga.getDataFeedback()));
             } else {
-                final ZoneId zoneId = TimeZoneManager.getZoneIdForCpf(solicitacaoFolga.getColaborador().getCpf(), conn);
+                final ZoneId zoneId =
+                        TimeZoneManager.getZoneIdForCodColaborador(solicitacaoFolga.getColaborador().getCodigo(), conn);
                 stmt.setObject(5, LocalDate.now(zoneId));
             }
             stmt.setString(6, solicitacaoFolga.getMotivoFolga());
