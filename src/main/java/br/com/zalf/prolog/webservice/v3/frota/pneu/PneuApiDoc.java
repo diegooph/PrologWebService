@@ -2,11 +2,15 @@ package br.com.zalf.prolog.webservice.v3.frota.pneu;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuCadastroDto;
+import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuListagemDto;
+import br.com.zalf.prolog.webservice.v3.validation.CodUnidades;
 import io.swagger.annotations.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Created on 2021-03-12
@@ -31,4 +35,9 @@ public interface PneuApiDoc {
                                      defaultValue = "true") final boolean ignoreDotValidation,
                            @ApiParam(value = "Dados do pneu para inserir.",
                                      required = true) @Valid final PneuCadastroDto pneuCadastro);
+
+    List<PneuListagemDto> getPneusByStatus(@CodUnidades final List<Long> codUnidades,
+                                           final StatusPneu statusPneu,
+                                           final int limit,
+                                           final int offset);
 }
