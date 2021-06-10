@@ -32,10 +32,10 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
             }
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO SOLICITACAO_FOLGA ( "
-                    + "CPF_COLABORADOR, DATA_SOLICITACAO, DATA_FOLGA, "
+                    + "COD_COLABORADOR, DATA_SOLICITACAO, DATA_FOLGA, "
                     + "MOTIVO_FOLGA, STATUS, PERIODO) VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCpf(s.getColaborador().getCpf(), conn);
-            stmt.setLong(1, s.getColaborador().getCpf());
+            stmt.setLong(1, s.getColaborador().getCodigo());
             stmt.setObject(2, LocalDate.now(zoneId));
             stmt.setObject(3, s.getDataFolga().toInstant().atZone(zoneId).toLocalDate());
             stmt.setString(4, s.getMotivoFolga());
@@ -59,8 +59,8 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("UPDATE SOLICITACAO_FOLGA SET "
-                    + " CPF_COLABORADOR=? , "
-                    + " CPF_FEEDBACK=? , "
+                    + " COD_COLABORADOR=? , "
+                    + " COD_COLABORADOR_FEEDBACK=? , "
                     + " DATA_SOLICITACAO=? , "
                     + " DATA_FOLGA=? , "
                     + " DATA_FEEDBACK=? , "
@@ -70,10 +70,10 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
                     + " PERIODO=? "
                     + "WHERE CODIGO=?");
 
-            stmt.setLong(1, solicitacaoFolga.getColaborador().getCpf());
+            stmt.setLong(1, solicitacaoFolga.getColaborador().getCodigo());
 
             if (solicitacaoFolga.getColaboradorFeedback() != null) {
-                stmt.setLong(2, solicitacaoFolga.getColaboradorFeedback().getCpf());
+                stmt.setLong(2, solicitacaoFolga.getColaboradorFeedback().getCodigo());
             } else {
                 stmt.setNull(2, java.sql.Types.BIGINT);
             }
