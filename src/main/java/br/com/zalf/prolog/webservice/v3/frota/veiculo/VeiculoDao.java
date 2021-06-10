@@ -20,7 +20,7 @@ public interface VeiculoDao extends JpaRepository<VeiculoEntity, Long> {
                    "f_cod_processo => to_bigint(:veiculoCodProcesso)," +
                    "f_tipo_processo => to_text(:veiculoTipoProcesso)," +
                    "f_deve_propagar_km => :devePropagarKmParaReboques," +
-                   "f_data_hora => date(:dataHoraProcesso)) as km_processo", nativeQuery = true)
+                   "f_data_hora => date(:dataHoraProcesso))", nativeQuery = true)
     Long updateKmByCodVeiculo(@NotNull final Long codUnidade,
                               @NotNull final Long codVeiculo,
                               @NotNull final Long veiculoCodProcesso,
