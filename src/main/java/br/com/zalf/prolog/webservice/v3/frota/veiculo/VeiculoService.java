@@ -88,12 +88,19 @@ public class VeiculoService {
                                 @NotNull final OffsetDateTime dataHoraProcesso,
                                 final long kmVeiculo,
                                 final boolean devePropagarKmParaReboques) {
-        return veiculoDao.updateKmByCodVeiculo(codUnidade,
-                                               codVeiculo,
-                                               veiculoCodProcesso,
-                                               VeiculoTipoProcesso.valueOf(veiculoTipoProcesso.toString()),
-                                               dataHoraProcesso,
-                                               kmVeiculo,
-                                               devePropagarKmParaReboques);
+        try {
+            return veiculoDao.updateKmByCodVeiculo(codUnidade,
+                                                   codVeiculo,
+                                                   veiculoCodProcesso,
+                                                   VeiculoTipoProcesso.valueOf(veiculoTipoProcesso.toString()),
+                                                   dataHoraProcesso,
+                                                   kmVeiculo,
+                                                   devePropagarKmParaReboques);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atualizar o km do veículo.", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar o km do veículo, tente novamente.");
+        }
     }
 }
