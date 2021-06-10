@@ -13,6 +13,9 @@ set cod_colaborador          = (select codigo from colaborador_data cd where cd.
     cod_colaborador_feedback = (select codigo from colaborador_data cd where cd.cpf = sf.cpf_feedback);
 
 alter table solicitacao_folga
+    alter column cod_colaborador set not null;
+
+alter table solicitacao_folga
     drop column if exists cpf_colaborador,
     drop column if exists cpf_feedback;
 
