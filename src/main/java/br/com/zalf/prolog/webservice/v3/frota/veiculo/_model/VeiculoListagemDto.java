@@ -63,25 +63,25 @@ public class VeiculoListagemDto {
     @ApiModelProperty(value = "Nome da unidade a qual o veículo se encontra.", required = true, example = "Unidade A1")
     @NotNull
     String nomeUnidade;
-    @ApiModelProperty(value = "Nome da região a qual a unidade se encontra.", required = true, example = "Região A1")
-    @NotNull
-    String nomeRegional;
     @ApiModelProperty(value = "Código da região a qual a unidade se encontra.", required = true, example = "1")
     @NotNull
     Long codRegionalAlocado;
+    @ApiModelProperty(value = "Nome da região a qual a unidade se encontra.", required = true, example = "Região A1")
+    @NotNull
+    String nomeRegionalAlocado;
     @ApiModelProperty(value = "Km atual do veículo.", required = true, example = "1")
     @NotNull
     Long kmAtual;
     @ApiModelProperty(value = "Status do veículo. No prolog o veículo pode estar ATIVO ou INATIVO," +
             "consideramos TRUE para ativo e FALSE para inativo.", required = true, example = "true")
     @NotNull
-    Boolean statusAtivo;
+    boolean statusAtivo;
+    @ApiModelProperty(value = "Quantidade de pneus aplicados.")
+    int totalPneusAplicados;
     @ApiModelProperty(value = "Indica se o veículo possui acoplamento. Caso possua: TRUE, se não possuir: FALSE",
                       required = true,
                       example = "true")
     boolean acoplado;
-    @ApiModelProperty(value = "Caso hajam veículos acoplados, lista quais são.")
-    int totalPneusAplicados;
     @ApiModelProperty(value = "Caso hajam veículos acoplados, lista quais são.")
     @Nullable
     VeiculosAcopladosListagemDto veiculosAcoplados;
