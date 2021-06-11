@@ -189,22 +189,22 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
-                    "SF.CODIGO, " +
-                    "SF.CPF_COLABORADOR, " +
-                    "SF.CPF_FEEDBACK, " +
-                    "SF.DATA_FEEDBACK, " +
-                    "SF.DATA_FOLGA, " +
-                    "SF.DATA_SOLICITACAO, " +
-                    "SF.MOTIVO_FOLGA, " +
-                    "SF.JUSTIFICATIVA_FEEDBACK, " +
-                    "SF.PERIODO, " +
-                    "SF.STATUS, " +
-                    "C.NOME AS NOME_SOLICITANTE, " +
-                    "C_FEEDBACK.NOME AS NOME_FEEDBACK " +
-                    "FROM SOLICITACAO_FOLGA SF JOIN COLABORADOR C ON " +
-                    "SF.CPF_COLABORADOR = C.CPF LEFT JOIN COLABORADOR C_FEEDBACK ON " +
-                    "SF.CPF_FEEDBACK = C_FEEDBACK.CPF WHERE " +
-                    "SF.CPF_COLABORADOR = ?;");
+                                                 "SF.CODIGO, " +
+                                                 "C.CPF, " +
+                                                 "C_FEEDBACK.CPF, " +
+                                                 "SF.DATA_FEEDBACK, " +
+                                                 "SF.DATA_FOLGA, " +
+                                                 "SF.DATA_SOLICITACAO, " +
+                                                 "SF.MOTIVO_FOLGA, " +
+                                                 "SF.JUSTIFICATIVA_FEEDBACK, " +
+                                                 "SF.PERIODO, " +
+                                                 "SF.STATUS, " +
+                                                 "C.NOME AS NOME_SOLICITANTE, " +
+                                                 "C_FEEDBACK.NOME AS NOME_FEEDBACK " +
+                                                 "FROM SOLICITACAO_FOLGA SF JOIN COLABORADOR C ON " +
+                                                 "SF.COD_COLABORADOR = C.CODIGO LEFT JOIN COLABORADOR C_FEEDBACK ON " +
+                                                 "SF.COD_COLABORADOR_FEEDBACK = C_FEEDBACK.CODIGO WHERE " +
+                                                 "SF.CPF_COLABORADOR = ?;");
             stmt.setLong(1, codColaborador);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
