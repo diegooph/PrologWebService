@@ -3,9 +3,12 @@ package br.com.zalf.prolog.webservice.gente.solicitacaoFolga;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Date;
@@ -17,6 +20,9 @@ import java.util.List;
 public class SolicitacaoFolgaResource {
 
     private SolicitacaoFolgaService service = new SolicitacaoFolgaService();
+
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
     @POST
     @Secured(permissions = Pilares.Gente.SolicitacaoFolga.REALIZAR)
@@ -56,6 +62,7 @@ public class SolicitacaoFolgaResource {
             @PathParam("codUnidade") Long codUnidade,
             @PathParam("codEquipe") String codEquipe,
             @PathParam("cpf") String cpfColaborador) {
+        final Long codColaborador = colaboradorAutenticadoProvider.get().getCodigo();
         return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)),
                 codUnidade, codEquipe, status, cpfColaborador);
     }
