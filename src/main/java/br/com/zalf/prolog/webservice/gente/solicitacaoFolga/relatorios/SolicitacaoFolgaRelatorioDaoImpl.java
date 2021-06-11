@@ -61,7 +61,7 @@ public class SolicitacaoFolgaRelatorioDaoImpl extends DatabaseConnection impleme
                 "  sum(CASE WHEN sf.periodo LIKE 'DIA_TODO' THEN 1 ELSE 0 end) as \"CONCEDIDAS DIA INTEIRO\"\n" +
                 "FROM aux_data ad\n" +
                 "  left JOIN solicitacao_folga sf on ad.data = sf.data_solicitacao AND SF.status = 'AUTORIZADA'\n" +
-                "  left JOIN  colaborador c on c.cpf = sf.cpf_colaborador and c.cod_unidade = ?\n" +
+                "  left JOIN  colaborador c on c.codigo = sf.cod_colaborador and c.cod_unidade = ?\n" +
                 "  WHERE AD.DATA >= (? AT TIME ZONE ?) and AD.DATA <= (? AT TIME ZONE ?) \n" +
                 "  GROUP BY 1;");
         final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
