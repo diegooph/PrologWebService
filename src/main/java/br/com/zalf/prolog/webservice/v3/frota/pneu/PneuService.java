@@ -112,5 +112,20 @@ public class PneuService {
     private OrigemAcaoEnum getOrigemCadastro(@Nullable final String tokenIntegracao) {
         return tokenIntegracao != null ? OrigemAcaoEnum.API : OrigemAcaoEnum.PROLOG_WEB;
     }
+
+    @NotNull
+    @Transactional
+    public SuccessResponse updateStatusPneu(@NotNull final Long codPneu,
+                                  @NotNull final StatusPneu statusPneu) {
+        try {
+            pneuDao.updateStatus(codPneu, statusPneu.valueOf(statusPneu.toString()));
+            return new SuccessResponse(codPneu, "Alterado o status do pneu com sucesso.");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atualizar o status do pneu.", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar o status do pneu, tente novamente.");
+        }
+    }
 }
 
