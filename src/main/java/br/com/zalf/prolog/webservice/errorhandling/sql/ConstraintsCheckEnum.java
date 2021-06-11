@@ -50,5 +50,5 @@ public enum ConstraintsCheckEnum {
     }
 
     @NotNull
-    abstract String getDetailMessage(@Nullable ValidEntityTableName tableName);
+    abstract String getDetailMessage(@Nullable final ValidEntityTableName tableName);
 }
