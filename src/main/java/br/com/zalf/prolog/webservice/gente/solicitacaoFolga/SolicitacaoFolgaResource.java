@@ -51,10 +51,15 @@ public class SolicitacaoFolgaResource {
         return service.getByColaborador(cpf);
     }
 
+    /**
+     * @deprecated at 11/06/2021. Use
+     * {@link SolicitacaoFolgaResource#getAll(String, String, String, Long, String, Long)} instead.
+     */
     @GET
     @Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR,
             Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
     @Path("/{codUnidade}/{codEquipe}/{cpf}")
+    @Deprecated
     public List<SolicitacaoFolga> getAll(
             @QueryParam("dataIncial") long dataInicial,
             @QueryParam("dataFinal") long dataFinal,
