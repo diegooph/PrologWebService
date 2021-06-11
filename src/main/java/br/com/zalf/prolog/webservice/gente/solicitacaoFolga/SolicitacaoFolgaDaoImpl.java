@@ -204,7 +204,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
                                                  "FROM SOLICITACAO_FOLGA SF JOIN COLABORADOR C ON " +
                                                  "SF.COD_COLABORADOR = C.CODIGO LEFT JOIN COLABORADOR C_FEEDBACK ON " +
                                                  "SF.COD_COLABORADOR_FEEDBACK = C_FEEDBACK.CODIGO WHERE " +
-                                                 "SF.CPF_COLABORADOR = ?;");
+                                                 "SF.COD_COLABORADOR = ?;");
             stmt.setLong(1, codColaborador);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
