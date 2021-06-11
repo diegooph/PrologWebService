@@ -35,7 +35,7 @@ public class VeiculoListagemDto {
     Long codMarca;
     @ApiModelProperty(value = "Nome da marca", required = true, example = "Marca A1")
     @NotNull
-    String marca;
+    String nomeMarca;
     @ApiModelProperty(value = "Código do modelo do veículo", required = true, example = "1")
     @NotNull
     Long codModelo;
@@ -47,23 +47,20 @@ public class VeiculoListagemDto {
     Long codDiagrama;
     @ApiModelProperty(value = "Quantidade de eixos dianteiros", required = true, example = "1")
     @NotNull
-    Long dianteiro;
+    Long qtdEixosDianteiros;
     @ApiModelProperty(value = "Quantidade de eixos traseiros", required = true, example = "1")
     @NotNull
-    Long traseiro;
-    @ApiModelProperty(value = "Nome do diagrama do veículo", required = true, example = "Diagrama A1")
-    @NotNull
-    String nomeDiagrama;
+    Long qtdEixosTraseiro;
     @ApiModelProperty(value = "Código do tipo de veículo.", required = true, example = "1")
     @NotNull
     Long codTipo;
     @ApiModelProperty(value = "Nome do tipo de veículo.", required = true, example = "Tipo A1")
     @NotNull
-    String tipo;
+    String nomeTipo;
     @ApiModelProperty(value = "Código da unidade a qual o veículo se encontra.", required = true, example = "1")
     @NotNull
     Long codUnidade;
-    @ApiModelProperty(value = "Nome da unidadea qual o veículo se encontra.", required = true, example = "Unidade A1")
+    @ApiModelProperty(value = "Nome da unidade a qual o veículo se encontra.", required = true, example = "Unidade A1")
     @NotNull
     String nomeUnidade;
     @ApiModelProperty(value = "Nome da região a qual a unidade se encontra.", required = true, example = "Região A1")
