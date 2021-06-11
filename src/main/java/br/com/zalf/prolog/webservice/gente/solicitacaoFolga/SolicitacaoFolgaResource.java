@@ -42,11 +42,16 @@ public class SolicitacaoFolgaResource {
         }
     }
 
+    /**
+     * @deprecated at 11/06/2021. Use
+     * {@link SolicitacaoFolgaResource#getByColaborador(Long)} instead.
+     */
     @GET
     @Secured(permissions = {Pilares.Gente.SolicitacaoFolga.VISUALIZAR,
             Pilares.Gente.SolicitacaoFolga.REALIZAR,
             Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
     @Path("/{cpf}")
+    @Deprecated
     public List<SolicitacaoFolga> getByColaborador(@PathParam("cpf") long cpf) {
         final Long codColaborador = colaboradorAutenticadoProvider.get().getCodigo();
         return service.getByColaborador(codColaborador);
