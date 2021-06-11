@@ -67,6 +67,26 @@ public class SolicitacaoFolgaResource {
                               codUnidade, codEquipe, status, codColaborador);
     }
 
+    @GET
+    @Secured(permissions = {
+            Pilares.Gente.SolicitacaoFolga.VISUALIZAR,
+            Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO
+    })
+    public List<SolicitacaoFolga> getAll(
+            @QueryParam("dataInicial") final String dataInicial,
+            @QueryParam("dataFinal") final String dataFinal,
+            @QueryParam("status") final String status,
+            @QueryParam("codUnidade") Long codUnidade,
+            @QueryParam("codEquipe") String codEquipe,
+            @QueryParam("codColaborador") Long codColaborador) {
+        return service.getAll(DateUtils.parseDate(dataInicial),
+                              DateUtils.parseDate(dataFinal),
+                              codUnidade,
+                              codEquipe,
+                              status,
+                              codColaborador);
+    }
+
     @DELETE
     @Secured(permissions = Pilares.Gente.SolicitacaoFolga.REALIZAR)
     @Path("{codigo}")
