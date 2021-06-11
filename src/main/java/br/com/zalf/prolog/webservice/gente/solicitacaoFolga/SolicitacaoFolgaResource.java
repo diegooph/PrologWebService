@@ -27,6 +27,8 @@ public class SolicitacaoFolgaResource {
     @POST
     @Secured(permissions = Pilares.Gente.SolicitacaoFolga.REALIZAR)
     public AbstractResponse insert(SolicitacaoFolga solicitacaoFolga) {
+        final Long codColaborador = colaboradorAutenticadoProvider.get().getCodigo();
+        solicitacaoFolga.getColaborador().setCodigo(codColaborador);
         return service.insert(solicitacaoFolga);
     }
 
@@ -35,6 +37,8 @@ public class SolicitacaoFolgaResource {
     @Path("/{codigo}")
     public Response update(SolicitacaoFolga solicitacaoFolga, @PathParam("codigo") Long codigo) {
         solicitacaoFolga.setCodigo(codigo);
+        final Long codColaborador = colaboradorAutenticadoProvider.get().getCodigo();
+        solicitacaoFolga.getColaborador().setCodigo(codColaborador);
         if (service.update(solicitacaoFolga)) {
             return Response.ok("Solicitação atualizada com sucesso");
         } else {
