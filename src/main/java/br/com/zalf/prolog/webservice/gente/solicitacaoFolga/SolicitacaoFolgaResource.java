@@ -47,7 +47,7 @@ public class SolicitacaoFolgaResource {
             Pilares.Gente.SolicitacaoFolga.REALIZAR,
             Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO})
     @Path("/{cpf}")
-    public List<SolicitacaoFolga> getByColaborador(@PathParam("cpf") Long cpf) {
+    public List<SolicitacaoFolga> getByColaborador(@PathParam("cpf") long cpf) {
         final Long codColaborador = colaboradorAutenticadoProvider.get().getCodigo();
         return service.getByColaborador(codColaborador);
     }
