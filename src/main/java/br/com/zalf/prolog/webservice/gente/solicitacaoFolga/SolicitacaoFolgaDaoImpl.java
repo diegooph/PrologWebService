@@ -139,8 +139,8 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
             conn = getConnection();
             final String query = "SELECT " +
                     "SF.CODIGO AS CODIGO, " +
-                    "SF.CPF_COLABORADOR AS CPF_COLABORADOR, " +
-                    "SF.CPF_FEEDBACK AS CPF_FEEDBACK, " +
+                    "C.CPF AS CPF_COLABORADOR, " +
+                    "C_FEEDBACK.CPF AS CPF_FEEDBACK, " +
                     "SF.DATA_FEEDBACK AS DATA_FEEDBACK, " +
                     "SF.DATA_FOLGA AS DATA_FOLGA, " +
                     "SF.DATA_SOLICITACAO AS DATA_SOLICITACAO, " +
@@ -151,14 +151,14 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
                     "C.NOME AS NOME_SOLICITANTE, " +
                     "C_FEEDBACK.NOME AS NOME_FEEDBACK " +
                     "FROM SOLICITACAO_FOLGA SF "
-                    + "JOIN COLABORADOR C ON C.CPF = SF.CPF_COLABORADOR "
-                    + "LEFT JOIN COLABORADOR C_FEEDBACK ON C_FEEDBACK.CPF = SF.CPF_FEEDBACK "
+                    + "JOIN COLABORADOR C ON C.CODIGO = SF.COD_COLABORADOR "
+                    + "LEFT JOIN COLABORADOR C_FEEDBACK ON C_FEEDBACK.CODIGO = SF.COD_COLABORADOR_FEEDBACK "
                     + "JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
                     + "WHERE SF.DATA_FOLGA BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) "
                     + "AND C.COD_UNIDADE = ? "
                     + "AND E.CODIGO::TEXT LIKE ? "
                     + "AND SF.STATUS LIKE ? "
-                    + "AND SF.CPF_COLABORADOR::TEXT LIKE ?"
+                    + "AND SF.COD_COLABORADOR = ?"
                     + "ORDER BY SF.DATA_SOLICITACAO";
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
             stmt = conn.prepareStatement(query);
@@ -169,7 +169,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
             stmt.setLong(5, codUnidade);
             stmt.setString(6, codEquipe);
             stmt.setString(7, status);
-            stmt.setString(8, cpfColaborador);
+            stmt.setLong(8, codColaborador);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 list.add(createSolicitacaoFolga(rSet));
