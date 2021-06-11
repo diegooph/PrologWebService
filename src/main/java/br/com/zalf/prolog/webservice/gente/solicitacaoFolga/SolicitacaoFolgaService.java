@@ -27,12 +27,12 @@ public class SolicitacaoFolgaService {
         }
     }
 
-    public List<SolicitacaoFolga> getByColaborador(Long cpf) {
+    public List<SolicitacaoFolga> getByColaborador(Long codColaborador) {
         try {
-            return dao.getByColaborador(cpf);
+            return dao.getByColaborador(codColaborador);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar as solicitações de folga do colaborador. \n" +
-                    "cpf: %d", cpf), e);
+                                             "codColaborador: %d", codColaborador), e);
             return Collections.emptyList();
         }
     }

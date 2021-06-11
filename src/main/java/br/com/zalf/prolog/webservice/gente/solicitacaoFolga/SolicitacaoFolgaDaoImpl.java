@@ -181,7 +181,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
     }
 
     @Override
-    public List<SolicitacaoFolga> getByColaborador(final Long cpf) throws SQLException {
+    public List<SolicitacaoFolga> getByColaborador(final Long codColaborador) throws SQLException {
         final List<SolicitacaoFolga> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -205,7 +205,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
                     "SF.CPF_COLABORADOR = C.CPF LEFT JOIN COLABORADOR C_FEEDBACK ON " +
                     "SF.CPF_FEEDBACK = C_FEEDBACK.CPF WHERE " +
                     "SF.CPF_COLABORADOR = ?;");
-            stmt.setLong(1, cpf);
+            stmt.setLong(1, codColaborador);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 list.add(createSolicitacaoFolga(rSet));

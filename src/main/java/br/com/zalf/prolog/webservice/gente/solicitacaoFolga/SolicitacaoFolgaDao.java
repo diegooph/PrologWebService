@@ -20,5 +20,5 @@ public interface SolicitacaoFolgaDao {
 	List<SolicitacaoFolga> getAll(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade, String codEquipe,
 								  String status, Long codColaborador) throws SQLException;
 
-	List<SolicitacaoFolga> getByColaborador(Long cpf) throws SQLException;
+	List<SolicitacaoFolga> getByColaborador(Long codColaborador) throws SQLException;
 }
