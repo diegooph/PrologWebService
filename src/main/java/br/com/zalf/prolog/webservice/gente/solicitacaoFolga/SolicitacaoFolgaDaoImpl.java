@@ -125,8 +125,11 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
     }
 
     @Override
-    public List<SolicitacaoFolga> getAll(final LocalDate dataInicial, final LocalDate dataFinal,
-                                         final Long codUnidade, final String codEquipe, final String status, final String cpfColaborador) throws SQLException {
+    public List<SolicitacaoFolga> getAll(final LocalDate dataInicial,
+                                         final LocalDate dataFinal,
+                                         final Long codUnidade,
+                                         final String codEquipe,
+                                         final String status, final Long codColaborador) throws SQLException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
