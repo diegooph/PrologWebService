@@ -38,17 +38,23 @@ public class SolicitacaoFolgaService {
     }
 
     public List<SolicitacaoFolga> getAll(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade,
-                                         String codEquipe, String status, String cpfColaborador) {
+                                         String codEquipe, String status, Long codColaborador) {
         try {
-            return dao.getAll(dataInicial, dataFinal, codUnidade, codEquipe, status, cpfColaborador);
+            return dao.getAll(dataInicial, dataFinal, codUnidade, codEquipe, status, codColaborador);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar as solicitações de folga. \n" +
-                    "codUnidade: %d \n" +
-                    "codEquipe: %s \n" +
-                    "status: %s \n" +
-                    "cpfColaborador: %s \n" +
-                    "dataInicial: %s \n" +
-                    "dataFinal: %s \n", codUnidade, codEquipe, status, cpfColaborador, dataInicial, dataFinal), e);
+                                             "codUnidade: %d \n" +
+                                             "codEquipe: %s \n" +
+                                             "status: %s \n" +
+                                             "codColaborador: %s \n" +
+                                             "dataInicial: %s \n" +
+                                             "dataFinal: %s \n",
+                                     codUnidade,
+                                     codEquipe,
+                                     status,
+                                     codColaborador,
+                                     dataInicial,
+                                     dataFinal), e);
             return Collections.emptyList();
         }
     }

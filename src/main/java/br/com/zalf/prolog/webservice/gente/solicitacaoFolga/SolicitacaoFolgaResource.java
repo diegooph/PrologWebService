@@ -64,7 +64,7 @@ public class SolicitacaoFolgaResource {
             @PathParam("cpf") String cpfColaborador) {
         final Long codColaborador = colaboradorAutenticadoProvider.get().getCodigo();
         return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)),
-                codUnidade, codEquipe, status, cpfColaborador);
+                              codUnidade, codEquipe, status, codColaborador);
     }
 
     @DELETE
