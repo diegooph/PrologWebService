@@ -57,6 +57,16 @@ public class SolicitacaoFolgaResource {
         return service.getByColaborador(codColaborador);
     }
 
+    @GET
+    @Secured(permissions = {
+            Pilares.Gente.SolicitacaoFolga.VISUALIZAR,
+            Pilares.Gente.SolicitacaoFolga.REALIZAR,
+            Pilares.Gente.SolicitacaoFolga.FEEDBACK_SOLICITACAO
+    })
+    public List<SolicitacaoFolga> getByColaborador(@QueryParam("codColaborador") Long codColaborador) {
+        return service.getByColaborador(codColaborador);
+    }
+
     /**
      * @deprecated at 11/06/2021. Use
      * {@link SolicitacaoFolgaResource#getAll(String, String, String, Long, String, Long)} instead.
