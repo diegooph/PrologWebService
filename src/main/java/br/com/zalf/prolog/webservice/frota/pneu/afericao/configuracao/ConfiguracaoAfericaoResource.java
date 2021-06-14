@@ -59,7 +59,7 @@ public final class ConfiguracaoAfericaoResource {
     @Path("/cronograma-servicos")
     public Response upsertConfiguracoesCronogramaServicos(
             @HeaderParam("Authorization") final String userToken,
-            @NotNull final List<@Valid ConfiguracaoCronogramaServicoUpsert> configuracoes) {
+            @NotNull final @Valid List<ConfiguracaoCronogramaServicoUpsert> configuracoes) {
         return service.upsertConfiguracoesCronogramaServicos(userToken, configuracoes);
     }
 
