@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -43,4 +44,9 @@ public interface PneuDao extends JpaRepository<PneuEntity, Long> {
     List<PneuEntity> getPneusByStatus(@NotNull final List<Long> codUnidades,
                                       @Nullable final StatusPneu statusPneu,
                                       @NotNull final Pageable pageable);
+
+    @Modifying
+    @Query("update PneuEntity p set p.status = :statusPneu where p.codigo = :codPneu")
+    void updateStatus(@NotNull final Long codPneu,
+                      @NotNull final StatusPneu statusPneu);
 }
