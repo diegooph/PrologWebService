@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.Min;
+
 /**
  * Created on 11/13/19
  *
@@ -10,8 +12,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class ConfiguracaoCronogramaServicoUpsert {
     /**
-    * Código do registro de configuração para abertura de serviço
-    */
+     * Código do registro de configuração para abertura de serviço
+     */
     @Nullable
     private final Long codigo;
 
@@ -61,12 +63,14 @@ public final class ConfiguracaoCronogramaServicoUpsert {
      * Período para aferição de pressão
      */
     @NotNull
+    @Min(value = 1, message = "Período de aferição pressão menor que 1")
     private final Integer periodoAfericaoPressao;
 
     /**
      * Período para aferição de sulco
      */
     @NotNull
+    @Min(value = 1, message = "Período de aferição sulco menor que 1")
     private final Integer periodoAfericaoSulco;
 
     public ConfiguracaoCronogramaServicoUpsert(@Nullable final Long codigo,

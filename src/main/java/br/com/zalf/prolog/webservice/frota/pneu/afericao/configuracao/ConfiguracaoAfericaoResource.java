@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -58,7 +59,7 @@ public final class ConfiguracaoAfericaoResource {
     @Path("/cronograma-servicos")
     public Response upsertConfiguracoesCronogramaServicos(
             @HeaderParam("Authorization") final String userToken,
-            @NotNull final List<ConfiguracaoCronogramaServicoUpsert> configuracoes) {
+            @NotNull final List<@Valid ConfiguracaoCronogramaServicoUpsert> configuracoes) {
         return service.upsertConfiguracoesCronogramaServicos(userToken, configuracoes);
     }
 
