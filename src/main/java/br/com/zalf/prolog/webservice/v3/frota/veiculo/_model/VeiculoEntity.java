@@ -53,4 +53,6 @@ public class VeiculoEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "origem_cadastro", nullable = false)
     private OrigemAcaoEnum origemCadastro;
+    @Column(name = "acoplado", nullable = false)
+    private boolean acoplado;
 }
