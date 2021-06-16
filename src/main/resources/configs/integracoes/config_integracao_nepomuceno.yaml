@@ -71,11 +71,11 @@ placasBloqueadas:
 # informação. Por conta disso, criamos este de-para para realizar esse vínculo. É estritamente necessário que cada
 # código de campo de fato exista para que tudo funcione corretamente!
 deParaCamposPersonalizados:
-  - '14:codLipPneu'
-  - '15:codOrigemFilial'
-  - '16:codDestinoPneu'
-  - '17:codCausaSucataPneu'
-  - '18:observacao'
+  - '4:codLipPneu'
+  - '5:codOrigemFilial'
+  - '6:codDestinoPneu'
+  - '7:codCausaSucataPneu'
+  - '8:observacao'
 
 # Esse código 'D3–Sucata' é utilizado quando o usuário quer descartar um pneu. Uma vez informado, torna obrigatório
 # informar o código da causa da sucata.
