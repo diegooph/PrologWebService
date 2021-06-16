@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.network;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +19,7 @@ public final class RestClient {
 
     static {
         RETROFIT = new Retrofit.Builder()
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(GsonUtils.getGson()))
                 .client(OkHttp.provideNetworkDefaultClient())
                 .baseUrl(DEFAULT_BASE_URL)

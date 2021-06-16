@@ -545,7 +545,8 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                                                  "F_TEMPO_REALIZACAO => ?, " +
                                                  "F_DATA_HORA => ?, " +
                                                  "F_TIPO_MEDICAO_COLETADA => ?, " +
-                                                 "F_TIPO_PROCESSO_COLETA => ?) AS COD_AFERICAO_INTEGRADA;");
+                                                 "F_TIPO_PROCESSO_COLETA => ?, " +
+                                                 "F_RESPOSTAS_CAMPOS_PERSONALIZADOS => ?) AS COD_AFERICAO_INTEGRADA;");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, codAuxiliarUnidade);
             stmt.setString(3, String.valueOf(afericao.getColaborador().getCpf()));
@@ -566,6 +567,12 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             stmt.setObject(9, afericao.getDataHora().atOffset(ZoneOffset.UTC));
             stmt.setString(10, afericao.getTipoMedicaoColetadaAfericao().asString());
             stmt.setString(11, afericao.getTipoProcessoColetaAfericao().asString());
+            if (afericao.getRespostasCamposPersonalizados() == null) {
+                stmt.setNull(12, Types.NULL);
+            } else {
+                stmt.setObject(12,
+                               PostgresUtils.toJsonb(afericao.getRespostasCamposPersonalizadosAsJson()));
+            }
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codAfericaoIntegrada = rSet.getLong("COD_AFERICAO_INTEGRADA");
