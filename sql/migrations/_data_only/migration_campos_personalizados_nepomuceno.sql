@@ -20,7 +20,7 @@ values (15,
         false,
         '{}', -- Vazio pois as informações virão do Protheus
         now(),
-        4034);
+        41072);
 
 -- ORIGEM
 insert into campo_personalizado_empresa (cod_empresa,
@@ -42,7 +42,7 @@ values (15,
         false,
         '{}', -- Vazio pois as informações virão do Protheus
         now(),
-        4034);
+        41072);
 
 -- DESTINO
 insert into campo_personalizado_empresa (cod_empresa,
@@ -64,7 +64,7 @@ values (15,
         false,
         '{D1-Conserto,D2-Estoque Usados,D3-Sucata,D4-Garantia Fabricante,D5-Garantia Reformador,D6-Reforma}',
         now(),
-        4034);
+        41072);
 
 -- CODIGO SUCATA
 insert into campo_personalizado_empresa (cod_empresa,
@@ -86,7 +86,7 @@ values (15,
         false,
         '{}', -- Vazio pois as informações virão do Protheus
         now(),
-        4034);
+        41072);
 
 -- OBSERVACAO
 insert into campo_personalizado_empresa (cod_empresa,
@@ -108,7 +108,7 @@ values (15,
         null,
         null,
         now(),
-        4034);
+        41072);
 
 -- 2 - Vincula os campos personalizados para as unidades
 -- LIP
@@ -206,3 +206,44 @@ select (select codigo from campo_personalizado_empresa where nome = 'Observaçã
 
 -- 4 - Configurar URLs das aferições avulsas
 -- O serviço de homologação para a integração da inspeção de removido da Expresso Nepomuceno deve estar no ar também.
+insert into integracao.empresa_integracao_metodos (cod_integracao_sistema,
+                                                   metodo_integrado,
+                                                   url_completa,
+                                                   api_token_client,
+                                                   api_short_code)
+values ((select codigo
+         from integracao.empresa_integracao_sistema
+         where cod_empresa = 15
+           and recurso_integrado = 'AFERICAO'),
+        'INSERT_AFERICAO_AVULSA',
+        'http://mercurio.expressonepomuceno.com.br:9052/rest/Inspneusremovidos',
+        null,
+        null);
+
+insert into integracao.empresa_integracao_metodos (cod_integracao_sistema,
+                                                   metodo_integrado,
+                                                   url_completa,
+                                                   api_token_client,
+                                                   api_short_code)
+values ((select codigo
+         from integracao.empresa_integracao_sistema
+         where cod_empresa = 15
+           and recurso_integrado = 'AFERICAO'),
+        'GET_PNEUS_AFERICAO_AVULSA',
+        'http://wsapp.expressonepomuceno.com.br:8191/rest/PNEUS_AFERICAO_AVULSA',
+        null,
+        null);
+
+insert into integracao.empresa_integracao_metodos (cod_integracao_sistema,
+                                                   metodo_integrado,
+                                                   url_completa,
+                                                   api_token_client,
+                                                   api_short_code)
+values ((select codigo
+         from integracao.empresa_integracao_sistema
+         where cod_empresa = 15
+           and recurso_integrado = 'AFERICAO'),
+        'GET_CAMPOS_PERSONALIZADOS_AFERICAO',
+        'http://wsapp.expressonepomuceno.com.br:8191/rest/CADASTRO_MANUTENCAO',
+        null,
+        null);
