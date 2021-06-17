@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,7 +22,7 @@ import java.util.List;
 public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements SolicitacaoFolgaDao {
 
     @Override
-    public AbstractResponse insert(final SolicitacaoFolga s) throws SQLException {
+    public AbstractResponse insert(@NotNull final SolicitacaoFolga s) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -31,9 +32,14 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
                 return Response.error("Erro ao inserir a solicitação de folga");
             }
             conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO SOLICITACAO_FOLGA ( "
-                    + "COD_COLABORADOR, DATA_SOLICITACAO, DATA_FOLGA, "
-                    + "MOTIVO_FOLGA, STATUS, PERIODO) VALUES (?, ?, ?, ?, ?, ?) RETURNING CODIGO");
+            stmt = conn.prepareStatement("insert into solicitacao_folga (cod_colaborador, " +
+                                                 "data_solicitacao, " +
+                                                 "data_folga, " +
+                                                 "motivo_folga, " +
+                                                 "status, " +
+                                                 "periodo) " +
+                                                 "values (?, ?, ?, ?, ?, ?) " +
+                                                 "returning codigo;");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodColaborador(s.getColaborador().getCodigo(), conn);
             stmt.setLong(1, s.getColaborador().getCodigo());
             stmt.setObject(2, LocalDate.now(zoneId));
@@ -53,25 +59,23 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
     }
 
     @Override
-    public boolean update(final SolicitacaoFolga solicitacaoFolga) throws SQLException {
+    public boolean update(@NotNull final SolicitacaoFolga solicitacaoFolga) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE SOLICITACAO_FOLGA SET "
-                    + " COD_COLABORADOR=? , "
-                    + " COD_COLABORADOR_FEEDBACK=? , "
-                    + " DATA_SOLICITACAO=? , "
-                    + " DATA_FOLGA=? , "
-                    + " DATA_FEEDBACK=? , "
-                    + " MOTIVO_FOLGA=? , "
-                    + " JUSTIFICATIVA_FEEDBACK=? , "
-                    + " STATUS=? , "
-                    + " PERIODO=? "
-                    + "WHERE CODIGO=?");
-
+            stmt = conn.prepareStatement("update solicitacao_folga " +
+                                                 "set cod_colaborador = ?, " +
+                                                 "    cod_colaborador_feedback = ?, " +
+                                                 "    data_solicitacao = ?, " +
+                                                 "    data_folga = ?, " +
+                                                 "    data_feedback = ?, " +
+                                                 "    motivo_folga = ?, " +
+                                                 "    justificativa_feedback = ?, " +
+                                                 "    status = ?, " +
+                                                 "    periodo = ? " +
+                                                 "where codigo = ?;");
             stmt.setLong(1, solicitacaoFolga.getColaborador().getCodigo());
-
             if (solicitacaoFolga.getColaboradorFeedback() != null) {
                 stmt.setLong(2, solicitacaoFolga.getColaboradorFeedback().getCodigo());
             } else {
@@ -107,12 +111,12 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
     }
 
     @Override
-    public boolean delete(final Long codigo) throws SQLException {
+    public boolean delete(@NotNull final Long codigo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("DELETE FROM SOLICITACAO_FOLGA WHERE CODIGO = ? AND STATUS = 'PENDENTE'");
+            stmt = conn.prepareStatement("delete from solicitacao_folga where codigo = ? and status = 'PENDENTE'");
             stmt.setLong(1, codigo);
             final int count = stmt.executeUpdate();
             if (count > 0) {
@@ -137,29 +141,28 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
         final List<SolicitacaoFolga> list = new ArrayList<>();
         try {
             conn = getConnection();
-            final String query = "SELECT " +
-                    "SF.CODIGO AS CODIGO, " +
-                    "C.CPF AS CPF_COLABORADOR, " +
-                    "C_FEEDBACK.CPF AS CPF_FEEDBACK, " +
-                    "SF.DATA_FEEDBACK AS DATA_FEEDBACK, " +
-                    "SF.DATA_FOLGA AS DATA_FOLGA, " +
-                    "SF.DATA_SOLICITACAO AS DATA_SOLICITACAO, " +
-                    "SF.MOTIVO_FOLGA AS MOTIVO_FOLGA, " +
-                    "SF.JUSTIFICATIVA_FEEDBACK AS JUSTIFICATIVA_FEEDBACK, " +
-                    "SF.PERIODO AS PERIODO, " +
-                    "SF.STATUS AS STATUS, " +
-                    "C.NOME AS NOME_SOLICITANTE, " +
-                    "C_FEEDBACK.NOME AS NOME_FEEDBACK " +
-                    "FROM SOLICITACAO_FOLGA SF "
-                    + "JOIN COLABORADOR C ON C.CODIGO = SF.COD_COLABORADOR "
-                    + "LEFT JOIN COLABORADOR C_FEEDBACK ON C_FEEDBACK.CODIGO = SF.COD_COLABORADOR_FEEDBACK "
-                    + "JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE "
-                    + "WHERE SF.DATA_FOLGA BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) "
-                    + "AND C.COD_UNIDADE = ? "
-                    + "AND E.CODIGO::TEXT LIKE ? "
-                    + "AND SF.STATUS LIKE ? "
-                    + "AND SF.COD_COLABORADOR = ?"
-                    + "ORDER BY SF.DATA_SOLICITACAO";
+            final String query = "select sf.codigo                 as codigo, " +
+                    "c.cpf                     as cpf_colaborador, " +
+                    "cf.cpf                    as cpf_feedback, " +
+                    "sf.data_feedback          as data_feedback, " +
+                    "sf.data_folga             as data_folga, " +
+                    "sf.data_solicitacao       as data_solicitacao, " +
+                    "sf.motivo_folga           as motivo_folga, " +
+                    "sf.justificativa_feedback as justificativa_feedback, " +
+                    "sf.periodo                as periodo, " +
+                    "sf.status                 as status, " +
+                    "c.nome                    as nome_solicitante, " +
+                    "cf.nome                   as nome_feedback " +
+                    "from solicitacao_folga sf " +
+                    "join colaborador c on c.codigo = sf.cod_colaborador " +
+                    "left join colaborador cf on cf.codigo = sf.cod_colaborador_feedback " +
+                    "join equipe e on e.codigo = c.cod_equipe " +
+                    "where sf.data_folga between (? at time zone ?) and (? at time zone ?) " +
+                    "  and c.cod_unidade = ? " +
+                    "  and e.codigo::text like ? " +
+                    "  and sf.status like ? " +
+                    "  and sf.cod_colaborador = ? " +
+                    "order by sf.data_solicitacao;";
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
             stmt = conn.prepareStatement(query);
             stmt.setObject(1, dataInicial);
@@ -188,23 +191,23 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                                                 "SF.CODIGO, " +
-                                                 "C.CPF, " +
-                                                 "C_FEEDBACK.CPF, " +
-                                                 "SF.DATA_FEEDBACK, " +
-                                                 "SF.DATA_FOLGA, " +
-                                                 "SF.DATA_SOLICITACAO, " +
-                                                 "SF.MOTIVO_FOLGA, " +
-                                                 "SF.JUSTIFICATIVA_FEEDBACK, " +
-                                                 "SF.PERIODO, " +
-                                                 "SF.STATUS, " +
-                                                 "C.NOME AS NOME_SOLICITANTE, " +
-                                                 "C_FEEDBACK.NOME AS NOME_FEEDBACK " +
-                                                 "FROM SOLICITACAO_FOLGA SF JOIN COLABORADOR C ON " +
-                                                 "SF.COD_COLABORADOR = C.CODIGO LEFT JOIN COLABORADOR C_FEEDBACK ON " +
-                                                 "SF.COD_COLABORADOR_FEEDBACK = C_FEEDBACK.CODIGO WHERE " +
-                                                 "SF.COD_COLABORADOR = ?;");
+            stmt = conn.prepareStatement(
+                    "select sf.codigo                 as codigo, " +
+                            "c.cpf                     as cpf_colaborador, " +
+                            "cf.cpf                    as cpf_feedback, " +
+                            "sf.data_feedback          as data_feedback, " +
+                            "sf.data_folga             as data_folga, " +
+                            "sf.data_solicitacao       as data_solicitacao, " +
+                            "sf.motivo_folga           as motivo_folga, " +
+                            "sf.justificativa_feedback as justificativa_feedback, " +
+                            "sf.periodo                as periodo, " +
+                            "sf.status                 as status, " +
+                            "c.nome                    as nome_solicitante, " +
+                            "cf.nome                   as nome_feedback " +
+                            "from solicitacao_folga sf " +
+                            "join colaborador c on sf.cod_colaborador = c.codigo " +
+                            "left join colaborador cf on sf.cod_colaborador_feedback = cf.codigo " +
+                            "where sf.cod_colaborador = ?;");
             stmt.setLong(1, codColaborador);
             rSet = stmt.executeQuery();
             while (rSet.next()) {

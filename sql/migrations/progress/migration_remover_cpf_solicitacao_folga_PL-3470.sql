@@ -1,4 +1,3 @@
-begin transaction;
 alter table solicitacao_folga
     add column if not exists cod_colaborador          bigint,
     add constraint fk_solicitacao_folga_cod_colaborador foreign key (cod_colaborador)
@@ -18,5 +17,3 @@ alter table solicitacao_folga
 alter table solicitacao_folga
     drop column if exists cpf_colaborador,
     drop column if exists cpf_feedback;
-
-end transaction;
