@@ -27,10 +27,13 @@ begin
             from checklist_modelo cm
                      join checklist_modelo_funcao cmf
                           on cm.codigo = cmf.cod_checklist_modelo
-            where f_if(v_is_empresa_bloqueada_checklist_entre_unidade,
-                       cm.cod_unidade = f_cod_unidade,
-                       cm.cod_unidade in (select codigo from unidade where cod_empresa = v_cod_empresa_unidade_filtro))
-              and cm.status_ativo = true
+            where cm.status_ativo = true
+              and case
+                      when v_is_empresa_bloqueada_checklist_entre_unidade
+                          then cm.cod_unidade = f_cod_unidade
+                      else cm.cod_unidade in
+                           (select codigo from unidade where cod_empresa = v_cod_empresa_unidade_filtro)
+                end
         )
 
         select distinct c.cod_unidade :: bigint      as cod_unidade_colaborador,
@@ -43,8 +46,10 @@ begin
         from colaborador c
         where c.status_ativo
           and c.cod_funcao in (select cod_funcao from funcoes_modelos)
-          and f_if(v_is_empresa_bloqueada_checklist_entre_unidade,
-                   c.cod_unidade = f_cod_unidade,
-                   c.cod_empresa = v_cod_empresa_unidade_filtro);
+          and case
+                  when v_is_empresa_bloqueada_checklist_entre_unidade
+                      then c.cod_unidade = f_cod_unidade
+                  else c.cod_empresa = v_cod_empresa_unidade_filtro
+            end;
 end;
 $$;
