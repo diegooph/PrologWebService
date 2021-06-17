@@ -9,6 +9,10 @@ Change Log
 * Adiciona endpoint de servico de pneus na API (PL-3645)
 * Cria DTO para a listagem de veículos na API (PL-3672)
 * Criar método para atualizar o KM atual do veículo na API v3 (PL-3678)
+* Criar método para atualizar o status atual do pneu na API v3 (PL-3679)
+
+### Refactors
+* Permite apenas valores positivos na configuração de Aferição (PL-3497)
 
 <a name="v3.4.0"></a>
 ## Version [v3.4.0](https://github.com/luizfp/PrologWebService/compare/v3.3.7...v3.4.0) (2021-06-07)
@@ -18,7 +22,6 @@ Change Log
 * Implementa nova estrutura de roteamento para o insert de aferição (PL-3623)
 * Adiciona endpoint de serviço de pneus na API (PL-3645)
 * Cria endpoint para listagem de pneus na API (PL-3646)
-
 
 ### Refactors
 * Melhora busca de indicadores consolidados e do extrato dos mapas (PL-3613)
