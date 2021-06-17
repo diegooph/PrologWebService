@@ -29,5 +29,5 @@ public class VeiculoAcopladoListagemDto {
     boolean motorizado;
     @ApiModelProperty(value = "Indica qual é a posição que o veículo se encontra acoplado.",
                       required = true, example = "1")
-    int posicaoAcoplado;
+    Short posicaoAcoplado;
 }
