@@ -2,12 +2,15 @@ package test.br.com.zalf.prolog.webservice.v3.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoListagemDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import test.br.com.zalf.prolog.webservice.IntegrationTest;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,5 +24,17 @@ public class VeiculoIT extends IntegrationTest {
         final VeiculoCadastroDto veiculoCadastroToInsert = VeiculoCadastroFactory.createVeiculoCadastroToInsert();
         final ResponseEntity<SuccessResponse> response = client.insert(veiculoCadastroToInsert);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    @DisplayName("given correct VeiculoCadastroDto to insert, then return status created")
+    void givenCorrectParameters_ThenReturnListVeiculosOk() {
+        final ResponseEntity<List<VeiculoListagemDto>> response =
+                client.getVeiculoListagem(List.of(215L),
+                                          true,
+                                          2,
+                                          0);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotEmpty();
     }
 }
