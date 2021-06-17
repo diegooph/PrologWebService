@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.v3._model;
+package br.com.zalf.prolog.webservice.v3.frota.veiculo.tipo._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
