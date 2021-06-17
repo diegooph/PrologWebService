@@ -24,4 +24,62 @@ public class VeiculoMapper {
                 .withStatusAtivo(true)
                 .build();
     }
+
+    @NotNull
+    private VeiculoListagemDto createVeiculoListagemDto(@NotNull final VeiculoEntity veiculoEntity) {
+        final ModeloVeiculoEntity modeloVeiculoEntity = veiculoEntity.getModeloVeiculoEntity();
+        final TipoVeiculoEntity tipoVeiculoEntity = veiculoEntity.getTipoVeiculoEntity();
+        final DiagramaEntity diagramaEntity = veiculoEntity.getDiagramaEntity();
+        final UnidadeEntity unidadeEntity = veiculoEntity.getUnidadeEntity();
+        final Optional<AcoplamentoAtualEntity> acoplamentoOptional
+                = Optional.ofNullable(veiculoEntity.getAcoplamentoAtualEntity());
+
+        return new VeiculoListagemDto(
+                veiculoEntity.getCodigo(),
+                veiculoEntity.getPlaca(),
+                veiculoEntity.getIdentificadorFrota(),
+                veiculoEntity.isMotorizado(),
+                veiculoEntity.isPossuiHobodometro(),
+                modeloVeiculoEntity.getMarcaVeiculoEntity().getCodigo(),
+                modeloVeiculoEntity.getMarcaVeiculoEntity().getNome(),
+                modeloVeiculoEntity.getCodigo(),
+                modeloVeiculoEntity.getNome(),
+                diagramaEntity.getCodigo(),
+                diagramaEntity.getEixosDiagramaEntities()
+                        .stream()
+                        .filter(eixosEntity -> eixosEntity.getTipoEixo() == 'D')
+                        .count(),
+                diagramaEntity.getEixosDiagramaEntities()
+                        .stream()
+                        .filter(eixosEntity -> eixosEntity.getTipoEixo() == 'T')
+                        .count(),
+                tipoVeiculoEntity.getCodigo(),
+                tipoVeiculoEntity.getNome(),
+                unidadeEntity.getCodigo(),
+                unidadeEntity.getNome(),
+                unidadeEntity.getGrupo().getCodigo(),
+                unidadeEntity.getGrupo().getNome(),
+                veiculoEntity.getKm(),
+                veiculoEntity.isStatusAtivo(),
+                veiculoEntity.getQtdPneusAplicados(),
+                veiculoEntity.isAcoplado(),
+                acoplamentoOptional.map(acoplamentoAtualEntity -> createVeiculoAcoplamentoAtual(
+                        acoplamentoAtualEntity.getAcoplamentoProcessoEntity())).orElse(null));
+    }
+
+    private VeiculosAcopladosListagemDto createVeiculoAcoplamentoAtual(final AcoplamentoProcessoEntity acoplamentoProcessoEntity) {
+        return new VeiculosAcopladosListagemDto(acoplamentoProcessoEntity.getCodigo(),
+                                                acoplamentoProcessoEntity.getAcoplamentoAtualEntities()
+                                                        .stream()
+                                                        .map(this::createVeiculoAcopladoListagemDto)
+                                                        .collect(Collectors.toList()));
+    }
+
+    private VeiculoAcopladoListagemDto createVeiculoAcopladoListagemDto(final AcoplamentoAtualEntity acoplamentoAtualEntity) {
+        return new VeiculoAcopladoListagemDto(acoplamentoAtualEntity.getVeiculoEntity().getCodigo(),
+                                              acoplamentoAtualEntity.getVeiculoEntity().getPlaca(),
+                                              acoplamentoAtualEntity.getVeiculoEntity().getIdentificadorFrota(),
+                                              acoplamentoAtualEntity.getVeiculoEntity().isMotorizado(),
+                                              acoplamentoAtualEntity.getCodPosicao());
+    }
 }
