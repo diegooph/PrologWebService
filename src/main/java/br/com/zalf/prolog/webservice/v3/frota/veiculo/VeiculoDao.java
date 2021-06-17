@@ -3,11 +3,13 @@ package br.com.zalf.prolog.webservice.v3.frota.veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Repository
 public interface VeiculoDao extends JpaRepository<VeiculoEntity, Long> {
@@ -29,4 +31,22 @@ public interface VeiculoDao extends JpaRepository<VeiculoEntity, Long> {
                               final long kmVeiculo,
                               final boolean devePropagarKmParaReboques);
 
+    @NotNull
+    @Query("select v from VeiculoEntity v " +
+                   " join fetch v.modeloVeiculoEntity mv  " +
+                   " join fetch mv.marcaVeiculoEntity mav " +
+                   " join fetch v.tipoVeiculoEntity tv " +
+                   " join fetch v.diagramaEntity d" +
+                   " join fetch d.eixosDiagramaEntities e" +
+                   " join fetch v.unidadeEntity u " +
+                   " join fetch u.grupo g " +
+                   " left join fetch v.acoplamentoAtualEntity a " +
+                   " left join fetch a.acoplamentoProcessoEntity ap " +
+                   " left join fetch ap.acoplamentoAtualEntities ate " +
+                   " left join fetch v.pneuAplicadoEntity p " +
+                   " where u.codigo in :codUnidades" +
+                   " and v.statusAtivo = :incluirInativos")
+    List<VeiculoEntity> getListagemVeiculos(@NotNull final List<Long> codUnidades,
+                                            final boolean incluirInativos,
+                                            @NotNull final Pageable pageable);
 }
