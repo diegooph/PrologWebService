@@ -18,6 +18,13 @@ import java.util.stream.Collectors;
 
 @Component
 public class VeiculoMapper {
+
+    public List<VeiculoListagemDto> toDto(@NotNull final List<VeiculoEntity> veiculoEntities) {
+        return veiculoEntities.stream()
+                .map(this::createVeiculoListagemDto)
+                .collect(Collectors.toList());
+    }
+
     @NotNull
     public VeiculoEntity toEntity(@NotNull final VeiculoCadastroDto dto,
                                   @NotNull final UnidadeEntity unidadeEntity,
