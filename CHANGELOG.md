@@ -8,7 +8,8 @@ Change Log
 ### Features
 * Adiciona endpoint de servico de pneus na API (PL-3645)
 * Cria DTO para a listagem de veículos na API (PL-3672)
-
+* Criar método para atualizar o KM atual do veículo na API v3 (PL-3678)
+* Criar método para atualizar o status atual do pneu na API v3 (PL-3679)
 
 <a name="v3.4.0"></a>
 ## Version [v3.4.0](https://github.com/luizfp/PrologWebService/compare/v3.3.7...v3.4.0) (2021-06-07)
