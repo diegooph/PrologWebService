@@ -74,4 +74,12 @@ public class VeiculoEntity {
     private Set<PneuEntity> pneuAplicadoEntity;
     @OneToOne(mappedBy = "veiculoEntity", fetch = FetchType.LAZY)
     private AcoplamentoAtualEntity acoplamentoAtualEntity;
+
+    public Short getQtdPneusAplicados() {
+        if (pneuAplicadoEntity == null) {
+            return 0;
+        } else {
+            return (short) pneuAplicadoEntity.size();
+        }
+    }
 }
