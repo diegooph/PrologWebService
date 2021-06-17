@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.v3.frota.veiculo._model;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @Data
+@Value
 public class VeiculoListagemDto {
     @ApiModelProperty(value = "Código do veículo.", required = true, example = "12345")
     @NotNull
