@@ -1,19 +1,38 @@
 package br.com.zalf.prolog.webservice.v3.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
-import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
-import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
+import br.com.zalf.prolog.webservice.v3.frota.acoplamento._model.AcoplamentoAtualEntity;
+import br.com.zalf.prolog.webservice.v3.frota.acoplamento._model.AcoplamentoProcessoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.*;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo.diagrama._model.DiagramaEntity;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo.modelo._model.ModeloVeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo.tipo._model.TipoVeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class VeiculoMapper {
     @NotNull
-    public VeiculoEntity toEntity(@NotNull final VeiculoCadastroDto dto) {
+    public VeiculoEntity toEntity(@NotNull final VeiculoCadastroDto dto,
+                                  @NotNull final UnidadeEntity unidadeEntity,
+                                  @NotNull final DiagramaEntity diagramaEntity,
+                                  @NotNull final TipoVeiculoEntity tipoVeiculoEntity,
+                                  @NotNull final ModeloVeiculoEntity modeloVeiculoEntity,
+                                  @NotNull final OrigemAcaoEnum origemCadastro) {
         return VeiculoEntity.builder()
                 .withCodEmpresa(dto.getCodEmpresaAlocado())
-                .withCodUnidade(dto.getCodUnidadeAlocado())
-                .withCodUnidadeCadastro(dto.getCodUnidadeAlocado())
+                .withUnidadeEntity(unidadeEntity)
+                .withUnidadeEntityCadastro(unidadeEntity)
+                .withDiagramaEntity(diagramaEntity)
+                .withMotorizado(diagramaEntity.isMotorizado())
+                .withTipoVeiculoEntity(tipoVeiculoEntity)
+                .withModeloVeiculoEntity(modeloVeiculoEntity)
                 .withPlaca(dto.getPlacaVeiculo())
                 .withIdentificadorFrota(dto.getIdentificadorFrota())
                 .withCodModelo(dto.getCodModeloVeiculo())
@@ -22,6 +41,7 @@ public class VeiculoMapper {
                 .withPossuiHobodometro(dto.getPossuiHubodometro())
                 .withDataHoraCadatro(Now.getOffsetDateTimeUtc())
                 .withStatusAtivo(true)
+                .withOrigemCadastro(origemCadastro)
                 .build();
     }
 
