@@ -1,6 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
+import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoListagemDto;
 import org.jetbrains.annotations.NotNull;
@@ -55,5 +56,21 @@ public class VeiculoApiClient {
                 .build();
         return restTemplate.exchange(requestEntity,
                                      new ParameterizedTypeReference<List<VeiculoListagemDto>>() {});
+    }
+
+    @NotNull
+    public ResponseEntity<ClientSideErrorException> getVeiculoListagemBadRequest() {
+        final UriComponents components = UriComponentsBuilder
+                .fromPath(RESOURCE)
+                .queryParam("codUnidades", "a")
+                .queryParam("statusAtivo", false)
+                .queryParam("limit", 1000)
+                .queryParam("offset", 0)
+                .build();
+        final RequestEntity<Void> requestEntity = RequestEntity
+                .get(components.toUri())
+                .accept(MediaType.APPLICATION_JSON)
+                .build();
+        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<ClientSideErrorException>() {});
     }
 }

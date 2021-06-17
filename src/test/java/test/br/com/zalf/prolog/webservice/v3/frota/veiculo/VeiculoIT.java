@@ -1,8 +1,10 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
+import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoListagemDto;
+import com.google.common.truth.Truth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +38,12 @@ public class VeiculoIT extends IntegrationTest {
                                           0);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("Tipo do dado do parâmetro codUnidades incorreto, retornando ClientSideErrorException.")
+    void givenWrongTypeParameter_ThenReturnClientSideErrorExceptionBadRequest() {
+        final ResponseEntity<ClientSideErrorException> response = client.getVeiculoListagemBadRequest();
+        Truth.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
