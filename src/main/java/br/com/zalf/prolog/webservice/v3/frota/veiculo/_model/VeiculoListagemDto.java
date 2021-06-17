@@ -46,7 +46,7 @@ public class VeiculoListagemDto {
     String nomeModelo;
     @ApiModelProperty(value = "Código do diagrama do veículo", required = true, example = "1")
     @NotNull
-    Long codDiagrama;
+    Short codDiagrama;
     @ApiModelProperty(value = "Quantidade de eixos dianteiros", required = true, example = "1")
     @NotNull
     Long qtdEixosDianteiros;
