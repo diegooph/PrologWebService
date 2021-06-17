@@ -35,8 +35,6 @@ public class VeiculoMapper {
                 .withModeloVeiculoEntity(modeloVeiculoEntity)
                 .withPlaca(dto.getPlacaVeiculo())
                 .withIdentificadorFrota(dto.getIdentificadorFrota())
-                .withCodModelo(dto.getCodModeloVeiculo())
-                .withCodTipo(dto.getCodTipoVeiculo())
                 .withKm(dto.getKmAtualVeiculo())
                 .withPossuiHobodometro(dto.getPossuiHubodometro())
                 .withDataHoraCadatro(Now.getOffsetDateTimeUtc())
