@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.frota.veiculo.marca.modelo._model;
+package br.com.zalf.prolog.webservice.v3.frota.veiculo.modelo.marca._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -19,14 +20,11 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Getter
 @Entity
-@Table(schema = "public", name = "modelo_veiculo")
-public class ModeloEntity {
+@Table(schema = "public", name = "marca_veiculo")
+public class MarcaVeiculoEntity {
+    @Id
     @Column(name = "codigo", nullable = false)
     private Long codigo;
     @Column(name = "nome", nullable = false)
     private String nome;
-    @Column(name = "cod_marca", nullable = false)
-    private Long codMarca;
-    @Column(name = "cod_empresa", nullable = false)
-    private Long codEmpresa;
 }

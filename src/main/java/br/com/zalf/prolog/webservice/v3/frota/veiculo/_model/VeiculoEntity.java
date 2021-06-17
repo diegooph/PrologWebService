@@ -1,6 +1,12 @@
 package br.com.zalf.prolog.webservice.v3.frota.veiculo._model;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
+import br.com.zalf.prolog.webservice.v3.frota.acoplamento._model.AcoplamentoAtualEntity;
+import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo.diagrama._model.DiagramaEntity;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo.modelo._model.ModeloVeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo.tipo._model.TipoVeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +14,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.Set;
 
 @Builder(toBuilder = true, setterPrefix = "with")
 @NoArgsConstructor
@@ -22,10 +29,12 @@ public class VeiculoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private Long codigo;
-    @Column(name = "cod_unidade_cadastro", nullable = false)
-    private Long codUnidadeCadastro;
-    @Column(name = "cod_unidade", nullable = false)
-    private Long codUnidade;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_unidade_cadastro", referencedColumnName = "codigo")
+    private UnidadeEntity unidadeEntityCadastro;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_unidade", referencedColumnName = "codigo")
+    private UnidadeEntity unidadeEntity;
     @Column(name = "cod_empresa", nullable = false)
     private Long codEmpresa;
     @Column(name = "placa", length = 7, nullable = false)
@@ -36,12 +45,15 @@ public class VeiculoEntity {
     private Long km;
     @Column(name = "status_ativo", nullable = false)
     private boolean statusAtivo;
-    @Column(name = "cod_diagrama", nullable = false)
-    private Long codDiagrama;
-    @Column(name = "cod_tipo", nullable = false)
-    private Long codTipo;
-    @Column(name = "cod_modelo", nullable = false)
-    private Long codModelo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_diagrama", referencedColumnName = "codigo")
+    private DiagramaEntity diagramaEntity;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_tipo", referencedColumnName = "codigo")
+    private TipoVeiculoEntity tipoVeiculoEntity;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_modelo", referencedColumnName = "codigo")
+    private ModeloVeiculoEntity modeloVeiculoEntity;
     @Column(name = "data_hora_cadastro", nullable = false, columnDefinition = "timestamp with time zone default now()")
     private OffsetDateTime dataHoraCadatro;
     @Column(name = "foi_editado", nullable = false, columnDefinition = "boolean default false")
@@ -55,4 +67,11 @@ public class VeiculoEntity {
     private OrigemAcaoEnum origemCadastro;
     @Column(name = "acoplado", nullable = false)
     private boolean acoplado;
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "veiculo_pneu",
+               joinColumns = @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo"),
+               inverseJoinColumns = @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo"))
+    private Set<PneuEntity> pneuAplicadoEntity;
+    @OneToOne(mappedBy = "veiculoEntity", fetch = FetchType.LAZY)
+    private AcoplamentoAtualEntity acoplamentoAtualEntity;
 }

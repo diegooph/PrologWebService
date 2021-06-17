@@ -6,11 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * Created on 2021-06-11
@@ -24,15 +22,20 @@ import java.time.LocalDateTime;
 @Entity
 @Table(schema = "public", name = "veiculo_acoplamento_processo")
 public class AcoplamentoProcessoEntity {
+    @Id
     @Column(name = "codigo", nullable = false)
     private Long codigo;
     @Column(name = "cod_unidade", nullable = false)
-    private Long cod_unidade;
+    private Long codUnidade;
     @Column(name = "cod_colaborador", nullable = false)
-    private Long cod_colaborador;
+    private Long codColaborador;
     @Convert(converter = LocalDateTimeUtcAttributeConverter.class)
     @Column(name = "data_hora")
     private LocalDateTime dataHoraRealizacao;
     @Column(name = "observacao")
     private String observacao;
+    @OneToMany(mappedBy = "acoplamentoProcessoEntity",
+               fetch = FetchType.LAZY,
+               targetEntity = AcoplamentoAtualEntity.class)
+    private Set<AcoplamentoAtualEntity> acoplamentoAtualEntities;
 }
