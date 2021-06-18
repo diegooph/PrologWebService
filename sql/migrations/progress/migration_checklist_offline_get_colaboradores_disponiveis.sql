@@ -46,10 +46,6 @@ begin
         from colaborador c
         where c.status_ativo
           and c.cod_funcao in (select cod_funcao from funcoes_modelos)
-          and case
-                  when v_is_empresa_bloqueada_checklist_entre_unidade
-                      then c.cod_unidade = f_cod_unidade
-                  else c.cod_empresa = v_cod_empresa_unidade_filtro
-            end;
+          and c.cod_unidade = f_cod_unidade;
 end;
 $$;
