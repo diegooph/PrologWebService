@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ModeloVeiculoService {
     @NotNull
-    private static final String TAG = ModeloVeiculoService.class.getSimpleName();
-    @NotNull
     private final ModeloVeiculoDao dao;
 
     @Autowired
@@ -23,6 +21,6 @@ public class ModeloVeiculoService {
     }
 
     public ModeloVeiculoEntity getByCod(@NotNull final Long codModeloVeiculo) {
-        return dao.getByCod(codModeloVeiculo);
+        return dao.getOne(codModeloVeiculo);
     }
 }

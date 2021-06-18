@@ -13,8 +13,8 @@ import br.com.zalf.prolog.webservice.v3.frota.veiculo.diagrama.DiagramaService;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo.diagrama._model.DiagramaEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo.modelo.ModeloVeiculoService;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo.modelo._model.ModeloVeiculoEntity;
-import br.com.zalf.prolog.webservice.v3.frota.veiculo.tipo.TipoVeiculoService;
-import br.com.zalf.prolog.webservice.v3.frota.veiculo.tipo._model.TipoVeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo.tipoveiculo.TipoVeiculoService;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo.tipoveiculo._model.TipoVeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.geral.unidade.UnidadeService;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
@@ -104,9 +104,7 @@ public class VeiculoService {
                                                    final boolean incluirInativos,
                                                    final int limit,
                                                    final int offset) {
-        return veiculoDao.getListagemVeiculos(codUnidades,
-                                              incluirInativos,
-                                              PageRequest.of(offset, limit));
+        return veiculoDao.getListagemVeiculos(codUnidades, incluirInativos, PageRequest.of(offset, limit));
     }
 
     @NotNull

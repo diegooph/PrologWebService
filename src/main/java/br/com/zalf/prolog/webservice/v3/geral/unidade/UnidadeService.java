@@ -70,7 +70,7 @@ public class UnidadeService {
 
     @NotNull
     public UnidadeEntity getByCod(@NotNull final Long codUnidade) {
-        return dao.getByCodigo(codUnidade);
+        return dao.getOne(codUnidade);
     }
 
     @NotNull

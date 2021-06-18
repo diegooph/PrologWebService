@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.v3.frota.veiculo.modelo;
 
 import br.com.zalf.prolog.webservice.v3.frota.veiculo.modelo._model.ModeloVeiculoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -12,8 +11,4 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ModeloVeiculoDao extends JpaRepository<ModeloVeiculoEntity, Long> {
-    @Query("select mve from ModeloVeiculoEntity mve" +
-                   " join fetch mve.marcaVeiculoEntity ma" +
-                   " where mve.codigo = :codModelo")
-    ModeloVeiculoEntity getByCod(Long codModelo);
 }

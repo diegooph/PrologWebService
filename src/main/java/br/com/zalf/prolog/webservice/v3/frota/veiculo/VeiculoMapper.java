@@ -6,19 +6,22 @@ import br.com.zalf.prolog.webservice.v3.frota.acoplamento._model.AcoplamentoAtua
 import br.com.zalf.prolog.webservice.v3.frota.acoplamento._model.AcoplamentoProcessoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.*;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo.diagrama._model.DiagramaEntity;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo.diagrama.eixos._model.EixoDiagramaEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo.modelo._model.ModeloVeiculoEntity;
-import br.com.zalf.prolog.webservice.v3.frota.veiculo.tipo._model.TipoVeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo.tipoveiculo._model.TipoVeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 public class VeiculoMapper {
 
+    @NotNull
     public List<VeiculoListagemDto> toDto(@NotNull final List<VeiculoEntity> veiculoEntities) {
         return veiculoEntities.stream()
                 .map(this::createVeiculoListagemDto)
@@ -56,8 +59,8 @@ public class VeiculoMapper {
         final TipoVeiculoEntity tipoVeiculoEntity = veiculoEntity.getTipoVeiculoEntity();
         final DiagramaEntity diagramaEntity = veiculoEntity.getDiagramaEntity();
         final UnidadeEntity unidadeEntity = veiculoEntity.getUnidadeEntity();
-        final Optional<AcoplamentoAtualEntity> acoplamentoOptional
-                = Optional.ofNullable(veiculoEntity.getAcoplamentoAtualEntity());
+        final Optional<AcoplamentoProcessoEntity> acoplamentoProcessoEntity =
+                veiculoEntity.getAcoplamentoProcessoEntity();
 
         return new VeiculoListagemDto(
                 veiculoEntity.getCodigo(),
@@ -70,14 +73,8 @@ public class VeiculoMapper {
                 modeloVeiculoEntity.getCodigo(),
                 modeloVeiculoEntity.getNome(),
                 diagramaEntity.getCodigo(),
-                diagramaEntity.getEixosDiagramaEntities()
-                        .stream()
-                        .filter(eixosEntity -> eixosEntity.getTipoEixo() == 'D')
-                        .count(),
-                diagramaEntity.getEixosDiagramaEntities()
-                        .stream()
-                        .filter(eixosEntity -> eixosEntity.getTipoEixo() == 'T')
-                        .count(),
+                diagramaEntity.getQtdEixos(EixoDiagramaEntity.EIXO_DIANTEIRO),
+                diagramaEntity.getQtdEixos(EixoDiagramaEntity.EIXO_TRASEIRO),
                 tipoVeiculoEntity.getCodigo(),
                 tipoVeiculoEntity.getNome(),
                 unidadeEntity.getCodigo(),
@@ -88,19 +85,29 @@ public class VeiculoMapper {
                 veiculoEntity.isStatusAtivo(),
                 veiculoEntity.getQtdPneusAplicados(),
                 veiculoEntity.isAcoplado(),
-                acoplamentoOptional.map(acoplamentoAtualEntity -> createVeiculoAcoplamentoAtual(
-                        acoplamentoAtualEntity.getAcoplamentoProcessoEntity())).orElse(null));
+                veiculoEntity.getPosicaoAcopladoAtual(),
+                acoplamentoProcessoEntity.map(acoplamentoProcesso -> createVeiculosAcoplamentos(veiculoEntity.getCodigo(),
+                                                                                                acoplamentoProcesso.getCodigo(),
+                                                                                                acoplamentoProcesso.getAcoplamentoAtualEntities()))
+                        .orElse(null));
     }
 
-    private VeiculosAcopladosListagemDto createVeiculoAcoplamentoAtual(final AcoplamentoProcessoEntity acoplamentoProcessoEntity) {
-        return new VeiculosAcopladosListagemDto(acoplamentoProcessoEntity.getCodigo(),
-                                                acoplamentoProcessoEntity.getAcoplamentoAtualEntities()
-                                                        .stream()
-                                                        .map(this::createVeiculoAcopladoListagemDto)
-                                                        .collect(Collectors.toList()));
+    @NotNull
+    private VeiculosAcopladosListagemDto createVeiculosAcoplamentos(
+            @NotNull final Long codVeiculo,
+            @NotNull final Long codProcessoAcoplamento,
+            @NotNull final Set<AcoplamentoAtualEntity> acoplamentosAtuais) {
+        return new VeiculosAcopladosListagemDto(
+                codProcessoAcoplamento,
+                acoplamentosAtuais.stream()
+                        .filter(acoplamento -> !acoplamento.getCodVeiculoAcoplamentoAtual().equals(codVeiculo))
+                        .map(this::createVeiculoAcoplado)
+                        .collect(Collectors.toList()));
     }
 
-    private VeiculoAcopladoListagemDto createVeiculoAcopladoListagemDto(final AcoplamentoAtualEntity acoplamentoAtualEntity) {
+    @NotNull
+    private VeiculoAcopladoListagemDto createVeiculoAcoplado(
+            @NotNull final AcoplamentoAtualEntity acoplamentoAtualEntity) {
         return new VeiculoAcopladoListagemDto(acoplamentoAtualEntity.getVeiculoEntity().getCodigo(),
                                               acoplamentoAtualEntity.getVeiculoEntity().getPlaca(),
                                               acoplamentoAtualEntity.getVeiculoEntity().getIdentificadorFrota(),

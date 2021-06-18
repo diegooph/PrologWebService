@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -42,4 +43,9 @@ public class AcoplamentoAtualEntity {
     private VeiculoEntity veiculoEntity;
     @Column(name = "acoplado", nullable = false)
     private boolean acoplado;
+
+    @NotNull
+    public Long getCodVeiculoAcoplamentoAtual() {
+        return veiculoEntity.getCodigo();
+    }
 }

@@ -2,19 +2,22 @@ package br.com.zalf.prolog.webservice.v3.frota.veiculo._model;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.v3.frota.acoplamento._model.AcoplamentoAtualEntity;
-import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
+import br.com.zalf.prolog.webservice.v3.frota.acoplamento._model.AcoplamentoProcessoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo.diagrama._model.DiagramaEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo.modelo._model.ModeloVeiculoEntity;
-import br.com.zalf.prolog.webservice.v3.frota.veiculo.tipo._model.TipoVeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo.tipoveiculo._model.TipoVeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
-import java.util.Set;
+import java.util.Optional;
 
 @Builder(toBuilder = true, setterPrefix = "with")
 @NoArgsConstructor
@@ -67,19 +70,30 @@ public class VeiculoEntity {
     private OrigemAcaoEnum origemCadastro;
     @Column(name = "acoplado", nullable = false)
     private boolean acoplado;
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "veiculo_pneu",
+    @Formula(value = "(select count(*) from veiculo_pneu vp where vp.cod_veiculo = codigo)")
+    private Integer qtdPneusAplicados;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(name = "veiculo_acoplamento_atual",
                joinColumns = @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo"),
-               inverseJoinColumns = @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo"))
-    private Set<PneuEntity> pneuAplicadoEntity;
-    @OneToOne(mappedBy = "veiculoEntity", fetch = FetchType.LAZY)
-    private AcoplamentoAtualEntity acoplamentoAtualEntity;
+               inverseJoinColumns = @JoinColumn(name = "cod_processo", referencedColumnName = "codigo"))
+    private AcoplamentoProcessoEntity acoplamentoProcessoEntity;
 
-    public Short getQtdPneusAplicados() {
-        if (pneuAplicadoEntity == null) {
-            return 0;
-        } else {
-            return (short) pneuAplicadoEntity.size();
+    @NotNull
+    public Optional<AcoplamentoProcessoEntity> getAcoplamentoProcessoEntity() {
+        return Optional.ofNullable(acoplamentoProcessoEntity);
+    }
+
+    @Nullable
+    public Short getPosicaoAcopladoAtual() {
+        if (acoplamentoProcessoEntity == null) {
+            return null;
         }
+
+        return acoplamentoProcessoEntity.getAcoplamentoAtualEntities()
+                .stream()
+                .filter(acoplamentoAtualEntity -> acoplamentoAtualEntity.getCodVeiculoAcoplamentoAtual().equals(codigo))
+                .map(AcoplamentoAtualEntity::getCodPosicao)
+                .findFirst()
+                .orElse(null);
     }
 }

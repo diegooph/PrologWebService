@@ -18,8 +18,11 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Entity
+@IdClass(EixoDiagramaPk.class)
 @Table(schema = "public", name = "veiculo_diagrama_eixos")
-public class EixosDiagramaEntity {
+public class EixoDiagramaEntity {
+    public static final char EIXO_DIANTEIRO = 'D';
+    public static final char EIXO_TRASEIRO = 'T';
     @Id
     @Column(name = "cod_diagrama", nullable = false)
     private short codDiagrama;
@@ -29,6 +32,7 @@ public class EixosDiagramaEntity {
     private DiagramaEntity diagramaEntity;
     @Column(name = "tipo_eixo", nullable = false)
     private char tipoEixo;
+    @Id
     @Column(name = "posicao", nullable = false)
     private short posicao;
     @Column(name = "qt_pneus", nullable = false)

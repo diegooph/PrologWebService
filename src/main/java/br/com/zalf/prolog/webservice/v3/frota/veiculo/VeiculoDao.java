@@ -16,13 +16,13 @@ public interface VeiculoDao extends JpaRepository<VeiculoEntity, Long> {
 
     @NotNull
     @Query(value = "select * from func_veiculo_update_km_atual(" +
-                   "f_cod_unidade => to_bigint(:codUnidade)," +
-                   "f_cod_veiculo => to_bigint(:codVeiculo)," +
-                   "f_km_coletado => to_bigint(:kmVeiculo)," +
-                   "f_cod_processo => to_bigint(:veiculoCodProcesso)," +
-                   "f_tipo_processo => to_text(:veiculoTipoProcesso)," +
-                   "f_deve_propagar_km => :devePropagarKmParaReboques," +
-                   "f_data_hora => date(:dataHoraProcesso))", nativeQuery = true)
+            "f_cod_unidade => to_bigint(:codUnidade)," +
+            "f_cod_veiculo => to_bigint(:codVeiculo)," +
+            "f_km_coletado => to_bigint(:kmVeiculo)," +
+            "f_cod_processo => to_bigint(:veiculoCodProcesso)," +
+            "f_tipo_processo => to_text(:veiculoTipoProcesso)," +
+            "f_deve_propagar_km => :devePropagarKmParaReboques," +
+            "f_data_hora => date(:dataHoraProcesso))", nativeQuery = true)
     Long updateKmByCodVeiculo(@NotNull final Long codUnidade,
                               @NotNull final Long codVeiculo,
                               @NotNull final Long veiculoCodProcesso,
@@ -33,19 +33,18 @@ public interface VeiculoDao extends JpaRepository<VeiculoEntity, Long> {
 
     @NotNull
     @Query("select v from VeiculoEntity v " +
-                   " join fetch v.modeloVeiculoEntity mv  " +
-                   " join fetch mv.marcaVeiculoEntity mav " +
-                   " join fetch v.tipoVeiculoEntity tv " +
-                   " join fetch v.diagramaEntity d" +
-                   " join fetch d.eixosDiagramaEntities e" +
-                   " join fetch v.unidadeEntity u " +
-                   " join fetch u.grupo g " +
-                   " left join fetch v.acoplamentoAtualEntity a " +
-                   " left join fetch a.acoplamentoProcessoEntity ap " +
-                   " left join fetch ap.acoplamentoAtualEntities ate " +
-                   " left join fetch v.pneuAplicadoEntity p " +
-                   " where u.codigo in :codUnidades" +
-                   " and v.statusAtivo = :incluirInativos")
+                   "join fetch v.modeloVeiculoEntity mv " +
+                   "join fetch mv.marcaVeiculoEntity mav " +
+                   "join fetch v.tipoVeiculoEntity tv " +
+                   "join fetch v.diagramaEntity d " +
+                   "join fetch d.eixosDiagramaEntities e " +
+                   "join fetch v.unidadeEntity u " +
+                   "join fetch u.grupo g " +
+                   "left join fetch v.acoplamentoProcessoEntity ap " +
+                   "left join fetch ap.acoplamentoAtualEntities ate " +
+                   "where u.codigo in :codUnidades " +
+                   "and (:incluirInativos = true or v.statusAtivo = true) " +
+                   "order by v.codigo asc")
     List<VeiculoEntity> getListagemVeiculos(@NotNull final List<Long> codUnidades,
                                             final boolean incluirInativos,
                                             @NotNull final Pageable pageable);

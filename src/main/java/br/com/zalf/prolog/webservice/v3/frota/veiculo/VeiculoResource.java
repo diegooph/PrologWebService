@@ -60,9 +60,6 @@ public class VeiculoResource implements VeiculoResourceApiDoc {
             @QueryParam("incluirInativos") @DefaultValue("true") final boolean incluirInativos,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
-        return veiculoMapper.toDto(veiculoService.getListagemVeiculos(codUnidades,
-                                                                      incluirInativos,
-                                                                      limit,
-                                                                      offset));
+        return veiculoMapper.toDto(veiculoService.getListagemVeiculos(codUnidades, incluirInativos, limit, offset));
     }
 }

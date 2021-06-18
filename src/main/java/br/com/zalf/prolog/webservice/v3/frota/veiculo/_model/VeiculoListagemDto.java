@@ -76,7 +76,6 @@ public class VeiculoListagemDto {
     Long kmAtual;
     @ApiModelProperty(value = "Status do veículo. No prolog o veículo pode estar ATIVO ou INATIVO," +
             "consideramos TRUE para ativo e FALSE para inativo.", required = true, example = "true")
-    @NotNull
     boolean statusAtivo;
     @ApiModelProperty(value = "Quantidade de pneus aplicados.")
     int totalPneusAplicados;
@@ -84,6 +83,8 @@ public class VeiculoListagemDto {
                       required = true,
                       example = "true")
     boolean acoplado;
+    @Nullable
+    Short posicaoAcoplado;
     @ApiModelProperty(value = "Caso hajam veículos acoplados, lista quais são.")
     @Nullable
     VeiculosAcopladosListagemDto veiculosAcoplados;
