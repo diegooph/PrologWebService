@@ -27,28 +27,34 @@ public class SolicitacaoFolgaService {
         }
     }
 
-    public List<SolicitacaoFolga> getByColaborador(Long cpf) {
+    public List<SolicitacaoFolga> getByColaborador(Long codColaborador) {
         try {
-            return dao.getByColaborador(cpf);
+            return dao.getByColaborador(codColaborador);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar as solicitações de folga do colaborador. \n" +
-                    "cpf: %d", cpf), e);
+                                             "codColaborador: %d", codColaborador), e);
             return Collections.emptyList();
         }
     }
 
     public List<SolicitacaoFolga> getAll(LocalDate dataInicial, LocalDate dataFinal, Long codUnidade,
-                                         String codEquipe, String status, String cpfColaborador) {
+                                         String codEquipe, String status, Long codColaborador) {
         try {
-            return dao.getAll(dataInicial, dataFinal, codUnidade, codEquipe, status, cpfColaborador);
+            return dao.getAll(dataInicial, dataFinal, codUnidade, codEquipe, status, codColaborador);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar as solicitações de folga. \n" +
-                    "codUnidade: %d \n" +
-                    "codEquipe: %s \n" +
-                    "status: %s \n" +
-                    "cpfColaborador: %s \n" +
-                    "dataInicial: %s \n" +
-                    "dataFinal: %s \n", codUnidade, codEquipe, status, cpfColaborador, dataInicial, dataFinal), e);
+                                             "codUnidade: %d \n" +
+                                             "codEquipe: %s \n" +
+                                             "status: %s \n" +
+                                             "codColaborador: %s \n" +
+                                             "dataInicial: %s \n" +
+                                             "dataFinal: %s \n",
+                                     codUnidade,
+                                     codEquipe,
+                                     status,
+                                     codColaborador,
+                                     dataInicial,
+                                     dataFinal), e);
             return Collections.emptyList();
         }
     }
