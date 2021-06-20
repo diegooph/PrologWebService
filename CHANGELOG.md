@@ -13,6 +13,7 @@ Change Log
 
 ### Refactors
 * Permite apenas valores positivos na configuração de Aferição (PL-3497)
+* Atualiza estrutura de solicitação de folga para não utilizar CPF (PL-3470)
 
 <a name="v3.4.0"></a>
 ## Version [v3.4.0](https://github.com/luizfp/PrologWebService/compare/v3.3.7...v3.4.0) (2021-06-07)
