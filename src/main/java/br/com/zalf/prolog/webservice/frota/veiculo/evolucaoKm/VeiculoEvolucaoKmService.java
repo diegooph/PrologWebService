@@ -28,26 +28,20 @@ public final class VeiculoEvolucaoKmService {
                                          @NotNull final String dataInicial,
                                          @NotNull final String dataFinal) throws ProLogException {
         try {
-            final Optional<VeiculoEvolucaoKmResponse> optional = dao.getVeiculoEvolucaoKm(codEmpresa,
-                                                                                          codVeiculo,
-                                                                                          PrologDateParser.toLocalDate(
-                                                                                                  dataInicial),
-                                                                                          PrologDateParser.toLocalDate(
-                                                                                                  dataFinal));
+            final Optional<VeiculoEvolucaoKmResponse> optional =
+                    dao.getVeiculoEvolucaoKm(codEmpresa,
+                                             codVeiculo,
+                                             PrologDateParser.toLocalDate(dataInicial),
+                                             PrologDateParser.toLocalDate(dataFinal));
             if (optional.isPresent()) {
-                return Response
-                        .ok(optional.get())
-                        .type(MediaType.APPLICATION_JSON)
-                        .build();
+                return Response.ok(optional.get()).type(MediaType.APPLICATION_JSON).build();
             }
-            return Response
-                    .noContent()
-                    .build();
+            return Response.noContent().build();
         } catch (final Throwable e) {
             Log.e(TAG,
-                    String.format("Erro ao buscar evolução de km do veículo de código %d, da empresa %d.", codVeiculo,
-                            codEmpresa),
-                    e);
+                  String.format("Erro ao buscar evolução de km do veículo de código %d, da empresa %d.", codVeiculo,
+                                codEmpresa),
+                  e);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao buscar a evolução de km, tente novamente.");

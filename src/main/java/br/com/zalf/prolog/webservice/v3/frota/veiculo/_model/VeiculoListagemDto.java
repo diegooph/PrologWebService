@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.v3.frota.veiculo._model;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @Data
+@Value
 public class VeiculoListagemDto {
     @ApiModelProperty(value = "Código do veículo.", required = true, example = "12345")
     @NotNull
@@ -35,7 +37,7 @@ public class VeiculoListagemDto {
     Long codMarca;
     @ApiModelProperty(value = "Nome da marca", required = true, example = "Marca A1")
     @NotNull
-    String marca;
+    String nomeMarca;
     @ApiModelProperty(value = "Código do modelo do veículo", required = true, example = "1")
     @NotNull
     Long codModelo;
@@ -44,47 +46,45 @@ public class VeiculoListagemDto {
     String nomeModelo;
     @ApiModelProperty(value = "Código do diagrama do veículo", required = true, example = "1")
     @NotNull
-    Long codDiagrama;
+    Short codDiagrama;
     @ApiModelProperty(value = "Quantidade de eixos dianteiros", required = true, example = "1")
     @NotNull
-    Long dianteiro;
+    Long qtdEixosDianteiros;
     @ApiModelProperty(value = "Quantidade de eixos traseiros", required = true, example = "1")
     @NotNull
-    Long traseiro;
-    @ApiModelProperty(value = "Nome do diagrama do veículo", required = true, example = "Diagrama A1")
-    @NotNull
-    String nomeDiagrama;
+    Long qtdEixosTraseiro;
     @ApiModelProperty(value = "Código do tipo de veículo.", required = true, example = "1")
     @NotNull
     Long codTipo;
     @ApiModelProperty(value = "Nome do tipo de veículo.", required = true, example = "Tipo A1")
     @NotNull
-    String tipo;
+    String nomeTipo;
     @ApiModelProperty(value = "Código da unidade a qual o veículo se encontra.", required = true, example = "1")
     @NotNull
     Long codUnidade;
-    @ApiModelProperty(value = "Nome da unidadea qual o veículo se encontra.", required = true, example = "Unidade A1")
+    @ApiModelProperty(value = "Nome da unidade a qual o veículo se encontra.", required = true, example = "Unidade A1")
     @NotNull
     String nomeUnidade;
-    @ApiModelProperty(value = "Nome da região a qual a unidade se encontra.", required = true, example = "Região A1")
-    @NotNull
-    String nomeRegional;
     @ApiModelProperty(value = "Código da região a qual a unidade se encontra.", required = true, example = "1")
     @NotNull
     Long codRegionalAlocado;
+    @ApiModelProperty(value = "Nome da região a qual a unidade se encontra.", required = true, example = "Região A1")
+    @NotNull
+    String nomeRegionalAlocado;
     @ApiModelProperty(value = "Km atual do veículo.", required = true, example = "1")
     @NotNull
     Long kmAtual;
     @ApiModelProperty(value = "Status do veículo. No prolog o veículo pode estar ATIVO ou INATIVO," +
             "consideramos TRUE para ativo e FALSE para inativo.", required = true, example = "true")
-    @NotNull
-    Boolean statusAtivo;
+    boolean statusAtivo;
+    @ApiModelProperty(value = "Quantidade de pneus aplicados.")
+    int totalPneusAplicados;
     @ApiModelProperty(value = "Indica se o veículo possui acoplamento. Caso possua: TRUE, se não possuir: FALSE",
                       required = true,
                       example = "true")
     boolean acoplado;
-    @ApiModelProperty(value = "Caso hajam veículos acoplados, lista quais são.")
-    int totalPneusAplicados;
+    @Nullable
+    Short posicaoAcoplado;
     @ApiModelProperty(value = "Caso hajam veículos acoplados, lista quais são.")
     @Nullable
     VeiculosAcopladosListagemDto veiculosAcoplados;

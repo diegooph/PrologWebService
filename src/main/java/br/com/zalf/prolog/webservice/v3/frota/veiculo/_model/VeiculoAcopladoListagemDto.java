@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.v3.frota.veiculo._model;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @Data
+@Value
 public class VeiculoAcopladoListagemDto {
     @ApiModelProperty(value = "Código do veículo acoplado", required = true, example = "1")
     @NotNull
@@ -29,5 +31,5 @@ public class VeiculoAcopladoListagemDto {
     boolean motorizado;
     @ApiModelProperty(value = "Indica qual é a posição que o veículo se encontra acoplado.",
                       required = true, example = "1")
-    int posicaoAcoplado;
+    Short posicaoAcoplado;
 }
