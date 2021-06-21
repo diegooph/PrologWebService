@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
+import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.FiltroServicoListagemDto;
@@ -8,8 +9,7 @@ import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuStat
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -45,14 +45,12 @@ public class ServicoPneuService implements KmProcessoAtualizavel {
     @Transactional
     public List<ServicoPneuEntity> findServicosPneuByFilter(@NotNull final FiltroServicoListagemDto filtro) {
         final Optional<ServicoPneuStatus> status = Optional.ofNullable(filtro.getStatus());
+        Pageable pageable = new OffsetBasedPageRequest(filtro.getOffset(), filtro.getLimit());
         return servicoPneuDao.findServicosPneuByUnidades(filtro.getCodUnidades(),
                                                          filtro.getCodVeiculo(),
                                                          filtro.getCodPneu(),
-                                                         status.map(ServicoPneuStatus::getAsBoolean)
-                                                                 .orElse(null),
-                                                         PageRequest.of(filtro.getOffset(),
-                                                                        filtro.getLimit(),
-                                                                        Sort.by("codigo")));
+                                                         status.map(ServicoPneuStatus::getAsBoolean).orElse(null),
+                                                         pageable);
     }
 
     @NotNull
