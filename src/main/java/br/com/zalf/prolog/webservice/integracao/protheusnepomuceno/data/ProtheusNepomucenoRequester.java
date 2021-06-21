@@ -1,8 +1,13 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data;
 
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoPlacaProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.PneuEstoqueProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoAfericaoProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoListagemProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.inspecaoremovido.*;
 import br.com.zalf.prolog.webservice.integracao.sistema.Requester;
+import io.reactivex.rxjava3.core.Observable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -30,7 +35,7 @@ public interface ProtheusNepomucenoRequester extends Requester {
             @NotNull final AfericaoPlacaProtheusNepomuceno afericaoPlaca) throws Throwable;
 
     @NotNull
-    List<PneuEstoqueProtheusNepomuceno> getListagemPneusEmEstoque(
+    List<PneuListagemInspecaoRemovido> getListagemPneusInspecaoRemovido(
             @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
             @NotNull final String codFiliais) throws Throwable;
 
@@ -41,7 +46,20 @@ public interface ProtheusNepomucenoRequester extends Requester {
             @NotNull final String codPneu) throws Throwable;
 
     @NotNull
-    ResponseAfericaoProtheusNepomuceno insertAfericaoAvulsa(
+    ResponseAfericaoProtheusNepomuceno insertInspecaoRemovido(
             @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
-            @NotNull final AfericaoAvulsaProtheusNepomuceno afericaoAvulsa) throws Throwable;
+            @NotNull final InspecaoRemovidoRealizada inspecaoRemovido) throws Throwable;
+
+    @NotNull
+    Observable<List<LipPneuProtheusNepomuceno>> getLips(@NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
+                                                        @NotNull final String codFilial);
+
+    @NotNull
+    Observable<List<FilialProtheusNepomuceno>> getFiliais(@NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
+                                                          @NotNull final String codFilial);
+
+    @NotNull
+    Observable<List<CausaSucataPneuProtheusNepomuceno>> getCausasSucata(
+            @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
+            @NotNull final String codFilial);
 }

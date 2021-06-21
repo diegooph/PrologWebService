@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.config;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.PrologUtils;
 import br.com.zalf.prolog.webservice.entrega.mapa.validator.RegrasPlanilhaMapaLoader;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.FamiliaModeloBloqueadoLoader;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ConfigIntegracaoNepomucenoLoader;
 import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.devtools.filewatch.ChangedFiles;
@@ -42,7 +42,7 @@ public class PrologConfigFilesWatcher implements FileChangeListener {
 
     @NotNull
     private static ImmutableMap<String, FileWatchListener> setupListeners() {
-        final FamiliaModeloBloqueadoLoader familiaModeloBloqueadoLoader = FamiliaModeloBloqueadoLoader.of();
+        final ConfigIntegracaoNepomucenoLoader familiaModeloBloqueadoLoader = ConfigIntegracaoNepomucenoLoader.of();
         final RegrasPlanilhaMapaLoader regrasPlanilhaMapaLoader = RegrasPlanilhaMapaLoader.of();
         return ImmutableMap
                 .<String, FileWatchListener>builder()

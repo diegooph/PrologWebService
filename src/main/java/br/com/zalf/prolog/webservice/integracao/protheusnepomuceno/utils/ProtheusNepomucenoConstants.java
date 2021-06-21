@@ -11,9 +11,19 @@ public final class ProtheusNepomucenoConstants {
     @NotNull
     public static final String DEFAULT_CODIGOS_SEPARATOR = ":";
     @NotNull
+    public static final String DEFAULT_CODIGOS_FILIAIS_RESQUEST_SEPARATOR = "_";
+    @NotNull
     public static final String DEFAULT_COD_AUXILIAR_TIPO_VEICULO_SEPARATOR = ",";
     @NotNull
     public static final String DEFAULT_COD_AUXILIAR_UNIDADE_SEPARATOR = ",";
+    @NotNull
+    public static final String DEFAULT_COD_RESPOSTA_SEPARATOR = "-";
+    @NotNull
+    public static final String DEFAULT_QUERY_PARAM_LIPS = "lips";
+    @NotNull
+    public static final String DEFAULT_QUERY_PARAM_FILIAIS = "filiais";
+    @NotNull
+    public static final String DEFAULT_QUERY_PARAM_SUCATA = "sucata";
     @NotNull
     static final Long DEFAULT_COD_MARCA_PNEU = 1L;
     @NotNull

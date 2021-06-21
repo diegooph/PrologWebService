@@ -11,7 +11,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum CampoPersonalizadoFuncaoProlog {
-    MOVIMENTACAO(14, "movimentacao_campo_personalizado_resposta");
+    MOVIMENTACAO(14, "movimentacao_campo_personalizado_resposta"),
+    AFERICAO(1, "afericao_campo_personalizado_resposta");
 
     /**
      * Código da funcionalidade que representa movimentação.

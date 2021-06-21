@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import org.jetbrains.annotations.NotNull;
 
-import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.FamiliaModeloBloqueadoLoader.getFamiliasModelosPlacasBloqueio;
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ConfigIntegracaoNepomucenoLoader.getConfigIntegracaoNepomuceno;
 import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConstants.DEFAULT_CODIGOS_SEPARATOR;
 
 /**
@@ -170,18 +170,18 @@ public final class VeiculoListagemProtheusNepomuceno {
     }
 
     private boolean verificaSePlacaBloqueada() {
-        return getFamiliasModelosPlacasBloqueio()
+        return getConfigIntegracaoNepomuceno()
                 .getPlacasBloqueadas()
                 .stream()
                 .anyMatch(placa -> placa.equalsIgnoreCase(placaVeiculo));
     }
 
     private boolean verificaSeModeloBloqueado() {
-        return getFamiliasModelosPlacasBloqueio().getModelosBloqueados().stream().anyMatch(codEstruturaVeiculo::equals);
+        return getConfigIntegracaoNepomuceno().getModelosBloqueados().stream().anyMatch(codEstruturaVeiculo::equals);
     }
 
     private boolean verificaSeFamiliaBloqueada() {
-        return getFamiliasModelosPlacasBloqueio()
+        return getConfigIntegracaoNepomuceno()
                 .getFamiliasBloqueadas()
                 .stream()
                 .anyMatch(codEstruturaVeiculo::contains);

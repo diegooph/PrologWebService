@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.operacoes;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,4 +46,10 @@ interface OperacoesIntegradasAfericao {
                                            @NotNull final LocalDate dataFinal,
                                            final int limit,
                                            final long offset) throws Throwable;
+
+    @NotNull
+    List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoAfericao(
+            @NotNull final Long codUnidade,
+            @NotNull final TipoProcessoColetaAfericao tipoProcessoColetaAfericao,
+            @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable;
 }

@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
@@ -188,6 +189,26 @@ public class AfericaoServiceV2 implements AfericaoIntegrada {
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar a aferição: " + codAfericao, e);
             throw exceptionHandler.map(e, "Erro ao buscar a aferição, tente novamente");
+        }
+    }
+
+    @NotNull
+    List<CampoPersonalizadoParaRealizacao> getCamposPersonalizadosRealizacao(
+            @NotNull final String userToken,
+            @NotNull final Long codUnidade,
+            @NotNull final TipoProcessoColetaAfericao tipoProcessoColetaAfericao) throws ProLogException {
+        try {
+            return RouterAfericao
+                    .create(dao, userToken)
+                    .getCamposParaRealizacaoAfericao(
+                            codUnidade,
+                            tipoProcessoColetaAfericao,
+                            Injection.provideCampoPersonalizadoDao());
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar os campos personalizados para a unidade %d", codUnidade), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar os campos personalizados, tente novamente");
         }
     }
 

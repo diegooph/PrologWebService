@@ -8,6 +8,10 @@ import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoFuncaoProlog;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoResposta;
+import br.com.zalf.prolog.webservice.customfields._model.ColunaTabelaResposta;
+import br.com.zalf.prolog.webservice.customfields._model.ColunaTabelaRespostaBuilder;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuConverter;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
@@ -466,6 +470,17 @@ public class AfericaoDaoV2Impl extends DatabaseConnection implements AfericaoDao
                 insertValores(conn, codUnidade, afericao, deveAbrirServico, afericao instanceof AfericaoPlaca);
             }
             if (codAfericao != null && codAfericao != 0) {
+                final List<CampoPersonalizadoResposta> respostas = afericao.getRespostasCamposPersonalizados();
+                if (respostas != null && !respostas.isEmpty()) {
+                    Injection.provideCampoPersonalizadoDao().salvaRespostasCamposPersonalizados(
+                            conn,
+                            CampoPersonalizadoFuncaoProlog.AFERICAO,
+                            respostas,
+                            new ColunaTabelaRespostaBuilder()
+                                    .addColunaEspecifica(
+                                            new ColunaTabelaResposta("cod_processo_afericao", codAfericao))
+                                    .getColunas());
+                }
                 return codAfericao;
             } else {
                 throw new IllegalStateException("Não foi possível retornar o código da aferição realizada");

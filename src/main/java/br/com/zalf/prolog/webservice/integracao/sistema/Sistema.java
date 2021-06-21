@@ -134,6 +134,16 @@ public abstract class Sistema implements OperacoesIntegradas {
                 .getAfericoesPlacas(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
     }
 
+    @NotNull
+    @Override
+    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoAfericao(
+            @NotNull final Long codUnidade,
+            @NotNull final TipoProcessoColetaAfericao tipoProcessoColetaAfericao,
+            @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable {
+        return getIntegradorProLog()
+                .getCamposParaRealizacaoAfericao(codUnidade, tipoProcessoColetaAfericao, campoPersonalizadoDao);
+    }
+
     // #################################################################################################################
     // #################################################################################################################
     // ####################################### OPERAÇÕES INTEGRADAS - CHECKLIST ########################################

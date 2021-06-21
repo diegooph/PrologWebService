@@ -8,12 +8,15 @@ Change Log
 ### Features
 * Cria endpoint de listagem de veículos na API (PL-3670)
 * Cria DTO para a listagem de veículos na API (PL-3672)
+* Cria busca de campos personalizados para Aferição (PL-2909)
+* Implementa integração de Inspeção de Removidos para Nepomuceno (PL-3673)
 * Criar método para atualizar o KM atual do veículo na API v3 (PL-3678)
 * Criar método para atualizar o status atual do pneu na API v3 (PL-3679)
 
 ### Refactors
 * Permite apenas valores positivos na configuração de Aferição (PL-3497)
 * Atualiza estrutura de solicitação de folga para não utilizar CPF (PL-3470)
+* Refatora aferições para possibilitar recebimento de resposta de campos personalizados (PL-2910)
 
 <a name="v3.4.0"></a>
 ## Version [v3.4.0](https://github.com/luizfp/PrologWebService/compare/v3.3.7...v3.4.0) (2021-06-07)

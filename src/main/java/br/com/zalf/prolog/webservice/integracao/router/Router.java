@@ -189,6 +189,21 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    @NotNull
+    @Override
+    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoAfericao(
+            @NotNull final Long codUnidade,
+            @NotNull final TipoProcessoColetaAfericao tipoProcessoColetaAfericao,
+            @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema()
+                    .getCamposParaRealizacaoAfericao(codUnidade, tipoProcessoColetaAfericao, campoPersonalizadoDao);
+        } else {
+            return integradorProLog
+                    .getCamposParaRealizacaoAfericao(codUnidade, tipoProcessoColetaAfericao, campoPersonalizadoDao);
+        }
+    }
+
     // #################################################################################################################
     // #################################################################################################################
     // ####################################### OPERAÇÕES INTEGRADAS - CHECKLIST ########################################

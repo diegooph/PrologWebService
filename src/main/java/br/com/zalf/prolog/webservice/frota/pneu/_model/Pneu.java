@@ -423,6 +423,10 @@ public abstract class Pneu {
         return sulcosAtuais.getMenorSulco();
     }
 
+    public double getValorMaiorSulcoAtual() {
+        return sulcosAtuais.getMaiorSulco();
+    }
+
     public boolean jaFoiRecapado() {
         return vidaAtual > 1;
     }

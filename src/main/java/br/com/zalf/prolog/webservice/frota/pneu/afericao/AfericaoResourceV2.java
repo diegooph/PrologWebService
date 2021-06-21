@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.VersaoAppBloqueadaException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
@@ -139,9 +140,8 @@ public class AfericaoResourceV2 {
                                                   @QueryParam("placaVeiculo") @Required final String placaVeiculo,
                                                   @QueryParam("tipoAfericao") @Required final TipoMedicaoColetadaAfericao tipoAfericao)
             throws ProLogException {
-        final TipoMedicaoColetadaAfericao tipoAfericaoEnum = tipoAfericao;
         final AfericaoBuscaFiltro afericaoBusca =
-                AfericaoBuscaFiltro.of(codUnidade, codVeiculo, placaVeiculo, tipoAfericaoEnum);
+                AfericaoBuscaFiltro.of(codUnidade, codVeiculo, placaVeiculo, tipoAfericao);
         return service.getNovaAfericaoPlaca(afericaoBusca, userToken);
     }
 
@@ -267,6 +267,18 @@ public class AfericaoResourceV2 {
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     public Restricao getRestricaoByCodUnidade(@PathParam("codUnidade") final Long codUnidade) throws ProLogException {
         return service.getRestricaoByCodUnidade(codUnidade);
+    }
+
+    @GET
+    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO)
+    @UsedBy(platforms = Platform.ANDROID)
+    @Path("/campos-personalizados")
+    public List<CampoPersonalizadoParaRealizacao> getCamposPersonalizadosRealizacao(
+            @HeaderParam("Authorization") @Required final String userToken,
+            @QueryParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("tipoProcessoColetaAfericao") @Required final TipoProcessoColetaAfericao tipoProcessoColetaAfericao)
+            throws ProLogException {
+        return service.getCamposPersonalizadosRealizacao(userToken, codUnidade, tipoProcessoColetaAfericao);
     }
 
     /**

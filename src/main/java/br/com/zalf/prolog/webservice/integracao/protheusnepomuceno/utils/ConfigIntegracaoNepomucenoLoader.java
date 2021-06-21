@@ -4,49 +4,44 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.files.YamlUtils;
 import br.com.zalf.prolog.webservice.config.PrologConfigFilesWatcher;
 import br.com.zalf.prolog.webservice.entrega.mapa.validator.RegrasPlanilhaMapaLoader;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.FamiliasModelosPlacasBloqueio;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.ConfigIntegracaoNepomuceno;
 import lombok.Data;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Created on 2020-07-29
- *
- * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
- */
 @Data(staticConstructor = "of")
-public final class FamiliaModeloBloqueadoLoader implements PrologConfigFilesWatcher.FileWatchListener {
+public class ConfigIntegracaoNepomucenoLoader implements PrologConfigFilesWatcher.FileWatchListener {
     @NotNull
-    private static final String TAG = FamiliaModeloBloqueadoLoader.class.getSimpleName();
+    private static final String TAG = ConfigIntegracaoNepomucenoLoader.class.getSimpleName();
     // O arquivo está localizado na pasta "resources" do projeto.
     @NotNull
     private static final String NOME_ARQUIVO_FAMILIA_MODELO_BLOQUEIO =
-            "configs/integracoes/familia_modelo_bloqueado_nepomuceno.yaml";
+            "configs/integracoes/config_integracao_nepomuceno.yaml";
     @Nullable
-    private static volatile FamiliasModelosPlacasBloqueio sFamiliasModelosPlacasBloqueio;
+    private static volatile ConfigIntegracaoNepomuceno sConfigIntegracaoNepomuceno;
 
     static {
-        sFamiliasModelosPlacasBloqueio = loadFromResource();
+        sConfigIntegracaoNepomuceno = loadFromResource();
     }
 
     @NotNull
-    public static FamiliasModelosPlacasBloqueio getFamiliasModelosPlacasBloqueio() {
+    public static ConfigIntegracaoNepomuceno getConfigIntegracaoNepomuceno() {
         // Apenas caso a inicialização no bloco static tenha falhado.
-        if (sFamiliasModelosPlacasBloqueio == null) {
+        if (sConfigIntegracaoNepomuceno == null) {
             synchronized (RegrasPlanilhaMapaLoader.class) {
-                if (sFamiliasModelosPlacasBloqueio == null) {
-                    sFamiliasModelosPlacasBloqueio = loadFromResource();
+                if (sConfigIntegracaoNepomuceno == null) {
+                    sConfigIntegracaoNepomuceno = loadFromResource();
                 }
             }
         }
         //noinspection ConstantConditions
-        return sFamiliasModelosPlacasBloqueio;
+        return sConfigIntegracaoNepomuceno;
     }
 
     @NotNull
-    private static FamiliasModelosPlacasBloqueio loadFromResource() {
-        return YamlUtils.parseFromResource(NOME_ARQUIVO_FAMILIA_MODELO_BLOQUEIO, FamiliasModelosPlacasBloqueio.class);
+    private static ConfigIntegracaoNepomuceno loadFromResource() {
+        return YamlUtils.parseFromResource(NOME_ARQUIVO_FAMILIA_MODELO_BLOQUEIO, ConfigIntegracaoNepomuceno.class);
     }
 
     @Override
@@ -58,6 +53,6 @@ public final class FamiliaModeloBloqueadoLoader implements PrologConfigFilesWatc
     @Override
     public void onWatchedFileChanged() {
         Log.d(TAG, "File changed: " + NOME_ARQUIVO_FAMILIA_MODELO_BLOQUEIO);
-        sFamiliasModelosPlacasBloqueio = loadFromResource();
+        sConfigIntegracaoNepomuceno = loadFromResource();
     }
 }

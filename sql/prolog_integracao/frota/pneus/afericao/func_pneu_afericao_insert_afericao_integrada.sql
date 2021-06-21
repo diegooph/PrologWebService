@@ -9,7 +9,8 @@ create or replace function
                                                             f_tempo_realizacao bigint,
                                                             f_data_hora timestamp with time zone,
                                                             f_tipo_medicao_coletada text,
-                                                            f_tipo_processo_coleta text)
+                                                            f_tipo_processo_coleta text,
+                                                            f_respostas_campos_personalizados jsonb)
     returns bigint
     language plpgsql
 as
@@ -55,7 +56,8 @@ begin
                                               tempo_realizacao,
                                               data_hora,
                                               tipo_medicao_coletada,
-                                              tipo_processo_coleta)
+                                              tipo_processo_coleta,
+                                              respostas_campos_personalizados)
     values (v_cod_empresa_prolog,
             v_cod_empresa_cliente,
             f_cod_unidade_prolog,
@@ -70,7 +72,8 @@ begin
             f_tempo_realizacao,
             f_data_hora,
             f_tipo_medicao_coletada,
-            f_tipo_processo_coleta)
+            f_tipo_processo_coleta,
+            f_respostas_campos_personalizados)
     returning codigo into v_cod_afericao_integrada_inserida;
 
     if (v_cod_afericao_integrada_inserida is null or v_cod_afericao_integrada_inserida <= 0)
