@@ -1,4 +1,3 @@
-begin transaction;
 drop index if exists unique_pneu_empresa;
 create unique index unique_pneu_empresa
     on pneu_data (codigo_cliente, cod_empresa)
@@ -9,4 +8,3 @@ alter table veiculo_data
 create unique index unique_cod_empresa_placa
     on veiculo_data (placa, cod_empresa)
     where (deletado = false);
-end transaction;
