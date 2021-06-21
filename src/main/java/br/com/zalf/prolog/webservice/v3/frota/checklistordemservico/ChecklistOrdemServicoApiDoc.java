@@ -43,7 +43,8 @@ public interface ChecklistOrdemServicoApiDoc {
                     "Caso não deseje filtrar, basta não enviar esse parâmetro.")
             @Optional final String codVeiculo,
             @ApiParam(value = "Status da ordem de serviço. Podendo ser ABERTA ou FECHADA. Utilizado para filtrar " +
-                    "ordens de serviço de apenas um veículo. Caso não deseje filtrar, basta não enviar esse parâmetro.",
+                    "ordens de serviço de um status específico. Caso não deseje filtrar, basta não enviar esse " +
+                    "parâmetro.",
                       example = "F")
             @Optional final StatusOrdemServico statusOrdemServico,
             @ApiParam(value = "Flag utilizada para retornar os itens das ordens de serviço. Por padrão é sempre " +
