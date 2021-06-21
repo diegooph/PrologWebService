@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
@@ -30,30 +31,24 @@ import java.util.List;
 @RestController
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ServicoPneuResource implements ServicoPneuApiDoc {
+    @NotNull
     private final ServicoPneuService service;
+    @NotNull
     private final ServicoPneuListagemMapper mapper;
 
     @GET
     @ApiExposed
     @Secured(permissions = Pilares.Frota.OrdemServico.Pneu.VISUALIZAR)
     @Override
-    @NotNull
-    public List<ServicoPneuListagemDto> getServicosByUnidadeAndStatus(@QueryParam("codUnidades")
-                                                                          @NotNull final List<Long> codUnidades,
-                                                                      @QueryParam("statusServicoPneu")
-                                                                          @Optional final ServicoPneuStatus status,
-                                                                      @QueryParam("codVeiculo")
-                                                                          @Optional final Long codVeiculo,
-                                                                      @QueryParam("codPneu")
-                                                                          @Optional final Long codPneu,
-                                                                      @QueryParam("limit") final int limit,
-                                                                      @QueryParam("offset") final int offset) {
-        final FiltroServicoListagemDto filtro = FiltroServicoListagemDto.of(codUnidades,
-                                                                            codVeiculo,
-                                                                            codPneu,
-                                                                            status,
-                                                                            limit,
-                                                                            offset);
+    public List<ServicoPneuListagemDto> getServicosByUnidadeAndStatus(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("statusServicoPneu") @Optional final ServicoPneuStatus status,
+            @QueryParam("codVeiculo") @Optional final Long codVeiculo,
+            @QueryParam("codPneu") @Optional final Long codPneu,
+            @QueryParam("limit") final int limit,
+            @QueryParam("offset") final int offset) {
+        final FiltroServicoListagemDto filtro =
+                FiltroServicoListagemDto.of(codUnidades, codVeiculo, codPneu, status, limit, offset);
         final List<ServicoPneuEntity> servicosPneu = this.service.findServicosPneuByFilter(filtro);
         return this.mapper.toDto(servicosPneu);
     }

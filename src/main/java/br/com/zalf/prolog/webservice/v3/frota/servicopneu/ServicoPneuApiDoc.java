@@ -1,10 +1,11 @@
 package br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
+import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuListagemDto;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuStatus;
+import br.com.zalf.prolog.webservice.v3.validation.CodUnidades;
 import io.swagger.annotations.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.Max;
 import javax.ws.rs.core.Response;
@@ -15,13 +16,12 @@ import java.util.List;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@Api(value = "Serviços de pneus")
+@Api(value = "Serviços de pneus", hidden = true)
 public interface ServicoPneuApiDoc {
 
     @ApiOperation(
             value = "Lista serviços de pneus abertos e fechados.",
-            response = ServicoPneuListagemDto.class,
-            responseContainer = "List")
+            response = List.class)
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200, message = "Operação efetuada com sucesso.",
@@ -34,20 +34,20 @@ public interface ServicoPneuApiDoc {
     List<ServicoPneuListagemDto> getServicosByUnidadeAndStatus(
             @ApiParam(value = "Lista de códigos de unidade.",
                       example = "215",
-                      required = true) final @NotNull List<Long> codUnidades,
-            @ApiParam(value = "Status do servico.",
-                      allowEmptyValue = true,
+                      required = true) @Required @CodUnidades final List<Long> codUnidades,
+            @ApiParam(value = "Status do serviço - Utilizado para filtrar serviços abertos ou fechados. Caso não " +
+                    "deseje filtrar, basta não enviar esse parâmetro.",
                       example = "ABERTO",
-                      allowableValues = "ABERTO, FECHADO") final @Nullable ServicoPneuStatus status,
-            @ApiParam(value = "Código do veiculo.",
-                      allowEmptyValue = true) final @Nullable Long codVeiculo,
-            @ApiParam(value = "Código do pneu.",
-                      allowEmptyValue = true) final @Nullable Long codPneu,
+                      allowableValues = "ABERTO, FECHADO") @Optional final ServicoPneuStatus status,
+            @ApiParam(value = "Código do veículo - Utilizado para filtrar serviços de pneus em um veículo específico." +
+                    " Caso não deseje filtrar, basta não enviar esse parâmetro.") @Optional final Long codVeiculo,
+            @ApiParam(value = "Código do pneu - Utilizado para filtrar serviços de um pneu específico. Caso não " +
+                    "deseje filtrar, basta não enviar esse parâmetro.") @Optional final Long codPneu,
             @Max(value = 1000, message = "O limite de busca é 1000 registros.")
-            @ApiParam(value = "limite de ordens de serviço retornados pela busca. O valor máximo é 1000.",
+            @ApiParam(value = "Limite de serviços de pneus retornados pela busca. O valor máximo é 1000.",
                       example = "1000",
                       required = true) final int limit,
-            @ApiParam(value = "Offset de ordens de serviço. A partir de qual checklist deve-se começar a busca.",
+            @ApiParam(value = "Offset de serviços de pneus. A partir de qual serviço deve-se começar a busca.",
                       example = "0",
                       required = true) final int offset);
 }

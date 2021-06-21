@@ -43,7 +43,6 @@ public class PneuResource implements PneuApiDoc {
     @ApiExposed
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Override
-    @NotNull
     public SuccessResponse insert(
             @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Optional final String tokenIntegracao,
             @QueryParam("ignoreDotValidation") @DefaultValue("true") final boolean ignoreDotValidation,
@@ -51,6 +50,7 @@ public class PneuResource implements PneuApiDoc {
         return this.service.insert(tokenIntegracao, pneuCadastro, ignoreDotValidation);
     }
 
+    @Override
     @GET
     @ApiExposed
     @Secured(permissions = {
