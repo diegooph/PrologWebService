@@ -1,21 +1,21 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.v3;
+package br.com.zalf.prolog.webservice.v3.frota.veiculo.tipoveiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.v3._model.TipoVeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo.tipoveiculo._model.TipoVeiculoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TipoVeiculoV3Service {
+public class TipoVeiculoService {
     @NotNull
-    private static final String TAG = TipoVeiculoV3Service.class.getSimpleName();
+    private static final String TAG = TipoVeiculoService.class.getSimpleName();
     @NotNull
-    private final TipoVeiculoV3Dao tipoVeiculoDao;
+    private final TipoVeiculoDao tipoVeiculoDao;
 
     @Autowired
-    public TipoVeiculoV3Service(@NotNull final TipoVeiculoV3Dao tipoVeiculoDao) {
+    public TipoVeiculoService(@NotNull final TipoVeiculoDao tipoVeiculoDao) {
         this.tipoVeiculoDao = tipoVeiculoDao;
     }
 

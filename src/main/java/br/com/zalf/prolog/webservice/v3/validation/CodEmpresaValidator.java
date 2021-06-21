@@ -46,7 +46,7 @@ public final class CodEmpresaValidator implements ConstraintValidator<CodEmpresa
 
     private boolean containsCodEmpresa(@NotNull final List<UnidadeEntity> unidades, @NotNull final Long codEmpresa) {
         return unidades.stream()
-                .map(UnidadeEntity::getCodEmpresa)
+                .map(unidadeEntity -> unidadeEntity.getEmpresaEntity().getCodigo())
                 .distinct()
                 .allMatch(codigo -> codigo.equals(codEmpresa));
     }

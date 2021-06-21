@@ -48,7 +48,7 @@ public final class MovimentacaoListagemDto {
                       example = "15.2")
     @Nullable
     private final Double sulcoCentralExternoMomentoMovimentacaoEmMilimetros;
-    @ApiModelProperty(value = "Sulco externo no momento da movimentação. Sulco interno é identificado como o sulco " +
+    @ApiModelProperty(value = "Sulco externo no momento da movimentação. Sulco externo é identificado como o sulco " +
             "que fica mais afastado do centro do veículo.",
                       example = "15.2")
     @Nullable

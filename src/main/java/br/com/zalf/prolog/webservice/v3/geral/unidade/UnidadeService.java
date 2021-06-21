@@ -69,6 +69,11 @@ public class UnidadeService {
     }
 
     @NotNull
+    public UnidadeEntity getByCod(@NotNull final Long codUnidade) {
+        return dao.getOne(codUnidade);
+    }
+
+    @NotNull
     public List<UnidadeProjection> getUnidadesListagem(
             @NotNull final Long codEmpresa,
             @Nullable final List<Long> codsRegionais) {

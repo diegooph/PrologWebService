@@ -57,7 +57,7 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
         if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.UNIQUE_VIOLATION.getErrorCode())) {
             return new DuplicateKeyException(
                     "Este registro já existe no banco de dados.",
-                    getPSQLErrorDetail(sqlException),
+                    getDetailMessage(sqlException),
                     sqlException.getMessage(),
                     false);
         }
@@ -65,7 +65,7 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
         if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.FOREIGN_KEY_VIOLATION.getErrorCode())) {
             return new ForeignKeyException(
                     "Ocorreu um erro ao inserir/atualizar os dados.",
-                    getPSQLErrorDetail(sqlException),
+                    getDetailMessage(sqlException),
                     sqlException.getMessage(),
                     true);
         }
@@ -73,11 +73,7 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
         if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.CHECK_VIOLATION.getErrorCode())) {
             return new ConstraintCheckException(
                     "Ocorreu um erro ao inserir/atualizar os dados.",
-                    ConstraintsCheckEnum.fromString(
-                            getPSQLErrorConstraint(sqlException)).getDetailedMessage().isEmpty()
-                            ? getPSQLErrorMessage(sqlException)
-                            : ConstraintsCheckEnum.fromString(
-                            getPSQLErrorConstraint(sqlException)).getDetailedMessage(),
+                    getDetailMessage(sqlException),
                     sqlException.getMessage(),
                     false);
         }
@@ -85,7 +81,7 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
         if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.NOT_NULL_VIOLATION.getErrorCode())) {
             return new NotNullViolationException(
                     "Ocorreu um erro ao inserir/atualizar os dados.",
-                    getPSQLErrorMessage(sqlException),
+                    getDetailMessage(sqlException),
                     sqlException.getMessage(),
                     false);
         }
@@ -93,7 +89,7 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
         if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.SERVER_SIDE_ERROR.getErrorCode())) {
             return new ServerSideErrorException(
                     "Um erro ocorreu no servidor.",
-                    getPSQLErrorMessage(sqlException),
+                    getDetailMessage(sqlException),
                     sqlException.getMessage(),
                     true);
         }
@@ -101,7 +97,7 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
         if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.CLIENT_SIDE_ERROR.getErrorCode())) {
             return new ClientSideErrorException(
                     "Um erro ocorreu nas validações dos dados enviados.",
-                    getPSQLErrorMessage(sqlException),
+                    getDetailMessage(sqlException),
                     sqlException.getMessage(),
                     false);
         }
@@ -119,12 +115,19 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
     }
 
     @NotNull
-    private String getPSQLErrorDetail(@NotNull final SQLException sqlException) {
-        return ((PSQLException) sqlException).getServerErrorMessage().getDetail();
+    private String getDetailMessage(@NotNull final SQLException sqlException) {
+        final ConstraintsCheckEnum constraint = getPSQLErrorConstraint(sqlException);
+        final ValidEntityTableName tableName =
+                ValidEntityTableName.getTableNameFromMessage(getPSQLErrorMessage(sqlException));
+        return constraint.getDetailMessage(tableName);
     }
 
     @NotNull
-    private String getPSQLErrorConstraint(@NotNull final SQLException sqlException) {
-        return ((PSQLException) sqlException).getServerErrorMessage().getConstraint();
+    private ConstraintsCheckEnum getPSQLErrorConstraint(@NotNull final SQLException sqlException) {
+        if (sqlException instanceof PSQLException) {
+            return ConstraintsCheckEnum.fromString(((PSQLException) sqlException).getServerErrorMessage()
+                                                           .getConstraint());
+        }
+        return ConstraintsCheckEnum.DEFAULT;
     }
 }

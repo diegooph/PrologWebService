@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,8 +13,12 @@ import java.util.Date;
  */
 public interface SolicitacaoFolgaRelatorioDao {
 
-    void getResumoFolgasConcedidasCsv(Long codUnidade, OutputStream outputStream, Date dataInicial, Date dataFinal)
-            throws IOException, SQLException;
+    void getResumoFolgasConcedidasCsv(@NotNull final Long codUnidade,
+                                      @NotNull final OutputStream outputStream,
+                                      @NotNull final Date dataInicial,
+                                      @NotNull final Date dataFinal) throws IOException, SQLException;
 
-    Report getResumoFolgasConcedidasReport(Long codUnidade, Date dataInicial, Date dataFinal) throws SQLException;
+    Report getResumoFolgasConcedidasReport(@NotNull final Long codUnidade,
+                                           @NotNull final Date dataInicial,
+                                           @NotNull final Date dataFinal) throws SQLException;
 }

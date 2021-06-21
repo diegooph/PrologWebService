@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.geral.empresa;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -8,6 +10,7 @@ import java.time.LocalDateTime;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
+@Data
 @Entity
 @Table(name = "empresa", schema = "public")
 public class EmpresaEntity {
