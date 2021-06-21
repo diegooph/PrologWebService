@@ -29,21 +29,21 @@ public class VeiculoListagemDto {
     boolean possuiHubodometro;
     @ApiModelProperty(value = "Código da marca do veículo.", required = true, example = "43")
     @NotNull
-    Long codMarca;
+    Long codMarcaVeiculo;
     @ApiModelProperty(value = "Nome da marca do veículo.", required = true, example = "Volkswagen")
     @NotNull
-    String nomeMarca;
+    String nomeMarcaVeiculo;
     @ApiModelProperty(value = "Código do modelo do veículo.", required = true, example = "120")
     @NotNull
-    Long codModelo;
+    Long codModeloVeiculo;
     @ApiModelProperty(value = "Nome do modelo do veículo.", required = true, example = "VW 2220")
     @NotNull
-    String nomeModelo;
+    String nomeModeloVeiculo;
     @ApiModelProperty(value = "Código do diagrama do veículo. Esse código identifica a estrutura de chassi do veículo.",
                       required = true,
                       example = "1")
     @NotNull
-    Short codDiagrama;
+    Short codDiagramaVeiculo;
     @ApiModelProperty(value = "Quantidade de eixos dianteiros, presentes na estrutura do veículo.",
                       required = true,
                       example = "1")
@@ -56,38 +56,38 @@ public class VeiculoListagemDto {
     Long qtdEixosTraseiro;
     @ApiModelProperty(value = "Código do tipo de veículo.", required = true, example = "12345")
     @NotNull
-    Long codTipo;
+    Long codTipoVeiculo;
     @ApiModelProperty(value = "Nome do tipo de veículo.", required = true, example = "TRUCK")
     @NotNull
-    String nomeTipo;
+    String nomeTipoVeiculo;
     @ApiModelProperty(value = "Código da unidade onde o veículo está alocado.", required = true, example = "215")
     @NotNull
-    Long codUnidade;
+    Long codUnidadeVeiculo;
     @ApiModelProperty(value = "Nome da unidade onde o pneu está alocado.",
                       required = true,
                       example = "Unidade de testes")
     @NotNull
-    String nomeUnidade;
+    String nomeUnidadeVeiculo;
     @ApiModelProperty(value = "Código do grupo da unidade.", required = true, example = "1")
     @NotNull
-    Long codRegionalAlocado;
+    Long codGrupoVeiculo;
     @ApiModelProperty(value = "Nome do grupo da unidade.", required = true, example = "Sudeste")
     @NotNull
-    String nomeRegionalAlocado;
+    String nomeGrupoVeiculo;
     @ApiModelProperty(value = "Km atual do veículo.", required = true, example = "111111")
     @NotNull
-    Long kmAtual;
+    Long kmAtualVeiculo;
     @ApiModelProperty(value = "Status do veículo.", required = true, example = "true")
     boolean statusAtivo;
     @ApiModelProperty(value = "Quantidade de pneus aplicados ao veículo.")
     int totalPneusAplicados;
     @ApiModelProperty(value = "Flag indicando se o veículo está acoplado.", required = true, example = "true")
-    boolean acoplado;
+    boolean veiculoAcoplado;
     @ApiModelProperty(value = "Posição em que o veículo está acoplado. Essa propriedade só será enviada caso o " +
             "veículo estiver acoplado.",
                       example = "1")
     @Nullable
-    Short posicaoAcoplado;
+    Short posicaoVeiculoAcoplado;
     @ApiModelProperty(value = "Informações do acoplamento em que o veículo se encontra. Essa propriedade só será " +
             "enviada caso o veículo estiver acoplado.")
     @Nullable
