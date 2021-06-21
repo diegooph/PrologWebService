@@ -15,10 +15,10 @@ import java.util.List;
 @Data
 @Value
 public class VeiculosAcopladosListagemDto {
-    @ApiModelProperty(value = "Código do processo de acoplamento", required = true, example = "1")
+    @ApiModelProperty(value = "Código do processo de acoplamento.", required = true, example = "1")
     @NotNull
     Long codProcessoAcoplamento;
-    @ApiModelProperty(value = "Caso hajam veículos acoplados, lista quais são separados pelo código de acoplamento.")
+    @ApiModelProperty(value = "Informações de cada veículo presente no acoplamento.")
     @NotNull
     List<VeiculoAcopladoListagemDto> veiculosAcoplados;
 }

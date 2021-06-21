@@ -24,7 +24,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Controller
-public class VeiculoResource implements VeiculoResourceApiDoc {
+public class VeiculoResource implements VeiculoApiDoc {
     @NotNull
     private final VeiculoService veiculoService;
     @NotNull

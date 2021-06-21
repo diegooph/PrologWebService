@@ -30,7 +30,7 @@ public class PneuListagemDto {
     @ApiModelProperty(value = "Código da unidade onde o pneu está alocado.", required = true, example = "215")
     @NotNull
     Long codUnidadePneu;
-    @ApiModelProperty(value = "Nome da unidade onde o pneu está alocado..",
+    @ApiModelProperty(value = "Nome da unidade onde o pneu está alocado.",
                       required = true,
                       example = "Unidade de testes")
     @NotNull
