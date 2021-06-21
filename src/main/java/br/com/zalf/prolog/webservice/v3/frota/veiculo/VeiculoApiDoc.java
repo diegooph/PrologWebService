@@ -27,7 +27,10 @@ public interface VeiculoApiDoc {
 
     @ApiOperation(value = "Lista os veículos.", response = SuccessResponse.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Operação efetuada com sucesso.", response = SuccessResponse.class),
+            @ApiResponse(
+                    code = 200, message = "Operação efetuada com sucesso.",
+                    response = VeiculoListagemDto.class,
+                    responseContainer = "List"),
             @ApiResponse(code = 401, message = "Operação não autorizada", response = Response.class),
             @ApiResponse(code = 404, message = "Operação não encontrada", response = Response.class),
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
