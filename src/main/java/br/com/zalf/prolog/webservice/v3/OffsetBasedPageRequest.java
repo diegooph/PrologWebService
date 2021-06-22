@@ -1,35 +1,22 @@
 package br.com.zalf.prolog.webservice.v3;
 
+import lombok.Value;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.io.Serializable;
 
+@Value(staticConstructor = "of")
 public class OffsetBasedPageRequest implements Pageable, Serializable {
 
-    private int limit;
-    private int offset;
-    private final Sort sort;
-
-    public OffsetBasedPageRequest(int offset, int limit, Sort sort) {
-        if (offset < 0) {
-            throw new IllegalArgumentException("Offset index must not be less than zero!");
-        }
-
-        if (limit < 1) {
-            throw new IllegalArgumentException("Limit must not be less than one!");
-        }
-        this.limit = limit;
-        this.offset = offset;
-        this.sort = sort;
-    }
-
-    public OffsetBasedPageRequest(int offset, int limit) {
-        this(offset, limit, Sort.unsorted());
-    }
+    int limit;
+    int offset;
+    @Nullable
+    Sort sort;
 
     @Override
     public int getPageNumber() {

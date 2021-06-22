@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -45,7 +46,7 @@ public class ServicoPneuService implements KmProcessoAtualizavel {
     @Transactional
     public List<ServicoPneuEntity> findServicosPneuByFilter(@NotNull final FiltroServicoListagemDto filtro) {
         final Optional<ServicoPneuStatus> status = Optional.ofNullable(filtro.getStatus());
-        Pageable pageable = new OffsetBasedPageRequest(filtro.getOffset(), filtro.getLimit());
+        final Pageable pageable = OffsetBasedPageRequest.of(filtro.getOffset(), filtro.getLimit(), Sort.unsorted());
         return servicoPneuDao.findServicosPneuByUnidades(filtro.getCodUnidades(),
                                                          filtro.getCodVeiculo(),
                                                          filtro.getCodPneu(),
