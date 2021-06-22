@@ -28,7 +28,7 @@ declare
     v_status_coleta_dados_bloqueado constant text not null := 'BLOQUEADO';
 begin
     return query
-        -- Filtrmaos as unidades aqui e não diretamente na aferição pois um veículo pode ter aferições realizadas em
+        -- Filtramos as unidades aqui e não diretamente na aferição pois um veículo pode ter aferições realizadas em
         -- outras unidades.
         with veiculos_filtrados as (
             select v.codigo,
