@@ -1,9 +1,8 @@
 Change Log
 ==========
 
-##
-## UNRELEASED
-##
+<a name="v3.5.0"></a>
+## Version [v3.5.0](https://github.com/luizfp/PrologWebService/compare/v3.4.0...v3.5.0) (2021-06-21)
 
 ### Features
 * Cria endpoint de listagem de veículos na API (PL-3670)
