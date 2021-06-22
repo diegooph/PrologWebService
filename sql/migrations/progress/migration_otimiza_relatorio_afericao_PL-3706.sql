@@ -1,3 +1,5 @@
+-- Para otimizar o relatório, foi criado a CTE veiculos_filtrados para aplicar logo de começo o filtro de unidades
+-- e poder buscar as aferições respeitando esse filtro.
 create or replace function func_afericao_relatorio_dados_base_validacao_vencimento(f_cod_unidades bigint[],
                                                                                    f_data_hora_atual timestamp with time zone)
     returns table
