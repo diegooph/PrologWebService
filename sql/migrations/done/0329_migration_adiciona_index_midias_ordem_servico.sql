@@ -1,0 +1,1 @@
+create index idx_checklist_ordem_servico_itens_midia_cod_item_os on checklist_ordem_servico_itens_midia (cod_item_os);
