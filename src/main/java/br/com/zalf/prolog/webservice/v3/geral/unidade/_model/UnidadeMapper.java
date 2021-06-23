@@ -15,11 +15,27 @@ import java.util.stream.Collectors;
 public final class UnidadeMapper {
 
     @NotNull
-    public List<UnidadeVisualizacaoListagemDto> toDto(@NotNull final List<UnidadeProjection> unidades) {
+    public List<UnidadeVisualizacaoListagemDto> toDto(@NotNull final List<UnidadeEntity> unidades) {
         return unidades
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public UnidadeVisualizacaoListagemDto toDto(@NotNull final UnidadeEntity unidade) {
+        return new UnidadeVisualizacaoListagemDto(
+                unidade.getCodigo(),
+                unidade.getNome(),
+                unidade.getTotalColaboradores(),
+                unidade.getTimezone(),
+                unidade.getDataHoraCadastro(),
+                unidade.isAtivo(),
+                unidade.getCodAuxiliar(),
+                unidade.getLatitudeUnidade(),
+                unidade.getLongitudeUnidade(),
+                unidade.getGrupo().getCodigo(),
+                unidade.getGrupo().getNome());
     }
 
     @NotNull

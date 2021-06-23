@@ -23,12 +23,13 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
     UnidadeProjection getUnidadeByCodigo(@NotNull final Long codUnidade);
 
     @NotNull
-    @Query(value = "select * " +
-            "from func_unidade_listagem(" +
-            "f_cod_empresa => :codEmpresa," +
-            "f_cod_regionais => to_bigint_array(:codsRegionais));", nativeQuery = true)
-    List<UnidadeProjection> getUnidadesListagem(@NotNull final Long codEmpresa,
-                                                @Nullable final List<Long> codsRegionais);
+    @Query("select u from UnidadeEntity u " +
+                   " join fetch u.grupo g " +
+                   " join fetch u.empresaEntity e " +
+                   " where (:codRegionais is null or g.codigo in :codRegionais) " +
+                   " and e.codigo = :codEmpresa")
+    List<UnidadeEntity> getUnidadesListagem(@NotNull final Long codEmpresa,
+                                                      @Nullable final List<Long> codRegionais);
 
     @NotNull
     @Query("select u from UnidadeEntity u " +

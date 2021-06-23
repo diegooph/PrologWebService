@@ -74,19 +74,11 @@ public class UnidadeService {
     }
 
     @NotNull
-    public List<UnidadeProjection> getUnidadesListagem(
+    @Transactional
+    public List<UnidadeEntity> getUnidadesListagem(
             @NotNull final Long codEmpresa,
-            @Nullable final List<Long> codsRegionais) {
-        try {
-            return dao.getUnidadesListagem(codEmpresa, codsRegionais);
-        } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao buscar lista de unidades da empresa.\n" +
-                                             "Código da Empresa: %d\n" +
-                                             "Códigos das Regionais: %s", codEmpresa, codsRegionais), t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao atualizar unidades, tente novamente.");
-        }
+            @NotNull final List<Long> codsRegionais) {
+        return dao.getUnidadesListagem(codEmpresa, codsRegionais.isEmpty() ? null : codsRegionais);
     }
 
     @NotNull
