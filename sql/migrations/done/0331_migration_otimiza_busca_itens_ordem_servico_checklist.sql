@@ -1,3 +1,5 @@
+-- Para otimizar, foi alterado os wheres de f_if para case, fazendo com o query planner passe a priorizar o uso de
+-- indexes.
 create or replace function func_checklist_os_get_itens_resolucao(f_cod_unidade bigint,
                                                                  f_cod_os bigint,
                                                                  f_cod_veiculo bigint,
