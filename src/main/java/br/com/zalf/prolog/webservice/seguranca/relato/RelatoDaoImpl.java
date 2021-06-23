@@ -114,8 +114,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                     + "COLABORADOR C ON R.CPF_COLABORADOR = C.CPF  LEFT JOIN "
                     + "COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF LEFT JOIN "
                     + "COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF JOIN "
-                    + "RELATO_ALTERNATIVA RA ON RA.COD_SETOR = C.COD_SETOR AND RA.CODIGO = R.COD_ALTERNATIVA AND RA" +
-                    ".COD_UNIDADE = R.COD_UNIDADE "
+                    + "RELATO_ALTERNATIVA RA ON RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE "
                     + "WHERE R.CODIGO = ?");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForToken(userToken, conn);
             stmt.setString(1, zoneId.getId());
