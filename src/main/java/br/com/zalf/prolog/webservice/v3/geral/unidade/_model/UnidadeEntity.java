@@ -29,8 +29,7 @@ public class UnidadeEntity {
     private Long codigo;
     @Column(name = "nome", length = 40, nullable = false)
     private String nome;
-//    @Formula(value = "(select count(*) from colaborador c where c.cod_unidade = codigo)")
-    @Column(name = "total_colaboradores")
+    @Formula(value = "(select count(c.*) from colaborador c where c.cod_unidade = codigo)")
     private Integer totalColaboradores;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_regional", referencedColumnName = "codigo")

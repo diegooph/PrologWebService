@@ -29,7 +29,7 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
                    " where (:codRegionais is null or g.codigo in :codRegionais) " +
                    " and e.codigo = :codEmpresa")
     List<UnidadeEntity> getUnidadesListagem(@NotNull final Long codEmpresa,
-                                                      @Nullable final List<Long> codRegionais);
+                                            @Nullable final List<Long> codRegionais);
 
     @NotNull
     @Query("select u from UnidadeEntity u " +
@@ -38,11 +38,10 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
     List<UnidadeEntity> findAllByCodEmpresa(@NotNull final Long codEmpresa);
 
     @NotNull
-    @Query(value = "select u.* from unidade u " +
-            "where u.cod_empresa = (select c.cod_empresa " +
-            "from token_autenticacao ta " +
-            "join colaborador c on c.codigo = ta.cod_colaborador " +
-            "where ta.token = :tokenUser);", nativeQuery = true)
+    @Query("select u from TokenAutenticacaoEntity ta " +
+               " join ta.colaborador c " +
+               " join c.unidade u " +
+               " where ta.token = :tokenUser")
     List<UnidadeEntity> findAllByTokenUser(@NotNull final String tokenUser);
 
     @NotNull
