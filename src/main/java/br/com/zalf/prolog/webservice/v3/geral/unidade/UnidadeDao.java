@@ -40,10 +40,11 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
     List<UnidadeEntity> findAllByCodEmpresa(@NotNull final Long codEmpresa);
 
     @NotNull
-    @Query("select u from TokenAutenticacaoEntity ta " +
-               " join ta.colaborador c " +
-               " join c.unidade u " +
-               " where ta.token = :tokenUser")
+    @Query("select u from UnidadeEntity u " +
+                   " where u.empresaEntity.codigo = (select c.unidade.empresaEntity.codigo " +
+                   " from TokenAutenticacaoEntity ta " +
+                   " join ta.colaborador c" +
+                   " where ta.token = :tokenUser)")
     List<UnidadeEntity> findAllByTokenUser(@NotNull final String tokenUser);
 
     @NotNull
