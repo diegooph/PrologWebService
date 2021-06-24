@@ -19,8 +19,10 @@ import java.util.List;
 public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
 
     @NotNull
-    @Query(value = "select * from func_unidade_visualizacao(:codUnidade);", nativeQuery = true)
-    UnidadeProjection getUnidadeByCodigo(@NotNull final Long codUnidade);
+    @Query("select u from UnidadeEntity u " +
+                   " join fetch u.grupo g " +
+                   " where u.codigo = :codUnidade")
+    UnidadeEntity getUnidadeByCodigo(@NotNull final Long codUnidade);
 
     @NotNull
     @Query("select u from UnidadeEntity u " +

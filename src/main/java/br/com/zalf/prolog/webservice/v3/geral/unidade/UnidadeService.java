@@ -56,16 +56,8 @@ public class UnidadeService {
     }
 
     @NotNull
-    public UnidadeProjection getUnidadeByCodigo(@NotNull final Long codUnidade) {
-        try {
-            return dao.getUnidadeByCodigo(codUnidade);
-        } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao buscar unidade.\n" +
-                                             "Código da Unidade: %d", codUnidade), t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar unidade, tente novamente.");
-        }
+    public UnidadeEntity getUnidadeByCodigo(@NotNull final Long codUnidade) {
+        return dao.getUnidadeByCodigo(codUnidade);
     }
 
     @NotNull
