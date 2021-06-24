@@ -28,7 +28,7 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
     @Query("select u from UnidadeEntity u " +
                    " join fetch u.grupo g " +
                    " join fetch u.empresaEntity e " +
-                   " where (:codRegionais is null or g.codigo in :codRegionais) " +
+                   " where ((:codRegionais) is null or g.codigo in (:codRegionais)) " +
                    " and e.codigo = :codEmpresa")
     List<UnidadeEntity> getUnidadesListagem(@NotNull final Long codEmpresa,
                                             @Nullable final List<Long> codRegionais);
