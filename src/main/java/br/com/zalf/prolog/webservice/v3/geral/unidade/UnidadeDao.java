@@ -45,9 +45,9 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
     List<UnidadeEntity> findAllByTokenUser(@NotNull final String tokenUser);
 
     @NotNull
-    @Query(value = "select u.* from unidade u " +
-            "where u.cod_empresa = (select ti.cod_empresa " +
-            "from integracao.token_integracao ti " +
-            "where ti.token_integracao = :tokenApi);", nativeQuery = true)
+    @Query("select u from TokenAutenticacaoIntegracaoEntity tai " +
+                   " join tai.empresa e " +
+                   " join e.unidadeEntities u " +
+                   " where tai.token = :tokenApi")
     List<UnidadeEntity> findAllByTokenApi(@NotNull final String tokenApi);
 }
