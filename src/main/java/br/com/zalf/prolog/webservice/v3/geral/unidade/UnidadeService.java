@@ -6,9 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
-import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeProjection;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

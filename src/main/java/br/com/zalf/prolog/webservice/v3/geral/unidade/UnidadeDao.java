@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.geral.unidade;
 
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
-import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeProjection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.jpa.repository.JpaRepository;
