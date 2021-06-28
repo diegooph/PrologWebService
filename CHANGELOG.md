@@ -5,6 +5,8 @@ Change Log
 ## UNRELEASED
 ##
 
+### Refactors
+* Listagem de unidades retorna vazio quando não passa codGrupo (PL-3692)
 
 <a name="v3.5.0"></a>
 ## Version [v3.5.0](https://github.com/luizfp/PrologWebService/compare/v3.4.0...v3.5.0) (2021-06-21)
