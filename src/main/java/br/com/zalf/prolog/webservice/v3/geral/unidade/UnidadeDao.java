@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created on 2020-03-12
@@ -16,6 +17,13 @@ import java.util.List;
  */
 @Repository
 public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
+    @NotNull
+    @Query("select u from UnidadeEntity u " +
+                   "join fetch u.grupo g " +
+                   "join fetch u.empresaEntity e " +
+                   "where u.codigo = :codUnidade")
+    Optional<UnidadeEntity> getUnidadeByCod(@NotNull final Long codUnidade);
+
     @NotNull
     @Query("select u from UnidadeEntity u " +
                    "join fetch u.grupo g " +

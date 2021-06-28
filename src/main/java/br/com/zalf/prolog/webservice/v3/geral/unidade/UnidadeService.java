@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeMapper;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,14 @@ public class UnidadeService {
     private static final String TAG = UnidadeService.class.getSimpleName();
     @NotNull
     private final UnidadeDao dao;
+    @NotNull
+    private final UnidadeMapper mapper;
 
     @Autowired
-    public UnidadeService(@NotNull final UnidadeDao unidadeDao) {
+    public UnidadeService(@NotNull final UnidadeDao unidadeDao,
+                          @NotNull final UnidadeMapper mapper) {
         this.dao = unidadeDao;
+        this.mapper = mapper;
     }
 
     @Transactional
@@ -54,8 +59,9 @@ public class UnidadeService {
     }
 
     @NotNull
+    @Transactional
     public UnidadeEntity getByCod(@NotNull final Long codUnidade) {
-        return dao.getOne(codUnidade);
+        return dao.getUnidadeByCod(codUnidade).orElseThrow(NotFoundException::new);
     }
 
     @NotNull
