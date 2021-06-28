@@ -14,13 +14,12 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "integracao", name = "token_integracao")
-public class TokenAutenticacaoIntegracaoEntity {
-
+public class TokenIntegracaoEntity {
     @Id
     @Column(name = "token_integracao", nullable = false)
     private String token;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_empresa", referencedColumnName = "codigo")
     private EmpresaEntity empresa;
 

@@ -54,21 +54,15 @@ public class UnidadeService {
     }
 
     @NotNull
-    public UnidadeEntity getUnidadeByCodigo(@NotNull final Long codUnidade) {
-        return dao.getUnidadeByCodigo(codUnidade);
-    }
-
-    @NotNull
     public UnidadeEntity getByCod(@NotNull final Long codUnidade) {
         return dao.getOne(codUnidade);
     }
 
     @NotNull
     @Transactional
-    public List<UnidadeEntity> getUnidadesListagem(
-            @NotNull final Long codEmpresa,
-            @NotNull final List<Long> codsRegionais) {
-        return dao.getUnidadesListagem(codEmpresa, codsRegionais.isEmpty() ? null : codsRegionais);
+    public List<UnidadeEntity> getUnidadesListagem(@NotNull final Long codEmpresa,
+                                                   final List<Long> codGrupos) {
+        return dao.getUnidadesListagem(codEmpresa, codGrupos.isEmpty() ? null : codGrupos);
     }
 
     @NotNull

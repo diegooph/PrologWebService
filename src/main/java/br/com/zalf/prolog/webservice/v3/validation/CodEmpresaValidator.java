@@ -33,16 +33,12 @@ public final class CodEmpresaValidator implements ConstraintValidator<CodEmpresa
         if (currentRequest.isFromApi()) {
             final Optional<String> requestTokenFromApi = currentRequest.getRequestTokenFromApi();
             if (requestTokenFromApi.isPresent()) {
-                final List<UnidadeEntity> unidadesByTokenIntgracaoApi =
-                        unidadeService.getUnidadesByTokenApi(requestTokenFromApi.get());
-                return containsCodEmpresa(unidadesByTokenIntgracaoApi, value);
+                return containsCodEmpresa(unidadeService.getUnidadesByTokenApi(requestTokenFromApi.get()), value);
             }
         } else {
             final Optional<String> requestToken = currentRequest.getRequestToken();
             if (requestToken.isPresent()) {
-                final List<UnidadeEntity> unidadesByTokenUser =
-                        unidadeService.getUnidadesByTokenUser(requestToken.get());
-                return containsCodEmpresa(unidadesByTokenUser, value);
+                return containsCodEmpresa(unidadeService.getUnidadesByTokenUser(requestToken.get()), value);
             }
         }
         return false;

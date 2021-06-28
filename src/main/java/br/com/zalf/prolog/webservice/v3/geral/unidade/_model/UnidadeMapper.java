@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
  */
 @Component
 public final class UnidadeMapper {
-
     @NotNull
     public List<UnidadeVisualizacaoListagemDto> toDto(@NotNull final List<UnidadeEntity> unidades) {
         return unidades
@@ -36,22 +35,6 @@ public final class UnidadeMapper {
                 unidade.getLongitudeUnidade(),
                 unidade.getGrupo().getCodigo(),
                 unidade.getGrupo().getNome());
-    }
-
-    @NotNull
-    public UnidadeVisualizacaoListagemDto toDto(@NotNull final UnidadeProjection unidade) {
-        return new UnidadeVisualizacaoListagemDto(
-                unidade.getCodigoUnidade(),
-                unidade.getNomeUnidade(),
-                unidade.getTotalColaboradores(),
-                unidade.getTimezoneUnidade(),
-                unidade.getDataHoraCadastroUnidade(),
-                unidade.isUnidadeAtiva(),
-                unidade.getCodAuxiliar(),
-                unidade.getLatitudeUnidade(),
-                unidade.getLongitudeUnidade(),
-                unidade.getCodRegional(),
-                unidade.getNomeRegional());
     }
 
     @NotNull

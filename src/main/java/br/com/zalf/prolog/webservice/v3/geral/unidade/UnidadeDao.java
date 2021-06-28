@@ -16,40 +16,33 @@ import java.util.List;
  */
 @Repository
 public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
-
     @NotNull
     @Query("select u from UnidadeEntity u " +
-                   " join fetch u.grupo g " +
-                   " where u.codigo = :codUnidade")
-    UnidadeEntity getUnidadeByCodigo(@NotNull final Long codUnidade);
-
-    @NotNull
-    @Query("select u from UnidadeEntity u " +
-                   " join fetch u.grupo g " +
-                   " join fetch u.empresaEntity e " +
-                   " where ((:codRegionais) is null or g.codigo in (:codRegionais)) " +
-                   " and e.codigo = :codEmpresa")
+                   "join fetch u.grupo g " +
+                   "join fetch u.empresaEntity e " +
+                   "where e.codigo = :codEmpresa " +
+                   "and ((:codRegionais) is null or g.codigo in (:codRegionais))")
     List<UnidadeEntity> getUnidadesListagem(@NotNull final Long codEmpresa,
                                             @Nullable final List<Long> codRegionais);
 
     @NotNull
     @Query("select u from UnidadeEntity u " +
-                   " join fetch u.empresaEntity e " +
-                   " where e.codigo = :codEmpresa")
+                   "join fetch u.empresaEntity e " +
+                   "where e.codigo = :codEmpresa")
     List<UnidadeEntity> findAllByCodEmpresa(@NotNull final Long codEmpresa);
 
     @NotNull
-    @Query("select u from UnidadeEntity u " +
-                   " where u.empresaEntity.codigo = (select c.unidade.empresaEntity.codigo " +
-                   " from TokenAutenticacaoEntity ta " +
-                   " join ta.colaborador c" +
-                   " where ta.token = :tokenUser)")
+    @Query("select u from TokenAutenticacaoEntity ta " +
+                   "join ta.colaborador c " +
+                   "join c.empresa e " +
+                   "join e.unidades u " +
+                   "where ta.token = :tokenUser")
     List<UnidadeEntity> findAllByTokenUser(@NotNull final String tokenUser);
 
     @NotNull
-    @Query("select u from TokenAutenticacaoIntegracaoEntity tai " +
-                   " join tai.empresa e " +
-                   " join e.unidadeEntities u " +
-                   " where tai.token = :tokenApi")
+    @Query("select u from TokenIntegracaoEntity tai " +
+                   "join tai.empresa e " +
+                   "join e.unidades u " +
+                   "where tai.token = :tokenApi")
     List<UnidadeEntity> findAllByTokenApi(@NotNull final String tokenApi);
 }

@@ -39,8 +39,6 @@ public class EmpresaEntity {
     @Column(name = "logo_consta_site_comercial", nullable = false, columnDefinition = "default false")
     private boolean logoConstaSiteComercial;
 
-    @OneToMany(mappedBy = "empresaEntity",
-               fetch = FetchType.LAZY,
-               targetEntity = UnidadeEntity.class)
-    private Set<UnidadeEntity> unidadeEntities;
+    @OneToMany(mappedBy = "empresaEntity", fetch = FetchType.LAZY, targetEntity = UnidadeEntity.class)
+    private Set<UnidadeEntity> unidades;
 }

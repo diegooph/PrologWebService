@@ -15,7 +15,6 @@ import javax.persistence.*;
 @Entity
 @Table(schema = "public", name = "token_autenticacao")
 public class TokenAutenticacaoEntity {
-
     @Id
     @Column(name = "token", nullable = false)
     private String token;
@@ -23,5 +22,4 @@ public class TokenAutenticacaoEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_colaborador", referencedColumnName = "codigo")
     private ColaboradorEntity colaborador;
-
 }
