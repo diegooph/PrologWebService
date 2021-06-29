@@ -46,7 +46,7 @@ public class ServicoPneuService implements KmProcessoAtualizavel {
     @Transactional
     public List<ServicoPneuEntity> findServicosPneuByFilter(@NotNull final FiltroServicoListagemDto filtro) {
         final Optional<ServicoPneuStatus> status = Optional.ofNullable(filtro.getStatus());
-        final Pageable pageable = OffsetBasedPageRequest.of(filtro.getOffset(), filtro.getLimit(), Sort.unsorted());
+        final Pageable pageable = OffsetBasedPageRequest.of(filtro.getLimit(), filtro.getOffset(), Sort.unsorted());
         return servicoPneuDao.findServicosPneuByUnidades(filtro.getCodUnidades(),
                                                          filtro.getCodVeiculo(),
                                                          filtro.getCodPneu(),
