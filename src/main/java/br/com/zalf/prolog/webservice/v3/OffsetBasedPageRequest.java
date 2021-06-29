@@ -74,7 +74,7 @@ public class OffsetBasedPageRequest implements Pageable, Serializable {
             return false;
         }
 
-        OffsetBasedPageRequest that = (OffsetBasedPageRequest) o;
+        final OffsetBasedPageRequest that = (OffsetBasedPageRequest) o;
 
         return new EqualsBuilder()
                 .append(limit, that.limit)
