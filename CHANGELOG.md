@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+##
+## UNRELEASED
+##
+
 <a name="v3.5.1"></a>
 ## Version [v3.5.1](https://github.com/luizfp/PrologWebService/compare/v3.5.0...v3.5.1) (2021-06-29)
 
