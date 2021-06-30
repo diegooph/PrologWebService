@@ -15,7 +15,6 @@ import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoServic
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -85,9 +84,10 @@ public class PneuService {
                                                   final int limit,
                                                   final int offset) {
         try {
-            final Pageable pageable = OffsetBasedPageRequest.of(limit, offset, Sort.unsorted());
             final List<PneuEntity> pneusByStatus =
-                    pneuDao.getPneusByStatus(codUnidades, statusPneu, pageable);
+                    pneuDao.getPneusByStatus(codUnidades,
+                                             statusPneu,
+                                             OffsetBasedPageRequest.of(limit, offset, Sort.unsorted()));
             return pneuMapper.toPneuListagemDto(pneusByStatus);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar pneus.", t);
@@ -119,7 +119,7 @@ public class PneuService {
     @NotNull
     @Transactional
     public SuccessResponse updateStatusPneu(@NotNull final Long codPneu,
-                                  @NotNull final StatusPneu statusPneu) {
+                                            @NotNull final StatusPneu statusPneu) {
         try {
             pneuDao.updateStatus(codPneu, statusPneu.valueOf(statusPneu.toString()));
             return new SuccessResponse(codPneu, "Alterado o status do pneu com sucesso.");
