@@ -9,7 +9,6 @@ import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuStat
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
