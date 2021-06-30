@@ -106,8 +106,9 @@ public class VeiculoService {
                                                    final boolean incluirInativos,
                                                    final int limit,
                                                    final int offset) {
-        final Pageable pageable = OffsetBasedPageRequest.of(limit, offset, Sort.unsorted());
-        return veiculoDao.getListagemVeiculos(codUnidades, incluirInativos, pageable);
+        return veiculoDao.getListagemVeiculos(codUnidades,
+                                              incluirInativos,
+                                              OffsetBasedPageRequest.of(limit, offset, Sort.unsorted()));
     }
 
     @NotNull

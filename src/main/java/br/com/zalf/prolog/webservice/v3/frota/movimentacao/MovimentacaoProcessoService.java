@@ -94,13 +94,14 @@ public class MovimentacaoProcessoService implements KmProcessoAtualizavel {
                                                                      @Nullable final Long codPneu,
                                                                      final int limit,
                                                                      final int offset) {
-        final Pageable pageable = OffsetBasedPageRequest.of(limit, offset, Sort.unsorted());
         return movimentacaoProcessoDao.getListagemMovimentacoes(codUnidades,
                                                                 DateUtils.parseDate(dataInicial),
                                                                 DateUtils.parseDate(dataFinal),
                                                                 codColaborador,
                                                                 codVeiculo,
                                                                 codPneu,
-                                                                pageable);
+                                                                OffsetBasedPageRequest.of(limit,
+                                                                                          offset,
+                                                                                          Sort.unsorted()));
     }
 }
