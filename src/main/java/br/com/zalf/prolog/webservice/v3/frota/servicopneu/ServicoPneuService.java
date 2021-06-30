@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
+import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.FiltroServicoListagemDto;
@@ -8,7 +9,6 @@ import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuStat
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -48,11 +48,10 @@ public class ServicoPneuService implements KmProcessoAtualizavel {
         return servicoPneuDao.findServicosPneuByUnidades(filtro.getCodUnidades(),
                                                          filtro.getCodVeiculo(),
                                                          filtro.getCodPneu(),
-                                                         status.map(ServicoPneuStatus::getAsBoolean)
-                                                                 .orElse(null),
-                                                         PageRequest.of(filtro.getOffset(),
-                                                                        filtro.getLimit(),
-                                                                        Sort.by("codigo")));
+                                                         status.map(ServicoPneuStatus::getAsBoolean).orElse(null),
+                                                         OffsetBasedPageRequest.of(filtro.getLimit(),
+                                                                                   filtro.getOffset(),
+                                                                                   Sort.unsorted()));
     }
 
     @NotNull

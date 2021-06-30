@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEn
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
 import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoValidator;
 import br.com.zalf.prolog.webservice.integracao.OperacoesBloqueadasYaml;
+import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo.diagrama.DiagramaService;
@@ -20,7 +21,7 @@ import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -104,7 +105,9 @@ public class VeiculoService {
                                                    final boolean incluirInativos,
                                                    final int limit,
                                                    final int offset) {
-        return veiculoDao.getListagemVeiculos(codUnidades, incluirInativos, PageRequest.of(offset, limit));
+        return veiculoDao.getListagemVeiculos(codUnidades,
+                                              incluirInativos,
+                                              OffsetBasedPageRequest.of(limit, offset, Sort.unsorted()));
     }
 
     @NotNull

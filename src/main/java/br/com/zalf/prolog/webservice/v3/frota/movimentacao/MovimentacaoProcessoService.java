@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoDestinoEntity;
@@ -11,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -98,6 +99,8 @@ public class MovimentacaoProcessoService implements KmProcessoAtualizavel {
                                                                 codColaborador,
                                                                 codVeiculo,
                                                                 codPneu,
-                                                                PageRequest.of(offset, limit));
+                                                                OffsetBasedPageRequest.of(limit,
+                                                                                          offset,
+                                                                                          Sort.unsorted()));
     }
 }
