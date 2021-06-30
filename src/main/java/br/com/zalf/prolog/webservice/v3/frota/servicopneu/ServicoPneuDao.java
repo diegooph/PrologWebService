@@ -41,5 +41,5 @@ public interface ServicoPneuDao extends JpaRepository<ServicoPneuEntity, Long> {
                                                        @Nullable final Long codVeiculo,
                                                        @Nullable final Long codPneu,
                                                        @Nullable final Boolean filtroFechado,
-                                                       final Pageable pageable);
+                                                       @NotNull final Pageable pageable);
 }
