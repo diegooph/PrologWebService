@@ -1,14 +1,13 @@
 Change Log
 ==========
 
-##
-## UNRELEASED
-##
+<a name="v3.5.1"></a>
+## Version [v3.5.1](https://github.com/luizfp/PrologWebService/compare/v3.5.0...v3.5.1) (2021-06-29)
 
 ### Refactors
 * Listagem de unidades retorna vazio quando não passa codGrupo (PL-3692)
 * Retorna vazio na busca de campos personalizados na integração - Nepomuceno
-* Corrige listagem de relatos de outros setors (PL-3709)
+* Corrige listagem de relatos de outros setores (PL-3709)
 
 <a name="v3.5.0"></a>
 ## Version [v3.5.0](https://github.com/luizfp/PrologWebService/compare/v3.4.0...v3.5.0) (2021-06-21)
