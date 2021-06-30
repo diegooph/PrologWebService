@@ -12,7 +12,6 @@ import java.io.Serializable;
 
 @Value(staticConstructor = "of")
 public class OffsetBasedPageRequest implements Pageable, Serializable {
-
     int limit;
     int offset;
     @Nullable
