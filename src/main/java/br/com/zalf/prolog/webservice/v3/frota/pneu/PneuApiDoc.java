@@ -34,7 +34,7 @@ public interface PneuApiDoc {
                                      required = true,
                                      defaultValue = "true") final boolean ignoreDotValidation,
                            @ApiParam(value = "Dados do pneu para inserir.",
-                                     required = true) @Valid final PneuCadastroDto pneuCadastro);
+                                     required = true) @Valid final PneuCadastroDto pneuCadastro) throws Throwable;
 
     @ApiOperation(value = "Lista os pneus.", response = SuccessResponse.class)
     @ApiResponses(value = {
