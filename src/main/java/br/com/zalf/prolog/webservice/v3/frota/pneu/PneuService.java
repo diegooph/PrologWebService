@@ -54,27 +54,20 @@ public class PneuService {
     @Transactional
     public SuccessResponse insert(@Nullable final String tokenIntegracao,
                                   @NotNull final PneuCadastroDto pneuCadastroDto,
-                                  final boolean ignoreDotValidation) {
-        try {
-            operacoesBloqueadas.validateEmpresaUnidadeBloqueada(pneuCadastroDto.getCodEmpresaAlocado(),
-                                                                pneuCadastroDto.getCodUnidadeAlocado());
-            validatePneu(pneuCadastroDto, ignoreDotValidation);
-            final PneuEntity pneuEntity = pneuMapper.toEntity(pneuCadastroDto);
-            final PneuEntity pneuInsert = pneuEntity.toBuilder()
-                    .origemCadastro(getOrigemCadastro(tokenIntegracao))
-                    .build();
-            final PneuEntity savedPneu = pneuDao.save(pneuInsert);
-            if (savedPneu.isRecapado()) {
-                //noinspection ConstantConditions
-                this.pneuServicoService.insertServicoCadastroPneu(savedPneu, pneuCadastroDto.getValorBandaPneu());
-            }
-            return new SuccessResponse(savedPneu.getCodigo(), "Pneu inserido com sucesso.");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao inserir pneu.", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao inserir pneu, tente novamente.");
+                                  final boolean ignoreDotValidation) throws Throwable {
+        operacoesBloqueadas.validateEmpresaUnidadeBloqueada(pneuCadastroDto.getCodEmpresaAlocado(),
+                                                            pneuCadastroDto.getCodUnidadeAlocado());
+        validatePneu(pneuCadastroDto, ignoreDotValidation);
+        final PneuEntity pneuEntity = pneuMapper.toEntity(pneuCadastroDto);
+        final PneuEntity pneuInsert = pneuEntity.toBuilder()
+                .origemCadastro(getOrigemCadastro(tokenIntegracao))
+                .build();
+        final PneuEntity savedPneu = pneuDao.save(pneuInsert);
+        if (savedPneu.isRecapado()) {
+            //noinspection ConstantConditions
+            this.pneuServicoService.insertServicoCadastroPneu(savedPneu, pneuCadastroDto.getValorBandaPneu());
         }
+        return new SuccessResponse(savedPneu.getCodigo(), "Pneu inserido com sucesso.");
     }
 
     @Transactional
@@ -97,6 +90,21 @@ public class PneuService {
         }
     }
 
+    @NotNull
+    @Transactional
+    public SuccessResponse updateStatusPneu(@NotNull final Long codPneu,
+                                            @NotNull final StatusPneu statusPneu) {
+        try {
+            pneuDao.updateStatus(codPneu, statusPneu.valueOf(statusPneu.toString()));
+            return new SuccessResponse(codPneu, "Alterado o status do pneu com sucesso.");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atualizar o status do pneu.", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar o status do pneu, tente novamente.");
+        }
+    }
+
     private void validatePneu(@NotNull final PneuCadastroDto pneuCadastroDto,
                               final boolean ignoreDotValidation) throws Throwable {
         PneuValidator.validacaoVida(pneuCadastroDto.getVidaAtualPneu(), pneuCadastroDto.getVidaTotalPneu());
@@ -114,21 +122,6 @@ public class PneuService {
     @NotNull
     private OrigemAcaoEnum getOrigemCadastro(@Nullable final String tokenIntegracao) {
         return tokenIntegracao != null ? OrigemAcaoEnum.API : OrigemAcaoEnum.PROLOG_WEB;
-    }
-
-    @NotNull
-    @Transactional
-    public SuccessResponse updateStatusPneu(@NotNull final Long codPneu,
-                                            @NotNull final StatusPneu statusPneu) {
-        try {
-            pneuDao.updateStatus(codPneu, statusPneu.valueOf(statusPneu.toString()));
-            return new SuccessResponse(codPneu, "Alterado o status do pneu com sucesso.");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao atualizar o status do pneu.", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao atualizar o status do pneu, tente novamente.");
-        }
     }
 }
 
