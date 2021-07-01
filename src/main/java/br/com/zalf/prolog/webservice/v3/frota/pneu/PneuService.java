@@ -76,18 +76,11 @@ public class PneuService {
                                                   @Nullable final StatusPneu statusPneu,
                                                   final int limit,
                                                   final int offset) {
-        try {
-            final List<PneuEntity> pneusByStatus =
-                    pneuDao.getPneusByStatus(codUnidades,
-                                             statusPneu,
-                                             OffsetBasedPageRequest.of(limit, offset, Sort.unsorted()));
-            return pneuMapper.toPneuListagemDto(pneusByStatus);
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar pneus.", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar pneus, tente novamente.");
-        }
+        final List<PneuEntity> pneusByStatus =
+                pneuDao.getPneusByStatus(codUnidades,
+                                         statusPneu,
+                                         OffsetBasedPageRequest.of(limit, offset, Sort.unsorted()));
+        return pneuMapper.toPneuListagemDto(pneusByStatus);
     }
 
     @NotNull
