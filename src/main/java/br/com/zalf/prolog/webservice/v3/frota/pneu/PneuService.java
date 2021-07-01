@@ -1,8 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.pneu;
 
-import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
@@ -87,15 +85,8 @@ public class PneuService {
     @Transactional
     public SuccessResponse updateStatusPneu(@NotNull final Long codPneu,
                                             @NotNull final StatusPneu statusPneu) {
-        try {
-            pneuDao.updateStatus(codPneu, statusPneu.valueOf(statusPneu.toString()));
-            return new SuccessResponse(codPneu, "Alterado o status do pneu com sucesso.");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao atualizar o status do pneu.", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao atualizar o status do pneu, tente novamente.");
-        }
+        pneuDao.updateStatus(codPneu, StatusPneu.valueOf(statusPneu.toString()));
+        return new SuccessResponse(codPneu, "Alterado o status do pneu com sucesso.");
     }
 
     private void validatePneu(@NotNull final PneuCadastroDto pneuCadastroDto,
