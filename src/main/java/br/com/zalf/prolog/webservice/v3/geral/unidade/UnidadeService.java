@@ -1,8 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.geral.unidade;
 
-import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
@@ -37,25 +35,18 @@ public class UnidadeService {
 
     @Transactional
     public SuccessResponse updateUnidade(@NotNull final UnidadeEntity unidadeEditada) {
-        try {
-            UnidadeEntity unidadeToUpdate = dao.findById(unidadeEditada.getCodigo())
-                    .orElseThrow(NotFoundException::new);
-            unidadeToUpdate = unidadeToUpdate.toBuilder()
-                    .nome(unidadeEditada.getNome())
-                    .codAuxiliar(unidadeEditada.getCodAuxiliar())
-                    .latitudeUnidade(unidadeEditada.getLatitudeUnidade())
-                    .longitudeUnidade(unidadeEditada.getLongitudeUnidade())
-                    .build();
-            final Long codigoAtualizacaoUnidade = Optional.of(dao.save(unidadeToUpdate))
-                    .orElseThrow(ServerSideErrorException::defaultNotLoggableException)
-                    .getCodigo();
-            return new SuccessResponse(codigoAtualizacaoUnidade, "Unidade atualizada com sucesso.");
-        } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao atualizar a unidade %d", unidadeEditada.getCodigo()), t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao atualizar unidade, tente novamente.");
-        }
+        UnidadeEntity unidadeToUpdate = dao.findById(unidadeEditada.getCodigo())
+                .orElseThrow(NotFoundException::new);
+        unidadeToUpdate = unidadeToUpdate.toBuilder()
+                .nome(unidadeEditada.getNome())
+                .codAuxiliar(unidadeEditada.getCodAuxiliar())
+                .latitudeUnidade(unidadeEditada.getLatitudeUnidade())
+                .longitudeUnidade(unidadeEditada.getLongitudeUnidade())
+                .build();
+        final Long codigoAtualizacaoUnidade = Optional.of(dao.save(unidadeToUpdate))
+                .orElseThrow(ServerSideErrorException::defaultNotLoggableException)
+                .getCodigo();
+        return new SuccessResponse(codigoAtualizacaoUnidade, "Unidade atualizada com sucesso.");
     }
 
     @NotNull
