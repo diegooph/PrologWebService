@@ -67,31 +67,24 @@ public class VeiculoService {
     @NotNull
     @Transactional
     public SuccessResponse insert(@Nullable final String tokenIntegracao,
-                                  @NotNull final VeiculoCadastroDto veiculoCadastroDto) {
-        try {
-            operacoesBloqueadas.validateEmpresaUnidadeBloqueada(veiculoCadastroDto.getCodEmpresaAlocado(),
-                                                                veiculoCadastroDto.getCodUnidadeAlocado());
-            VeiculoValidator.validacaoMotorizadoSemHubodometro(veiculoCadastroDto.getPossuiHubodometro(),
-                                                               veiculoCadastroDto.getCodTipoVeiculo());
-            final UnidadeEntity unidadeEntity = unidadeService.getByCod(veiculoCadastroDto.getCodUnidadeAlocado());
-            final ModeloVeiculoEntity modeloVeiculoEntity =
-                    modeloVeiculoService.getByCod(veiculoCadastroDto.getCodModeloVeiculo());
-            final TipoVeiculoEntity tipoVeiculoEntity =
-                    tipoVeiculoService.getByCod(veiculoCadastroDto.getCodTipoVeiculo());
-            final DiagramaEntity diagramaEntity = diagramaService.getByCod(tipoVeiculoEntity.getCodDiagrama());
-            final VeiculoEntity saved = veiculoDao.save(mapper.toEntity(veiculoCadastroDto,
-                                                                        unidadeEntity,
-                                                                        diagramaEntity,
-                                                                        tipoVeiculoEntity,
-                                                                        modeloVeiculoEntity,
-                                                                        getOrigemCadastro(tokenIntegracao)));
-            return new SuccessResponse(saved.getCodigo(), "Veículo inserido com sucesso.");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao inserir veículo.", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao inserir veículo, tente novamente.");
-        }
+                                  @NotNull final VeiculoCadastroDto veiculoCadastroDto) throws Throwable {
+        operacoesBloqueadas.validateEmpresaUnidadeBloqueada(veiculoCadastroDto.getCodEmpresaAlocado(),
+                                                            veiculoCadastroDto.getCodUnidadeAlocado());
+        VeiculoValidator.validacaoMotorizadoSemHubodometro(veiculoCadastroDto.getPossuiHubodometro(),
+                                                           veiculoCadastroDto.getCodTipoVeiculo());
+        final UnidadeEntity unidadeEntity = unidadeService.getByCod(veiculoCadastroDto.getCodUnidadeAlocado());
+        final ModeloVeiculoEntity modeloVeiculoEntity =
+                modeloVeiculoService.getByCod(veiculoCadastroDto.getCodModeloVeiculo());
+        final TipoVeiculoEntity tipoVeiculoEntity =
+                tipoVeiculoService.getByCod(veiculoCadastroDto.getCodTipoVeiculo());
+        final DiagramaEntity diagramaEntity = diagramaService.getByCod(tipoVeiculoEntity.getCodDiagrama());
+        final VeiculoEntity saved = veiculoDao.save(mapper.toEntity(veiculoCadastroDto,
+                                                                    unidadeEntity,
+                                                                    diagramaEntity,
+                                                                    tipoVeiculoEntity,
+                                                                    modeloVeiculoEntity,
+                                                                    getOrigemCadastro(tokenIntegracao)));
+        return new SuccessResponse(saved.getCodigo(), "Veículo inserido com sucesso.");
     }
 
     @NotNull
