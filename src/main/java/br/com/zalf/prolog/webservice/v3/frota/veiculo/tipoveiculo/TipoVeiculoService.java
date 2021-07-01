@@ -1,7 +1,5 @@
 package br.com.zalf.prolog.webservice.v3.frota.veiculo.tipoveiculo;
 
-import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo.tipoveiculo._model.TipoVeiculoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +19,6 @@ public class TipoVeiculoService {
 
     @NotNull
     public TipoVeiculoEntity getByCod(@NotNull final Long codTipoVeiculo) {
-        try {
-            return tipoVeiculoDao.getOne(codTipoVeiculo);
-        } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao buscar tipo de veículo %d", codTipoVeiculo), t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar tipo de veículo, tente novamente.");
-        }
+        return tipoVeiculoDao.getOne(codTipoVeiculo);
     }
 }
