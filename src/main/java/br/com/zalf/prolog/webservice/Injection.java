@@ -555,7 +555,6 @@ public final class Injection {
         return new PneuTransferenciaDaoImpl();
     }
 
-
     public static ColaboradorConferenciaDao provideColaboradorConferenciaDao() {
         return new ColaboradorConferenciaDaoImpl(Injection.provideConferenciaDao());
     }
@@ -636,7 +635,7 @@ public final class Injection {
     }
 
     @NotNull
-    private static ProLogSqlExceptionTranslator provideProLogSqlExceptionTranslator() {
+    public static ProLogSqlExceptionTranslator provideProLogSqlExceptionTranslator() {
         return new ProLogSqlExceptionTranslator();
     }
 
