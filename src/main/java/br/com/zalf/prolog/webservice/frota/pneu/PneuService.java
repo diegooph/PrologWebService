@@ -44,7 +44,7 @@ public final class PneuService {
                     "\nuserToken: " + userToken +
                     "\ncodUnidade: " + codUnidade, t);
             throw Injection
-                    .providePneuExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir o pneu, tente novamente");
         }
     }
@@ -61,7 +61,7 @@ public final class PneuService {
             final String errorMessage = "Erro ao inserir pneus -- " + t.getMessage();
             Log.e(TAG, errorMessage, t);
             throw Injection
-                    .providePneuExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(t, errorMessage);
         }
     }
@@ -82,7 +82,7 @@ public final class PneuService {
             final String errorMessage = "Erro ao atualizar pneu: " + codOriginal;
             Log.e(TAG, errorMessage, t);
             throw Injection
-                    .providePneuExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(t, errorMessage);
         }
     }
@@ -113,7 +113,7 @@ public final class PneuService {
             Log.e(TAG, "Erro ao buscar os pneus com status: " + status +
                     " das unidades " + codUnidades.toString(), t);
             throw Injection
-                    .providePneuExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar pneus, tente novamente");
         }
     }
@@ -125,7 +125,7 @@ public final class PneuService {
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar pneu com código: " + codPneu + " da unidade: " + codUnidade, e);
             throw Injection
-                    .providePneuExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(e, "Erro ao buscar o pneu, tente novamente");
         }
     }
@@ -160,7 +160,7 @@ public final class PneuService {
             final String message = "Erro ao retornar o pneu do descarte.";
             Log.e(TAG, message, t);
             throw Injection
-                    .providePneuExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(t, message);
         }
     }
