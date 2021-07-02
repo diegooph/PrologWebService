@@ -1,9 +1,13 @@
+
 Change Log
 ==========
 
 ##
 ## UNRELEASED
 ##
+
+### Refactores
+* Centraliza mapeamentos das exceptions (PL-3700)
 
 ### Bug Fixes
 * Corrigir uso de PageRequest na API v3 (PL-3704)
