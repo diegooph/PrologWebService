@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.errorhandling.error;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -11,6 +12,8 @@ import io.sentry.protocol.Message;
 import org.glassfish.jersey.server.ParamException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.postgresql.util.PSQLException;
+import org.springframework.dao.DataAccessException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -19,6 +22,7 @@ import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -30,6 +34,19 @@ import java.util.stream.Collectors;
 public final class InternalExceptionMapper {
     @NotNull
     public static Response toResponse(final Throwable throwable) {
+        if (throwable instanceof DataAccessException) {
+            final PSQLException psqlException = (PSQLException) throwable.getCause().getCause();
+            return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
+                                  createPrologError(
+                                          Injection.provideProLogSqlExceptionTranslator()
+                                                  .doTranslate(psqlException, psqlException.getMessage())));
+        }
+        if (throwable instanceof SQLException) {
+            return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
+                                  createPrologError(
+                                          Injection.provideProLogSqlExceptionTranslator()
+                                                  .doTranslate((SQLException) throwable, throwable.getMessage())));
+        }
         if (throwable instanceof NotAuthorizedException) {
             return createResponse(
                     Response.Status.UNAUTHORIZED.getStatusCode(),
