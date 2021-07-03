@@ -6,8 +6,9 @@ Change Log
 ## UNRELEASED
 ##
 
-### Refactores
+### Refactors
 * Centraliza mapeamentos das exceptions (PL-3700)
+* Adiciona permissão de aferição placa na busca de campos personalizados
 
 ### Bug Fixes
 * Corrigir uso de PageRequest na API v3 (PL-3704)
