@@ -5,6 +5,9 @@ Change Log
 ## UNRELEASED
 ##
 
+### Refactors
+* Adiciona permissão de aferição placa na busca de campos personalizados
+
 ### Bug Fixes
 * Corrigir uso de PageRequest na API v3 (PL-3704)
 
