@@ -43,7 +43,7 @@ public class VeiculoResource implements VeiculoApiDoc {
     @Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
     public SuccessResponse insert(
             @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Optional final String tokenIntegracao,
-            @Valid final VeiculoCadastroDto veiculoCadastroDto) {
+            @Valid final VeiculoCadastroDto veiculoCadastroDto) throws Throwable {
         return veiculoService.insert(tokenIntegracao, veiculoCadastroDto);
     }
 

@@ -1,3 +1,4 @@
+
 Change Log
 ==========
 
@@ -6,6 +7,7 @@ Change Log
 ##
 
 ### Refactors
+* Centraliza mapeamentos das exceptions (PL-3700)
 * Adiciona permissão de aferição placa na busca de campos personalizados
 
 ### Bug Fixes

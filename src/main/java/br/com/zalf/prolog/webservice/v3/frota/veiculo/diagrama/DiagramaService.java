@@ -1,7 +1,5 @@
 package br.com.zalf.prolog.webservice.v3.frota.veiculo.diagrama;
 
-import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo.diagrama._model.DiagramaEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +19,6 @@ public class DiagramaService {
 
     @NotNull
     public DiagramaEntity getByCod(@NotNull final Short codDiagramaVeiculo) {
-        try {
-            return diagramaDao.getOne(codDiagramaVeiculo);
-        } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao buscar diagrama do veículo %d", codDiagramaVeiculo), t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar diagrama do veículo, tente novamente.");
-        }
+        return diagramaDao.getOne(codDiagramaVeiculo);
     }
 }

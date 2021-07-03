@@ -1,8 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.veiculo;
 
-import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
 import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoValidator;
@@ -67,31 +65,24 @@ public class VeiculoService {
     @NotNull
     @Transactional
     public SuccessResponse insert(@Nullable final String tokenIntegracao,
-                                  @NotNull final VeiculoCadastroDto veiculoCadastroDto) {
-        try {
-            operacoesBloqueadas.validateEmpresaUnidadeBloqueada(veiculoCadastroDto.getCodEmpresaAlocado(),
-                                                                veiculoCadastroDto.getCodUnidadeAlocado());
-            VeiculoValidator.validacaoMotorizadoSemHubodometro(veiculoCadastroDto.getPossuiHubodometro(),
-                                                               veiculoCadastroDto.getCodTipoVeiculo());
-            final UnidadeEntity unidadeEntity = unidadeService.getByCod(veiculoCadastroDto.getCodUnidadeAlocado());
-            final ModeloVeiculoEntity modeloVeiculoEntity =
-                    modeloVeiculoService.getByCod(veiculoCadastroDto.getCodModeloVeiculo());
-            final TipoVeiculoEntity tipoVeiculoEntity =
-                    tipoVeiculoService.getByCod(veiculoCadastroDto.getCodTipoVeiculo());
-            final DiagramaEntity diagramaEntity = diagramaService.getByCod(tipoVeiculoEntity.getCodDiagrama());
-            final VeiculoEntity saved = veiculoDao.save(mapper.toEntity(veiculoCadastroDto,
-                                                                        unidadeEntity,
-                                                                        diagramaEntity,
-                                                                        tipoVeiculoEntity,
-                                                                        modeloVeiculoEntity,
-                                                                        getOrigemCadastro(tokenIntegracao)));
-            return new SuccessResponse(saved.getCodigo(), "Veículo inserido com sucesso.");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao inserir veículo.", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao inserir veículo, tente novamente.");
-        }
+                                  @NotNull final VeiculoCadastroDto veiculoCadastroDto) throws Throwable {
+        operacoesBloqueadas.validateEmpresaUnidadeBloqueada(veiculoCadastroDto.getCodEmpresaAlocado(),
+                                                            veiculoCadastroDto.getCodUnidadeAlocado());
+        VeiculoValidator.validacaoMotorizadoSemHubodometro(veiculoCadastroDto.getPossuiHubodometro(),
+                                                           veiculoCadastroDto.getCodTipoVeiculo());
+        final UnidadeEntity unidadeEntity = unidadeService.getByCod(veiculoCadastroDto.getCodUnidadeAlocado());
+        final ModeloVeiculoEntity modeloVeiculoEntity =
+                modeloVeiculoService.getByCod(veiculoCadastroDto.getCodModeloVeiculo());
+        final TipoVeiculoEntity tipoVeiculoEntity =
+                tipoVeiculoService.getByCod(veiculoCadastroDto.getCodTipoVeiculo());
+        final DiagramaEntity diagramaEntity = diagramaService.getByCod(tipoVeiculoEntity.getCodDiagrama());
+        final VeiculoEntity saved = veiculoDao.save(mapper.toEntity(veiculoCadastroDto,
+                                                                    unidadeEntity,
+                                                                    diagramaEntity,
+                                                                    tipoVeiculoEntity,
+                                                                    modeloVeiculoEntity,
+                                                                    getOrigemCadastro(tokenIntegracao)));
+        return new SuccessResponse(saved.getCodigo(), "Veículo inserido com sucesso.");
     }
 
     @NotNull
@@ -118,20 +109,13 @@ public class VeiculoService {
                                 @NotNull final OffsetDateTime dataHoraProcesso,
                                 final long kmVeiculo,
                                 final boolean devePropagarKmParaReboques) {
-        try {
-            return veiculoDao.updateKmByCodVeiculo(codUnidade,
-                                                   codVeiculo,
-                                                   veiculoCodProcesso,
-                                                   VeiculoTipoProcesso.valueOf(veiculoTipoProcesso.toString()),
-                                                   dataHoraProcesso,
-                                                   kmVeiculo,
-                                                   devePropagarKmParaReboques);
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao atualizar o km do veículo.", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao atualizar o km do veículo, tente novamente.");
-        }
+        return veiculoDao.updateKmByCodVeiculo(codUnidade,
+                                               codVeiculo,
+                                               veiculoCodProcesso,
+                                               VeiculoTipoProcesso.valueOf(veiculoTipoProcesso.toString()),
+                                               dataHoraProcesso,
+                                               kmVeiculo,
+                                               devePropagarKmParaReboques);
     }
 
     @NotNull

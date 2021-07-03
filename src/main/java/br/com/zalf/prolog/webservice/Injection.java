@@ -58,8 +58,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste.TesteAferidorDao;
 import br.com.zalf.prolog.webservice.frota.pneu.aferidor.teste.TesteAferidorDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.banda.PneuMarcaModeloBandaDao;
 import br.com.zalf.prolog.webservice.frota.pneu.banda.PneuMarcaModeloBandaDaoImpl;
-import br.com.zalf.prolog.webservice.frota.pneu.error.PneuExceptionHandler;
-import br.com.zalf.prolog.webservice.frota.pneu.error.PneuSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo.PneuMarcaModeloDao;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo.PneuMarcaModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
@@ -110,14 +108,10 @@ import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaDaoImpl;
-import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoExceptionHandler;
-import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorDaoImpl;
-import br.com.zalf.prolog.webservice.gente.colaborador.error.ColaboradorExceptionHandler;
-import br.com.zalf.prolog.webservice.gente.colaborador.error.ColaboradorSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.gente.colaborador.relatorios.ColaboradorRelatorioDao;
 import br.com.zalf.prolog.webservice.gente.colaborador.relatorios.ColaboradorRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.contracheque.ContrachequeDao;
@@ -555,7 +549,6 @@ public final class Injection {
         return new PneuTransferenciaDaoImpl();
     }
 
-
     public static ColaboradorConferenciaDao provideColaboradorConferenciaDao() {
         return new ColaboradorConferenciaDaoImpl(Injection.provideConferenciaDao());
     }
@@ -632,42 +625,12 @@ public final class Injection {
     // ================================================
     @NotNull
     public static ProLogExceptionHandler provideProLogExceptionHandler() {
-        return new ProLogExceptionHandler(provideProLogSqlExceptionTranslator());
+        return new ProLogExceptionHandler();
     }
 
     @NotNull
-    private static ProLogSqlExceptionTranslator provideProLogSqlExceptionTranslator() {
+    public static ProLogSqlExceptionTranslator provideProLogSqlExceptionTranslator() {
         return new ProLogSqlExceptionTranslator();
-    }
-
-    @NotNull
-    public static ColaboradorExceptionHandler provideColaboradorExceptionHandler() {
-        return new ColaboradorExceptionHandler(provideColaboradorSqlExceptionTranslator());
-    }
-
-    @NotNull
-    private static ColaboradorSqlExceptionTranslator provideColaboradorSqlExceptionTranslator() {
-        return new ColaboradorSqlExceptionTranslator();
-    }
-
-    @NotNull
-    public static VeiculoExceptionHandler provideVeiculoExceptionHandler() {
-        return new VeiculoExceptionHandler(provideVeiculoSqlExceptionTranslator());
-    }
-
-    @NotNull
-    private static VeiculoSqlExceptionTranslator provideVeiculoSqlExceptionTranslator() {
-        return new VeiculoSqlExceptionTranslator();
-    }
-
-    @NotNull
-    public static PneuExceptionHandler providePneuExceptionHandler() {
-        return new PneuExceptionHandler(providePneuSqlExceptionTranslator());
-    }
-
-    @NotNull
-    private static PneuSqlExceptionTranslator providePneuSqlExceptionTranslator() {
-        return new PneuSqlExceptionTranslator();
     }
 
     @NotNull
