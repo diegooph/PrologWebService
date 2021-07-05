@@ -5,12 +5,14 @@ import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.error.PneuValidator;
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.integracao.OperacoesBloqueadasYaml;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuListagemDto;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoService;
+import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico._modal.PneuTipoServicoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +58,7 @@ public class PneuService {
                                   final boolean ignoreDotValidation) {
         try {
             operacoesBloqueadas.validateEmpresaUnidadeBloqueada(pneuCadastroDto.getCodEmpresaAlocado(),
-                                                                pneuCadastroDto.getCodUnidadeAlocado());
+                    pneuCadastroDto.getCodUnidadeAlocado());
             validatePneu(pneuCadastroDto, ignoreDotValidation);
             final PneuEntity pneuEntity = pneuMapper.toEntity(pneuCadastroDto);
             final PneuEntity pneuInsert = pneuEntity.toBuilder()
@@ -65,7 +67,11 @@ public class PneuService {
             final PneuEntity savedPneu = pneuDao.save(pneuInsert);
             if (savedPneu.isRecapado()) {
                 //noinspection ConstantConditions
-                this.pneuServicoService.insertServicoCadastroPneu(savedPneu, pneuCadastroDto.getValorBandaPneu());
+                final PneuTipoServicoEntity tipoServicoIncrementaVidaPneu =
+                        this.pneuServicoService.getPneuTipoServicoEntity();
+                this.pneuServicoService.insertServicoPneu(savedPneu, pneuCadastroDto.getValorBandaPneu(),
+                        tipoServicoIncrementaVidaPneu,
+                        PneuServicoRealizado.FONTE_CADASTRO);
             }
             return new SuccessResponse(savedPneu.getCodigo(), "Pneu inserido com sucesso.");
         } catch (final Throwable t) {
