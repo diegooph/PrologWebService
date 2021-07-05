@@ -39,25 +39,51 @@ public class PneuServicoService {
         this.pneuTipoServicoService = pneuTipoServicoService;
     }
 
+    //TODO pros dois
+    // --OK
     @NotNull
     @Transactional
-    public PneuServicoRealizadoEntity insertServicoCadastroPneu(@NotNull final PneuEntity pneuCadastrado,
-                                                                @NotNull final BigDecimal valorBanda) {
-        final PneuTipoServicoEntity tipoServicoIncrementaVidaCadastroPneu =
-                pneuTipoServicoService.getTipoServicoIncrementaVidaCadastroPneu();
+    public PneuServicoRealizadoEntity insertServicoPneu(@NotNull final PneuEntity pneuServicoRealizado,
+                                                        @NotNull final BigDecimal valorBanda,
+                                                        final PneuTipoServicoEntity pneuTipoServicoEntity,
+                                                        @NotNull final String fonteServicoRealizado) {
         final PneuServicoRealizadoEntity savedServicoRealizado =
                 pneuServicoDao.save(
-                        PneuServicoRealizadoCreator.createServicoRealizado(tipoServicoIncrementaVidaCadastroPneu,
-                                                                           pneuCadastrado,
-                                                                           PneuServicoRealizado.FONTE_CADASTRO,
-                                                                           valorBanda));
+                        PneuServicoRealizadoCreator.createServicoRealizado(pneuTipoServicoEntity,
+                                pneuServicoRealizado,
+                                fonteServicoRealizado,
+                                valorBanda));
+        if (pneuTipoServicoEntity.isIncrementaVida()) {
+            insertPneuServicoRealizadoIncrementaVida(pneuServicoRealizado,
+                    fonteServicoRealizado,
+                    savedServicoRealizado);
+        }
+        if (fonteServicoRealizado.equals(PneuServicoRealizado.FONTE_CADASTRO)) {
+            insertPneuServicoRealizadoCadastro(fonteServicoRealizado, savedServicoRealizado);
+        }
+        return savedServicoRealizado;
+    }
+
+    @NotNull //TODO POSSO DEIXAR MAIS GENÉRICO
+    public PneuTipoServicoEntity getPneuTipoServicoEntity() {
+        final PneuTipoServicoEntity tipoServicoIncrementaVidaCadastroPneu =
+                pneuTipoServicoService.getTipoServicoIncrementaVidaPneu();
+        return tipoServicoIncrementaVidaCadastroPneu;
+    }
+
+    private void insertPneuServicoRealizadoIncrementaVida(@NotNull final PneuEntity pneuCadastrado,
+                                                          @NotNull final String fonteServicoRealizado,
+                                                          @NotNull final PneuServicoRealizadoEntity savedServicoRealizado) {
         pneuServicoRealizadoIncrementaVidaDao.save(
                 PneuServicoRealizadoCreator.createServicoRealizadoIncrementaVida(pneuCadastrado,
-                                                                                 savedServicoRealizado,
-                                                                                 PneuServicoRealizado.FONTE_CADASTRO));
+                        savedServicoRealizado,
+                        fonteServicoRealizado));
+    }
+
+    private void insertPneuServicoRealizadoCadastro(@NotNull final String fonteServicoRealizado,
+                                                    @NotNull final PneuServicoRealizadoEntity savedServicoRealizado) {
         pneuServicoCadastroDao.save(
                 PneuServicoRealizadoCreator.createFromPneuServico(savedServicoRealizado,
-                                                                  PneuServicoRealizado.FONTE_CADASTRO));
-        return savedServicoRealizado;
+                        fonteServicoRealizado));
     }
 }
