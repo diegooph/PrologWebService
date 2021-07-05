@@ -292,12 +292,12 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     @NotNull
     @Override
     public Veiculo getVeiculoByPlaca(@NotNull final String placa,
-                                     @Nullable final Long codUnidade,
+                                     @NotNull final Long codUnidade,
                                      final boolean withPneus) throws SQLException {
         Connection conn = null;
         try {
             conn = getConnection();
-            return internalGetVeiculoByPlaca(conn, placa, withPneus);
+            return internalGetVeiculoByPlaca(conn, codUnidade, placa, withPneus);
         } finally {
             close(conn);
         }
@@ -308,8 +308,9 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     @Override
     public Veiculo getVeiculoByPlaca(@NotNull final Connection conn,
                                      @NotNull final String placa,
+                                     @NotNull final Long codUnidade,
                                      final boolean withPneus) throws Throwable {
-        return internalGetVeiculoByPlaca(conn, placa, withPneus);
+        return internalGetVeiculoByPlaca(conn, codUnidade, placa, withPneus);
     }
 
     @Override
@@ -989,6 +990,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     @Deprecated
     @NotNull
     private Veiculo internalGetVeiculoByPlaca(@NotNull final Connection conn,
+                                              @NotNull final Long codUnidade,
                                               @NotNull final String placa,
                                               final boolean withPneus) throws SQLException {
         PreparedStatement stmt = null;
@@ -1012,8 +1014,11 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                                                  "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA " +
                                                  "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE " +
                                                  "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
-                                                 "WHERE V.PLACA = ?;");
+                                                 "WHERE V.PLACA = ? " +
+                                                 "AND V.COD_EMPRESA = (SELECT UN.COD_EMPRESA FROM UNIDADE UN WHERE UN" +
+                                                 ".CODIGO = ?);");
             stmt.setString(1, placa);
+            stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Veiculo veiculo = createVeiculo(rSet);

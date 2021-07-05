@@ -82,6 +82,7 @@ public class AfericaoDaoV2Impl extends DatabaseConnection implements AfericaoDao
             final Veiculo veiculo =
                     Injection.provideVeiculoDao().getVeiculoByPlaca(conn,
                                                                     afericaoBusca.getPlacaVeiculo(),
+                                                                    afericaoBusca.getCodUnidade(),
                                                                     true);
             novaAfericao.setEstepesVeiculo(veiculo.getEstepes());
             novaAfericao.setVeiculo(veiculo);

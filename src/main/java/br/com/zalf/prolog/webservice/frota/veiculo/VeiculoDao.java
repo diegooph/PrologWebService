@@ -61,6 +61,7 @@ public interface VeiculoDao {
     @NotNull
     Veiculo getVeiculoByPlaca(@NotNull final Connection conn,
                               @NotNull final String placa,
+                              @NotNull final Long codUnidade,
                               final boolean withPneus) throws Throwable;
 
     void updateKmByPlaca(String placa, long km, Connection conn) throws SQLException;
