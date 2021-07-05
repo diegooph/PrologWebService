@@ -54,7 +54,7 @@ public interface VeiculoDao {
     @Deprecated
     @NotNull
     Veiculo getVeiculoByPlaca(@NotNull final String placa,
-                              @Nullable final Long codUnidade,
+                              @NotNull final Long codUnidade,
                               final boolean withPneus) throws SQLException;
 
     @Deprecated
