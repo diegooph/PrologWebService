@@ -100,4 +100,33 @@ public class MovimentacaoProcessoService implements KmProcessoAtualizavel {
                                                                 codPneu,
                                                                 PageRequest.of(offset, limit));
     }
+
+    @NotNull
+    @Transactional
+    public SuccessResponse insert(
+            @NotNull final MovimentacaoEntity movimentacaoEntity,
+            @NotNull final MovimentacaoDestinoEntity movimentacaoDestinoEntity,
+            @NotNull final PneuEntity pneuEntity,
+            @NotNull final PneuTipoServicoEntity pneuTipoServicoEntity,
+            @NotNull final PneuServicoRealizadoEntity pneuServicoRealizadoEntity) {
+
+        if (pneuServicoRealizadoEntity.getCodigo() == null) {
+            throw new IllegalStateException("O pneu " + pneuEntity.getCodigo() + " foi movido dá análise " +
+                    "para o estoque e não teve nenhum serviço aplicado!");
+        }
+
+        //TODO ? MUDO P/ LISTA DE ENTITY?
+        boolean temIncrementaVida = false;
+        for (int i = 0; i < servicosRealizados.size(); i++) {
+            final PneuServicoRealizado servico = servicosRealizados.get(i);
+            if (servico instanceof PneuServicoRealizadoIncrementaVida) {
+                if (temIncrementaVida) {
+                    throw new GenericException("Não é possível realizar dois serviços de troca de banda na " +
+                            "mesma movimentação");
+                }
+                temIncrementaVida = true;
+            }
+        }
+        return null;
+    }
 }
