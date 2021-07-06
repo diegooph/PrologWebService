@@ -14,8 +14,7 @@ public final class VersaoAppBloqueadaException extends ProLogException {
 
     public VersaoAppBloqueadaException(@NotNull final String message) {
         super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                ProLogErrorCodes.VERSAO_APP_BLOQUEADA.errorCode(),
-                message,
-                null);
+              ProLogErrorCodes.VERSAO_APP_BLOQUEADA.errorCode(),
+              message);
     }
 }

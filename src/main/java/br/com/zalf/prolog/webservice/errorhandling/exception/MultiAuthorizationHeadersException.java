@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.errorhandling.exception;
 
 import br.com.zalf.prolog.webservice.errorhandling.error.ProLogErrorCodes;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.core.Response;
 
@@ -14,16 +13,15 @@ import javax.ws.rs.core.Response;
 public class MultiAuthorizationHeadersException extends ProLogException {
     public MultiAuthorizationHeadersException(@NotNull final String message) {
         super(Response.Status.UNAUTHORIZED.getStatusCode(),
-                ProLogErrorCodes.MULTIPLES_AUTHORIZATIONS_HEADERS.errorCode(),
-                message,
-                null);
+              ProLogErrorCodes.MULTIPLES_AUTHORIZATIONS_HEADERS.errorCode(),
+              message);
     }
 
     public MultiAuthorizationHeadersException(@NotNull final String message,
-                                              @Nullable final String developerMessage) {
+                                              @NotNull final String developerMessage) {
         super(Response.Status.UNAUTHORIZED.getStatusCode(),
-                ProLogErrorCodes.MULTIPLES_AUTHORIZATIONS_HEADERS.errorCode(),
-                message,
-                developerMessage);
+              ProLogErrorCodes.MULTIPLES_AUTHORIZATIONS_HEADERS.errorCode(),
+              message,
+              developerMessage);
     }
 }
