@@ -18,7 +18,7 @@ public class ProLogExceptionHandler {
     public ProLogException map(@NotNull final Throwable throwable,
                                @NotNull final String fallBackErrorMessage) {
         if (throwable instanceof SQLException || throwable instanceof DataAccessException) {
-            return new SqlExceptionV2Wrapper(fallBackErrorMessage);
+            return new SqlExceptionV2Wrapper(throwable, fallBackErrorMessage);
         }
         if (throwable instanceof ProLogException) {
             return (ProLogException) throwable;
