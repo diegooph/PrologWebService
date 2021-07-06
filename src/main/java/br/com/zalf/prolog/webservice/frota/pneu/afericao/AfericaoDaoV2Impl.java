@@ -264,8 +264,8 @@ public class AfericaoDaoV2Impl extends DatabaseConnection implements AfericaoDao
                                                  " ?);");
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
             stmt.setArray(1, PostgresUtils.listToArray(conn,
-                                                                      SqlType.BIGINT,
-                                                                      Collections.singletonList(codUnidade)));
+                                                       SqlType.BIGINT,
+                                                       Collections.singletonList(codUnidade)));
             if (Filtros.isFiltroTodos(codTipoVeiculo)) {
                 stmt.setNull(2, Types.BIGINT);
             } else {
@@ -305,8 +305,8 @@ public class AfericaoDaoV2Impl extends DatabaseConnection implements AfericaoDao
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_AFERICOES_AVULSAS_PAGINADA(?, ?, ?, ?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn,
-                                                                      SqlType.BIGINT,
-                                                                     Collections.singletonList(codUnidade)));
+                                                       SqlType.BIGINT,
+                                                       Collections.singletonList(codUnidade)));
             stmt.setObject(2, dataInicial);
             stmt.setObject(3, dataFinal);
             stmt.setInt(4, limit);
@@ -382,7 +382,8 @@ public class AfericaoDaoV2Impl extends DatabaseConnection implements AfericaoDao
                     final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
                     final Veiculo veiculo = afericaoPlaca.getVeiculo();
                     veiculo.setListPneus(pneus);
-                    veiculoDao.getDiagramaVeiculoByPlaca(conn, veiculo.getPlaca()).ifPresent(veiculo::setDiagrama);
+                    veiculoDao.getDiagramaVeiculoByPlaca(conn, veiculo.getPlaca(), codUnidade)
+                            .ifPresent(veiculo::setDiagrama);
                 }
             } else {
                 throw new SQLException("Erro ao buscar aferição de código: " + codAfericao);
@@ -435,15 +436,15 @@ public class AfericaoDaoV2Impl extends DatabaseConnection implements AfericaoDao
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_INSERT_AFERICAO(" +
-                    "F_COD_UNIDADE => ?," +
-                    "F_DATA_HORA => ?, " +
-                    "F_CPF_AFERIDOR => ?, " +
-                    "F_TEMPO_REALIZACAO => ?, " +
-                    "F_TIPO_MEDICAO_COLETADA => ?, " +
-                    "F_TIPO_PROCESSO_COLETA => ?, " +
-                    "F_FORMA_COLETA_DADOS => ?," +
-                    "F_COD_VEICULO => ?, " +
-                    "F_KM_VEICULO => ?) AS COD_AFERICAO;");
+                                                 "F_COD_UNIDADE => ?," +
+                                                 "F_DATA_HORA => ?, " +
+                                                 "F_CPF_AFERIDOR => ?, " +
+                                                 "F_TEMPO_REALIZACAO => ?, " +
+                                                 "F_TIPO_MEDICAO_COLETADA => ?, " +
+                                                 "F_TIPO_PROCESSO_COLETA => ?, " +
+                                                 "F_FORMA_COLETA_DADOS => ?," +
+                                                 "F_COD_VEICULO => ?, " +
+                                                 "F_KM_VEICULO => ?) AS COD_AFERICAO;");
             stmt.setLong(1, codUnidade);
             stmt.setObject(2, afericao.getDataHora().atOffset(ZoneOffset.UTC));
             stmt.setLong(3, afericao.getColaborador().getCpf());
@@ -589,7 +590,8 @@ public class AfericaoDaoV2Impl extends DatabaseConnection implements AfericaoDao
                     .fromString(rSet.getString("TIPO_PROCESSO_COLETA_ULTIMA_AFERICAO"));
             pneuAvulso.setTipoProcessoAfericao(tipoProcesso);
             pneuAvulso.setPlacaAplicadoQuandoAferido(rSet.getString("PLACA_VEICULO_ULTIMA_AFERICAO"));
-            pneuAvulso.setIdentificadorFrotaAplicadoQuandoAferido(rSet.getString("IDENTIFICADOR_FROTA_ULTIMA_AFERICAO"));
+            pneuAvulso.setIdentificadorFrotaAplicadoQuandoAferido(rSet.getString("IDENTIFICADOR_FROTA_ULTIMA_AFERICAO"
+            ));
         }
         return pneuAvulso;
     }

@@ -580,11 +580,12 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException {
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final String placa,
+                                                               @NotNull final Long codUnidade) throws SQLException {
         Connection conn = null;
         try {
             conn = getConnection();
-            return internalGetDiagramaVeiculoByPlaca(conn, placa);
+            return internalGetDiagramaVeiculoByPlaca(conn, placa, codUnidade);
         } finally {
             close(conn);
         }
@@ -592,8 +593,9 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
     @Override
     public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final Connection conn,
-                                                               @NotNull final String placa) throws SQLException {
-        return internalGetDiagramaVeiculoByPlaca(conn, placa);
+                                                               @NotNull final String placa,
+                                                               @NotNull final Long codUnidade) throws SQLException {
+        return internalGetDiagramaVeiculoByPlaca(conn, placa, codUnidade);
     }
 
     @Override
@@ -1024,7 +1026,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 final Veiculo veiculo = createVeiculo(rSet);
                 if (withPneus) {
                     final PneuDao pneuDao = Injection.providePneuDao();
-                    veiculo.setListPneus(pneuDao.getPneusByPlaca(placa));
+                    veiculo.setListPneus(pneuDao.getPneusByPlaca(placa, codUnidade));
                 }
                 return veiculo;
             } else {
@@ -1045,16 +1047,22 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
     @NotNull
     private Optional<DiagramaVeiculo> internalGetDiagramaVeiculoByPlaca(@NotNull final Connection conn,
-                                                                        @NotNull final String placa)
+                                                                        @NotNull final String placa,
+                                                                        @NotNull final Long codUnidade)
             throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT VD.* " +
-                                                 "FROM VEICULO V JOIN VEICULO_TIPO VT ON V.COD_TIPO = VT.CODIGO " +
-                                                 "JOIN VEICULO_DIAGRAMA VD ON VD.CODIGO = VT.COD_DIAGRAMA " +
-                                                 "WHERE V.PLACA = ?");
+                                                 "FROM VEICULO V " +
+                                                 "         JOIN VEICULO_TIPO VT ON V.COD_TIPO = VT.CODIGO " +
+                                                 "         JOIN VEICULO_DIAGRAMA VD ON VD.CODIGO = VT.COD_DIAGRAMA " +
+                                                 "WHERE V.PLACA = ? " +
+                                                 "  AND V.COD_EMPRESA = (SELECT UN.COD_EMPRESA " +
+                                                 "                       FROM UNIDADE UN " +
+                                                 "                       WHERE UN.CODIGO = ?);");
             stmt.setString(1, placa);
+            stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return createDiagramaVeiculo(rSet, conn);
@@ -1112,7 +1120,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         veiculo.setModelo(modelo);
 
         // Diagrama do veículo.
-        getDiagramaVeiculoByPlaca(veiculo.getPlaca()).ifPresent(veiculo::setDiagrama);
+        getDiagramaVeiculoByPlaca(veiculo.getPlaca(), veiculo.getCodUnidadeAlocado()).ifPresent(veiculo::setDiagrama);
         return veiculo;
     }
 }

@@ -11,8 +11,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface PneuDao {
-
-    List<Pneu> getPneusByPlaca(String placa) throws SQLException;
+    @NotNull
+    List<Pneu> getPneusByPlaca(@NotNull final String placa, @NotNull final Long codUnidade) throws SQLException;
 
     @NotNull
     Long insert(@NotNull final Long codigoColaboradorCadastro,

@@ -569,7 +569,8 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             if (rSet.next()) {
                 final VeiculoServico veiculo = ServicoConverter.createVeiculoAberturaServico(rSet);
                 final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-                final Optional<DiagramaVeiculo> diagrama = veiculoDao.getDiagramaVeiculoByPlaca(veiculo.getPlaca());
+                final Optional<DiagramaVeiculo> diagrama =
+                        veiculoDao.getDiagramaVeiculoByPlaca(veiculo.getPlaca(), veiculo.getCodUnidadeAlocado());
                 // Fazemos direto um get() no Optional pois se não existir diagrama é melhor dar crash aqui do que no
                 // aplicativo, por exemplo.
                 veiculo.setDiagrama(diagrama.get());
