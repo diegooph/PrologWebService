@@ -2,9 +2,8 @@
 Change Log
 ==========
 
-##
-## UNRELEASED
-##
+<a name="v3.5.2"></a>
+## Version [v3.5.2](https://github.com/luizfp/PrologWebService/compare/v3.5.1...v3.5.0) (2021-07-05)
 
 ### Refactors
 * Centraliza mapeamentos das exceptions (PL-3700)
