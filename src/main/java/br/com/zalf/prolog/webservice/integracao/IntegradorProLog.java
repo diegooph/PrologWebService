@@ -175,15 +175,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public ConfiguracaoNovaAfericao getConfiguracaoNovaAfericao(@NotNull final String placa) throws Throwable {
-        if (afericaoDao == null) {
-            afericaoDao = Injection.provideAfericaoDao();
-        }
-        return afericaoDao.getConfiguracaoNovaAfericao(placa);
-    }
-
-    @NotNull
-    @Override
     public Optional<DiagramaVeiculo> getDiagramaVeiculoByCodDiagrama(@NotNull final Short codDiagrama)
             throws Exception {
         if (veiculoDao == null) {

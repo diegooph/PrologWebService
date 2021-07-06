@@ -88,7 +88,7 @@ public class AfericaoDaoV2Impl extends DatabaseConnection implements AfericaoDao
             novaAfericao.setVeiculo(veiculo);
             // Configurações/parametrizações necessárias para a aferição.
             final ConfiguracaoNovaAfericaoPlaca configuracao =
-                    getConfiguracaoNovaAfericaoPlaca(conn, afericaoBusca.getPlacaVeiculo());
+                    getConfiguracaoNovaAfericaoByCodVeiculo(conn, afericaoBusca.getCodVeiculo());
             novaAfericao.setRestricao(Restricao.createRestricaoFrom(configuracao));
             novaAfericao.setDeveAferirEstepes(configuracao.isPodeAferirEstepe());
             novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(configuracao.getVariacaoAceitaSulcoMenorMilimetros());
@@ -396,18 +396,6 @@ public class AfericaoDaoV2Impl extends DatabaseConnection implements AfericaoDao
 
     @NotNull
     @Override
-    public ConfiguracaoNovaAfericao getConfiguracaoNovaAfericao(@NotNull final String placa) throws Throwable {
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            return getConfiguracaoNovaAfericaoPlaca(conn, placa);
-        } finally {
-            close(conn);
-        }
-    }
-
-    @NotNull
-    @Override
     public Restricao getRestricoesByPlaca(@NotNull final String placa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -493,20 +481,21 @@ public class AfericaoDaoV2Impl extends DatabaseConnection implements AfericaoDao
     }
 
     @NotNull
-    private ConfiguracaoNovaAfericaoPlaca getConfiguracaoNovaAfericaoPlaca(@NotNull final Connection conn,
-                                                                           @NotNull final String placa)
+    private ConfiguracaoNovaAfericaoPlaca getConfiguracaoNovaAfericaoByCodVeiculo(@NotNull final Connection conn,
+                                                                                  @NotNull final Long codVeiculo)
             throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CONFIGURACOES_NOVA_AFERICAO_PLACA(?);");
-            stmt.setString(1, placa);
+            stmt = conn.prepareStatement(
+                    "select * from func_afericao_get_configuracoes_nova_afericao_by_cod_veiculo(?);");
+            stmt.setLong(1, codVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return createConfiguracaoNovaAfericaoPlaca(rSet);
             } else {
-                throw new IllegalStateException("Dados de configurações de aferição não encontrados para a placa: "
-                                                        + placa);
+                throw new IllegalStateException(
+                        "Dados de configurações de aferição não encontrados para o codVeiculo: " + codVeiculo);
             }
         } finally {
             close(stmt, rSet);

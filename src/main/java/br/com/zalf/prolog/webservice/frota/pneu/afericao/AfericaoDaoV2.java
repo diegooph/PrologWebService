@@ -71,9 +71,6 @@ public interface AfericaoDaoV2 {
     Afericao getByCod(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Throwable;
 
     @NotNull
-    ConfiguracaoNovaAfericao getConfiguracaoNovaAfericao(@NotNull final String placa) throws Throwable;
-
-    @NotNull
     @Deprecated
     Restricao getRestricoesByPlaca(@NotNull final String placa) throws Throwable;
 }
