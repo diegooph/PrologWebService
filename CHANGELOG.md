@@ -11,6 +11,7 @@ Change Log
 
 ### Bug Fixes
 * Corrigir uso de PageRequest na API v3 (PL-3704)
+* Corrige mapeamento de erros de banco do V2
 
 <a name="v3.5.1"></a>
 ## Version [v3.5.1](https://github.com/luizfp/PrologWebService/compare/v3.5.0...v3.5.1) (2021-06-29)
