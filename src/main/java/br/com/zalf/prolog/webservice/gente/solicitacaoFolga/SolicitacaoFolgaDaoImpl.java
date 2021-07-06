@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
@@ -161,7 +162,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
                     "  and c.cod_unidade = ? " +
                     "  and e.codigo::text like ? " +
                     "  and sf.status like ? " +
-                    "  and sf.cod_colaborador = ? " +
+                    "  and (? is true or sf.cod_colaborador = ?) " +
                     "order by sf.data_solicitacao;";
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
             stmt = conn.prepareStatement(query);
@@ -172,7 +173,13 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
             stmt.setLong(5, codUnidade);
             stmt.setString(6, codEquipe);
             stmt.setString(7, status);
-            stmt.setLong(8, codColaborador);
+            if (codColaborador == null) {
+                stmt.setBoolean(8, true);
+                stmt.setNull(9, SqlType.BIGINT.asIntTypeJava());
+            } else {
+                stmt.setBoolean(8, false);
+                stmt.setLong(9, codColaborador);
+            }
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 list.add(createSolicitacaoFolga(rSet));

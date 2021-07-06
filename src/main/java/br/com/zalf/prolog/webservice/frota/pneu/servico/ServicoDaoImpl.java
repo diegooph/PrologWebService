@@ -592,7 +592,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                                                codUnidade,
                                                VeiculoBackwardHelper.getCodVeiculoByPlaca(
                                                        Injection.provideColaboradorDao()
-                                                               .getCodColaboradorByCpf(
+                                                               .getCodColaboradorByCpfAndCodEmpresa(
                                                                        conn,
                                                                        colaborador.getCodEmpresa(),
                                                                        colaborador.getCpfAsString()),
