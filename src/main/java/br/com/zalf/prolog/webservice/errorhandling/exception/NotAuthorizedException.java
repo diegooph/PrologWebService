@@ -16,9 +16,8 @@ public class NotAuthorizedException extends ProLogException {
 
     public NotAuthorizedException(@NotNull final String message) {
         super(Response.Status.UNAUTHORIZED.getStatusCode(),
-                ProLogErrorCodes.NOT_AUTHORIZED.errorCode(),
-                message,
-                null);
+              ProLogErrorCodes.NOT_AUTHORIZED.errorCode(),
+              message);
     }
 
     public NotAuthorizedException(@NotNull final String message,

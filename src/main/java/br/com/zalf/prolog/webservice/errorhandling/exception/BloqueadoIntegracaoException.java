@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.errorhandling.exception;
 
 import br.com.zalf.prolog.webservice.errorhandling.error.ProLogErrorCodes;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.core.Response;
 
@@ -16,12 +15,14 @@ import javax.ws.rs.core.Response;
  */
 public final class BloqueadoIntegracaoException extends ProLogException {
 
-    public BloqueadoIntegracaoException(@NotNull String message) {
-        super(Response.Status.METHOD_NOT_ALLOWED.getStatusCode(), ProLogErrorCodes.BLOQUEADO_INTEGRACAO.errorCode(), message, null);
+    public BloqueadoIntegracaoException(@NotNull final String message) {
+        super(Response.Status.METHOD_NOT_ALLOWED.getStatusCode(),
+              ProLogErrorCodes.BLOQUEADO_INTEGRACAO.errorCode(),
+              message);
     }
 
-    public BloqueadoIntegracaoException(@NotNull String message, @Nullable String developerMessage) {
+    public BloqueadoIntegracaoException(@NotNull final String message, @NotNull final String developerMessage) {
         super(Response.Status.METHOD_NOT_ALLOWED.getStatusCode(),
-                ProLogErrorCodes.BLOQUEADO_INTEGRACAO.errorCode(), message, developerMessage);
+              ProLogErrorCodes.BLOQUEADO_INTEGRACAO.errorCode(), message, developerMessage);
     }
 }

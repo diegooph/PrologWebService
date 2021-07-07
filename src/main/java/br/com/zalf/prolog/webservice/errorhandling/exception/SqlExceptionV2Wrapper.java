@@ -11,10 +11,10 @@ import javax.ws.rs.core.Response;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public final class SqlExceptionV2Wrapper extends ProLogException {
-    public SqlExceptionV2Wrapper(@NotNull final String message) {
+    public SqlExceptionV2Wrapper(@NotNull final Throwable parentException, @NotNull final String message) {
         super(Response.Status.BAD_REQUEST.getStatusCode(),
               ProLogErrorCodes.BAD_REQUEST.errorCode(),
               message,
-              null);
+              parentException);
     }
 }

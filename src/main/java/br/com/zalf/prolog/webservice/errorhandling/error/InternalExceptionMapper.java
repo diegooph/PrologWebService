@@ -4,7 +4,9 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.SqlExceptionV2Wrapper;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
+import br.com.zalf.prolog.webservice.errorhandling.sql.ProLogSqlExceptionTranslator;
 import com.google.common.collect.ImmutableMap;
 import io.sentry.SentryEvent;
 import io.sentry.SentryLevel;
@@ -34,18 +36,21 @@ import java.util.stream.Collectors;
 public final class InternalExceptionMapper {
     @NotNull
     public static Response toResponse(final Throwable throwable) {
-        if (throwable instanceof DataAccessException) {
-            final PSQLException psqlException = (PSQLException) throwable.getCause().getCause();
-            return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
-                                  createPrologError(
-                                          Injection.provideProLogSqlExceptionTranslator()
-                                                  .doTranslate(psqlException, psqlException.getMessage())));
-        }
-        if (throwable instanceof SQLException) {
-            return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
-                                  createPrologError(
-                                          Injection.provideProLogSqlExceptionTranslator()
-                                                  .doTranslate((SQLException) throwable, throwable.getMessage())));
+        if (throwable instanceof SqlExceptionV2Wrapper) {
+            final SqlExceptionV2Wrapper sqlExceptionV2Wrapper = (SqlExceptionV2Wrapper) throwable;
+            if (sqlExceptionV2Wrapper.getParentException() instanceof DataAccessException) {
+                final PSQLException psqlException = (PSQLException) throwable.getCause().getCause();
+                final ProLogSqlExceptionTranslator translator = Injection.provideProLogSqlExceptionTranslator();
+                return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
+                                      createPrologError(translator.doTranslate(psqlException,
+                                                                               psqlException.getMessage())));
+            }
+            if (sqlExceptionV2Wrapper.getParentException() instanceof SQLException) {
+                final SQLException sqlException = (SQLException) sqlExceptionV2Wrapper.getParentException();
+                final ProLogSqlExceptionTranslator translator = Injection.provideProLogSqlExceptionTranslator();
+                return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
+                                      createPrologError(translator.doTranslate(sqlException, throwable.getMessage())));
+            }
         }
         if (throwable instanceof NotAuthorizedException) {
             return createResponse(

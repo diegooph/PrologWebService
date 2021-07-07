@@ -10,6 +10,7 @@ Change Log
 * Corrige processo de movimentação para buscar informações da placa correta
 * Corrige processo de aferição para buscar configurações da placa correta
 * Corrigir busca e avaliação de solicitação de folga
+* Corrige mapeamento de erros de banco do V2
 
 <a name="v3.5.2"></a>
 ## Version [v3.5.2](https://github.com/luizfp/PrologWebService/compare/v3.5.1...v3.5.0) (2021-07-05)
@@ -20,7 +21,7 @@ Change Log
 
 ### Bug Fixes
 * Corrigir uso de PageRequest na API v3 (PL-3704)
-* Corrige busca de veículo por placa
+* Corrige mapeamento de erros de banco do V2
 
 <a name="v3.5.1"></a>
 ## Version [v3.5.1](https://github.com/luizfp/PrologWebService/compare/v3.5.0...v3.5.1) (2021-06-29)
