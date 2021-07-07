@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.SqlExceptionV2Wrapper;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
+import br.com.zalf.prolog.webservice.errorhandling.sql.ProLogSqlExceptionTranslator;
 import com.google.common.collect.ImmutableMap;
 import io.sentry.SentryEvent;
 import io.sentry.SentryLevel;
