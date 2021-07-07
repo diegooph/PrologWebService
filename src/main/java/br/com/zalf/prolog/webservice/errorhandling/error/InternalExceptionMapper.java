@@ -39,17 +39,16 @@ public final class InternalExceptionMapper {
             final SqlExceptionV2Wrapper sqlExceptionV2Wrapper = (SqlExceptionV2Wrapper) throwable;
             if (sqlExceptionV2Wrapper.getParentException() instanceof DataAccessException) {
                 final PSQLException psqlException = (PSQLException) throwable.getCause().getCause();
+                final ProLogSqlExceptionTranslator translator = Injection.provideProLogSqlExceptionTranslator();
                 return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
-                                      createPrologError(
-                                              Injection.provideProLogSqlExceptionTranslator()
-                                                      .doTranslate(psqlException, psqlException.getMessage())));
+                                      createPrologError(translator.doTranslate(psqlException,
+                                                                               psqlException.getMessage())));
             }
             if (sqlExceptionV2Wrapper.getParentException() instanceof SQLException) {
                 final SQLException sqlException = (SQLException) sqlExceptionV2Wrapper.getParentException();
+                final ProLogSqlExceptionTranslator translator = Injection.provideProLogSqlExceptionTranslator();
                 return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
-                                      createPrologError(
-                                              Injection.provideProLogSqlExceptionTranslator()
-                                                      .doTranslate(sqlException, throwable.getMessage())));
+                                      createPrologError(translator.doTranslate(sqlException, throwable.getMessage())));
             }
         }
         if (throwable instanceof NotAuthorizedException) {
