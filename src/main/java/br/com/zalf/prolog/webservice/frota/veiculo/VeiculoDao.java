@@ -95,10 +95,12 @@ public interface VeiculoDao {
 
     List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException;
 
-    Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException;
+    Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final String placa,
+                                                        @NotNull final Long codUnidade) throws SQLException;
 
     Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final Connection conn,
-                                                        @NotNull final String placa) throws SQLException;
+                                                        @NotNull final String placa,
+                                                        @NotNull final Long codUnidade) throws SQLException;
 
     Optional<DiagramaVeiculo> getDiagramaVeiculoByCod(@NotNull final Short codDiagrama) throws SQLException;
 

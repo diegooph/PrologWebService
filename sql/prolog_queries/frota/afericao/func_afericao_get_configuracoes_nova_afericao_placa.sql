@@ -1,56 +1,56 @@
-CREATE OR REPLACE FUNCTION FUNC_AFERICAO_GET_CONFIGURACOES_NOVA_AFERICAO_PLACA(F_PLACA_VEICULO TEXT)
-    RETURNS TABLE
+create or replace function func_afericao_get_configuracoes_nova_afericao_placa(f_cod_veiculo bigint)
+    returns table
             (
-                SULCO_MINIMO_DESCARTE                  REAL,
-                SULCO_MINIMO_RECAPAGEM                 REAL,
-                TOLERANCIA_CALIBRAGEM                  REAL,
-                TOLERANCIA_INSPECAO                    REAL,
-                PERIODO_AFERICAO_SULCO                 INTEGER,
-                PERIODO_AFERICAO_PRESSAO               INTEGER,
-                FORMA_COLETA_DADOS_SULCO               TEXT,
-                FORMA_COLETA_DADOS_PRESSAO             TEXT,
-                FORMA_COLETA_DADOS_SULCO_PRESSAO       TEXT,
-                PODE_AFERIR_ESTEPE                     BOOLEAN,
-                VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS DOUBLE PRECISION,
-                VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS DOUBLE PRECISION,
-                BLOQUEAR_VALORES_MENORES               BOOLEAN,
-                BLOQUEAR_VALORES_MAIORES               BOOLEAN,
-                VARIACOES_SULCO_DEFAULT_PROLOG         BOOLEAN
+                sulco_minimo_descarte                  real,
+                sulco_minimo_recapagem                 real,
+                tolerancia_calibragem                  real,
+                tolerancia_inspecao                    real,
+                periodo_afericao_sulco                 integer,
+                periodo_afericao_pressao               integer,
+                forma_coleta_dados_sulco               text,
+                forma_coleta_dados_pressao             text,
+                forma_coleta_dados_sulco_pressao       text,
+                pode_aferir_estepe                     boolean,
+                variacao_aceita_sulco_menor_milimetros double precision,
+                variacao_aceita_sulco_maior_milimetros double precision,
+                bloquear_valores_menores               boolean,
+                bloquear_valores_maiores               boolean,
+                variacoes_sulco_default_prolog         boolean
             )
-    LANGUAGE PLPGSQL
-AS
+    language plpgsql
+as
 $$
-DECLARE
-    F_COD_UNIDADE      BIGINT;
-    F_COD_TIPO_VEICULO BIGINT;
-BEGIN
-    SELECT INTO F_COD_UNIDADE, F_COD_TIPO_VEICULO V.COD_UNIDADE,
-                                                  V.COD_TIPO
-    FROM VEICULO V
-    WHERE V.PLACA = F_PLACA_VEICULO;
+declare
+    f_cod_unidade      bigint;
+    f_cod_tipo_veiculo bigint;
+begin
+    select into f_cod_unidade, f_cod_tipo_veiculo v.cod_unidade,
+                                                  v.cod_tipo
+    from veiculo v
+    where v.codigo = f_cod_veiculo;
 
-    RETURN QUERY
-        SELECT PRU.SULCO_MINIMO_DESCARTE,
-               PRU.SULCO_MINIMO_RECAPAGEM,
-               PRU.TOLERANCIA_INSPECAO,
-               PRU.TOLERANCIA_CALIBRAGEM,
-               PRU.PERIODO_AFERICAO_SULCO,
-               PRU.PERIODO_AFERICAO_PRESSAO,
-               CONFIG_PODE_AFERIR.FORMA_COLETA_DADOS_SULCO,
-               CONFIG_PODE_AFERIR.FORMA_COLETA_DADOS_PRESSAO,
-               CONFIG_PODE_AFERIR.FORMA_COLETA_DADOS_SULCO_PRESSAO,
-               CONFIG_PODE_AFERIR.PODE_AFERIR_ESTEPE,
-               CONFIG_ALERTA_SULCO.VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS,
-               CONFIG_ALERTA_SULCO.VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS,
-               CONFIG_ALERTA_SULCO.BLOQUEAR_VALORES_MENORES,
-               CONFIG_ALERTA_SULCO.BLOQUEAR_VALORES_MAIORES,
-               CONFIG_ALERTA_SULCO.USA_DEFAULT_PROLOG AS VARIACOES_SULCO_DEFAULT_PROLOG
-        FROM FUNC_AFERICAO_GET_CONFIG_TIPO_AFERICAO_VEICULO(F_COD_UNIDADE) AS CONFIG_PODE_AFERIR
-                 JOIN VIEW_AFERICAO_CONFIGURACAO_ALERTA_SULCO AS CONFIG_ALERTA_SULCO
-                      ON CONFIG_PODE_AFERIR.COD_UNIDADE_CONFIGURACAO = CONFIG_ALERTA_SULCO.COD_UNIDADE
-                 JOIN PNEU_RESTRICAO_UNIDADE PRU
-                      ON PRU.COD_UNIDADE = CONFIG_PODE_AFERIR.COD_UNIDADE_CONFIGURACAO
-        WHERE CONFIG_PODE_AFERIR.COD_UNIDADE_CONFIGURACAO = F_COD_UNIDADE
-          AND CONFIG_PODE_AFERIR.COD_TIPO_VEICULO = F_COD_TIPO_VEICULO;
-END;
+    return query
+        select pru.sulco_minimo_descarte,
+               pru.sulco_minimo_recapagem,
+               pru.tolerancia_inspecao,
+               pru.tolerancia_calibragem,
+               pru.periodo_afericao_sulco,
+               pru.periodo_afericao_pressao,
+               config_pode_aferir.forma_coleta_dados_sulco,
+               config_pode_aferir.forma_coleta_dados_pressao,
+               config_pode_aferir.forma_coleta_dados_sulco_pressao,
+               config_pode_aferir.pode_aferir_estepe,
+               config_alerta_sulco.variacao_aceita_sulco_menor_milimetros,
+               config_alerta_sulco.variacao_aceita_sulco_maior_milimetros,
+               config_alerta_sulco.bloquear_valores_menores,
+               config_alerta_sulco.bloquear_valores_maiores,
+               config_alerta_sulco.usa_default_prolog as variacoes_sulco_default_prolog
+        from func_afericao_get_config_tipo_afericao_veiculo(f_cod_unidade) as config_pode_aferir
+                 join view_afericao_configuracao_alerta_sulco as config_alerta_sulco
+                      on config_pode_aferir.cod_unidade_configuracao = config_alerta_sulco.cod_unidade
+                 join pneu_restricao_unidade pru
+                      on pru.cod_unidade = config_pode_aferir.cod_unidade_configuracao
+        where config_pode_aferir.cod_unidade_configuracao = f_cod_unidade
+          and config_pode_aferir.cod_tipo_veiculo = f_cod_tipo_veiculo;
+end;
 $$;

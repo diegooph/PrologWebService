@@ -7,6 +7,8 @@ Change Log
 ##
 
 ### Bug Fixes
+* Corrige processo de movimentação para buscar informações da placa correta
+* Corrige processo de aferição para buscar configurações da placa correta
 * Corrigir busca e avaliação de solicitação de folga
 
 <a name="v3.5.2"></a>
