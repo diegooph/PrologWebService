@@ -270,7 +270,8 @@ public class AfericaoResourceV2 {
     }
 
     @GET
-    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO)
+    @Secured(permissions = {Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA})
     @UsedBy(platforms = Platform.ANDROID)
     @Path("/campos-personalizados")
     public List<CampoPersonalizadoParaRealizacao> getCamposPersonalizadosRealizacao(

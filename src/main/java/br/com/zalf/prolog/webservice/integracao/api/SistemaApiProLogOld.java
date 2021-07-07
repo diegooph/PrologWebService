@@ -121,8 +121,7 @@ public final class SistemaApiProLogOld extends Sistema {
     @Override
     public VeiculoServico getVeiculoAberturaServico(@NotNull final VeiculoAberturaServicoFiltro filtro)
             throws Throwable {
-        final Long codUnidadeVeiculo =
-                getIntegradorProLog().getVeiculoByPlaca(filtro.getPlacaVeiculo(), null, false).getCodUnidadeAlocado();
+        final Long codUnidadeVeiculo = getIntegradorProLog().getVeiculoByCodigo(filtro.getCodVeiculo()).getCodUnidade();
         if (unidadeEstaComIntegracaoAtiva(codUnidadeVeiculo)
                 && getSistemaApiProLog().isServicoMovimentacao(filtro.getCodServico())) {
             throw new BloqueadoIntegracaoException(

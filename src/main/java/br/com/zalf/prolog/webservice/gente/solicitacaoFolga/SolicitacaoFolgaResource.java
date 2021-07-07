@@ -3,8 +3,10 @@ package br.com.zalf.prolog.webservice.gente.solicitacaoFolga;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorBackwardHelper;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.inject.Inject;
@@ -15,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.Date;
 import java.util.List;
 
+@ConsoleDebugLog
 @Path("/v2/solicitacoes-folga")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -37,8 +40,11 @@ public class SolicitacaoFolgaResource {
     @Path("/{codigo}")
     public Response update(final SolicitacaoFolga solicitacaoFolga, @PathParam("codigo") final Long codigo) {
         solicitacaoFolga.setCodigo(codigo);
-        final Long codColaborador = colaboradorAutenticadoProvider.get().getCodigo();
-        solicitacaoFolga.getColaborador().setCodigo(codColaborador);
+        final Long codColaboradorSolicitacao =
+                ColaboradorBackwardHelper.getCodColaboradorByCpf(colaboradorAutenticadoProvider.get().getCodigo(),
+                                                                 solicitacaoFolga.getColaborador().getCpfAsString());
+        solicitacaoFolga.getColaborador().setCodigo(codColaboradorSolicitacao);
+        solicitacaoFolga.getColaboradorFeedback().setCodigo(colaboradorAutenticadoProvider.get().getCodigo());
         if (service.update(solicitacaoFolga)) {
             return Response.ok("Solicitação atualizada com sucesso");
         } else {
@@ -118,7 +124,14 @@ public class SolicitacaoFolgaResource {
             @PathParam("codUnidade") final Long codUnidade,
             @PathParam("codEquipe") final String codEquipe,
             @PathParam("cpf") final String cpfColaborador) {
-        final Long codColaborador = colaboradorAutenticadoProvider.get().getCodigo();
+        final Long codColaborador;
+        if (cpfColaborador.equals("%")) {
+            codColaborador = null;
+        } else {
+            codColaborador =
+                    ColaboradorBackwardHelper.getCodColaboradorByCpf(colaboradorAutenticadoProvider.get().getCodigo(),
+                                                                     cpfColaborador);
+        }
         return service.getAll(DateUtils.toLocalDate(new Date(dataInicial)), DateUtils.toLocalDate(new Date(dataFinal)),
                               codUnidade, codEquipe, status, codColaborador);
     }

@@ -1,3 +1,7 @@
+-- Para otimizar essa function, os joins que eram feitos na primeira CTE foram movidos para o segundo SELECT.
+-- Dessa forma, o join é feito com menos dados.
+-- Pelo mesmo motivo, também movemos para o segundo SELECT o order by.
+-- O filtro de data/hora foi alterado para usar a coluna que já contém o TZ aplicado.
 create or replace function func_checklist_relatorio_realizados_abaixo_tempo_definido(f_cod_unidades bigint[],
                                                                                      f_tempo_realizacao_millis bigint,
                                                                                      f_data_hoje_utc date,

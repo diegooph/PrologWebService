@@ -74,7 +74,7 @@ public final class VeiculoService {
     @Deprecated
     public Veiculo getVeiculoByPlaca(@NotNull final String userToken,
                                      @NotNull final String placa,
-                                     @Nullable final Long codUnidade,
+                                     @NotNull final Long codUnidade,
                                      final boolean withPneus) {
         try {
             return RouterVeiculo

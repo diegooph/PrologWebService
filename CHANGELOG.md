@@ -6,8 +6,18 @@ Change Log
 ## UNRELEASED
 ##
 
-### Refactores
+### Bug Fixes
+* Corrige processo de movimentação para buscar informações da placa correta
+* Corrige processo de aferição para buscar configurações da placa correta
+* Corrigir busca e avaliação de solicitação de folga
+* Corrige mapeamento de erros de banco do V2
+
+<a name="v3.5.2"></a>
+## Version [v3.5.2](https://github.com/luizfp/PrologWebService/compare/v3.5.1...v3.5.0) (2021-07-05)
+
+### Refactors
 * Centraliza mapeamentos das exceptions (PL-3700)
+* Adiciona permissão de aferição placa na busca de campos personalizados
 
 ### Bug Fixes
 * Corrigir uso de PageRequest na API v3 (PL-3704)

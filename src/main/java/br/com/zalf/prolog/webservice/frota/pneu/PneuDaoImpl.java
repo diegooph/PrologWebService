@@ -30,15 +30,18 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public List<Pneu> getPneusByPlaca(final String placa) throws SQLException {
+    @NotNull
+    public List<Pneu> getPneusByPlaca(@NotNull final String placa, @NotNull final Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final List<Pneu> listPneu = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_PNEU_BY_PLACA(F_PLACA := ?);");
+            stmt = conn.prepareStatement(
+                    "select * from func_pneu_get_pneu_by_placa(f_placa := ?, f_cod_unidade := ?);");
             stmt.setString(1, placa);
+            stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 listPneu.add(PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM, false));
