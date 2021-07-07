@@ -9,6 +9,7 @@ Change Log
 ### Bug Fixes
 * Corrige processo de movimentação para buscar informações da placa correta
 * Corrige processo de aferição para buscar configurações da placa correta
+* Corrigir busca e avaliação de solicitação de folga
 
 <a name="v3.5.2"></a>
 ## Version [v3.5.2](https://github.com/luizfp/PrologWebService/compare/v3.5.1...v3.5.0) (2021-07-05)

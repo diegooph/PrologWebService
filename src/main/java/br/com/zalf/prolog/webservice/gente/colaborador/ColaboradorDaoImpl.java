@@ -629,9 +629,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
     @NotNull
     @Override
-    public Long getCodColaboradorByCpf(@NotNull final Connection conn,
-                                       @NotNull final Long codEmpresa,
-                                       @NotNull final String cpfColaborador) throws Throwable {
+    public Long getCodColaboradorByCpfAndCodEmpresa(@NotNull final Connection conn,
+                                                    @NotNull final Long codEmpresa,
+                                                    @NotNull final String cpfColaborador) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -661,14 +661,48 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
     @NotNull
     @Override
-    public Long getCodColaboradorByCpf(@NotNull final Long codEmpresa, @NotNull final String cpfColaborador)
-            throws Throwable {
+    public Long getCodColaboradorByCpfAndCodEmpresa(@NotNull final Long codEmpresa,
+                                                    @NotNull final String cpfColaborador) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
-            return getCodColaboradorByCpf(conn, codEmpresa, cpfColaborador);
+            return getCodColaboradorByCpfAndCodEmpresa(conn, codEmpresa, cpfColaborador);
         } finally {
             close(conn);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Long getCodColaboradorByCpfAndCodColaboradorBase(@NotNull final Long codColaboradorBase,
+                                                            @NotNull final String cpf) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select c.codigo as codigo " +
+                                                 "from colaborador c " +
+                                                 "where c.cpf = ? " +
+                                                 "  and c.cod_empresa = (select cbase.cod_empresa " +
+                                                 "                       from colaborador cbase " +
+                                                 "                       where cbase.codigo = ?);");
+            stmt.setLong(1, Colaborador.formatCpf(cpf));
+            stmt.setLong(2, codColaboradorBase);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final long codColaborador = rSet.getLong("codigo");
+                if (codColaborador <= 0) {
+                    throw new SQLException("Erro ao buscar código do colaborador:" +
+                                                   "\ncpf: " + cpf + "" +
+                                                   "\ncodColaboradorBase: " + codColaboradorBase);
+                }
+                return codColaborador;
+            } else {
+                throw new SQLException("Erro ao buscar código do colaborador:\ncpf: " + cpf);
+            }
+        } finally {
+            close(conn, stmt, rSet);
         }
     }
 

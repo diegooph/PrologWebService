@@ -64,11 +64,15 @@ public interface ColaboradorDao {
             throws SQLException;
 
     @NotNull
-    Long getCodColaboradorByCpf(@NotNull final Connection conn,
-                                @NotNull final Long codEmpresa,
-                                @NotNull final String cpfColaborador) throws Throwable;
+    Long getCodColaboradorByCpfAndCodEmpresa(@NotNull final Connection conn,
+                                             @NotNull final Long codEmpresa,
+                                             @NotNull final String cpfColaborador) throws Throwable;
 
     @NotNull
-    Long getCodColaboradorByCpf(@NotNull final Long codEmpresa,
-                                @NotNull final String cpfColaborador) throws Throwable;
+    Long getCodColaboradorByCpfAndCodEmpresa(@NotNull final Long codEmpresa,
+                                             @NotNull final String cpfColaborador) throws Throwable;
+
+    @NotNull
+    Long getCodColaboradorByCpfAndCodColaboradorBase(@NotNull final Long codColaboradorBase,
+                                                     @NotNull final String cpf) throws Throwable;
 }
