@@ -269,7 +269,7 @@ public class ColaboradorService {
     public Long getCodColaboradorByCpf(@NotNull final Long codEmpresa, @NotNull final String cpfColaborador)
             throws Throwable {
         try {
-            return dao.getCodColaboradorByCpf(codEmpresa, cpfColaborador);
+            return dao.getCodColaboradorByCpfAndCodEmpresa(codEmpresa, cpfColaborador);
         } catch (final SQLException e) {
             Log.e(TAG,
                   String.format("Erro ao buscar o código do colaborador " +
