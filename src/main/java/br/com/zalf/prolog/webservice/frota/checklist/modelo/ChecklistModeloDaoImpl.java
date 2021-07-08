@@ -509,7 +509,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                         pergunta,
                         usarMesmoCodigoDeContexto);
                 for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
-                    if(alternativa instanceof AlternativaModeloChecklistEdicaoInsere) {
+                    if (alternativa instanceof AlternativaModeloChecklistEdicaoInsere) {
                         insertAlternativaChecklist(
                                 conn,
                                 modeloChecklist.getCodUnidade(),
