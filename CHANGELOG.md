@@ -12,6 +12,7 @@ Change Log
 * Corrigir busca e avaliação de solicitação de folga
 * Corrige mapeamento de erros de banco do V2
 * Deixa de logar exception no sentry para mensagem de token não autorizado
+* Trata mensagem de erro em métodos roteados (integrados) com AOP
 
 <a name="v3.5.2"></a>
 ## Version [v3.5.2](https://github.com/luizfp/PrologWebService/compare/v3.5.1...v3.5.0) (2021-07-05)
