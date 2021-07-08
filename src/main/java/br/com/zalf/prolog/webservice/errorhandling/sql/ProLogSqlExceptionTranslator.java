@@ -15,6 +15,11 @@ import java.sql.SQLException;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
+    @NotNull
+    @Override
+    public final ProLogException doTranslate(@NotNull final SQLException sqlException) {
+        return doTranslate(sqlException, sqlException.getMessage());
+    }
 
     @NotNull
     @Override

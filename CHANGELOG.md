@@ -6,6 +6,9 @@ Change Log
 ## UNRELEASED
 ##
 
+### Refactors
+* Mapeia corretamente erros do Spring nos endpoints V3
+
 ### Bug Fixes
 * Corrige processo de movimentação para buscar informações da placa correta
 * Corrige processo de aferição para buscar configurações da placa correta
