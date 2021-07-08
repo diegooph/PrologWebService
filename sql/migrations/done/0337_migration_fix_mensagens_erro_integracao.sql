@@ -1,15 +1,26 @@
--- Sobre:
---
--- Function utilizada pela integração da Piccolotur para realizar a inserção de Itens de Ordem de Serviço no ProLog.
---
--- Essa function possui duas particularidades que divergem do processo padrão (processo do ProLog) para abertura de
--- Ordem de Serviço, são elas:
--- 1) Diferente do padrão no restante das functions, essa insere também o código que a O.S terá, esse código é o
--- mesmo que a O.S tem no sistema integrado (Globus).
--- 2) Essa function permite adicionar itens a uma O.S já aberta, desde de que todos os vínculos sejam cumpridos.
--- 3) Caso o item já exista na OS, não incrementamos a quantidade de apontamentos, pois, esse incremento é feito via
--- JAVA no momentos que os itens NOK são enviados para o Globus.
---
+create or replace function integracao.func_garante_token_empresa(f_cod_empresa bigint,
+                                                                 f_token_integracao text,
+                                                                 f_error_message text default null)
+    returns void
+    language plpgsql
+as
+$$
+declare
+    error_message text :=
+        f_if(f_error_message is null,
+             format('Token não autorizado para a empresa %s', f_cod_empresa),
+             f_error_message);
+begin
+    if (f_cod_empresa is null or f_cod_empresa not in (select ti.cod_empresa
+                                                       from integracao.token_integracao ti
+                                                       where ti.token_integracao = f_token_integracao))
+    then
+        perform throw_client_side_error(error_message);
+    end if;
+end;
+$$;
+
+
 create or replace function
     piccolotur.func_check_os_insere_item_os_aberta(f_cod_os_globus bigint,
                                                    f_cod_unidade_os bigint,
