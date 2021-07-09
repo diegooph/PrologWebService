@@ -40,13 +40,11 @@ public class PneuServicoService {
         this.pneuTipoServicoService = pneuTipoServicoService;
     }
 
-    //TODO pros dois
-    // --OK
     @NotNull
     @Transactional
     public PneuServicoRealizadoEntity insertServicoPneu(@NotNull final PneuEntity pneuServicoRealizado,
                                                         @NotNull final BigDecimal valorBanda,
-                                                        final PneuTipoServicoEntity pneuTipoServicoEntity,
+                                                        @NotNull final PneuTipoServicoEntity pneuTipoServicoEntity,
                                                         @NotNull final String fonteServicoRealizado) {
         final PneuServicoRealizadoEntity savedServicoRealizado =
                 pneuServicoDao.save(
