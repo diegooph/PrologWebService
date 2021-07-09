@@ -28,30 +28,10 @@ public class MovimentacaoServicoRealizadoService {
     @NotNull
     private final MovimentacaoPneuServicoRealizadoRecapadoraDao movimentacaoPneuServicoRealizadoRecapadoraDao;
 
-    @SuppressWarnings("checkstyle:FinalLocalVariable")
-    @NotNull
-    @Transactional
-    public SuccessResponse inserMovimentacaoServicoPneu(
-            @NotNull final MovimentacaoEntity movimentacaoEntity,
-            @NotNull final MovimentacaoDestinoEntity movimentacaoDestinoEntity,
-            @NotNull final PneuEntity pneuEntity,
-            @NotNull final PneuTipoServicoEntity pneuTipoServicoEntity,
-            @NotNull final PneuServicoRealizadoEntity pneuServicoRealizadoEntity) {
-        this.pneuServicoService.insertServicoPneu(pneuEntity,
-                pneuServicoRealizadoEntity.getCusto(),
-                pneuTipoServicoEntity,
-                PneuServicoRealizado.FONTE_MOVIMENTACAO);
-
-        insertMovimentacaoPneuServicoRealizado(movimentacaoEntity.getCodigo(),
-                pneuServicoRealizadoEntity.getCodigo());
-
-        final Long codRecapadora = movimentacaoDestinoEntity.getRecapadora().getCodigo();
-        if (codRecapadora != null) {
-            insertMovimentacaoPneuServicoRealizadoRecapadora(movimentacaoEntity.getCodigo(),
-                    pneuServicoRealizadoEntity.getCodigo(),
-                    movimentacaoDestinoEntity.getRecapadora().getCodigo());
-        }
-        return null;
+     public void insertMovimentacaoServicoPneu(@NotNull final MovimentacaoEntity movimentacaoEntity) {
+        validaServicosRealizados(movimentacaoEntity.getPneu().getCodigo(), movimentacaoEntity.getServicosRealizados());
+        movimentacaoEntity.getServicosRealizados()
+                .forEach(pneuServicoRealizado -> saveServicoRealizadoPneu(movimentacaoEntity, pneuServicoRealizado));
     }
 
     private void insertMovimentacaoPneuServicoRealizado(
