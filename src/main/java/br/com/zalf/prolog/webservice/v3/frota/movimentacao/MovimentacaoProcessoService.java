@@ -31,7 +31,11 @@ public class MovimentacaoProcessoService implements KmProcessoAtualizavel {
     @NotNull
     private final MovimentacaoProcessoDao movimentacaoProcessoDao;
     @NotNull
+    private final MovimentacaoDao movimentacaoDao;
+    @NotNull
     private final MovimentacaoOrigemDao movimentacaoOrigemDao;
+    @NotNull
+    private final MovimentacaoDestinoDao movimentacaoDestinoDao;
     @NotNull
     private final MovimentacaoDestinoDao movimentacaoDestinoDao;
 

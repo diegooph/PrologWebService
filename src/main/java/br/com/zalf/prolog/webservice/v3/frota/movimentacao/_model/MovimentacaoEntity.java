@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao._model;
 
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico._modal.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
@@ -59,8 +60,8 @@ public final class MovimentacaoEntity {
     private String observacao;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "movimentacao_pneu_servico_realizado",
-               joinColumns = @JoinColumn(name = "cod_movimentacao"),
-               inverseJoinColumns = @JoinColumn(name = "cod_servico_realizado"))
+            joinColumns = @JoinColumn(name = "cod_movimentacao"),
+            inverseJoinColumns = @JoinColumn(name = "cod_servico_realizado"))
     private Set<PneuServicoRealizadoEntity> servicosRealizados;
 
     public boolean isMovimentacaoNoVeiculo() {
@@ -71,15 +72,37 @@ public final class MovimentacaoEntity {
     public Optional<VeiculoMovimentacao> getVeiculo() {
         if (movimentacaoOrigem.getVeiculo() != null) {
             return createVeiculoMovimentacao(movimentacaoOrigem.getVeiculo(),
-                                             movimentacaoOrigem.getKmColetadoVeiculo(),
-                                             movimentacaoOrigem.getCodDiagrama());
+                    movimentacaoOrigem.getKmColetadoVeiculo(),
+                    movimentacaoOrigem.getCodDiagrama());
         } else if (movimentacaoDestino.getVeiculo() != null) {
             return createVeiculoMovimentacao(movimentacaoDestino.getVeiculo(),
-                                             movimentacaoDestino.getKmColetadoVeiculo(),
-                                             movimentacaoDestino.getCodDiagrama());
+                    movimentacaoDestino.getKmColetadoVeiculo(),
+                    movimentacaoDestino.getCodDiagrama());
         }
 
         return Optional.empty();
+    }
+
+    @NotNull
+    public OrigemDestinoEnum getTipoOrigem() {
+        return this.getMovimentacaoOrigem().getTipoOrigem();
+    }
+
+    @NotNull
+    public OrigemDestinoEnum getTipoDestino() {
+        return this.getMovimentacaoDestino().getTipoDestino();
+    }
+
+    public boolean isFromTo(@NotNull final OrigemDestinoEnum origem, @NotNull final OrigemDestinoEnum destino) {
+        return this.getTipoOrigem().equals(origem) && this.getTipoDestino().equals(destino);
+    }
+
+    public boolean temServicoIncrementaVida() {
+        return this.servicosRealizados.stream()
+                .filter(PneuServicoRealizadoEntity::isIncrementaVida)
+                .findFirst()
+                .map(PneuServicoRealizadoEntity::isIncrementaVida)
+                .orElse(false);
     }
 
     @NotNull
@@ -87,9 +110,9 @@ public final class MovimentacaoEntity {
                                                                     @NotNull final Long kmColetadoVeiculo,
                                                                     @NotNull final Long codDiagrama) {
         return Optional.of(new VeiculoMovimentacao(veiculo.getCodigo(),
-                                                   veiculo.getPlaca(),
-                                                   veiculo.getIdentificadorFrota(),
-                                                   kmColetadoVeiculo,
-                                                   codDiagrama));
+                veiculo.getPlaca(),
+                veiculo.getIdentificadorFrota(),
+                kmColetadoVeiculo,
+                codDiagrama));
     }
 }

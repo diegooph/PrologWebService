@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
+import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
@@ -39,6 +40,12 @@ public final class MovimentacaoProcessoResource implements MovimentacaoProcessoA
         this.mapper = mapper;
     }
 
+    @POST
+    public SuccessResponse insertProcessoMovimentacao(
+            @NotNull final MovimentacaoProcessoInsercaoDto movimentacaoProcessoInsercaoDto) {
+        return service.insertProcessoMovimentacao(mapper.toEntity(movimentacaoProcessoInsercaoDto));
+    }
+
     @GET
     @ApiExposed
     @Secured(permissions = {
@@ -56,12 +63,12 @@ public final class MovimentacaoProcessoResource implements MovimentacaoProcessoA
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
         return mapper.toDto(service.getListagemMovimentacoes(codUnidades,
-                                                             dataInicial,
-                                                             dataFinal,
-                                                             codColaborador,
-                                                             codVeiculo,
-                                                             codPneu,
-                                                             limit,
-                                                             offset));
+                dataInicial,
+                dataFinal,
+                codColaborador,
+                codVeiculo,
+                codPneu,
+                limit,
+                offset));
     }
 }
