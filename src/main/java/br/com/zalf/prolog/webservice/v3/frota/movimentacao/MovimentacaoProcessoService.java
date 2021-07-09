@@ -1,12 +1,15 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
+import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoDestinoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoOrigemEntity;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.movimentacao.movimentacaoservico.MovimentacaoServicoRealizadoService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -103,30 +106,23 @@ public class MovimentacaoProcessoService implements KmProcessoAtualizavel {
 
     @NotNull
     @Transactional
-    public SuccessResponse insert(
-            @NotNull final MovimentacaoEntity movimentacaoEntity,
-            @NotNull final MovimentacaoDestinoEntity movimentacaoDestinoEntity,
-            @NotNull final PneuEntity pneuEntity,
-            @NotNull final PneuTipoServicoEntity pneuTipoServicoEntity,
-            @NotNull final PneuServicoRealizadoEntity pneuServicoRealizadoEntity) {
+    public SuccessResponse insertProcessoMovimentacao(
+            @NotNull final MovimentacaoProcessoEntity movimentacaoProcessoEntity) {
 
-        if (pneuServicoRealizadoEntity.getCodigo() == null) {
-            throw new IllegalStateException("O pneu " + pneuEntity.getCodigo() + " foi movido dá análise " +
-                    "para o estoque e não teve nenhum serviço aplicado!");
-        }
+        final MovimentacaoProcessoEntity processoEntitySaved = movimentacaoProcessoDao.save(movimentacaoProcessoEntity);
+        processoEntitySaved.getMovimentacoes().forEach(this::saveMovimentacao);
 
-        //TODO ? MUDO P/ LISTA DE ENTITY?
-        boolean temIncrementaVida = false;
-        for (int i = 0; i < servicosRealizados.size(); i++) {
-            final PneuServicoRealizado servico = servicosRealizados.get(i);
-            if (servico instanceof PneuServicoRealizadoIncrementaVida) {
-                if (temIncrementaVida) {
-                    throw new GenericException("Não é possível realizar dois serviços de troca de banda na " +
-                            "mesma movimentação");
-                }
-                temIncrementaVida = true;
-            }
+        return new SuccessResponse(1L, "Vai dar boa raça!");
+    }
+
+    private void saveMovimentacao(@NotNull final MovimentacaoEntity movimentacaoEntity) {
+        final MovimentacaoEntity movimentacaoEntitySaved = movimentacaoDao.save(movimentacaoEntity);
+        if (movimentacaoEntitySaved.isFromTo(OrigemDestinoEnum.ANALISE, OrigemDestinoEnum.ESTOQUE)) {
+            insertMovimentacaoAnaliseEstoque(movimentacaoEntitySaved);
         }
-        return null;
+    }
+
+    private void insertMovimentacaoAnaliseEstoque(@NotNull final MovimentacaoEntity movimentacaoEntity) {
+        movimentacaoServicoRealizadoService.insertMovimentacaoServicoPneu(movimentacaoEntity);
     }
 }
