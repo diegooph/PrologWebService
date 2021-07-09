@@ -2,9 +2,8 @@
 Change Log
 ==========
 
-##
-## UNRELEASED
-##
+<a name="v3.5.3"></a>
+## Version [v3.5.3](https://github.com/luizfp/PrologWebService/compare/v3.5.2...v3.5.3) (2021-07-08)
 
 ### Bug Fixes
 * Corrige processo de movimentação para buscar informações da placa correta
@@ -15,7 +14,7 @@ Change Log
 * Trata mensagem de erro em métodos roteados (integrados) com AOP
 
 <a name="v3.5.2"></a>
-## Version [v3.5.2](https://github.com/luizfp/PrologWebService/compare/v3.5.1...v3.5.0) (2021-07-05)
+## Version [v3.5.2](https://github.com/luizfp/PrologWebService/compare/v3.5.1...v3.5.2) (2021-07-05)
 
 ### Refactors
 * Centraliza mapeamentos das exceptions (PL-3700)
