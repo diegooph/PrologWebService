@@ -20,6 +20,12 @@ import java.util.stream.Collectors;
 @Component
 public final class MovimentacaoProcessoMapper {
     @NotNull
+    public MovimentacaoProcessoEntity toEntity(
+            @NotNull final MovimentacaoProcessoInsercaoDto movimentacaoProcessoInsercaoDto) {
+        return MovimentacaoProcessoEntity.builder().build();
+    }
+
+    @NotNull
     public List<MovimentacaoProcessoListagemDto> toDto(
             @NotNull final List<MovimentacaoProcessoEntity> processosMovimentacao) {
         return processosMovimentacao.stream()
