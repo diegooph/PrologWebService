@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -42,25 +43,22 @@ public final class InternalExceptionMapper {
                 final PSQLException psqlException = (PSQLException) throwable.getCause().getCause();
                 final ProLogSqlExceptionTranslator translator = Injection.provideProLogSqlExceptionTranslator();
                 return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
-                                      createPrologError(translator.doTranslate(psqlException,
-                                                                               psqlException.getMessage())));
+                                      createPrologError(translator.doTranslate(psqlException)));
             }
             if (sqlExceptionV2Wrapper.getParentException() instanceof SQLException) {
                 final SQLException sqlException = (SQLException) sqlExceptionV2Wrapper.getParentException();
                 final ProLogSqlExceptionTranslator translator = Injection.provideProLogSqlExceptionTranslator();
                 return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
-                                      createPrologError(translator.doTranslate(sqlException, throwable.getMessage())));
+                                      createPrologError(translator.doTranslate(sqlException)));
             }
         }
         if (throwable instanceof NotAuthorizedException) {
-            return createResponse(
-                    Response.Status.UNAUTHORIZED.getStatusCode(),
-                    createPrologError((NotAuthorizedException) throwable));
+            return createResponse(Response.Status.UNAUTHORIZED.getStatusCode(),
+                                  createPrologError((NotAuthorizedException) throwable));
         }
         if (throwable instanceof ForbiddenException) {
-            return createResponse(
-                    Response.Status.FORBIDDEN.getStatusCode(),
-                    createPrologError((ForbiddenException) throwable));
+            return createResponse(Response.Status.FORBIDDEN.getStatusCode(),
+                                  createPrologError((ForbiddenException) throwable));
         }
         if (throwable instanceof ConstraintViolationException) {
             return createResponse(
@@ -68,14 +66,18 @@ public final class InternalExceptionMapper {
                     createPrologError(convertToClientSideErrorException((ConstraintViolationException) throwable)));
         }
         if (throwable instanceof ParamException) {
-            return createResponse(
-                    Response.Status.BAD_REQUEST.getStatusCode(),
-                    createPrologError(convertToClientSideErrorException((ParamException) throwable)));
+            return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
+                                  createPrologError(convertToClientSideErrorException((ParamException) throwable)));
         }
         if (throwable instanceof NotFoundException) {
-            return createResponse(
-                    Response.Status.NOT_FOUND.getStatusCode(),
-                    createPrologError((NotFoundException) throwable));
+            return createResponse(Response.Status.NOT_FOUND.getStatusCode(),
+                                  createPrologError((NotFoundException) throwable));
+        }
+        if (throwable instanceof DataIntegrityViolationException) {
+            final PSQLException psqlException = (PSQLException) throwable.getCause().getCause();
+            final ProLogSqlExceptionTranslator translator = Injection.provideProLogSqlExceptionTranslator();
+            return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
+                                  createPrologError(translator.doTranslate(psqlException)));
         }
 
         final ProLogException proLogException = convertToPrologException(throwable);

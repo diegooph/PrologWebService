@@ -6,6 +6,9 @@ Change Log
 ## UNRELEASED
 ##
 
+### Refactors
+* Mapeia corretamente erros do Spring nos endpoints V3
+
 <a name="v3.5.4"></a>
 ## Version [v3.5.4](https://github.com/luizfp/PrologWebService/compare/v3.5.3...v3.5.4) (2021-07-11)
 
@@ -14,6 +17,7 @@ Change Log
 
 <a name="v3.5.3"></a>
 ## Version [v3.5.3](https://github.com/luizfp/PrologWebService/compare/v3.5.2...v3.5.3) (2021-07-08)
+
 
 ### Bug Fixes
 * Corrige processo de movimentação para buscar informações da placa correta
