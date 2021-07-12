@@ -2,9 +2,8 @@
 Change Log
 ==========
 
-## 
-## UNRELEASED
-##
+<a name="v3.5.4"></a>
+## Version [v3.5.4](https://github.com/luizfp/PrologWebService/compare/v3.5.3...v3.5.4) (2021-07-11)
 
 ### Bug Fixes
 * Corrige fechamento de serviço de pneu
