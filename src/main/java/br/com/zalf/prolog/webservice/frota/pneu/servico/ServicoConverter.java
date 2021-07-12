@@ -112,6 +112,7 @@ final class ServicoConverter {
         final VeiculoServico veiculo = new VeiculoServico();
         veiculo.setCodigo(resultSet.getLong("COD_VEICULO"));
         veiculo.setPlaca(resultSet.getString("PLACA_VEICULO"));
+        veiculo.setCodUnidadeAlocado(resultSet.getLong("COD_UNIDADE"));
         veiculo.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         veiculo.setKmAtual(resultSet.getLong("KM_ATUAL_VEICULO"));
         veiculo.setKmAberturaServico(resultSet.getInt("KM_ABERTURA_SERVICO"));
