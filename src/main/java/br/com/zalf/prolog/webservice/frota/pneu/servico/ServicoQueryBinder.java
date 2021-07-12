@@ -377,6 +377,7 @@ final class ServicoQueryBinder {
                                                                            "  V.PLACA AS PLACA_VEICULO, " +
                                                                            "  V.IDENTIFICADOR_FROTA, " +
                                                                            "  V.CODIGO AS COD_VEICULO, " +
+                                                                           "  V.COD_UNIDADE AS COD_UNIDADE, " +
                                                                            "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +
                                                                            "  AV.COD_PNEU AS COD_PNEU, " +
                                                                            "  P.CODIGO_CLIENTE AS COD_PNEU_CLIENTE, " +
