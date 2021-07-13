@@ -11,6 +11,7 @@ Change Log
 
 ### Bug Fixes
 * Corrige erro de getConstraint ao receber valor nulo  
+* Corrigir erro ao editar modelo de checklist (PL-3528)
 
 <a name="v3.5.4"></a>
 ## Version [v3.5.4](https://github.com/luizfp/PrologWebService/compare/v3.5.3...v3.5.4) (2021-07-11)
