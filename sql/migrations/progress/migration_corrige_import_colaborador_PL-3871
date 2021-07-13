@@ -310,7 +310,7 @@ BEGIN
             -- Procura função similar no banco que não esteja deletada.
             SELECT DISTINCT ON
                 (NEW.FUNCAO_FORMATADA_IMPORT) F.CODIGO                                           AS COD_FUNCAO,
-                MAX(FUNC_GERA_SIMILARIDADE(NEW.FUNCAO_FORMATADA_IMPORT, F.NOME)) AS SIMILARIEDADE_FUNCAO
+                                              MAX(FUNC_GERA_SIMILARIDADE(NEW.FUNCAO_FORMATADA_IMPORT, F.NOME)) AS SIMILARIEDADE_FUNCAO
             INTO V_COD_FUNCAO_BANCO, V_SIMILARIDADE_FUNCAO
             FROM FUNCAO F
             WHERE F.COD_EMPRESA = NEW.COD_EMPRESA
@@ -320,11 +320,11 @@ BEGIN
             -- Se a similaridade da funcao for menor que o exigido ou nula: Verifica se há alguma similar deletada.
             IF (V_SIMILARIDADE_FUNCAO < V_VALOR_SIMILARIDADE OR V_SIMILARIDADE_FUNCAO IS NULL)
             THEN
-                 SELECT DISTINCT ON
+                SELECT DISTINCT ON
                     (NEW.FUNCAO_FORMATADA_IMPORT) FD.CODIGO                    AS COD_FUNCAO,
-                    MAX(FUNC_GERA_SIMILARIDADE(
-                        NEW.FUNCAO_FORMATADA_IMPORT, FD.NOME)) AS SIMILARIEDADE_FUNCAO,
-                    FD.DELETADO
+                                                  MAX(FUNC_GERA_SIMILARIDADE(
+                                                          NEW.FUNCAO_FORMATADA_IMPORT, FD.NOME)) AS SIMILARIEDADE_FUNCAO,
+                                                  FD.DELETADO
                 INTO V_COD_FUNCAO_BANCO, V_SIMILARIDADE_FUNCAO, V_EXISTE_FUNCAO_DELETADA
                 FROM FUNCAO_DATA FD
                 WHERE FD.COD_EMPRESA = NEW.COD_EMPRESA AND FD.DELETADO = TRUE
@@ -340,7 +340,7 @@ BEGIN
                     WHERE CODIGO = V_COD_FUNCAO_BANCO
                       AND COD_EMPRESA = NEW.COD_EMPRESA;
                     -- Se não, cadastra.
-                    ELSE
+                ELSE
                     INSERT INTO FUNCAO_DATA (NOME, COD_EMPRESA)
                     VALUES (NEW.FUNCAO_EDITAVEL, NEW.COD_EMPRESA) RETURNING CODIGO INTO V_COD_FUNCAO_BANCO;
                 END IF;
