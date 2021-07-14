@@ -27,28 +27,30 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
-                    "  DCT.CODIGO AS CODIGO_TIPO_COMPONENTE, " +
-                    "  DCT.NOME AS NOME_TIPO_COMPONENTE, " +
-                    "  DCT.DESCRICAO AS DESCRICAO_TIPO_COMPONENTE, " +
-                    "  DCT.MAXIMO_BLOCOS_HORIZONTAIS AS MAXIMO_BLOCOS_HORIZONTAIS, " +
-                    "  DCT.MAXIMO_BLOCOS_VERTICAIS AS MAXIMO_BLOCOS_VERTICAIS, " +
-                    "  DCT.MINIMO_BLOCOS_HORIZONTAIS AS MINIMO_BLOCOS_HORIZONTAIS, " +
-                    "  DCT.MINIMO_BLOCOS_VERTICAIS AS MINIMO_BLOCOS_VERTICAIS, " +
-                    "  DC.CODIGO AS CODIGO_COMPONENTE, " +
-                    "  DC.COD_PILAR_PROLOG_COMPONENTE AS CODIGO_PILAR_PROLOG_COMPONENTE, " +
-                    "  DC.TITULO AS TITULO_COMPONENTE, " +
-                    "  DC.SUBTITULO AS SUBTITULO_COMPONENTE, " +
-                    "  DC.DESCRICAO AS DESCRICAO_COMPONENTE, " +
-                    "  DC.QTD_BLOCOS_HORIZONTAIS AS QTD_BLOCOS_HORIZONTAIS, " +
-                    "  DC.QTD_BLOCOS_VERTICAIS AS QTD_BLOCOS_VERTICAIS, " +
-                    "  DC.URL_ENDPOINT_DADOS AS URL_ENDPOINT_DADOS, " +
-                    "  DC.COR_BACKGROUND_HEX AS COR_BACKGROUND_HEX, " +
-                    "  DC.URL_ICONE AS URL_ICONE, " +
-                    "  DC.LABEL_EIXO_X AS LABEL_EIXO_X, " +
-                    "  DC.LABEL_EIXO_Y AS LABEL_EIXO_Y " +
-                    "FROM PUBLIC.DASHBOARD_COMPONENTE DC " +
-                    "  JOIN PUBLIC.DASHBOARD_COMPONENTE_TIPO DCT ON DC.COD_TIPO_COMPONENTE = DCT.CODIGO " +
-                    "WHERE DC.CODIGO = ?;");
+                                                 "  DCT.CODIGO AS CODIGO_TIPO_COMPONENTE, " +
+                                                 "  DCT.NOME AS NOME_TIPO_COMPONENTE, " +
+                                                 "  DCT.DESCRICAO AS DESCRICAO_TIPO_COMPONENTE, " +
+                                                 "  DCT.MAXIMO_BLOCOS_HORIZONTAIS AS MAXIMO_BLOCOS_HORIZONTAIS, " +
+                                                 "  DCT.MAXIMO_BLOCOS_VERTICAIS AS MAXIMO_BLOCOS_VERTICAIS, " +
+                                                 "  DCT.MINIMO_BLOCOS_HORIZONTAIS AS MINIMO_BLOCOS_HORIZONTAIS, " +
+                                                 "  DCT.MINIMO_BLOCOS_VERTICAIS AS MINIMO_BLOCOS_VERTICAIS, " +
+                                                 "  DC.CODIGO AS CODIGO_COMPONENTE, " +
+                                                 "  DC.COD_PILAR_PROLOG_COMPONENTE AS CODIGO_PILAR_PROLOG_COMPONENTE," +
+                                                 " " +
+                                                 "  DC.TITULO AS TITULO_COMPONENTE, " +
+                                                 "  DC.SUBTITULO AS SUBTITULO_COMPONENTE, " +
+                                                 "  DC.DESCRICAO AS DESCRICAO_COMPONENTE, " +
+                                                 "  DC.QTD_BLOCOS_HORIZONTAIS AS QTD_BLOCOS_HORIZONTAIS, " +
+                                                 "  DC.QTD_BLOCOS_VERTICAIS AS QTD_BLOCOS_VERTICAIS, " +
+                                                 "  DC.URL_ENDPOINT_DADOS AS URL_ENDPOINT_DADOS, " +
+                                                 "  DC.COR_BACKGROUND_HEX AS COR_BACKGROUND_HEX, " +
+                                                 "  DC.URL_ICONE AS URL_ICONE, " +
+                                                 "  DC.LABEL_EIXO_X AS LABEL_EIXO_X, " +
+                                                 "  DC.LABEL_EIXO_Y AS LABEL_EIXO_Y " +
+                                                 "FROM PUBLIC.DASHBOARD_COMPONENTE DC " +
+                                                 "  JOIN PUBLIC.DASHBOARD_COMPONENTE_TIPO DCT ON DC" +
+                                                 ".COD_TIPO_COMPONENTE = DCT.CODIGO " +
+                                                 "WHERE DC.CODIGO = ?;");
             stmt.setInt(1, codigo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -94,7 +96,7 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * " +
-                    "from func_dashboard_get_componentes_colaborador(f_user_token => ?);");
+                                                 "from func_dashboard_get_componentes_colaborador(f_user_token => ?);");
             stmt.setString(1, userToken);
             rSet = stmt.executeQuery();
             final List<DashboardPilarComponents> componentsPilar = new ArrayList<>();
@@ -123,16 +125,18 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
 
     @NotNull
     private DashboardComponentResumido createComponentResumido(@NotNull final ResultSet rSet) throws SQLException {
-        final DashboardComponentResumido componentResumido = new DashboardComponentResumido();
-        componentResumido.setCodigoComponente(rSet.getInt("CODIGO_COMPONENTE"));
-        componentResumido.setTitulo(rSet.getString("TITULO_COMPONENTE"));
-        componentResumido.setSubtitulo(rSet.getString("SUBTITULO_COMPONENTE"));
-        componentResumido.setDescricao(rSet.getString("DESCRICAO_COMPONENTE"));
-        componentResumido.setCodPilarProLog(rSet.getInt("COD_PILAR_PROLOG_COMPONENTE"));
-        componentResumido.setQtdBlocosHorizontais(rSet.getInt("QTD_BLOCOS_HORIZONTAIS"));
-        componentResumido.setQtdBlocosVerticais(rSet.getInt("QTD_BLOCOS_VERTICAIS"));
-        componentResumido.setUrlEndpointDados(rSet.getString("URL_ENDPOINT_DADOS"));
-        componentResumido.setIdentificadorTipo(IdentificadorTipoComponente.fromString(rSet.getString("IDENTIFICADOR_TIPO")));
-        return componentResumido;
+        return DashboardComponentResumido.builder()
+                .withCodigoComponente(rSet.getInt("codigo_componente"))
+                .withTitulo(rSet.getString("titulo_componente"))
+                .withSubtitulo(rSet.getString("subtitulo_componente"))
+                .withDescricao(rSet.getString("descricao_componente"))
+                .withCodPilarProLog(rSet.getInt("cod_pilar_prolog_componente"))
+                .withQtdBlocosHorizontais(rSet.getInt("qtd_blocos_horizontais"))
+                .withQtdBlocosVerticais(rSet.getInt("qtd_blocos_verticais"))
+                .withUrlEndpointDados(rSet.getString("url_endpoint_dados"))
+                .withIdentificadorTipo(IdentificadorTipoComponente.fromString(rSet.getString("identificador_tipo")))
+                .withCodAgrupamento(rSet.getInt("codigo_agrupamento"))
+                .withNomeAgrupamento(rSet.getString("nome_agrupamento"))
+                .build();
     }
 }
