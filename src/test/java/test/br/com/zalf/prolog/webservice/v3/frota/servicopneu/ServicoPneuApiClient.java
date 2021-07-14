@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
-import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuListagemDto;
-import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuStatus;
+import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.boot.test.web.client.TestRestTemplate;

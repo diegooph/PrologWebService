@@ -2,8 +2,8 @@ package test.br.com.zalf.prolog.webservice.v3.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
-import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
-import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoListagemDto;
 import com.google.common.truth.Truth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.security;
 
-import br.com.zalf.prolog.webservice.v3.geral.empresa.EmpresaEntity;
+import br.com.zalf.prolog.webservice.v3.general.empresa.EmpresaEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.geral.unidade._model;
 
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Equipe;
-import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEdicaoDto;
-import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeVisualizacaoListagemDto;
+import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeEdicaoDto;
+import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeVisualizacaoListagemDto;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

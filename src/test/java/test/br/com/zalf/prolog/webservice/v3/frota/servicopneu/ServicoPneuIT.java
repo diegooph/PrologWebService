@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
-import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuListagemDto;
-import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuStatus;
+import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

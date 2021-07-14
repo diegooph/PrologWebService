@@ -1,6 +1,6 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.pneu;
 
-import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.PneuCadastroDto;
 
 import java.math.BigDecimal;
 

@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
-import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoProcessoListagemDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
