@@ -6,9 +6,9 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchDto;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchMapper;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchUpdateDto;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,7 +45,7 @@ public final class BranchResource implements BranchResourceApiDoc {
     @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Override
     public SuccessResponse updateBranch(@Valid final BranchUpdateDto branchUpdateDto) {
-        final UnidadeEntity branch = mapper.toEntity(branchUpdateDto);
+        final BranchEntity branch = mapper.toEntity(branchUpdateDto);
         return service.updateBranch(branch);
     }
 

@@ -9,7 +9,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.veiculo.diagrama._model.DiagramaEn
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo.diagrama.eixos._model.EixoDiagramaEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo.modelo._model.ModeloVeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo.tipoveiculo._model.TipoVeiculoEntity;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -30,15 +30,15 @@ public class VeiculoMapper {
 
     @NotNull
     public VeiculoEntity toEntity(@NotNull final VeiculoCadastroDto dto,
-                                  @NotNull final UnidadeEntity unidadeEntity,
+                                  @NotNull final BranchEntity branchEntity,
                                   @NotNull final DiagramaEntity diagramaEntity,
                                   @NotNull final TipoVeiculoEntity tipoVeiculoEntity,
                                   @NotNull final ModeloVeiculoEntity modeloVeiculoEntity,
                                   @NotNull final OrigemAcaoEnum origemCadastro) {
         return VeiculoEntity.builder()
                 .withCodEmpresa(dto.getCodEmpresaAlocado())
-                .withUnidadeEntity(unidadeEntity)
-                .withUnidadeEntityCadastro(unidadeEntity)
+                .withBranchEntity(branchEntity)
+                .withBranchEntityCadastro(branchEntity)
                 .withDiagramaEntity(diagramaEntity)
                 .withMotorizado(diagramaEntity.isMotorizado())
                 .withTipoVeiculoEntity(tipoVeiculoEntity)
@@ -58,7 +58,7 @@ public class VeiculoMapper {
         final ModeloVeiculoEntity modeloVeiculoEntity = veiculoEntity.getModeloVeiculoEntity();
         final TipoVeiculoEntity tipoVeiculoEntity = veiculoEntity.getTipoVeiculoEntity();
         final DiagramaEntity diagramaEntity = veiculoEntity.getDiagramaEntity();
-        final UnidadeEntity unidadeEntity = veiculoEntity.getUnidadeEntity();
+        final BranchEntity branchEntity = veiculoEntity.getBranchEntity();
         final Optional<AcoplamentoProcessoEntity> acoplamentoProcessoEntity =
                 veiculoEntity.getAcoplamentoProcessoEntity();
 
@@ -77,10 +77,10 @@ public class VeiculoMapper {
                 diagramaEntity.getQtdEixos(EixoDiagramaEntity.EIXO_TRASEIRO),
                 tipoVeiculoEntity.getCodigo(),
                 tipoVeiculoEntity.getNome(),
-                unidadeEntity.getId(),
-                unidadeEntity.getName(),
-                unidadeEntity.getGroup().getId(),
-                unidadeEntity.getGroup().getName(),
+                branchEntity.getId(),
+                branchEntity.getName(),
+                branchEntity.getGroup().getId(),
+                branchEntity.getGroup().getName(),
                 veiculoEntity.getKm(),
                 veiculoEntity.isStatusAtivo(),
                 veiculoEntity.getQtdPneusAplicados(),

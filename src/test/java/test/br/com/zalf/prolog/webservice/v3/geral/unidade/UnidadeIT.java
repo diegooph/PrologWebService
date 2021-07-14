@@ -5,8 +5,8 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.BadRequestException
 import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
 import br.com.zalf.prolog.webservice.v3.general.branch.BranchDao;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchDto;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchUpdateDto;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +58,7 @@ public class UnidadeIT extends IntegrationTest {
 
     @Nested
     class PersistenceTests {
-        private UnidadeEntity baseEntity;
+        private BranchEntity baseEntity;
 
         @BeforeEach
         void setUp() {

@@ -38,7 +38,7 @@ public interface VeiculoDao extends JpaRepository<VeiculoEntity, Long> {
                    "join fetch v.tipoVeiculoEntity tv " +
                    "join fetch v.diagramaEntity d " +
                    "join fetch d.eixosDiagramaEntities e " +
-                   "join fetch v.unidadeEntity u " +
+                   "join fetch v.branchEntity u " +
                    "join fetch u.group g " +
                    "left join fetch v.acoplamentoProcessoEntity ap " +
                    "left join fetch ap.acoplamentoAtualEntities ate " +

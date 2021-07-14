@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model;
 
-import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
 import br.com.zalf.prolog.webservice.v3.general.company.CompanyEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,7 +32,7 @@ public final class ColaboradorEntity {
     private String nome;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_unidade")
-    private UnidadeEntity unidade;
+    private BranchEntity unidade;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_empresa")
     private CompanyEntity empresa;
