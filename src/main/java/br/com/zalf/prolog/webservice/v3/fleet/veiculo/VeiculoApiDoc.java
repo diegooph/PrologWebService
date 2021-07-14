@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoCadastroDto;
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoListagemDto;
-import br.com.zalf.prolog.webservice.v3.validation.IdBranches;
+import br.com.zalf.prolog.webservice.v3.validation.BranchesId;
 import io.swagger.annotations.*;
 
 import javax.validation.Valid;
@@ -38,7 +38,7 @@ public interface VeiculoApiDoc {
     List<VeiculoListagemDto> getListagemVeiculos(
             @ApiParam(value = "Lista de códigos de unidade.",
                       example = "215",
-                      required = true) @Required @IdBranches final List<Long> codUnidades,
+                      required = true) @Required @BranchesId final List<Long> codUnidades,
             @ApiParam(value = "Flag que controla se veículos inativos serão retornados. ",
                       defaultValue = "true",
                       required = true) @Required final boolean incluirInativos,

@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.v3.fleet.afericao._model.AfericaoAvulsaDto;
 import br.com.zalf.prolog.webservice.v3.fleet.afericao._model.AfericaoPlacaDto;
-import br.com.zalf.prolog.webservice.v3.validation.IdBranches;
+import br.com.zalf.prolog.webservice.v3.validation.BranchesId;
 import io.swagger.annotations.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +33,7 @@ public interface AfericaoResourceApiDoc {
     List<AfericaoPlacaDto> getAfericoesPlacas(
             @ApiParam(value = "Lista de códigos de unidade.",
                       example = "215",
-                      required = true) @NotNull @IdBranches final List<Long> codUnidades,
+                      required = true) @NotNull @BranchesId final List<Long> codUnidades,
             @ApiParam(value = "Data Inicial - Utilizada para filtrar as aferições realizadas.",
                       format = "yyyy-MM-dd",
                       example = "2021-01-01",
@@ -77,7 +77,7 @@ public interface AfericaoResourceApiDoc {
     List<AfericaoAvulsaDto> getAfericoesAvulsas(
             @ApiParam(value = "Lista de códigos de unidade.",
                       example = "215",
-                      required = true) @NotNull @IdBranches final List<Long> codUnidades,
+                      required = true) @NotNull @BranchesId final List<Long> codUnidades,
             @ApiParam(value = "Data Inicial - Utilizada para filtrar as aferições realizadas.",
                       format = "yyyy-MM-dd",
                       example = "2021-01-01",

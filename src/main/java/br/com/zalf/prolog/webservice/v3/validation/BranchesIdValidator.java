@@ -12,21 +12,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public final class IdBranchesValidator implements ConstraintValidator<IdBranches, List<Long>> {
+public final class BranchesIdValidator implements ConstraintValidator<BranchesId, List<Long>> {
     @NotNull
     private final CurrentRequest currentRequest;
     @NotNull
     private final BranchService branchService;
 
     @Autowired
-    public IdBranchesValidator(@NotNull final CurrentRequest currentRequest,
+    public BranchesIdValidator(@NotNull final CurrentRequest currentRequest,
                                @NotNull final BranchService branchService) {
         this.currentRequest = currentRequest;
         this.branchService = branchService;
     }
 
     @Override
-    public void initialize(final IdBranches constraintAnnotation) {
+    public void initialize(final BranchesId constraintAnnotation) {
     }
 
     @Override
@@ -45,10 +45,11 @@ public final class IdBranchesValidator implements ConstraintValidator<IdBranches
         return false;
     }
 
-    private boolean containsCodUnidade(@NotNull final List<UnidadeEntity> unidades,
-                                       @NotNull final List<Long> codUnidades) {
-        return unidades.stream()
+    private boolean containsCodUnidade(@NotNull final List<UnidadeEntity> branches,
+                                       @NotNull final List<Long> branchesId) {
+        return branches.stream()
                 .map(UnidadeEntity::getCodigo)
-                .collect(Collectors.toList()).containsAll(codUnidades);
+                .collect(Collectors.toList())
+                .containsAll(branchesId);
     }
 }
