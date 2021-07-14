@@ -1,3 +1,5 @@
+drop function if exists func_dashboard_get_componentes_colaborador(f_user_token text);
+
 create or replace function func_dashboard_get_componentes_colaborador(f_user_token text)
     returns table
             (
@@ -9,7 +11,9 @@ create or replace function func_dashboard_get_componentes_colaborador(f_user_tok
                 descricao_componente        text,
                 qtd_blocos_horizontais      smallint,
                 qtd_blocos_verticais        smallint,
-                url_endpoint_dados          text
+                url_endpoint_dados          text,
+                codigo_agrupamento          smallint,
+                nome_agrupamento            text
             )
     language sql
 as
