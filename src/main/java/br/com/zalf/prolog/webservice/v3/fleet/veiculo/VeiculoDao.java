@@ -39,10 +39,10 @@ public interface VeiculoDao extends JpaRepository<VeiculoEntity, Long> {
                    "join fetch v.diagramaEntity d " +
                    "join fetch d.eixosDiagramaEntities e " +
                    "join fetch v.unidadeEntity u " +
-                   "join fetch u.grupo g " +
+                   "join fetch u.group g " +
                    "left join fetch v.acoplamentoProcessoEntity ap " +
                    "left join fetch ap.acoplamentoAtualEntities ate " +
-                   "where u.codigo in :codUnidades " +
+                   "where u.id in :codUnidades " +
                    "and (:incluirInativos = true or v.statusAtivo = true) " +
                    "order by v.codigo asc")
     List<VeiculoEntity> getListagemVeiculos(@NotNull final List<Long> codUnidades,

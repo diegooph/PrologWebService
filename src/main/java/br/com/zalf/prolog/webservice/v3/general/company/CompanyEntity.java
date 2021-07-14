@@ -1,7 +1,11 @@
 package br.com.zalf.prolog.webservice.v3.general.company;
 
 import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,33 +16,32 @@ import java.util.Set;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 @Entity
 @Table(name = "empresa", schema = "public")
 public class CompanyEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long codigo;
-
+    @Column(name = "codigo", nullable = false)
+    @NotNull
+    private Long id;
     @Column(name = "nome", nullable = false)
-    private String nome;
-
+    @NotNull
+    private String name;
     @Column(name = "logo_thumbnail_url")
+    @Nullable
     private String thumbnailLogoUrl;
-
     @Column(name = "data_hora_cadastro", nullable = false, columnDefinition = "default now()")
-    private LocalDateTime dataHoraCadastro;
-
+    @Nullable
+    private LocalDateTime createdAt;
     @Column(name = "cod_auxiliar")
+    @Nullable
     private String codAuxiliar;
-
     @Column(name = "status_ativo", nullable = false, columnDefinition = "default true")
-    private boolean ativo;
-
-    @Column(name = "logo_consta_site_comercial", nullable = false, columnDefinition = "default false")
-    private boolean logoConstaSiteComercial;
-
-    @OneToMany(mappedBy = "empresaEntity", fetch = FetchType.LAZY, targetEntity = UnidadeEntity.class)
-    private Set<UnidadeEntity> unidades;
+    private boolean isActive;
+    @OneToMany(mappedBy = "companyEntity", fetch = FetchType.LAZY, targetEntity = UnidadeEntity.class)
+    @NotNull
+    private Set<UnidadeEntity> branches;
 }

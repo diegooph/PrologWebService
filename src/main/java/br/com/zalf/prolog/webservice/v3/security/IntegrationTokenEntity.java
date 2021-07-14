@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -14,15 +15,16 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "integracao", name = "token_integracao")
-public class TokenIntegrationEntity {
+public final class IntegrationTokenEntity {
     @Id
     @Column(name = "token_integracao", nullable = false)
+    @NotNull
     private String token;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_empresa", referencedColumnName = "codigo")
-    private CompanyEntity empresa;
-
+    @NotNull
+    private CompanyEntity company;
     @Column(name = "ativo", nullable = false)
-    private Boolean isAtivo;
+    @NotNull
+    private Boolean isActive;
 }

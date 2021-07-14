@@ -14,11 +14,11 @@ public class UnidadeEdicaoDtoFactory {
     @NotNull
     public static UnidadeEdicaoDto createValidUnidadeEdicaoDtoToUpdate(@NotNull final UnidadeEntity entity) {
         return UnidadeEdicaoDto.builder()
-                .codUnidade(entity.getCodigo())
-                .nomeUnidade(entity.getNome())
-                .codAuxiliarUnidade(entity.getCodAuxiliar())
-                .longitudeUnidade(entity.getLongitudeUnidade())
-                .latitudeUnidade(entity.getLatitudeUnidade())
+                .codUnidade(entity.getId())
+                .nomeUnidade(entity.getName())
+                .codAuxiliarUnidade(entity.getAdditionalId())
+                .longitudeUnidade(entity.getBranchLongitude())
+                .latitudeUnidade(entity.getBranchLatitude())
                 .build();
     }
 
@@ -26,10 +26,10 @@ public class UnidadeEdicaoDtoFactory {
     public static UnidadeEdicaoDto createUnidadeEdicaoDtoWithInvalidCodUnidade(@NotNull final UnidadeEntity entity) {
         return UnidadeEdicaoDto.builder()
                 .codUnidade(-1L)
-                .nomeUnidade(entity.getNome())
-                .codAuxiliarUnidade(entity.getCodAuxiliar())
-                .longitudeUnidade(entity.getLongitudeUnidade())
-                .latitudeUnidade(entity.getLatitudeUnidade())
+                .nomeUnidade(entity.getName())
+                .codAuxiliarUnidade(entity.getAdditionalId())
+                .longitudeUnidade(entity.getBranchLongitude())
+                .latitudeUnidade(entity.getBranchLatitude())
                 .build();
     }
 }

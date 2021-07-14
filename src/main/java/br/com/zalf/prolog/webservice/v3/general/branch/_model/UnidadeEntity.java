@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Formula;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,27 +28,37 @@ public class UnidadeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
+    @NotNull
+    private Long id;
     @Column(name = "nome", length = 40, nullable = false)
-    private String nome;
+    @NotNull
+    private String name;
     @Formula(value = "(select count(c.*) from colaborador c where c.cod_unidade = codigo)")
-    private Integer totalColaboradores;
+    @NotNull
+    private Integer totalUsers;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_regional", referencedColumnName = "codigo")
-    private GroupEntity grupo;
+    @NotNull
+    private GroupEntity group;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_empresa", referencedColumnName = "codigo")
+    @NotNull
     private CompanyEntity companyEntity;
     @Column(name = "timezone", nullable = false)
+    @NotNull
     private String timezone;
     @Column(name = "data_hora_cadastro", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime dataHoraCadastro;
+    @NotNull
+    private LocalDateTime createdAt;
     @Column(name = "status_ativo", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
-    private boolean ativo;
+    private boolean isActive;
     @Column(name = "cod_auxiliar")
-    private String codAuxiliar;
+    @Nullable
+    private String additionalId;
     @Column(name = "latitude_unidade")
-    private String latitudeUnidade;
+    @Nullable
+    private String branchLatitude;
     @Column(name = "longitude_unidade")
-    private String longitudeUnidade;
+    @Nullable
+    private String branchLongitude;
 }

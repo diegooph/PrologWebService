@@ -46,7 +46,7 @@ public final class CompanyIdValidator implements ConstraintValidator<CompanyId, 
 
     private boolean containsCompanyId(@NotNull final List<UnidadeEntity> branches, @NotNull final Long companyId) {
         return branches.stream()
-                .map(branchEntity -> branchEntity.getCompanyEntity().getCodigo())
+                .map(branchEntity -> branchEntity.getCompanyEntity().getId())
                 .distinct()
                 .allMatch(id -> id.equals(companyId));
     }
