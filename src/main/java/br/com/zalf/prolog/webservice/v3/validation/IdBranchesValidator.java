@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.v3.validation;
 
 import br.com.zalf.prolog.webservice.config.CurrentRequest;
-import br.com.zalf.prolog.webservice.v3.general.unidade.UnidadeService;
-import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch.BranchService;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,21 +12,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public final class CodUnidadesValidator implements ConstraintValidator<CodUnidades, List<Long>> {
+public final class IdBranchesValidator implements ConstraintValidator<IdBranches, List<Long>> {
     @NotNull
     private final CurrentRequest currentRequest;
     @NotNull
-    private final UnidadeService unidadeService;
+    private final BranchService branchService;
 
     @Autowired
-    public CodUnidadesValidator(@NotNull final CurrentRequest currentRequest,
-                                @NotNull final UnidadeService unidadeService) {
+    public IdBranchesValidator(@NotNull final CurrentRequest currentRequest,
+                               @NotNull final BranchService branchService) {
         this.currentRequest = currentRequest;
-        this.unidadeService = unidadeService;
+        this.branchService = branchService;
     }
 
     @Override
-    public void initialize(final CodUnidades constraintAnnotation) {
+    public void initialize(final IdBranches constraintAnnotation) {
     }
 
     @Override
@@ -34,12 +34,12 @@ public final class CodUnidadesValidator implements ConstraintValidator<CodUnidad
         if (currentRequest.isFromApi()) {
             final Optional<String> requestTokenFromApi = currentRequest.getRequestTokenFromApi();
             if (requestTokenFromApi.isPresent()) {
-                return containsCodUnidade(unidadeService.getUnidadesByTokenApi(requestTokenFromApi.get()), value);
+                return containsCodUnidade(branchService.getUnidadesByTokenApi(requestTokenFromApi.get()), value);
             }
         } else {
             final Optional<String> requestToken = currentRequest.getRequestToken();
             if (requestToken.isPresent()) {
-                return containsCodUnidade(unidadeService.getUnidadesByTokenUser(requestToken.get()), value);
+                return containsCodUnidade(branchService.getUnidadesByTokenUser(requestToken.get()), value);
             }
         }
         return false;

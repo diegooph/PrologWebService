@@ -3,10 +3,10 @@ package test.br.com.zalf.prolog.webservice.v3.geral.unidade;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BadRequestException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
-import br.com.zalf.prolog.webservice.v3.general.unidade.UnidadeDao;
-import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeEdicaoDto;
-import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeEntity;
-import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeVisualizacaoListagemDto;
+import br.com.zalf.prolog.webservice.v3.general.branch.BranchDao;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEdicaoDto;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeVisualizacaoListagemDto;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,7 @@ public class UnidadeIT extends IntegrationTest {
     @Autowired
     private UnidadeApiClient client;
     @Autowired
-    private UnidadeDao dao;
+    private BranchDao dao;
 
     private <T> void assertBaseValidations(final ResponseEntity<T> responseEntity) {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);

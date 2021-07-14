@@ -1,7 +1,7 @@
-package br.com.zalf.prolog.webservice.v3.general.unidade._model;
+package br.com.zalf.prolog.webservice.v3.general.branch._model;
 
-import br.com.zalf.prolog.webservice.v3.general.empresa.EmpresaEntity;
-import br.com.zalf.prolog.webservice.v3.general.grupo.GrupoEntity;
+import br.com.zalf.prolog.webservice.v3.general.company.CompanyEntity;
+import br.com.zalf.prolog.webservice.v3.general.group.GroupEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,10 +33,10 @@ public class UnidadeEntity {
     private Integer totalColaboradores;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_regional", referencedColumnName = "codigo")
-    private GrupoEntity grupo;
+    private GroupEntity grupo;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_empresa", referencedColumnName = "codigo")
-    private EmpresaEntity empresaEntity;
+    private CompanyEntity companyEntity;
     @Column(name = "timezone", nullable = false)
     private String timezone;
     @Column(name = "data_hora_cadastro", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

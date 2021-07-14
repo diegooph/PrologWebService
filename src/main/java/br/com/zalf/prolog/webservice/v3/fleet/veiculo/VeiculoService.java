@@ -14,8 +14,8 @@ import br.com.zalf.prolog.webservice.v3.fleet.veiculo.modelo.ModeloVeiculoServic
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo.modelo._model.ModeloVeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo.tipoveiculo.TipoVeiculoService;
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo.tipoveiculo._model.TipoVeiculoEntity;
-import br.com.zalf.prolog.webservice.v3.general.unidade.UnidadeService;
-import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch.BranchService;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class VeiculoService {
     @NotNull
     private final VeiculoDao veiculoDao;
     @NotNull
-    private final UnidadeService unidadeService;
+    private final BranchService branchService;
     @NotNull
     private final TipoVeiculoService tipoVeiculoService;
     @NotNull
@@ -47,14 +47,14 @@ public class VeiculoService {
 
     @Autowired
     public VeiculoService(@NotNull final VeiculoDao veiculoDao,
-                          @NotNull final UnidadeService unidadeService,
+                          @NotNull final BranchService branchService,
                           @NotNull final ModeloVeiculoService modeloVeiculoService,
                           @NotNull final TipoVeiculoService tipoVeiculoService,
                           @NotNull final DiagramaService diagramaService,
                           @NotNull final OperacoesBloqueadasYaml operacoesBloqueadas,
                           @NotNull final VeiculoMapper mapper) {
         this.veiculoDao = veiculoDao;
-        this.unidadeService = unidadeService;
+        this.branchService = branchService;
         this.modeloVeiculoService = modeloVeiculoService;
         this.tipoVeiculoService = tipoVeiculoService;
         this.diagramaService = diagramaService;
@@ -70,7 +70,7 @@ public class VeiculoService {
                                                             veiculoCadastroDto.getCodUnidadeAlocado());
         VeiculoValidator.validacaoMotorizadoSemHubodometro(veiculoCadastroDto.getPossuiHubodometro(),
                                                            veiculoCadastroDto.getCodTipoVeiculo());
-        final UnidadeEntity unidadeEntity = unidadeService.getByCod(veiculoCadastroDto.getCodUnidadeAlocado());
+        final UnidadeEntity unidadeEntity = branchService.getByCod(veiculoCadastroDto.getCodUnidadeAlocado());
         final ModeloVeiculoEntity modeloVeiculoEntity =
                 modeloVeiculoService.getByCod(veiculoCadastroDto.getCodModeloVeiculo());
         final TipoVeiculoEntity tipoVeiculoEntity =

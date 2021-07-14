@@ -1,6 +1,6 @@
-package br.com.zalf.prolog.webservice.v3.general.unidade;
+package br.com.zalf.prolog.webservice.v3.general.branch;
 
-import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,7 +16,7 @@ import java.util.Optional;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Repository
-public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
+public interface BranchDao extends JpaRepository<UnidadeEntity, Long> {
     @NotNull
     @Query("select u from UnidadeEntity u " +
                    "join fetch u.grupo g " +
@@ -40,7 +40,7 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
     List<UnidadeEntity> findAllByCodEmpresa(@NotNull final Long codEmpresa);
 
     @NotNull
-    @Query("select u from TokenAutenticacaoEntity ta " +
+    @Query("select u from TokenAuthenticationEntity ta " +
                    "join ta.colaborador c " +
                    "join c.empresa e " +
                    "join e.unidades u " +
@@ -48,7 +48,7 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
     List<UnidadeEntity> findAllByTokenUser(@NotNull final String tokenUser);
 
     @NotNull
-    @Query("select u from TokenIntegracaoEntity tai " +
+    @Query("select u from TokenIntegrationEntity tai " +
                    "join tai.empresa e " +
                    "join e.unidades u " +
                    "where tai.token = :tokenApi")

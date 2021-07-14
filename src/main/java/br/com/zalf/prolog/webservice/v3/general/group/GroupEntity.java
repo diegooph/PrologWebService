@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.general.grupo;
+package br.com.zalf.prolog.webservice.v3.general.group;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class GrupoEntity {
+public class GroupEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)

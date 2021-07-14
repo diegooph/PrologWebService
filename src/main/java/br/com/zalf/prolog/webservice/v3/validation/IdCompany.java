@@ -11,10 +11,10 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = CodUnidadeValidator.class)
-public @interface CodUnidade {
+@Constraint(validatedBy = IdCompanyValidator.class)
+public @interface IdCompany {
     @NotNull
-    String message() default "Você não tem acesso à esse código de unidade";
+    String message() default "Você não tem acesso à esse código de empresa";
 
     @NotNull
     Class<?>[] groups() default {};

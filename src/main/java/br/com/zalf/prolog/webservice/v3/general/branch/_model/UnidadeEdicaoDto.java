@@ -1,6 +1,6 @@
-package br.com.zalf.prolog.webservice.v3.general.unidade._model;
+package br.com.zalf.prolog.webservice.v3.general.branch._model;
 
-import br.com.zalf.prolog.webservice.v3.validation.CodUnidade;
+import br.com.zalf.prolog.webservice.v3.validation.IdBranch;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import javax.validation.constraints.Size;
 @Builder
 @Getter
 public final class UnidadeEdicaoDto {
-    @CodUnidade
+    @IdBranch
     @ApiModelProperty(value = "Código da unidade.", required = true, example = "215")
     @NotNull(message = "O código da unidade é obrigatório.")
     private final Long codUnidade;

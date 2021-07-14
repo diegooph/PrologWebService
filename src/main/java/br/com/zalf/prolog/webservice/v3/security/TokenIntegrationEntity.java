@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.security;
 
-import br.com.zalf.prolog.webservice.v3.general.empresa.EmpresaEntity;
+import br.com.zalf.prolog.webservice.v3.general.company.CompanyEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,14 +14,14 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "integracao", name = "token_integracao")
-public class TokenIntegracaoEntity {
+public class TokenIntegrationEntity {
     @Id
     @Column(name = "token_integracao", nullable = false)
     private String token;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_empresa", referencedColumnName = "codigo")
-    private EmpresaEntity empresa;
+    private CompanyEntity empresa;
 
     @Column(name = "ativo", nullable = false)
     private Boolean isAtivo;

@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.geral.unidade;
 
-import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeEdicaoDto;
-import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEdicaoDto;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 
 /**

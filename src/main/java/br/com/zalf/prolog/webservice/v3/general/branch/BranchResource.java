@@ -1,14 +1,14 @@
-package br.com.zalf.prolog.webservice.v3.general.unidade;
+package br.com.zalf.prolog.webservice.v3.general.branch;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeEdicaoDto;
-import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeEntity;
-import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeMapper;
-import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeVisualizacaoListagemDto;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEdicaoDto;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeMapper;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeVisualizacaoListagemDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,16 +28,16 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Controller
-public final class UnidadeResource implements UnidadeResourceApiDoc {
+public final class BranchResource implements BranchResourceApiDoc {
     @NotNull
-    private final UnidadeService service;
+    private final BranchService service;
     @NotNull
     private final UnidadeMapper mapper;
 
     @Autowired
-    public UnidadeResource(@NotNull final UnidadeService unidadeService,
-                           @NotNull final UnidadeMapper mapper) {
-        this.service = unidadeService;
+    public BranchResource(@NotNull final BranchService branchService,
+                          @NotNull final UnidadeMapper mapper) {
+        this.service = branchService;
         this.mapper = mapper;
     }
 

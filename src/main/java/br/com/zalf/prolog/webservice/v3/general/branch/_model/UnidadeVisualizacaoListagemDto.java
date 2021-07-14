@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.general.unidade._model;
+package br.com.zalf.prolog.webservice.v3.general.branch._model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

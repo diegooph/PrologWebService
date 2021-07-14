@@ -9,7 +9,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.veiculo.diagrama._model.DiagramaEn
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo.diagrama.eixos._model.EixoDiagramaEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo.modelo._model.ModeloVeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo.tipoveiculo._model.TipoVeiculoEntity;
-import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
