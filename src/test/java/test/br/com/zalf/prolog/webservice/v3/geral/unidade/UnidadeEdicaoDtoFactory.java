@@ -1,6 +1,6 @@
 package test.br.com.zalf.prolog.webservice.v3.geral.unidade;
 
-import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEdicaoDto;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchUpdateDto;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,24 +12,24 @@ import org.jetbrains.annotations.NotNull;
 public class UnidadeEdicaoDtoFactory {
 
     @NotNull
-    public static UnidadeEdicaoDto createValidUnidadeEdicaoDtoToUpdate(@NotNull final UnidadeEntity entity) {
-        return UnidadeEdicaoDto.builder()
-                .codUnidade(entity.getId())
-                .nomeUnidade(entity.getName())
-                .codAuxiliarUnidade(entity.getAdditionalId())
-                .longitudeUnidade(entity.getBranchLongitude())
-                .latitudeUnidade(entity.getBranchLatitude())
+    public static BranchUpdateDto createValidUnidadeEdicaoDtoToUpdate(@NotNull final UnidadeEntity entity) {
+        return BranchUpdateDto.builder()
+                .branchId(entity.getId())
+                .branchName(entity.getName())
+                .branchAdditionalId(entity.getAdditionalId())
+                .branchLongitude(entity.getBranchLongitude())
+                .branchLatitude(entity.getBranchLatitude())
                 .build();
     }
 
     @NotNull
-    public static UnidadeEdicaoDto createUnidadeEdicaoDtoWithInvalidCodUnidade(@NotNull final UnidadeEntity entity) {
-        return UnidadeEdicaoDto.builder()
-                .codUnidade(-1L)
-                .nomeUnidade(entity.getName())
-                .codAuxiliarUnidade(entity.getAdditionalId())
-                .longitudeUnidade(entity.getBranchLongitude())
-                .latitudeUnidade(entity.getBranchLatitude())
+    public static BranchUpdateDto createUnidadeEdicaoDtoWithInvalidCodUnidade(@NotNull final UnidadeEntity entity) {
+        return BranchUpdateDto.builder()
+                .branchId(-1L)
+                .branchName(entity.getName())
+                .branchAdditionalId(entity.getAdditionalId())
+                .branchLongitude(entity.getBranchLongitude())
+                .branchLatitude(entity.getBranchLatitude())
                 .build();
     }
 }

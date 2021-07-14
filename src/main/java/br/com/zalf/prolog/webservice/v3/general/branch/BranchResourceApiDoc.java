@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.v3.general.branch;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEdicaoDto;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeVisualizacaoListagemDto;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchDto;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchUpdateDto;
 import br.com.zalf.prolog.webservice.v3.validation.BranchId;
 import br.com.zalf.prolog.webservice.v3.validation.CompanyId;
 import io.swagger.annotations.*;
@@ -29,22 +29,22 @@ public interface BranchResourceApiDoc {
             @ApiResponse(code = 404, message = "Operação não encontrada", response = Response.class),
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
-    SuccessResponse updateUnidade(
+    SuccessResponse updateBranch(
             @ApiParam(value = "Dados da unidade para atualizar.",
-                      required = true) @Valid final UnidadeEdicaoDto unidade);
+                      required = true) @Valid final BranchUpdateDto unidade);
 
     @ApiOperation(
             value = "Lista uma unidade específica.",
-            response = UnidadeVisualizacaoListagemDto.class)
+            response = BranchDto.class)
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200, message = "Operação efetuada com sucesso.",
-                    response = UnidadeVisualizacaoListagemDto.class),
+                    response = BranchDto.class),
             @ApiResponse(code = 401, message = "Operação não autorizada", response = Response.class),
             @ApiResponse(code = 404, message = "Operação não encontrada", response = Response.class),
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
-    UnidadeVisualizacaoListagemDto getUnidadeByCodigo(
+    BranchDto getBranchById(
             @ApiParam(value = "Código da unidade.",
                       required = true,
                       example = "215") @BranchId final Long codUnidade);
@@ -55,13 +55,13 @@ public interface BranchResourceApiDoc {
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200, message = "Operação efetuada com sucesso.",
-                    response = UnidadeVisualizacaoListagemDto.class,
+                    response = BranchDto.class,
                     responseContainer = "List"),
             @ApiResponse(code = 401, message = "Operação não autorizada", response = Response.class),
             @ApiResponse(code = 404, message = "Operação não encontrada", response = Response.class),
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
-    List<UnidadeVisualizacaoListagemDto> getUnidadesListagem(
+    List<BranchDto> getAllBranches(
             @ApiParam(value = "Código de empresa.", required = true, example = "10") @CompanyId final Long codEmpresa,
             @ApiParam(value = "Lista de códigos de grupos - Utilizado para filtrar unidades de grupos específicos. " +
                     "Caso não deseje filtrar, basta não enviar esse parâmetro.",

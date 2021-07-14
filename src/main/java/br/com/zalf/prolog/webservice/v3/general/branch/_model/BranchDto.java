@@ -15,42 +15,42 @@ import java.time.LocalDateTime;
  */
 @ApiModel(description = "Objeto com as informações de uma unidade.")
 @Value
-public class UnidadeVisualizacaoListagemDto {
+public class BranchDto {
     @ApiModelProperty(value = "Código da unidade.", required = true, example = "215")
     @NotNull
-    Long codUnidade;
+    Long branchId;
     @ApiModelProperty(value = "Nome da unidade.", required = true, example = "Unidade de testes")
     @NotNull
-    String nomeUnidade;
+    String branchName;
     @ApiModelProperty(value = "Quantidade total de colaboradores ativos cadastrados que a unidade possui. Para " +
             "algumas unidades esse valor pode ser zero.",
                       example = "70")
-    int totalColaboradores;
+    int totalUsers;
     @ApiModelProperty(value = "Timezone configurado para a unidade.", required = true, example = "America/Sao_Paulo")
     @NotNull
-    String timezoneUnidade;
+    String branchTimezone;
     @ApiModelProperty(value = "Data e hora que a unidade foi cadastrada, em UTC.",
                       required = true,
                       example = "2019-08-18T10:47:00")
     @NotNull
-    LocalDateTime dataHoraCadastroUnidade;
+    LocalDateTime branchCreatedAt;
     @ApiModelProperty(value = "Flag que indica se a unidade está ativa.", required = true, example = "true")
-    boolean unidadeAtiva;
+    boolean activeBranch;
     @ApiModelProperty(value = "Código auxiliar de uma unidade.",
                       notes = "O código auxiliar é normalmente utilizado para integrações com sistemas externos.",
                       example = "01:01")
     @Nullable
-    String codAuxiliar;
+    String branchAdditionalId;
     @ApiModelProperty(value = "A latitude da unidade.", example = "-27.641369")
     @Nullable
-    String latitudeUnidade;
+    String branchLatitude;
     @ApiModelProperty(value = "A longitude da unidade.", example = "-48.679233")
     @Nullable
-    String longitudeUnidade;
+    String branchLongitude;
     @ApiModelProperty(value = "Código do grupo da unidade.", required = true, example = "1")
     @NotNull
-    Long codGrupo;
+    Long groupId;
     @ApiModelProperty(value = "Nome do grupo da unidade.", required = true, example = "Sudeste")
     @NotNull
-    String nomeGrupo;
+    String groupName;
 }

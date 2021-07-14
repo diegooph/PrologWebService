@@ -17,24 +17,24 @@ import javax.validation.constraints.Size;
  */
 @Builder
 @Getter
-public final class UnidadeEdicaoDto {
+public final class BranchUpdateDto {
     @BranchId
     @ApiModelProperty(value = "Código da unidade.", required = true, example = "215")
     @NotNull(message = "O código da unidade é obrigatório.")
-    private final Long codUnidade;
+    private final Long branchId;
     @ApiModelProperty(value = "Nome da unidade.", required = true, example = "Unidade de testes")
     @NotBlank(message = "O nome da unidade não pode estar vazio.")
     @Size(max = 40, message = "O nome da unidade pode conter no máximo 40 caracteres.")
-    private final String nomeUnidade;
+    private final String branchName;
     @ApiModelProperty(value = "Um código auxiliar para a unidade.",
                       notes = "O código auxiliar é normalmente utilizado para integrações com sistemas externos.",
                       example = "01:01")
     @Nullable
-    private final String codAuxiliarUnidade;
+    private final String branchAdditionalId;
     @ApiModelProperty(value = "A latitude da localização da unidade.", example = "-27.641369")
     @Nullable
-    private final String latitudeUnidade;
+    private final String branchLatitude;
     @ApiModelProperty(value = "A latitude da localização da unidade.", example = "-48.679233")
     @Nullable
-    private final String longitudeUnidade;
+    private final String branchLongitude;
 }

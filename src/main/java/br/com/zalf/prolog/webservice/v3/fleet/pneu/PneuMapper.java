@@ -108,7 +108,7 @@ public class PneuMapper {
 
     @NotNull
     private UnidadeEntity createUnidade(@NotNull final Long codUnidadeAlocado) {
-        return UnidadeEntity.builder().id(codUnidadeAlocado).build();
+        return UnidadeEntity.builder().withId(codUnidadeAlocado).build();
     }
 
     @NotNull
