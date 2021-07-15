@@ -60,10 +60,10 @@ public class PneuMapper {
                         : null;
         return PneuListagemDto.of(pneu.getCodigo(),
                                   pneu.getCodigoCliente(),
-                                  pneu.getUnidade().getGroup().getId(),
-                                  pneu.getUnidade().getGroup().getName(),
-                                  pneu.getUnidade().getId(),
-                                  pneu.getUnidade().getName(),
+                                  pneu.getUnidade().getGrupo().getCodigo(),
+                                  pneu.getUnidade().getGrupo().getNome(),
+                                  pneu.getUnidade().getCodigo(),
+                                  pneu.getUnidade().getNome(),
                                   pneu.getVidaAtual(),
                                   pneu.getVidaTotal(),
                                   pneu.getPressaoRecomendada(),
@@ -108,7 +108,7 @@ public class PneuMapper {
 
     @NotNull
     private UnidadeEntity createUnidade(@NotNull final Long codUnidadeAlocado) {
-        return UnidadeEntity.builder().id(codUnidadeAlocado).build();
+        return UnidadeEntity.builder().codigo(codUnidadeAlocado).build();
     }
 
     @NotNull

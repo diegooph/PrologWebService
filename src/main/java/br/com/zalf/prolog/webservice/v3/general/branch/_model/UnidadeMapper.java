@@ -24,27 +24,27 @@ public final class UnidadeMapper {
     @NotNull
     public UnidadeVisualizacaoListagemDto toDto(@NotNull final UnidadeEntity unidade) {
         return new UnidadeVisualizacaoListagemDto(
-                unidade.getId(),
-                unidade.getName(),
-                unidade.getTotalUsers(),
+                unidade.getCodigo(),
+                unidade.getNome(),
+                unidade.getTotalColaboradores(),
                 unidade.getTimezone(),
-                unidade.getCreatedAt(),
-                unidade.isActive(),
-                unidade.getAdditionalId(),
-                unidade.getBranchLatitude(),
-                unidade.getBranchLongitude(),
-                unidade.getGroup().getId(),
-                unidade.getGroup().getName());
+                unidade.getDataHoraCadastro(),
+                unidade.isAtivo(),
+                unidade.getCodAuxiliar(),
+                unidade.getLatitudeUnidade(),
+                unidade.getLongitudeUnidade(),
+                unidade.getGrupo().getCodigo(),
+                unidade.getGrupo().getNome());
     }
 
     @NotNull
     public UnidadeEntity toEntity(@NotNull final UnidadeEdicaoDto dto) {
         return UnidadeEntity.builder()
-                .id(dto.getCodUnidade())
-                .name(dto.getNomeUnidade())
-                .additionalId(dto.getCodAuxiliarUnidade())
-                .branchLatitude(dto.getLatitudeUnidade())
-                .branchLongitude(dto.getLongitudeUnidade())
+                .codigo(dto.getCodUnidade())
+                .nome(dto.getNomeUnidade())
+                .codAuxiliar(dto.getCodAuxiliarUnidade())
+                .latitudeUnidade(dto.getLatitudeUnidade())
+                .longitudeUnidade(dto.getLongitudeUnidade())
                 .build();
     }
 }

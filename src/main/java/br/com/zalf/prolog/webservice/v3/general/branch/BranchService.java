@@ -35,17 +35,17 @@ public class BranchService {
 
     @Transactional
     public SuccessResponse updateUnidade(@NotNull final UnidadeEntity unidadeEditada) {
-        UnidadeEntity unidadeToUpdate = dao.findById(unidadeEditada.getId())
+        UnidadeEntity unidadeToUpdate = dao.findById(unidadeEditada.getCodigo())
                 .orElseThrow(NotFoundException::new);
         unidadeToUpdate = unidadeToUpdate.toBuilder()
-                .name(unidadeEditada.getName())
-                .additionalId(unidadeEditada.getAdditionalId())
-                .branchLatitude(unidadeEditada.getBranchLatitude())
-                .branchLongitude(unidadeEditada.getBranchLongitude())
+                .nome(unidadeEditada.getNome())
+                .codAuxiliar(unidadeEditada.getCodAuxiliar())
+                .latitudeUnidade(unidadeEditada.getLatitudeUnidade())
+                .longitudeUnidade(unidadeEditada.getLongitudeUnidade())
                 .build();
         final Long codigoAtualizacaoUnidade = Optional.of(dao.save(unidadeToUpdate))
                 .orElseThrow(ServerSideErrorException::defaultNotLoggableException)
-                .getId();
+                .getCodigo();
         return new SuccessResponse(codigoAtualizacaoUnidade, "Unidade atualizada com sucesso.");
     }
 

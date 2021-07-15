@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -15,13 +14,12 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "public", name = "token_autenticacao")
-public final class AuthenticationTokenEntity {
+public class TokenAuthenticationEntity {
     @Id
     @Column(name = "token", nullable = false)
-    @NotNull
     private String token;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_colaborador", referencedColumnName = "codigo")
-    @NotNull
-    private ColaboradorEntity user;
+    private ColaboradorEntity colaborador;
 }

@@ -22,7 +22,7 @@ public interface PneuDao extends JpaRepository<PneuEntity, Long> {
     @NotNull
     @Query("select p from PneuEntity p " +
                    "join fetch p.unidade u " +
-                   "join fetch u.group " +
+                   "join fetch u.grupo " +
                    "join fetch p.dimensaoPneu " +
                    "join fetch p.modeloPneu mp " +
                    "join fetch mp.marca " +
@@ -38,7 +38,7 @@ public interface PneuDao extends JpaRepository<PneuEntity, Long> {
                    "left join fetch mov.movimentacaoOrigem " +
                    "left join fetch mov.movimentacaoProcesso movP " +
                    "left join fetch movP.colaboradorRealizacaoProcesso c " +
-                   "where u.id in :codUnidades " +
+                   "where u.codigo in :codUnidades " +
                    "and (:statusPneu is null or p.status = :statusPneu) " +
                    "order by p.codigo asc")
     List<PneuEntity> getPneusByStatus(@NotNull final List<Long> codUnidades,

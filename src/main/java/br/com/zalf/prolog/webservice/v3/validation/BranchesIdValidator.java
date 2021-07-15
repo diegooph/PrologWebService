@@ -48,7 +48,7 @@ public final class BranchesIdValidator implements ConstraintValidator<BranchesId
     private boolean containsCodUnidade(@NotNull final List<UnidadeEntity> branches,
                                        @NotNull final List<Long> branchesId) {
         return branches.stream()
-                .map(UnidadeEntity::getId)
+                .map(UnidadeEntity::getCodigo)
                 .collect(Collectors.toList())
                 .containsAll(branchesId);
     }
