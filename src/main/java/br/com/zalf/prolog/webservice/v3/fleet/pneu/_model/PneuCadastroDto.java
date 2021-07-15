@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.fleet.pneu._model;
 
-import br.com.zalf.prolog.webservice.v3.validation.BranchId;
-import br.com.zalf.prolog.webservice.v3.validation.CompanyId;
+import br.com.zalf.prolog.webservice.v3.validation.IdBranch;
+import br.com.zalf.prolog.webservice.v3.validation.IdCompany;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Value;
 
@@ -16,11 +16,11 @@ import java.math.BigDecimal;
  */
 @Value(staticConstructor = "of")
 public class PneuCadastroDto {
-    @CompanyId
+    @IdCompany
     @ApiModelProperty(value = "Código da empresa onde o pneu será cadastrado.", required = true, example = "10")
     @NotNull(message = "O código de empresa não pode ser nulo.")
     Long codEmpresaAlocado;
-    @BranchId
+    @IdBranch
     @ApiModelProperty(value = "Código da unidade onde o pneu será cadastrado.", required = true, example = "215")
     @NotNull(message = "O código da unidade não pode ser nulo.")
     Long codUnidadeAlocado;

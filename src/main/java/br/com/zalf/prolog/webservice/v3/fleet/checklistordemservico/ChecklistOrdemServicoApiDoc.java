@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.v3.fleet.checklistordemservico._model.ChecklistOrdemServicoListagemDto;
-import br.com.zalf.prolog.webservice.v3.validation.BranchesId;
+import br.com.zalf.prolog.webservice.v3.validation.IdBranches;
 import io.swagger.annotations.*;
 
 import javax.validation.constraints.Max;
@@ -35,7 +35,7 @@ public interface ChecklistOrdemServicoApiDoc {
             @ApiParam(value = "Lista de códigos de unidade.",
                       example = "215",
                       required = true)
-            @Required @BranchesId final List<Long> codUnidades,
+            @Required @IdBranches final List<Long> codUnidades,
             @ApiParam(value = "Código de Tipo Veículo - Utilizado para filtrar ordens de serviço de apenas um tipo de" +
                     " veículo. Caso não deseje filtrar, basta não enviar esse parâmetro.")
             @Optional final Long codTipoVeiculo,

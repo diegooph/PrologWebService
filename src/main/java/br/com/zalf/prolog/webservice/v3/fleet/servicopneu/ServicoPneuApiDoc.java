@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuListagemDto;
 import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuStatus;
-import br.com.zalf.prolog.webservice.v3.validation.BranchesId;
+import br.com.zalf.prolog.webservice.v3.validation.IdBranches;
 import io.swagger.annotations.*;
 
 import javax.validation.constraints.Max;
@@ -34,7 +34,7 @@ public interface ServicoPneuApiDoc {
     List<ServicoPneuListagemDto> getServicosByUnidadeAndStatus(
             @ApiParam(value = "Lista de códigos de unidade.",
                       example = "215",
-                      required = true) @Required @BranchesId final List<Long> codUnidades,
+                      required = true) @Required @IdBranches final List<Long> codUnidades,
             @ApiParam(value = "Status do serviço - Utilizado para filtrar serviços abertos ou fechados. Caso não " +
                     "deseje filtrar, basta não enviar esse parâmetro.",
                       example = "ABERTO",
