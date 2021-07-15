@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@Builder(toBuilder = true, setterPrefix = "with")
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

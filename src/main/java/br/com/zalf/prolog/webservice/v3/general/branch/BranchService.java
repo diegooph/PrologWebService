@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeMapper;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,44 +20,60 @@ import java.util.Optional;
  */
 @Service
 public class BranchService {
+    private static final String TAG = BranchService.class.getSimpleName();
     @NotNull
     private final BranchDao dao;
+    @NotNull
+    private final UnidadeMapper mapper;
 
     @Autowired
-    public BranchService(@NotNull final BranchDao branchDao) {
+    public BranchService(@NotNull final BranchDao branchDao,
+                         @NotNull final UnidadeMapper mapper) {
         this.dao = branchDao;
+        this.mapper = mapper;
     }
 
     @Transactional
-    public SuccessResponse updateBranch(@NotNull final UnidadeEntity branch) {
-        final UnidadeEntity savedBranch = dao.findById(branch.getId()).orElseThrow(NotFoundException::new);
-        final UnidadeEntity branchUpdate = branch.toBuilder().withId(savedBranch.getId()).build();
-        final Long updatedBranchId = Optional.of(dao.save(branchUpdate))
+    public SuccessResponse updateUnidade(@NotNull final UnidadeEntity unidadeEditada) {
+        UnidadeEntity unidadeToUpdate = dao.findById(unidadeEditada.getId())
+                .orElseThrow(NotFoundException::new);
+        unidadeToUpdate = unidadeToUpdate.toBuilder()
+                .name(unidadeEditada.getName())
+                .additionalId(unidadeEditada.getAdditionalId())
+                .branchLatitude(unidadeEditada.getBranchLatitude())
+                .branchLongitude(unidadeEditada.getBranchLongitude())
+                .build();
+        final Long codigoAtualizacaoUnidade = Optional.of(dao.save(unidadeToUpdate))
                 .orElseThrow(ServerSideErrorException::defaultNotLoggableException)
                 .getId();
-        return new SuccessResponse(updatedBranchId, "Unidade atualizada com sucesso.");
+        return new SuccessResponse(codigoAtualizacaoUnidade, "Unidade atualizada com sucesso.");
     }
 
     @NotNull
     @Transactional
-    public UnidadeEntity getBranchById(@NotNull final Long branchId) {
-        return dao.getBranchById(branchId).orElseThrow(NotFoundException::new);
+    public UnidadeEntity getByCod(@NotNull final Long codUnidade) {
+        return dao.getUnidadeByCod(codUnidade).orElseThrow(NotFoundException::new);
     }
 
     @NotNull
     @Transactional
-    public List<UnidadeEntity> getAllBranches(@NotNull final Long companyId,
-                                              final List<Long> groupsId) {
-        return dao.getAllBranches(companyId, groupsId.isEmpty() ? null : groupsId);
+    public List<UnidadeEntity> getUnidadesListagem(@NotNull final Long codEmpresa,
+                                                   final List<Long> codGrupos) {
+        return dao.getUnidadesListagem(codEmpresa, codGrupos.isEmpty() ? null : codGrupos);
     }
 
     @NotNull
-    public List<UnidadeEntity> getBranchesByTokenUser(@NotNull final String tokenUser) {
+    public List<UnidadeEntity> getUnidadesByCodEmpresa(@NotNull final Long codEmpresa) {
+        return dao.findAllByCodEmpresa(codEmpresa);
+    }
+
+    @NotNull
+    public List<UnidadeEntity> getUnidadesByTokenUser(@NotNull final String tokenUser) {
         return dao.findAllByTokenUser(tokenUser);
     }
 
     @NotNull
-    public List<UnidadeEntity> getBranchesByTokenApi(@NotNull final String tokenApi) {
+    public List<UnidadeEntity> getUnidadesByTokenApi(@NotNull final String tokenApi) {
         return dao.findAllByTokenApi(tokenApi);
     }
 }

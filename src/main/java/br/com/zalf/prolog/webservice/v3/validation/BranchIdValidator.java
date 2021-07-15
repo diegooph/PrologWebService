@@ -33,18 +33,18 @@ public final class BranchIdValidator implements ConstraintValidator<BranchId, Lo
         if (currentRequest.isFromApi()) {
             final Optional<String> requestTokenFromApi = currentRequest.getRequestTokenFromApi();
             if (requestTokenFromApi.isPresent()) {
-                return containsBranchId(branchService.getBranchesByTokenApi(requestTokenFromApi.get()), value);
+                return containsCodUnidade(branchService.getUnidadesByTokenApi(requestTokenFromApi.get()), value);
             }
         } else {
             final Optional<String> requestToken = currentRequest.getRequestToken();
             if (requestToken.isPresent()) {
-                return containsBranchId(branchService.getBranchesByTokenUser(requestToken.get()), value);
+                return containsCodUnidade(branchService.getUnidadesByTokenUser(requestToken.get()), value);
             }
         }
         return false;
     }
 
-    private boolean containsBranchId(@NotNull final List<UnidadeEntity> branches, @NotNull final Long branchId) {
+    private boolean containsCodUnidade(@NotNull final List<UnidadeEntity> branches, @NotNull final Long branchId) {
         return branches.stream()
                 .map(UnidadeEntity::getId)
                 .anyMatch(id -> id.equals(branchId));

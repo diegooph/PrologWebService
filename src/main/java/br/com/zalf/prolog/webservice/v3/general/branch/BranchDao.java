@@ -22,7 +22,7 @@ public interface BranchDao extends JpaRepository<UnidadeEntity, Long> {
                    "join fetch u.group " +
                    "join fetch u.companyEntity " +
                    "where u.id = :branchId")
-    Optional<UnidadeEntity> getBranchById(@NotNull final Long branchId);
+    Optional<UnidadeEntity> getUnidadeByCod(@NotNull final Long branchId);
 
     @NotNull
     @Query("select u from UnidadeEntity u " +
@@ -30,8 +30,14 @@ public interface BranchDao extends JpaRepository<UnidadeEntity, Long> {
                    "join fetch u.companyEntity c " +
                    "where c.id = :companyId " +
                    "and ((:groupsId) is null or g.id in (:groupsId))")
-    List<UnidadeEntity> getAllBranches(@NotNull final Long companyId,
-                                       @Nullable final List<Long> groupsId);
+    List<UnidadeEntity> getUnidadesListagem(@NotNull final Long companyId,
+                                            @Nullable final List<Long> groupsId);
+
+    @NotNull
+    @Query("select u from UnidadeEntity u " +
+                   "join fetch u.companyEntity c " +
+                   "where c.id = :companyId")
+    List<UnidadeEntity> findAllByCodEmpresa(@NotNull final Long companyId);
 
     @NotNull
     @Query("select u from AuthenticationTokenEntity at " +

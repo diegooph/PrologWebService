@@ -33,12 +33,12 @@ public final class CompanyIdValidator implements ConstraintValidator<CompanyId, 
         if (currentRequest.isFromApi()) {
             final Optional<String> requestTokenFromApi = currentRequest.getRequestTokenFromApi();
             if (requestTokenFromApi.isPresent()) {
-                return containsCompanyId(branchService.getBranchesByTokenApi(requestTokenFromApi.get()), value);
+                return containsCompanyId(branchService.getUnidadesByTokenApi(requestTokenFromApi.get()), value);
             }
         } else {
             final Optional<String> requestToken = currentRequest.getRequestToken();
             if (requestToken.isPresent()) {
-                return containsCompanyId(branchService.getBranchesByTokenUser(requestToken.get()), value);
+                return containsCompanyId(branchService.getUnidadesByTokenUser(requestToken.get()), value);
             }
         }
         return false;

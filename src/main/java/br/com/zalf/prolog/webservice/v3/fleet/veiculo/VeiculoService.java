@@ -70,7 +70,7 @@ public class VeiculoService {
                                                             veiculoCadastroDto.getCodUnidadeAlocado());
         VeiculoValidator.validacaoMotorizadoSemHubodometro(veiculoCadastroDto.getPossuiHubodometro(),
                                                            veiculoCadastroDto.getCodTipoVeiculo());
-        final UnidadeEntity unidadeEntity = branchService.getBranchById(veiculoCadastroDto.getCodUnidadeAlocado());
+        final UnidadeEntity unidadeEntity = branchService.getByCod(veiculoCadastroDto.getCodUnidadeAlocado());
         final ModeloVeiculoEntity modeloVeiculoEntity =
                 modeloVeiculoService.getByCod(veiculoCadastroDto.getCodModeloVeiculo());
         final TipoVeiculoEntity tipoVeiculoEntity =

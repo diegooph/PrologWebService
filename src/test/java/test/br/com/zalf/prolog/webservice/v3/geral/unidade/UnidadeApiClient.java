@@ -1,8 +1,8 @@
 package test.br.com.zalf.prolog.webservice.v3.geral.unidade;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchDto;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchUpdateDto;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEdicaoDto;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeVisualizacaoListagemDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -31,17 +31,17 @@ public class UnidadeApiClient {
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<BranchDto> getUnidadeByCodigo(@NotNull final Long codUnidade) {
+    public ResponseEntity<UnidadeVisualizacaoListagemDto> getUnidadeByCodigo(@NotNull final Long codUnidade) {
         final RequestEntity<Void> requestEntity = RequestEntity
                 .get(URI.create(RESOURCE + "/" + codUnidade))
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
         return restTemplate.exchange(requestEntity,
-                                     ParameterizedTypeReference.forType(BranchDto.class));
+                                     ParameterizedTypeReference.forType(UnidadeVisualizacaoListagemDto.class));
     }
 
     @NotNull
-    public ResponseEntity<List<BranchDto>> getUnidadesListagem(
+    public ResponseEntity<List<UnidadeVisualizacaoListagemDto>> getUnidadesListagem(
             @NotNull final Long codEmpresa,
             @NotNull final List<Long> codRegionais) {
         final UriComponents components = UriComponentsBuilder
@@ -54,18 +54,18 @@ public class UnidadeApiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
         return restTemplate.exchange(requestEntity,
-                                     new ParameterizedTypeReference<List<BranchDto>>() {});
+                                     new ParameterizedTypeReference<List<UnidadeVisualizacaoListagemDto>>() {});
     }
 
     @NotNull
-    public ResponseEntity<SuccessResponse> updateUnidade(@NotNull final BranchUpdateDto dto) {
+    public ResponseEntity<SuccessResponse> updateUnidade(@NotNull final UnidadeEdicaoDto dto) {
         return updateUnidade(dto, SuccessResponse.class);
     }
 
     @NotNull
-    public <T> ResponseEntity<T> updateUnidade(@NotNull final BranchUpdateDto dto,
+    public <T> ResponseEntity<T> updateUnidade(@NotNull final UnidadeEdicaoDto dto,
                                                @NotNull final Class<T> responseType) {
-        final RequestEntity<BranchUpdateDto> requestEntity = RequestEntity
+        final RequestEntity<UnidadeEdicaoDto> requestEntity = RequestEntity
                 .put(URI.create(RESOURCE))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(dto);

@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.geral.unidade._model;
 
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Equipe;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchDto;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchUpdateDto;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEdicaoDto;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeVisualizacaoListagemDto;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -13,8 +13,8 @@ import java.util.List;
  *
  * @deprecated at 2020-03-17. Esse objeto é utilizado para inúmeros casos de uso, listagem, visualização, seleção e etc.
  * Nosso novo padrão é termos um objeto para cada ação realizada no sistema.
- * Isso já começou a ser migrado com os novos objetos para {@link BranchUpdateDto edição} e
- * para {@link BranchDto visualização}.
+ * Isso já começou a ser migrado com os novos objetos para {@link UnidadeEdicaoDto edição} e
+ * para {@link UnidadeVisualizacaoListagemDto visualização}.
  */
 @Deprecated
 public final class Unidade {
