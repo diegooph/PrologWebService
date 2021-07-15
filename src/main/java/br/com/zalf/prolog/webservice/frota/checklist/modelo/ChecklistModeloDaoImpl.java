@@ -500,16 +500,25 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             } else {
                 // Pergunta está sendo atualizada.
                 final AnaliseItemModeloChecklist analisePergunta = analiseModelo.getPergunta(pergunta.getCodigo());
-                if (analisePergunta.isItemMudouContexto()) {
-                    // 2.2 -> Se pergunta mudou de contexto, troca o código de contexto.
-                    final Long codPergunta = insertPerguntaChecklist(
-                            conn,
-                            modeloChecklist.getCodUnidade(),
-                            modeloChecklist.getCodModelo(),
-                            novaVersaoModelo,
-                            pergunta,
-                            usarMesmoCodigoDeContexto);
-                    for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
+                // 2.2 -> Se pergunta mudou de contexto, troca o código de contexto.
+                final Long codPergunta = insertPerguntaChecklist(
+                        conn,
+                        modeloChecklist.getCodUnidade(),
+                        modeloChecklist.getCodModelo(),
+                        novaVersaoModelo,
+                        pergunta,
+                        usarMesmoCodigoDeContexto);
+                for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
+                    if (alternativa instanceof AlternativaModeloChecklistEdicaoInsere) {
+                        insertAlternativaChecklist(
+                                conn,
+                                modeloChecklist.getCodUnidade(),
+                                modeloChecklist.getCodModelo(),
+                                novaVersaoModelo,
+                                codPergunta,
+                                alternativa,
+                                false);
+                    } else {
                         // 2.2.1 -> As alternativas de uma pergunta que muda de contexto podem tanto ser novas ou terem
                         // mudado de contexto. Alternativas deletadas nem serão recebidas.
                         final AnaliseItemModeloChecklist analiseAlternativa =
@@ -519,6 +528,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                         final boolean manterContextoAlternativa =
                                 alternativa instanceof AlternativaModeloChecklistEdicaoAtualiza
                                         && (usarMesmoCodigoDeContexto || !analiseAlternativa.isItemMudouContexto());
+
                         insertAlternativaChecklist(
                                 conn,
                                 modeloChecklist.getCodUnidade(),
@@ -527,44 +537,6 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                                 codPergunta,
                                 alternativa,
                                 manterContextoAlternativa);
-                    }
-                } else {
-                    // 2.3 -> Nesse caso, a pergunta pode ou não ter mudado, mas manteve seu contexto,
-                    // então podemos apenas atualizar as informações com segurança.
-                    final Long codPergunta = insertPerguntaChecklist(
-                            conn,
-                            modeloChecklist.getCodUnidade(),
-                            modeloChecklist.getCodModelo(),
-                            novaVersaoModelo,
-                            pergunta,
-                            true);
-                    for (final AlternativaModeloChecklist alternativa : pergunta.getAlternativas()) {
-                        if (alternativa instanceof AlternativaModeloChecklistEdicaoInsere) {
-                            insertAlternativaChecklist(
-                                    conn,
-                                    modeloChecklist.getCodUnidade(),
-                                    modeloChecklist.getCodModelo(),
-                                    novaVersaoModelo,
-                                    codPergunta,
-                                    alternativa,
-                                    false);
-                        } else {
-                            final AnaliseItemModeloChecklist analiseAlternativa =
-                                    analiseModelo.getAlternativa(alternativa.getCodigo());
-                            // Como já estmaos em uma alternativa que foi atualizada, nós mantemos o contexto se
-                            // tivermos forçando manter (através da flag usarMesmoCodigoDeContexto) ou se ela mesmo
-                            // editada não mudou de contexto.
-                            final boolean manterContextoAlternativa =
-                                    (usarMesmoCodigoDeContexto || !analiseAlternativa.isItemMudouContexto());
-                            insertAlternativaChecklist(
-                                    conn,
-                                    modeloChecklist.getCodUnidade(),
-                                    modeloChecklist.getCodModelo(),
-                                    novaVersaoModelo,
-                                    codPergunta,
-                                    alternativa,
-                                    manterContextoAlternativa);
-                        }
                     }
                 }
             }
