@@ -716,7 +716,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                                                  "F_POSICAO  => ?) AS RESULT;");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, placa);
-            stmt.setLong(3, getCodVeiculoByPlaca(conn, placa));
+            stmt.setLong(3, getCodVeiculoByPlaca(conn, placa, codUnidade));
             stmt.setLong(4, codPneu);
             stmt.setInt(5, posicaoPneuVeiculo);
             rSet = stmt.executeQuery();
@@ -803,12 +803,14 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     @NotNull
     @Override
     public Long getCodVeiculoByPlaca(@NotNull final Connection conn,
-                                     @NotNull final String placaVeiculo) throws Throwable {
+                                     @NotNull final String placaVeiculo,
+                                     @NotNull final Long codUnidade) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT V.CODIGO FROM VEICULO V WHERE V.PLACA = ?;");
+            stmt = conn.prepareStatement("select v.codigo from veiculo v where v.placa = ? and v.cod_unidade = ?;");
             stmt.setString(1, placaVeiculo);
+            stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codVeiculo = rSet.getLong("CODIGO");
