@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoDe
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.pneu.pneuservico.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoEntity;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,7 +45,7 @@ public class PneuEntity {
     private Long codEmpresa;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_unidade", referencedColumnName = "codigo")
-    private BranchEntity unidade;
+    private UnidadeEntity unidade;
     @Column(name = "codigo_cliente", nullable = false)
     private String codigoCliente;
     @ManyToOne(fetch = FetchType.LAZY)

@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.acoplamento._model.AcoplamentoProc
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo.diagrama._model.DiagramaEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo.modelo._model.ModeloVeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo.tipoveiculo._model.TipoVeiculoEntity;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,10 +34,10 @@ public class VeiculoEntity {
     private Long codigo;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_unidade_cadastro", referencedColumnName = "codigo")
-    private BranchEntity branchEntityCadastro;
+    private UnidadeEntity unidadeEntityCadastro;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_unidade", referencedColumnName = "codigo")
-    private BranchEntity branchEntity;
+    private UnidadeEntity unidadeEntity;
     @Column(name = "cod_empresa", nullable = false)
     private Long codEmpresa;
     @Column(name = "placa", length = 7, nullable = false)

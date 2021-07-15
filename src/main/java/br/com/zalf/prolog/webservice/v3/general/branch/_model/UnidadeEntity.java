@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Table(schema = "public", name = "unidade")
-public class BranchEntity {
+public class UnidadeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)

@@ -15,7 +15,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.veiculo.modelo._model.ModeloVeicul
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo.tipoveiculo.TipoVeiculoService;
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo.tipoveiculo._model.TipoVeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.general.branch.BranchService;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,14 +70,14 @@ public class VeiculoService {
                                                             veiculoCadastroDto.getCodUnidadeAlocado());
         VeiculoValidator.validacaoMotorizadoSemHubodometro(veiculoCadastroDto.getPossuiHubodometro(),
                                                            veiculoCadastroDto.getCodTipoVeiculo());
-        final BranchEntity branchEntity = branchService.getBranchById(veiculoCadastroDto.getCodUnidadeAlocado());
+        final UnidadeEntity unidadeEntity = branchService.getBranchById(veiculoCadastroDto.getCodUnidadeAlocado());
         final ModeloVeiculoEntity modeloVeiculoEntity =
                 modeloVeiculoService.getByCod(veiculoCadastroDto.getCodModeloVeiculo());
         final TipoVeiculoEntity tipoVeiculoEntity =
                 tipoVeiculoService.getByCod(veiculoCadastroDto.getCodTipoVeiculo());
         final DiagramaEntity diagramaEntity = diagramaService.getByCod(tipoVeiculoEntity.getCodDiagrama());
         final VeiculoEntity saved = veiculoDao.save(mapper.toEntity(veiculoCadastroDto,
-                                                                    branchEntity,
+                                                                    unidadeEntity,
                                                                     diagramaEntity,
                                                                     tipoVeiculoEntity,
                                                                     modeloVeiculoEntity,

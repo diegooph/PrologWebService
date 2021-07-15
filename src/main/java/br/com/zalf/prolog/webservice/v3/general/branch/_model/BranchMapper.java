@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 @Component
 public final class BranchMapper {
     @NotNull
-    public List<BranchDto> toDto(@NotNull final List<BranchEntity> branches) {
+    public List<BranchDto> toDto(@NotNull final List<UnidadeEntity> branches) {
         return branches.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     @NotNull
-    public BranchDto toDto(@NotNull final BranchEntity branch) {
+    public BranchDto toDto(@NotNull final UnidadeEntity branch) {
         return new BranchDto(branch.getId(),
                              branch.getName(),
                              branch.getTotalUsers(),
@@ -36,8 +36,8 @@ public final class BranchMapper {
     }
 
     @NotNull
-    public BranchEntity toEntity(@NotNull final BranchUpdateDto dto) {
-        return BranchEntity.builder()
+    public UnidadeEntity toEntity(@NotNull final BranchUpdateDto dto) {
+        return UnidadeEntity.builder()
                 .withId(dto.getBranchId())
                 .withName(dto.getBranchName())
                 .withAdditionalId(dto.getBranchAdditionalId())

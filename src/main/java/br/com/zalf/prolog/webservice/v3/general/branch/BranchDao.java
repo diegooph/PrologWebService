@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.general.branch;
 
-import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,22 +16,22 @@ import java.util.Optional;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Repository
-public interface BranchDao extends JpaRepository<BranchEntity, Long> {
+public interface BranchDao extends JpaRepository<UnidadeEntity, Long> {
     @NotNull
-    @Query("select u from BranchEntity u " +
+    @Query("select u from UnidadeEntity u " +
                    "join fetch u.group " +
                    "join fetch u.companyEntity " +
                    "where u.id = :branchId")
-    Optional<BranchEntity> getBranchById(@NotNull final Long branchId);
+    Optional<UnidadeEntity> getBranchById(@NotNull final Long branchId);
 
     @NotNull
-    @Query("select u from BranchEntity u " +
+    @Query("select u from UnidadeEntity u " +
                    "join fetch u.group g " +
                    "join fetch u.companyEntity c " +
                    "where c.id = :companyId " +
                    "and ((:groupsId) is null or g.id in (:groupsId))")
-    List<BranchEntity> getAllBranches(@NotNull final Long companyId,
-                                      @Nullable final List<Long> groupsId);
+    List<UnidadeEntity> getAllBranches(@NotNull final Long companyId,
+                                       @Nullable final List<Long> groupsId);
 
     @NotNull
     @Query("select u from AuthenticationTokenEntity at " +
@@ -39,12 +39,12 @@ public interface BranchDao extends JpaRepository<BranchEntity, Long> {
                    "join u.empresa e " +
                    "join e.branches " +
                    "where at.token = :tokenUser")
-    List<BranchEntity> findAllByTokenUser(@NotNull final String tokenUser);
+    List<UnidadeEntity> findAllByTokenUser(@NotNull final String tokenUser);
 
     @NotNull
     @Query("select b from IntegrationTokenEntity it " +
                    "join it.company c " +
                    "join c.branches b " +
                    "where it.token = :tokenApi")
-    List<BranchEntity> findAllByTokenApi(@NotNull final String tokenApi);
+    List<UnidadeEntity> findAllByTokenApi(@NotNull final String tokenApi);
 }

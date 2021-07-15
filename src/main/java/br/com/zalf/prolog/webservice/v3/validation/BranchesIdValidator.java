@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.v3.validation;
 
 import br.com.zalf.prolog.webservice.config.CurrentRequest;
 import br.com.zalf.prolog.webservice.v3.general.branch.BranchService;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -45,10 +45,10 @@ public final class BranchesIdValidator implements ConstraintValidator<BranchesId
         return false;
     }
 
-    private boolean containsBranchesId(@NotNull final List<BranchEntity> branches,
+    private boolean containsBranchesId(@NotNull final List<UnidadeEntity> branches,
                                        @NotNull final List<Long> branchesId) {
         return branches.stream()
-                .map(BranchEntity::getId)
+                .map(UnidadeEntity::getId)
                 .collect(Collectors.toList())
                 .containsAll(branchesId);
     }

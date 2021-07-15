@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.general.company;
 
-import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,7 +41,7 @@ public class CompanyEntity {
     private String codAuxiliar;
     @Column(name = "status_ativo", nullable = false, columnDefinition = "default true")
     private boolean isActive;
-    @OneToMany(mappedBy = "companyEntity", fetch = FetchType.LAZY, targetEntity = BranchEntity.class)
+    @OneToMany(mappedBy = "companyEntity", fetch = FetchType.LAZY, targetEntity = UnidadeEntity.class)
     @NotNull
-    private Set<BranchEntity> branches;
+    private Set<UnidadeEntity> branches;
 }

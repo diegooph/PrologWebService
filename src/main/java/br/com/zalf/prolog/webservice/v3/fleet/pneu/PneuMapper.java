@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestin
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoDestinoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.*;
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoEntity;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -107,8 +107,8 @@ public class PneuMapper {
     }
 
     @NotNull
-    private BranchEntity createUnidade(@NotNull final Long codUnidadeAlocado) {
-        return BranchEntity.builder().withId(codUnidadeAlocado).build();
+    private UnidadeEntity createUnidade(@NotNull final Long codUnidadeAlocado) {
+        return UnidadeEntity.builder().withId(codUnidadeAlocado).build();
     }
 
     @NotNull

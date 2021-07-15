@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.v3.general.branch;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,9 +28,9 @@ public class BranchService {
     }
 
     @Transactional
-    public SuccessResponse updateBranch(@NotNull final BranchEntity branch) {
-        final BranchEntity savedBranch = dao.findById(branch.getId()).orElseThrow(NotFoundException::new);
-        final BranchEntity branchUpdate = branch.toBuilder().withId(savedBranch.getId()).build();
+    public SuccessResponse updateBranch(@NotNull final UnidadeEntity branch) {
+        final UnidadeEntity savedBranch = dao.findById(branch.getId()).orElseThrow(NotFoundException::new);
+        final UnidadeEntity branchUpdate = branch.toBuilder().withId(savedBranch.getId()).build();
         final Long updatedBranchId = Optional.of(dao.save(branchUpdate))
                 .orElseThrow(ServerSideErrorException::defaultNotLoggableException)
                 .getId();
@@ -39,24 +39,24 @@ public class BranchService {
 
     @NotNull
     @Transactional
-    public BranchEntity getBranchById(@NotNull final Long branchId) {
+    public UnidadeEntity getBranchById(@NotNull final Long branchId) {
         return dao.getBranchById(branchId).orElseThrow(NotFoundException::new);
     }
 
     @NotNull
     @Transactional
-    public List<BranchEntity> getAllBranches(@NotNull final Long companyId,
-                                             final List<Long> groupsId) {
+    public List<UnidadeEntity> getAllBranches(@NotNull final Long companyId,
+                                              final List<Long> groupsId) {
         return dao.getAllBranches(companyId, groupsId.isEmpty() ? null : groupsId);
     }
 
     @NotNull
-    public List<BranchEntity> getBranchesByTokenUser(@NotNull final String tokenUser) {
+    public List<UnidadeEntity> getBranchesByTokenUser(@NotNull final String tokenUser) {
         return dao.findAllByTokenUser(tokenUser);
     }
 
     @NotNull
-    public List<BranchEntity> getBranchesByTokenApi(@NotNull final String tokenApi) {
+    public List<UnidadeEntity> getBranchesByTokenApi(@NotNull final String tokenApi) {
         return dao.findAllByTokenApi(tokenApi);
     }
 }
