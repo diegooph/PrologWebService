@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.checklist;
 
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
-import br.com.zalf.prolog.webservice.v3.fleet.checklist._model.ChecklistListagemDto;
+import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
