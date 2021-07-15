@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.v3.general.company;
 
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +17,7 @@ import java.util.Set;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
+@Builder(toBuilder = true, setterPrefix = "with")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

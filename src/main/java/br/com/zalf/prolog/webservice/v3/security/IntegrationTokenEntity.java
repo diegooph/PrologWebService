@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
-@Builder(toBuilder = true)
+@Builder(toBuilder = true, setterPrefix = "with")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
