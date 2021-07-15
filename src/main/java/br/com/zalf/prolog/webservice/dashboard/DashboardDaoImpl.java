@@ -36,7 +36,6 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
                                                  "  DCT.MINIMO_BLOCOS_VERTICAIS AS MINIMO_BLOCOS_VERTICAIS, " +
                                                  "  DC.CODIGO AS CODIGO_COMPONENTE, " +
                                                  "  DC.COD_PILAR_PROLOG_COMPONENTE AS CODIGO_PILAR_PROLOG_COMPONENTE," +
-                                                 " " +
                                                  "  DC.TITULO AS TITULO_COMPONENTE, " +
                                                  "  DC.SUBTITULO AS SUBTITULO_COMPONENTE, " +
                                                  "  DC.DESCRICAO AS DESCRICAO_COMPONENTE, " +
