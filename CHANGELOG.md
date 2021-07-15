@@ -12,6 +12,7 @@ Change Log
 ### Bug Fixes
 * Corrige erro de getConstraint ao receber valor nulo  
 * Corrigir erro ao editar modelo de checklist (PL-3528)
+* Corrigir erro ao movimentar pneus em placas com cadastro duplicado em outra empresa (PS-1606)
 
 <a name="v3.5.4"></a>
 ## Version [v3.5.4](https://github.com/luizfp/PrologWebService/compare/v3.5.3...v3.5.4) (2021-07-11)
