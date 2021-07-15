@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "public", name = "token_autenticacao")
-public class TokenAuthenticationEntity {
+public class TokenAutenticacaoEntity {
     @Id
     @Column(name = "token", nullable = false)
     private String token;

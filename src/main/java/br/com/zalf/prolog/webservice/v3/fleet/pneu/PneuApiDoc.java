@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.PneuListagemDto;
-import br.com.zalf.prolog.webservice.v3.validation.IdBranches;
+import br.com.zalf.prolog.webservice.v3.validation.CodUnidades;
 import io.swagger.annotations.*;
 
 import javax.validation.Valid;
@@ -49,7 +49,7 @@ public interface PneuApiDoc {
     List<PneuListagemDto> getPneusByStatus(
             @ApiParam(value = "Lista de códigos de unidade.",
                       example = "215",
-                      required = true) @Required @IdBranches final List<Long> codUnidades,
+                      required = true) @Required @CodUnidades final List<Long> codUnidades,
             @ApiParam(value = "Status do pneu. Podendo ser EM_USO, ESTOQUE, DESCARTE ou ANALISE. Utilizado para " +
                     "filtrar pneus de um status específico. Caso não deseje filtrar, basta não enviar esse " +
                     "parâmetro.",

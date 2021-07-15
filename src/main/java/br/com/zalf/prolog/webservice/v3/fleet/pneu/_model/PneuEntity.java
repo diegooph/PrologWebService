@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoDe
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.pneu.pneuservico.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoEntity;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

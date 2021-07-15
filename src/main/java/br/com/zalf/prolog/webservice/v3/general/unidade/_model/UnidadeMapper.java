@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.general.branch._model;
+package br.com.zalf.prolog.webservice.v3.general.unidade._model;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;

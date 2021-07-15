@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.v3.validation;
 
 import br.com.zalf.prolog.webservice.config.CurrentRequest;
-import br.com.zalf.prolog.webservice.v3.general.branch.BranchService;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.general.unidade.UnidadeService;
+import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,21 +11,21 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.List;
 import java.util.Optional;
 
-public final class IdCompanyValidator implements ConstraintValidator<IdCompany, Long> {
+public final class CodUnidadeValidator implements ConstraintValidator<CodUnidade, Long> {
     @NotNull
     private final CurrentRequest currentRequest;
     @NotNull
-    private final BranchService branchService;
+    private final UnidadeService unidadeService;
 
     @Autowired
-    public IdCompanyValidator(@NotNull final CurrentRequest currentRequest,
-                              @NotNull final BranchService branchService) {
+    public CodUnidadeValidator(@NotNull final CurrentRequest currentRequest,
+                               @NotNull final UnidadeService unidadeService) {
         this.currentRequest = currentRequest;
-        this.branchService = branchService;
+        this.unidadeService = unidadeService;
     }
 
     @Override
-    public void initialize(final IdCompany constraintAnnotation) {
+    public void initialize(final CodUnidade constraintAnnotation) {
     }
 
     @Override
@@ -33,21 +33,20 @@ public final class IdCompanyValidator implements ConstraintValidator<IdCompany, 
         if (currentRequest.isFromApi()) {
             final Optional<String> requestTokenFromApi = currentRequest.getRequestTokenFromApi();
             if (requestTokenFromApi.isPresent()) {
-                return containsCodEmpresa(branchService.getUnidadesByTokenApi(requestTokenFromApi.get()), value);
+                return containsCodUnidade(unidadeService.getUnidadesByTokenApi(requestTokenFromApi.get()), value);
             }
         } else {
             final Optional<String> requestToken = currentRequest.getRequestToken();
             if (requestToken.isPresent()) {
-                return containsCodEmpresa(branchService.getUnidadesByTokenUser(requestToken.get()), value);
+                return containsCodUnidade(unidadeService.getUnidadesByTokenUser(requestToken.get()), value);
             }
         }
         return false;
     }
 
-    private boolean containsCodEmpresa(@NotNull final List<UnidadeEntity> unidades, @NotNull final Long codEmpresa) {
+    private boolean containsCodUnidade(@NotNull final List<UnidadeEntity> unidades, @NotNull final Long codUnidade) {
         return unidades.stream()
-                .map(unidadeEntity -> unidadeEntity.getCompanyEntity().getCodigo())
-                .distinct()
-                .allMatch(codigo -> codigo.equals(codEmpresa));
+                .map(UnidadeEntity::getCodigo)
+                .anyMatch(codigo -> codigo.equals(codUnidade));
     }
 }

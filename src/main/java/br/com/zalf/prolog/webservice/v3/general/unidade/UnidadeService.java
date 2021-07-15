@@ -1,10 +1,10 @@
-package br.com.zalf.prolog.webservice.v3.general.branch;
+package br.com.zalf.prolog.webservice.v3.general.unidade;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
-import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeMapper;
+import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeMapper;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,17 +19,17 @@ import java.util.Optional;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Service
-public class BranchService {
-    private static final String TAG = BranchService.class.getSimpleName();
+public class UnidadeService {
+    private static final String TAG = UnidadeService.class.getSimpleName();
     @NotNull
-    private final BranchDao dao;
+    private final UnidadeDao dao;
     @NotNull
     private final UnidadeMapper mapper;
 
     @Autowired
-    public BranchService(@NotNull final BranchDao branchDao,
-                         @NotNull final UnidadeMapper mapper) {
-        this.dao = branchDao;
+    public UnidadeService(@NotNull final UnidadeDao unidadeDao,
+                          @NotNull final UnidadeMapper mapper) {
+        this.dao = unidadeDao;
         this.mapper = mapper;
     }
 

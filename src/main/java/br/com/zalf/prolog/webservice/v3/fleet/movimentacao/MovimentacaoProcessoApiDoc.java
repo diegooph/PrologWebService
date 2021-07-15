@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoProcessoListagemDto;
-import br.com.zalf.prolog.webservice.v3.validation.IdBranches;
+import br.com.zalf.prolog.webservice.v3.validation.CodUnidades;
 import io.swagger.annotations.*;
 
 import javax.validation.constraints.Max;
@@ -32,7 +32,7 @@ public interface MovimentacaoProcessoApiDoc {
     List<MovimentacaoProcessoListagemDto> getListagemMovimentacoes(
             @ApiParam(value = "Lista de códigos de unidade.",
                       example = "215",
-                      required = true) @Required @IdBranches final List<Long> codUnidades,
+                      required = true) @Required @CodUnidades final List<Long> codUnidades,
             @ApiParam(value = "Data Inicial - Utilizada para filtrar as movimentações realizadas.",
                       format = "yyyy-MM-dd",
                       example = "2021-01-01",

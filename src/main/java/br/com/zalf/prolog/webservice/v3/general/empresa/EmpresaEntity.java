@@ -1,6 +1,6 @@
-package br.com.zalf.prolog.webservice.v3.general.company;
+package br.com.zalf.prolog.webservice.v3.general.empresa;
 
-import br.com.zalf.prolog.webservice.v3.general.branch._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.general.unidade._model.UnidadeEntity;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -15,7 +15,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "empresa", schema = "public")
-public class CompanyEntity {
+public class EmpresaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
