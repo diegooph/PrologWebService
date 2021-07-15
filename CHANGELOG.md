@@ -6,6 +6,9 @@ Change Log
 ## UNRELEASED
 ##
 
+# Features
+* Adiciona código e nome das funcionalidades do dash para agrupamento (PL-3876)
+
 ### Refactors
 * Mapeia corretamente erros do Spring nos endpoints V3
 
