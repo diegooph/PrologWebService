@@ -40,6 +40,9 @@ public final class ChecklistWorkOrderItemEntity implements EntityKmColetado {
     @NotNull
     @Override
     public VeiculoKmColetado getVeiculoKmColetado() {
+        if (vehicleKmAtResolution == null) {
+            throw new IllegalStateException("O KM não pode ser null!");
+        }
         return VeiculoKmColetado.of(workOrderEntity.getChecklist().getCodVeiculo(), vehicleKmAtResolution);
     }
 }
