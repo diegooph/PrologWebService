@@ -38,7 +38,7 @@ public class ChecklistWorkOrderService implements KmProcessoAtualizavel {
     public void updateKmColetadoProcesso(@NotNull final Long codProcesso,
                                          @NotNull final Long codVeiculo,
                                          final long novoKm) {
-        updateKmFechamentoItem(codProcesso, novoKm);
+        updateVehicleKmAtResolution(codProcesso, novoKm);
     }
 
     @NotNull
@@ -69,8 +69,8 @@ public class ChecklistWorkOrderService implements KmProcessoAtualizavel {
     }
 
     @Transactional
-    public void updateKmFechamentoItem(@NotNull final Long workOrderItemId,
-                                       final long newKm) {
+    public void updateVehicleKmAtResolution(@NotNull final Long workOrderItemId,
+                                            final long newKm) {
         final ChecklistOrdemServicoItemEntity entity = getWorkOrderItemById(workOrderItemId)
                 .toBuilder()
                 .withKmColetadoVeiculoFechamentoItem(newKm)

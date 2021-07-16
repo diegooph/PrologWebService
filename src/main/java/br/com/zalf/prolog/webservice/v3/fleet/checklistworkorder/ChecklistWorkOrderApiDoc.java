@@ -35,22 +35,22 @@ public interface ChecklistWorkOrderApiDoc {
             @ApiParam(value = "Lista de códigos de unidade.",
                       example = "215",
                       required = true)
-            @Required @BranchesId final List<Long> codUnidades,
+            @Required @BranchesId final List<Long> branchesId,
             @ApiParam(value = "Código de Tipo Veículo - Utilizado para filtrar ordens de serviço de apenas um tipo de" +
                     " veículo. Caso não deseje filtrar, basta não enviar esse parâmetro.")
-            @Optional final Long codTipoVeiculo,
+            @Optional final Long vehicleTypeId,
             @ApiParam(value = "Código de Veículo - Utilizado para filtrar ordens de serviço de apenas um veículo. " +
                     "Caso não deseje filtrar, basta não enviar esse parâmetro.")
-            @Optional final String codVeiculo,
+            @Optional final String vehicleId,
             @ApiParam(value = "Status da ordem de serviço. Podendo ser ABERTA ou FECHADA. Utilizado para filtrar " +
                     "ordens de serviço de um status específico. Caso não deseje filtrar, basta não enviar esse " +
                     "parâmetro.",
                       example = "F")
-            @Optional final StatusOrdemServico statusOrdemServico,
+            @Optional final StatusOrdemServico workOrderStatus,
             @ApiParam(value = "Flag utilizada para retornar os itens das ordens de serviço. Por padrão é sempre " +
                     "retornado, para não retornar envie 'false'.",
                       required = true,
-                      defaultValue = "true") final boolean incluirItensOrdemServico,
+                      defaultValue = "true") final boolean includeWorkOrderItems,
             @Max(value = 1000, message = "O limite de busca é 1000 registros.")
             @ApiParam(value = "Limite de ordens de serviço retornados pela busca. O valor máximo é 1000.",
                       example = "1000",

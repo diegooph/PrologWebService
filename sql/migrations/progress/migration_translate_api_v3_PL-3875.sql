@@ -1,3 +1,10 @@
+drop function if exists func_checklist_ordem_servico_listagem(f_cod_unidades bigint[],
+    f_cod_tipo_veiculo bigint,
+    f_cod_veiculo bigint,
+    f_status_ordem_servico text,
+    f_incluir_itens_ordem_servico boolean,
+    f_limit integer,
+    f_offset integer);
 create or replace function func_get_checklist_work_order(f_branches_id bigint[],
                                                          f_vehicle_type_id bigint,
                                                          f_vehicle_id bigint,

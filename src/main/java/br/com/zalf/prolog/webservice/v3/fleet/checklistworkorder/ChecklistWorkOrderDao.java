@@ -17,12 +17,12 @@ import java.util.List;
  */
 public interface ChecklistWorkOrderDao extends JpaRepository<ChecklistOrdemServicoEntity, ChecklistOrdemServicoPk> {
     @NotNull
-    @Query(value = "select * from func_checklist_ordem_servico_listagem(" +
-            "f_cod_unidades => to_bigint_array(:branchesId)," +
-            "f_cod_tipo_veiculo => to_bigint(:vehicleTypeId)," +
-            "f_cod_veiculo => to_bigint(:vehicleId)," +
-            "f_status_ordem_servico => to_text(:workOrderStatus)," +
-            "f_incluir_itens_ordem_servico => :includeWorkOrderItems," +
+    @Query(value = "select * from func_get_checklist_work_order(" +
+            "f_branches_id => to_bigint_array(:branchesId)," +
+            "f_vehicle_type_id => to_bigint(:vehicleTypeId)," +
+            "f_vehicle_id => to_bigint(:vehicleId)," +
+            "f_work_order_status => to_text(:workOrderStatus)," +
+            "f_include_work_order_items => :includeWorkOrderItems," +
             "f_limit => :limit," +
             "f_offset => :offset);", nativeQuery = true)
     List<ChecklistWorkOrderProjection> getAllWorkOrders(@NotNull final List<Long> branchesId,

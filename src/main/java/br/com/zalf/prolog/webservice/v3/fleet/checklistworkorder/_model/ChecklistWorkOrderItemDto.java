@@ -60,7 +60,7 @@ public final class ChecklistWorkOrderItemDto {
     private final String resolverUserName;
     @ApiModelProperty(value = "Km do veículo que no momento de resolução do item.", required = true, example = "111111")
     @Nullable
-    private final Long vehicleKm;
+    private final Long vehicleKmAtResolution;
     @ApiModelProperty(value = "Código do lote resolvido. Caso o item tenha sido fechado através do processo de " +
             "resolução em lote.",
                       example = "11")
