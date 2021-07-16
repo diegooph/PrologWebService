@@ -1,10 +1,10 @@
-package br.com.zalf.prolog.webservice.v3.fleet.checklistordemservico;
+package br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
-import br.com.zalf.prolog.webservice.v3.fleet.checklistordemservico._model.ChecklistOrdemServicoListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistWorkOrderDto;
 import br.com.zalf.prolog.webservice.v3.validation.BranchesId;
 import io.swagger.annotations.*;
 
@@ -17,21 +17,21 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Api(value = "Ordens de Serviço")
-public interface ChecklistOrdemServicoApiDoc {
+public interface ChecklistWorkOrderApiDoc {
     @ApiOperation(
             value = "Lista as ordens de serviço abertas e fechadas.",
-            response = ChecklistOrdemServicoListagemDto.class,
+            response = ChecklistWorkOrderDto.class,
             responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200, message = "Operação efetuada com sucesso.",
-                    response = ChecklistOrdemServicoListagemDto.class,
+                    response = ChecklistWorkOrderDto.class,
                     responseContainer = "List"),
             @ApiResponse(code = 401, message = "Operação não autorizada", response = Response.class),
             @ApiResponse(code = 404, message = "Operação não encontrada", response = Response.class),
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
-    List<ChecklistOrdemServicoListagemDto> getOrdensServico(
+    List<ChecklistWorkOrderDto> getAllWorkOrders(
             @ApiParam(value = "Lista de códigos de unidade.",
                       example = "215",
                       required = true)

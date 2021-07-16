@@ -1,115 +1,115 @@
-package br.com.zalf.prolog.webservice.v3.fleet.checklistordemservico._model;
+package br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model;
 
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 
-public interface ChecklistOrdemServicoProjection {
+public interface ChecklistWorkOrderProjection {
     @Value("#{target.codigo_os_prolog}")
-    long getCodigoOsProlog();
+    long getWorkOrderIdProlog();
 
     @Value("#{target.codigo_os}")
-    long getCodigoOs();
+    long getWorkOrderId();
 
     @Value("#{target.codigo_unidade}")
-    long getCodigoUnidade();
+    long getBranchId();
 
     @Value("#{target.codigo_checklist}")
-    long getCodigoChecklist();
+    long getChecklistId();
 
     @Value("#{@localDateTimeConverter.fromInstantUtc(target.data_hora_abertura_utc)}")
-    LocalDateTime getDataHoraAberturaUtc();
+    LocalDateTime getOpenedAtUtc();
 
     @Value("#{target.data_hora_abertura_tz_aplicado}")
-    LocalDateTime getDataHoraAberturaTzAplicado();
+    LocalDateTime getOpenedAtWithTimeZone();
 
     @Value("#{target.status_os}")
-    String getStatusOs();
+    String getWorkOrderStatus();
 
     @Value("#{@localDateTimeConverter.fromInstantUtc(target.data_hora_fechamento_utc)}")
-    LocalDateTime getDataHoraFechamentoUtc();
+    LocalDateTime getClosedAtUtc();
 
     @Value("#{target.data_hora_fechamento_tz_aplicado}")
-    LocalDateTime getDataHoraFechamentoTzAplicado();
+    LocalDateTime getClosedAtWithTimeZone();
 
     @Value("#{target.codigo_colaborador_abertura}")
-    long getCodigoColaboradorAberturaOs();
+    long getChecklistUserId();
 
     @Value("#{target.cpf_colaborador_abertura}")
-    String getCpfColaboradorAberturaOs();
+    String getChecklistUserCpf();
 
     @Value("#{target.nome_colaborador_abertura}")
-    String getNomeColaboradorAberturaOs();
+    String getChecklistUserName();
 
     @Value("#{target.codigo_veiculo}")
-    long getCodigoVeiculo();
+    long getVehicleId();
 
     @Value("#{target.placa_veiculo}")
-    String getPlacaVeiculo();
+    String getVehiclePlate();
 
     @Value("#{target.identificador_frota}")
-    String getIdentificadorFrota();
+    String getFleetId();
 
     @Value("#{target.codigo_item_os}")
-    long getCodigoItemOs();
+    long getWorkOrderItemId();
 
     @Value("#{target.codigo_colaborador_fechamento}")
-    Long getCodColaboradorFechamento();
+    Long getResolverUserId();
 
     @Value("#{target.cpf_colaborador_fechamento}")
-    Long getCpfColaboradorFechamento();
+    Long getResolverUserCpf();
 
     @Value("#{target.nome_colaborador_fechamento}")
-    String getNomeColaboradorFechamento();
+    String getResolverUserName();
 
     @Value("#{target.codigo_pergunta_primeiro_apontamento}")
-    long getCodigoPerguntaPrimeiroApontamento();
+    long getQuestionId();
 
     @Value("#{target.codigo_contexto_pergunta}")
-    long getCodigoContextoPergunta();
+    long getQuestionContextId();
 
     @Value("#{target.codigo_alternativa_primeiro_apontamento}")
-    long getCodigoAlternativaPrimeiroApontamento();
+    long getOptionId();
 
     @Value("#{target.codigo_auxiliar_alternativa_primeiro_apontamento}")
-    String getCodigoAuxiliarAlternativaPrimeiroApontamento();
+    String getOptionAddicionalId();
 
     @Value("#{target.codigo_contexto_alternativa}")
-    long getCodigoContextoAlternativa();
+    long getOptionContextId();
 
     @Value("#{target.status_resolucao}")
-    String getStatusItemOs();
+    String getWorkOrderItemStatus();
 
     @Value("#{target.quantidade_apontamentos}")
-    int getQuantidadeApontamentos();
+    int getAmountTimesPointed();
 
     @Value("#{target.km}")
     Long getKm();
 
     @Value("#{target.codigo_agrupamento_resolucao_em_lote}")
-    Long getCodigoAgrupamentoResolucaoEmLote();
+    Long getBatchGroupId();
 
     @Value("#{@localDateTimeConverter.fromInstantUtc(target.data_hora_conserto_utc)}")
-    LocalDateTime getDataHoraConsertoUtc();
+    LocalDateTime getResolvedAtUtc();
 
     @Value("#{target.data_hora_conserto_tz_aplicado}")
-    LocalDateTime getDataHoraConsertoTzAplicado();
+    LocalDateTime getResolvedAtWithTimeZone();
 
     @Value("#{@localDateTimeConverter.fromInstantUtc(target.data_hora_inicio_resolucao_utc)}")
-    LocalDateTime getDataHoraInicioResolucaoUtc();
+    LocalDateTime getStartedAtUtc();
 
     @Value("#{target.data_hora_inicio_resolucao_tz_aplicado}")
-    LocalDateTime getDataHoraInicioResolucaoTzAplicado();
+    LocalDateTime getStartedAtWithTimeZone();
 
     @Value("#{@localDateTimeConverter.fromInstantUtc(target.data_hora_fim_resolucao_utc)}")
-    LocalDateTime getDataHoraFimResolucaoUtc();
+    LocalDateTime getEndedAtUtc();
 
     @Value("#{target.data_hora_fim_resolucao_tz_aplicado}")
-    LocalDateTime getDataHoraFimResolucaoTzAplicado();
+    LocalDateTime getEndedAtWithTimeZone();
 
     @Value("#{target.tempo_realizacao}")
-    Long getTempoRealizacao();
+    Long getResolutionTime();
 
     @Value("#{target.feedback_conserto}")
-    String getFeedbackConserto();
+    String getResolutionNotes();
 }

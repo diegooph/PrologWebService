@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.checklistordemservico._model;
+package br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model;
 
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.VeiculoKmColetado;

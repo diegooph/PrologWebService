@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.v3.fleet.kmprocessos;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.v3.fleet.afericao.AfericaoService;
 import br.com.zalf.prolog.webservice.v3.fleet.checklist.ChecklistService;
-import br.com.zalf.prolog.webservice.v3.fleet.checklistordemservico.ChecklistOrdemServicoService;
+import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder.ChecklistWorkOrderService;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.AlteracaoKmProcesso;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao.MovimentacaoProcessoService;
@@ -30,7 +30,7 @@ public class AlteracaoKmProcessosServiceFactory {
     @NotNull
     private final ChecklistService checklistService;
     @NotNull
-    private final ChecklistOrdemServicoService checklistOrdemServicoService;
+    private final ChecklistWorkOrderService checklistWorkOrderService;
     @NotNull
     private final MovimentacaoProcessoService movimentacaoProcessoService;
     @NotNull
@@ -48,7 +48,7 @@ public class AlteracaoKmProcessosServiceFactory {
             case CHECKLIST:
                 return checklistService;
             case FECHAMENTO_ITEM_CHECKLIST:
-                return checklistOrdemServicoService;
+                return checklistWorkOrderService;
             case MOVIMENTACAO:
                 return movimentacaoProcessoService;
             case SOCORRO_EM_ROTA:

@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
-import br.com.zalf.prolog.webservice.v3.fleet.checklistordemservico._model.ChecklistOrdemServicoListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistWorkOrderDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public final class ChecklistOrdemServicoIT extends IntegrationTest {
     @DisplayName("Dado parâmetros corretos, retorne List<ChecklistOrdemServicoListagemDto> e status OK")
     void givenMinimumCorrectParameters_ThenReturnListChecklistOrdemServicoStatusOk() {
 
-        final ResponseEntity<List<ChecklistOrdemServicoListagemDto>> response =
+        final ResponseEntity<List<ChecklistWorkOrderDto>> response =
                 client.getOrdensServico(List.of(215L), 2, 0);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotEmpty();
