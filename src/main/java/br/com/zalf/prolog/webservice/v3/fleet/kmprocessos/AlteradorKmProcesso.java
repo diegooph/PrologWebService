@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.v3.fleet.kmprocessos;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.*;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle.VeiculoService;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle.VehicleService;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoEntity;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public final class AlteradorKmProcesso {
     @NotNull
-    private final VeiculoService veiculoService;
+    private final VehicleService vehicleService;
 
     @NotNull
     public AlteracaoKmResponse updateKmProcesso(@NotNull final KmProcessoAtualizavel kmProcessoAtualizavel,
@@ -45,7 +45,7 @@ public final class AlteradorKmProcesso {
         if (!codVeiculoRecebido.equals(codVeiculoBanco)) {
             fail();
         }
-        final VeiculoEntity veiculo = veiculoService.getByCodigo(codVeiculoBanco);
+        final VeiculoEntity veiculo = vehicleService.getById(codVeiculoBanco);
         // Garantindo que a empresa do veículo é a mesma recebida já garantimos que o processo editado é da empresa
         // em questão.
         if (!codEmpresaRecebido.equals(veiculo.getCodEmpresa())) {

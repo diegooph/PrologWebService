@@ -5,10 +5,10 @@ import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEn
 import br.com.zalf.prolog.webservice.v3.fleet.acoplamento._model.AcoplamentoAtualEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.acoplamento._model.AcoplamentoProcessoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.*;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle.diagrama._model.DiagramaEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle.diagrama.eixos._model.EixoDiagramaEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle.modelo._model.ModeloVeiculoEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle.tipoveiculo._model.TipoVeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle.makemodel._model.VehicleModelEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle.vehiclelayout._model.AxleLayoutEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle.vehiclelayout._model.VehicleLayoutEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle.vehicletype._model.VehicleTypeEntity;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class VeiculoMapper {
+public class VehicleMapper {
 
     @NotNull
     public List<VeiculoListagemDto> toDto(@NotNull final List<VeiculoEntity> veiculoEntities) {
@@ -29,24 +29,24 @@ public class VeiculoMapper {
     }
 
     @NotNull
-    public VeiculoEntity toEntity(@NotNull final VeiculoCadastroDto dto,
+    public VeiculoEntity toEntity(@NotNull final VeiculoCreateDto dto,
                                   @NotNull final BranchEntity branchEntity,
-                                  @NotNull final DiagramaEntity diagramaEntity,
-                                  @NotNull final TipoVeiculoEntity tipoVeiculoEntity,
-                                  @NotNull final ModeloVeiculoEntity modeloVeiculoEntity,
+                                  @NotNull final VehicleLayoutEntity vehicleLayoutEntity,
+                                  @NotNull final VehicleTypeEntity vehicleTypeEntity,
+                                  @NotNull final VehicleModelEntity vehicleModelEntity,
                                   @NotNull final OrigemAcaoEnum origemCadastro) {
         return VeiculoEntity.builder()
-                .withCodEmpresa(dto.getCodEmpresaAlocado())
+                .withCodEmpresa(dto.getCompanyId())
                 .withBranchEntity(branchEntity)
                 .withBranchEntityCadastro(branchEntity)
-                .withDiagramaEntity(diagramaEntity)
-                .withMotorizado(diagramaEntity.isMotorizado())
-                .withTipoVeiculoEntity(tipoVeiculoEntity)
-                .withModeloVeiculoEntity(modeloVeiculoEntity)
-                .withPlaca(dto.getPlacaVeiculo())
-                .withIdentificadorFrota(dto.getIdentificadorFrota())
-                .withKm(dto.getKmAtualVeiculo())
-                .withPossuiHobodometro(dto.getPossuiHubodometro())
+                .withVehicleLayoutEntity(vehicleLayoutEntity)
+                .withMotorizado(vehicleLayoutEntity.isHasEngine())
+                .withVehicleTypeEntity(vehicleTypeEntity)
+                .withVehicleModelEntity(vehicleModelEntity)
+                .withPlaca(dto.getVehiclePlate())
+                .withIdentificadorFrota(dto.getFleetId())
+                .withKm(dto.getVehicleKm())
+                .withPossuiHobodometro(dto.getHasHubodometer())
                 .withDataHoraCadatro(Now.getOffsetDateTimeUtc())
                 .withStatusAtivo(true)
                 .withOrigemCadastro(origemCadastro)
@@ -55,9 +55,9 @@ public class VeiculoMapper {
 
     @NotNull
     private VeiculoListagemDto createVeiculoListagemDto(@NotNull final VeiculoEntity veiculoEntity) {
-        final ModeloVeiculoEntity modeloVeiculoEntity = veiculoEntity.getModeloVeiculoEntity();
-        final TipoVeiculoEntity tipoVeiculoEntity = veiculoEntity.getTipoVeiculoEntity();
-        final DiagramaEntity diagramaEntity = veiculoEntity.getDiagramaEntity();
+        final VehicleModelEntity vehicleModelEntity = veiculoEntity.getVehicleModelEntity();
+        final VehicleTypeEntity vehicleTypeEntity = veiculoEntity.getVehicleTypeEntity();
+        final VehicleLayoutEntity vehicleLayoutEntity = veiculoEntity.getVehicleLayoutEntity();
         final BranchEntity branchEntity = veiculoEntity.getBranchEntity();
         final Optional<AcoplamentoProcessoEntity> acoplamentoProcessoEntity =
                 veiculoEntity.getAcoplamentoProcessoEntity();
@@ -68,15 +68,15 @@ public class VeiculoMapper {
                 veiculoEntity.getIdentificadorFrota(),
                 veiculoEntity.isMotorizado(),
                 veiculoEntity.isPossuiHobodometro(),
-                modeloVeiculoEntity.getMarcaVeiculoEntity().getCodigo(),
-                modeloVeiculoEntity.getMarcaVeiculoEntity().getNome(),
-                modeloVeiculoEntity.getCodigo(),
-                modeloVeiculoEntity.getNome(),
-                diagramaEntity.getCodigo(),
-                diagramaEntity.getQtdEixos(EixoDiagramaEntity.EIXO_DIANTEIRO),
-                diagramaEntity.getQtdEixos(EixoDiagramaEntity.EIXO_TRASEIRO),
-                tipoVeiculoEntity.getCodigo(),
-                tipoVeiculoEntity.getNome(),
+                vehicleModelEntity.getVehicleMakeEntity().getId(),
+                vehicleModelEntity.getVehicleMakeEntity().getName(),
+                vehicleModelEntity.getId(),
+                vehicleModelEntity.getName(),
+                vehicleLayoutEntity.getId(),
+                vehicleLayoutEntity.getAxleQuantity(AxleLayoutEntity.FRONT_AXLE),
+                vehicleLayoutEntity.getAxleQuantity(AxleLayoutEntity.REAR_AXLE),
+                vehicleTypeEntity.getId(),
+                vehicleTypeEntity.getName(),
                 branchEntity.getId(),
                 branchEntity.getName(),
                 branchEntity.getGroup().getId(),

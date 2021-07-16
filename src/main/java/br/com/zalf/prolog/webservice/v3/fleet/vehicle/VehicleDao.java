@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Repository
-public interface VeiculoDao extends JpaRepository<VeiculoEntity, Long> {
+public interface VehicleDao extends JpaRepository<VeiculoEntity, Long> {
 
     @NotNull
     @Query(value = "select * from func_veiculo_update_km_atual(" +
@@ -45,7 +45,7 @@ public interface VeiculoDao extends JpaRepository<VeiculoEntity, Long> {
                    "where u.id in :codUnidades " +
                    "and (:incluirInativos = true or v.statusAtivo = true) " +
                    "order by v.codigo asc")
-    List<VeiculoEntity> getListagemVeiculos(@NotNull final List<Long> codUnidades,
-                                            final boolean incluirInativos,
-                                            @NotNull final Pageable pageable);
+    List<VeiculoEntity> getAllVehicles(@NotNull final List<Long> codUnidades,
+                                       final boolean incluirInativos,
+                                       @NotNull final Pageable pageable);
 }

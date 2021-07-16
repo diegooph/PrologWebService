@@ -17,33 +17,33 @@ import java.util.List;
 @Component
 @PropertySource("classpath:configs/integracoes/operacoes_bloqueadas.yaml")
 @ConfigurationProperties(prefix = "methods.insert-pneu")
-public class OperacoesBloqueadasYaml {
+public class BlockedOperationYaml {
     @Value("${cod-empresas-integradas}")
-    List<Long> empresasIntegradas;
+    List<Long> integratedCompanies;
     @Value("${cod-unidades-bloqueadas}")
-    List<Long> unidadesBloqueadas;
+    List<Long> blockedBranches;
     @Value("${error-message}")
     String errorMessage;
 
-    public void validateEmpresaUnidadeBloqueada(@NotNull final Long codEmpresa, @NotNull final Long codUnidade) {
-        validateEmpresa(codEmpresa);
-        validateUnidade(codUnidade);
+    public void validateBlockedCompanyBranch(@NotNull final Long companyId, @NotNull final Long branchId) {
+        validateCompanyId(companyId);
+        validateBranchId(branchId);
     }
 
-    private void validateEmpresa(@NotNull final Long codEmpresa) {
-        if (empresasIntegradas.isEmpty()) {
+    private void validateCompanyId(@NotNull final Long companyId) {
+        if (integratedCompanies.isEmpty()) {
             return;
         }
-        if (empresasIntegradas.stream().anyMatch(e -> e.equals(codEmpresa))) {
+        if (integratedCompanies.stream().anyMatch(id -> id.equals(companyId))) {
             throw new BloqueadoIntegracaoException(errorMessage);
         }
     }
 
-    private void validateUnidade(@NotNull final Long codUnidade) {
-        if (unidadesBloqueadas.isEmpty()) {
+    private void validateBranchId(@NotNull final Long branchId) {
+        if (blockedBranches.isEmpty()) {
             return;
         }
-        if (unidadesBloqueadas.stream().anyMatch(u -> u.equals(codUnidade))) {
+        if (blockedBranches.stream().anyMatch(id -> id.equals(branchId))) {
             throw new BloqueadoIntegracaoException(errorMessage);
         }
     }

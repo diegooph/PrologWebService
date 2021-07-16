@@ -3,9 +3,9 @@ package br.com.zalf.prolog.webservice.v3.fleet.vehicle._model;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.v3.fleet.acoplamento._model.AcoplamentoAtualEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.acoplamento._model.AcoplamentoProcessoEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle.diagrama._model.DiagramaEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle.modelo._model.ModeloVeiculoEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle.tipoveiculo._model.TipoVeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle.makemodel._model.VehicleModelEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle.vehiclelayout._model.VehicleLayoutEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle.vehicletype._model.VehicleTypeEntity;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,13 +50,13 @@ public class VeiculoEntity {
     private boolean statusAtivo;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_diagrama", referencedColumnName = "codigo")
-    private DiagramaEntity diagramaEntity;
+    private VehicleLayoutEntity vehicleLayoutEntity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_tipo", referencedColumnName = "codigo")
-    private TipoVeiculoEntity tipoVeiculoEntity;
+    private VehicleTypeEntity vehicleTypeEntity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_modelo", referencedColumnName = "codigo")
-    private ModeloVeiculoEntity modeloVeiculoEntity;
+    private VehicleModelEntity vehicleModelEntity;
     @Column(name = "data_hora_cadastro", nullable = false, columnDefinition = "timestamp with time zone default now()")
     private OffsetDateTime dataHoraCadatro;
     @Column(name = "foi_editado", nullable = false, columnDefinition = "boolean default false")

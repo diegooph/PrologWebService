@@ -1,9 +1,10 @@
-package br.com.zalf.prolog.webservice.v3.fleet.vehicle.modelo._model;
+package br.com.zalf.prolog.webservice.v3.fleet.vehicle.makemodel._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -18,15 +19,19 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "public", name = "modelo_veiculo")
-public class ModeloVeiculoEntity {
+public class VehicleModelEntity {
     @Id
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
+    @NotNull
+    private Long id;
     @Column(name = "nome", nullable = false)
-    private String nome;
+    @NotNull
+    private String name;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_marca", referencedColumnName = "codigo")
-    private MarcaVeiculoEntity marcaVeiculoEntity;
+    @NotNull
+    private VehicleMakeEntity vehicleMakeEntity;
     @Column(name = "cod_empresa", nullable = false)
-    private Long codEmpresa;
+    @NotNull
+    private Long companyId;
 }

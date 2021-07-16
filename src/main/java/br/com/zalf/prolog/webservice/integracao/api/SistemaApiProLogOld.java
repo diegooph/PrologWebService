@@ -17,7 +17,7 @@ import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCreateDto;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
@@ -39,9 +39,9 @@ public final class SistemaApiProLogOld extends Sistema {
 
     @Override
     public void insert(
-            @NotNull final VeiculoCadastroDto veiculo,
+            @NotNull final VeiculoCreateDto veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        if (unidadeEstaComIntegracaoAtiva(veiculo.getCodUnidadeAlocado())) {
+        if (unidadeEstaComIntegracaoAtiva(veiculo.getBranchId())) {
             throw new BloqueadoIntegracaoException("Para inserir veículos utilize o seu sistema de gestão");
         }
         getIntegradorProLog().insert(veiculo, checklistOfflineListener);

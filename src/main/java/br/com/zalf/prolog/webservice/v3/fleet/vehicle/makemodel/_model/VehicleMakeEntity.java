@@ -1,9 +1,10 @@
-package br.com.zalf.prolog.webservice.v3.fleet.vehicle.modelo._model;
+package br.com.zalf.prolog.webservice.v3.fleet.vehicle.makemodel._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,10 +22,12 @@ import javax.persistence.Table;
 @Getter
 @Entity
 @Table(schema = "public", name = "marca_veiculo")
-public class MarcaVeiculoEntity {
+public class VehicleMakeEntity {
     @Id
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
+    @NotNull
+    private Long id;
     @Column(name = "nome", nullable = false)
-    private String nome;
+    @NotNull
+    private String name;
 }

@@ -2,7 +2,7 @@ package test.br.com.zalf.prolog.webservice.v3.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoListagemDto;
 import com.google.common.truth.Truth;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +23,7 @@ public class VeiculoIT extends IntegrationTest {
     @Test
     @DisplayName("given correct VeiculoCadastroDto to insert, then return status created")
     void givenCorrectVeiculoCadastroToInsert_ThenReturnStatusCreated() {
-        final VeiculoCadastroDto veiculoCadastroToInsert = VeiculoCadastroFactory.createVeiculoCadastroToInsert();
+        final VeiculoCreateDto veiculoCadastroToInsert = VeiculoCadastroFactory.createVeiculoCadastroToInsert();
         final ResponseEntity<SuccessResponse> response = client.insert(veiculoCadastroToInsert);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }

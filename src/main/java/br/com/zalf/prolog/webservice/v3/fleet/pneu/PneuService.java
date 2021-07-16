@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
-import br.com.zalf.prolog.webservice.integracao.OperacoesBloqueadasYaml;
+import br.com.zalf.prolog.webservice.integracao.BlockedOperationYaml;
 import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
 import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.PneuEntity;
@@ -35,13 +35,13 @@ public class PneuService {
     @NotNull
     private final PneuServicoService pneuServicoService;
     @NotNull
-    private final OperacoesBloqueadasYaml operacoesBloqueadas;
+    private final BlockedOperationYaml operacoesBloqueadas;
 
     @Autowired
     public PneuService(@NotNull final PneuDao pneuDao,
                        @NotNull final PneuServicoService pneuServicoService,
                        @NotNull final PneuMapper pneuMapper,
-                       @NotNull final OperacoesBloqueadasYaml operacoesBloqueadas) {
+                       @NotNull final BlockedOperationYaml operacoesBloqueadas) {
         this.pneuDao = pneuDao;
         this.pneuServicoService = pneuServicoService;
         this.operacoesBloqueadas = operacoesBloqueadas;
@@ -53,8 +53,8 @@ public class PneuService {
     public SuccessResponse insert(@Nullable final String tokenIntegracao,
                                   @NotNull final PneuCadastroDto pneuCadastroDto,
                                   final boolean ignoreDotValidation) throws Throwable {
-        operacoesBloqueadas.validateEmpresaUnidadeBloqueada(pneuCadastroDto.getCodEmpresaAlocado(),
-                                                            pneuCadastroDto.getCodUnidadeAlocado());
+        operacoesBloqueadas.validateBlockedCompanyBranch(pneuCadastroDto.getCodEmpresaAlocado(),
+                                                         pneuCadastroDto.getCodUnidadeAlocado());
         validatePneu(pneuCadastroDto, ignoreDotValidation);
         final PneuEntity pneuEntity = pneuMapper.toEntity(pneuCadastroDto);
         final PneuEntity pneuInsert = pneuEntity.toBuilder()

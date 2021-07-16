@@ -1,10 +1,10 @@
-package br.com.zalf.prolog.webservice.v3.fleet.vehicle.diagrama.eixos._model;
+package br.com.zalf.prolog.webservice.v3.fleet.vehicle.vehiclelayout._model;
 
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle.diagrama._model.DiagramaEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -18,25 +18,26 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Entity
-@IdClass(EixoDiagramaPk.class)
+@IdClass(AxleLayoutPk.class)
 @Table(schema = "public", name = "veiculo_diagrama_eixos")
-public class EixoDiagramaEntity {
-    public static final char EIXO_DIANTEIRO = 'D';
-    public static final char EIXO_TRASEIRO = 'T';
+public class AxleLayoutEntity {
+    public static final char FRONT_AXLE = 'D';
+    public static final char REAR_AXLE = 'T';
     @Id
     @Column(name = "cod_diagrama", nullable = false)
-    private short codDiagrama;
+    private short id;
     @MapsId
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_diagrama", referencedColumnName = "codigo")
-    private DiagramaEntity diagramaEntity;
+    @NotNull
+    private VehicleLayoutEntity vehicleLayoutEntity;
     @Column(name = "tipo_eixo", nullable = false)
-    private char tipoEixo;
+    private char axleType;
     @Id
     @Column(name = "posicao", nullable = false)
-    private short posicao;
+    private short position;
     @Column(name = "qt_pneus", nullable = false)
-    private short qtPneus;
+    private short tireQuantity;
     @Column(name = "eixo_direcional", nullable = false)
-    private boolean eixoDirecional;
+    private boolean isDirectionalAxle;
 }

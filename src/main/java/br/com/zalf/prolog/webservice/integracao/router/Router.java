@@ -45,7 +45,7 @@ import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemasFactoryOld;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCreateDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -449,7 +449,7 @@ public abstract class Router implements OperacoesIntegradas {
     // #################################################################################################################
     @Override
     public void insert(
-            @NotNull final VeiculoCadastroDto veiculo,
+            @NotNull final VeiculoCreateDto veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         if (getSistema() != null) {
             getSistema().insert(veiculo, checklistOfflineListener);

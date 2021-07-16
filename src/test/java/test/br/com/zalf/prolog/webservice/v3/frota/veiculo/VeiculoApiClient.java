@@ -2,7 +2,7 @@ package test.br.com.zalf.prolog.webservice.v3.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoListagemDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +26,12 @@ public class VeiculoApiClient {
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<SuccessResponse> insert(@NotNull final VeiculoCadastroDto dto) {
+    public ResponseEntity<SuccessResponse> insert(@NotNull final VeiculoCreateDto dto) {
         return insert(dto, SuccessResponse.class);
     }
 
     @NotNull
-    public <T> ResponseEntity<T> insert(@NotNull final VeiculoCadastroDto dto,
+    public <T> ResponseEntity<T> insert(@NotNull final VeiculoCreateDto dto,
                                         @NotNull final Class<T> responseType) {
         return restTemplate.postForEntity(URI.create(RESOURCE), dto, responseType);
     }

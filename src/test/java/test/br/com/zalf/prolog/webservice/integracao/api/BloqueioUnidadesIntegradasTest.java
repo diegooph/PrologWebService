@@ -20,7 +20,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoSta
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaService;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCreateDto;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -61,7 +61,7 @@ final class BloqueioUnidadesIntegradasTest {
 
     @Test
     void testInsertVeiculoUnidadeLiberada() {
-        final VeiculoCadastroDto veiculoCadastro = new VeiculoCadastroDto(
+        final VeiculoCreateDto veiculoCadastro = new VeiculoCreateDto(
                 COD_EMPRESA_INTEGRADA,
                 COD_UNIDADE_LIBERADA,
                 "PRO-001",
@@ -78,7 +78,7 @@ final class BloqueioUnidadesIntegradasTest {
 
     @Test
     void testInsertVeiculoUnidadeBloqueada() {
-        final VeiculoCadastroDto veiculoCadastro = new VeiculoCadastroDto(
+        final VeiculoCreateDto veiculoCadastro = new VeiculoCreateDto(
                 COD_EMPRESA_INTEGRADA,
                 COD_UNIDADE_BLOQUEADA,
                 "PRO-001",
