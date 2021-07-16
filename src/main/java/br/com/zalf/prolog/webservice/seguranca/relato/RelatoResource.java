@@ -82,7 +82,7 @@ public class RelatoResource {
     }
 
     @GET
-    @Path("/{status}/colaborador/{codColaborador}")
+    @Path("/{status}/cod-colaborador/{codColaborador}")
     @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR,
             Pilares.Seguranca.Relato.VISUALIZAR,
             Pilares.Seguranca.Relato.CLASSIFICAR,
@@ -133,7 +133,7 @@ public class RelatoResource {
     }
 
     @GET
-    @Path("/classificados/{codColaborador}/{status}")
+    @Path("/classificados/by-cod-colaborador/{codColaborador}/{status}")
     @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR,
             Pilares.Seguranca.Relato.VISUALIZAR,
             Pilares.Seguranca.Relato.CLASSIFICAR})
