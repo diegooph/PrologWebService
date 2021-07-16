@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 
@@ -21,23 +22,24 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "public", name = "checklist_ordem_servico_itens")
-public final class ChecklistOrdemServicoItemEntity implements EntityKmColetado {
+public final class ChecklistWorkOrderItemEntity implements EntityKmColetado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
+    @NotNull
+    private Long id;
     @Column(name = "km")
-    private Long kmColetadoVeiculoFechamentoItem;
+    @Nullable
+    private Long vehicleKmAtResolution;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-                         @JoinColumn(name = "cod_unidade", referencedColumnName = "cod_unidade"),
-                         @JoinColumn(name = "cod_os", referencedColumnName = "codigo")
-                 })
-    private ChecklistOrdemServicoEntity ordemServico;
+    @JoinColumns({@JoinColumn(name = "cod_unidade", referencedColumnName = "cod_unidade"),
+                         @JoinColumn(name = "cod_os", referencedColumnName = "codigo")})
+    @NotNull
+    private ChecklistWorkOrderEntity workOrderEntity;
 
     @NotNull
     @Override
     public VeiculoKmColetado getVeiculoKmColetado() {
-        return VeiculoKmColetado.of(ordemServico.getChecklist().getCodVeiculo(), kmColetadoVeiculoFechamentoItem);
+        return VeiculoKmColetado.of(workOrderEntity.getChecklist().getCodVeiculo(), vehicleKmAtResolution);
     }
 }

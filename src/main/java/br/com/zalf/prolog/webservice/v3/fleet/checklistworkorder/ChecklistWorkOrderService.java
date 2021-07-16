@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder;
 
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
-import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistOrdemServicoItemEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistWorkOrderItemEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistWorkOrderProjection;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.KmProcessoAtualizavel;
@@ -60,20 +60,20 @@ public class ChecklistWorkOrderService implements KmProcessoAtualizavel {
     }
 
     @NotNull
-    public ChecklistOrdemServicoItemEntity getWorkOrderItemById(@NotNull final Long workOrderItemId) {
+    public ChecklistWorkOrderItemEntity getWorkOrderItemById(@NotNull final Long workOrderItemId) {
         return workOrderItemDao.getOne(workOrderItemId);
     }
 
-    public void updateWorkOrderItem(@NotNull final ChecklistOrdemServicoItemEntity checklistOrdemServicoItemEntity) {
-        workOrderItemDao.save(checklistOrdemServicoItemEntity);
+    public void updateWorkOrderItem(@NotNull final ChecklistWorkOrderItemEntity checklistWorkOrderItemEntity) {
+        workOrderItemDao.save(checklistWorkOrderItemEntity);
     }
 
     @Transactional
     public void updateVehicleKmAtResolution(@NotNull final Long workOrderItemId,
                                             final long newKm) {
-        final ChecklistOrdemServicoItemEntity entity = getWorkOrderItemById(workOrderItemId)
+        final ChecklistWorkOrderItemEntity entity = getWorkOrderItemById(workOrderItemId)
                 .toBuilder()
-                .withKmColetadoVeiculoFechamentoItem(newKm)
+                .withVehicleKmAtResolution(newKm)
                 .build();
         updateWorkOrderItem(entity);
     }

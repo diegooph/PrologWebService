@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder;
 
-import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistOrdemServicoEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistOrdemServicoPk;
+import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistWorkOrderEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistWorkOrderPk;
 import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistWorkOrderProjection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public interface ChecklistWorkOrderDao extends JpaRepository<ChecklistOrdemServicoEntity, ChecklistOrdemServicoPk> {
+public interface ChecklistWorkOrderDao extends JpaRepository<ChecklistWorkOrderEntity, ChecklistWorkOrderPk> {
     @NotNull
     @Query(value = "select * from func_get_checklist_work_order(" +
             "f_branches_id => to_bigint_array(:branchesId)," +

@@ -15,9 +15,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public final class ChecklistOrdemServicoPk implements Serializable {
+public final class ChecklistWorkOrderPk implements Serializable {
     @NotNull
-    private Long codOrdemServico;
+    private Long id;
     @NotNull
-    private Long codUnidade;
+    private Long branchId;
 }

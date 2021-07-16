@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder;
 
-import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistOrdemServicoItemEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistWorkOrderItemEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public interface ChecklistWorkOrderItemDao extends JpaRepository<ChecklistOrdemServicoItemEntity, Long> {
+public interface ChecklistWorkOrderItemDao extends JpaRepository<ChecklistWorkOrderItemEntity, Long> {
 
 }

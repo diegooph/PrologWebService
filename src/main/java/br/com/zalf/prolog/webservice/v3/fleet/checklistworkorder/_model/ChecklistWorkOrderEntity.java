@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -19,18 +20,22 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Entity
-@IdClass(ChecklistOrdemServicoPk.class)
+@IdClass(ChecklistWorkOrderPk.class)
 @Table(schema = "public", name = "checklist_ordem_servico")
-public final class ChecklistOrdemServicoEntity {
+public final class ChecklistWorkOrderEntity {
     @Id
     @Column(name = "codigo", nullable = false)
-    private Long codOrdemServico;
+    @NotNull
+    private Long id;
     @Id
     @Column(name = "cod_unidade", nullable = false)
-    private Long codUnidade;
+    @NotNull
+    private Long branchId;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_checklist", nullable = false)
+    @NotNull
     private ChecklistEntity checklist;
-    @OneToMany(mappedBy = "ordemServico", fetch = FetchType.LAZY)
-    private Set<ChecklistOrdemServicoItemEntity> itensOrdemServico;
+    @OneToMany(mappedBy = "workOrderEntity", fetch = FetchType.LAZY)
+    @NotNull
+    private Set<ChecklistWorkOrderItemEntity> workOrderItems;
 }
