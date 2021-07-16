@@ -129,7 +129,12 @@ public class RelatoService {
         }
     }
 
-    public List<Relato> getAllExcetoColaborador(Long codColaborador, int limit, long offset, double latitude, double longitude, boolean isOrderByDate, String status) {
+    public List<Relato> getAllExcetoColaborador(@NotNull final Long codColaborador,
+                                                final int limit,
+                                                final long offset,
+                                                final double latitude,
+                                                final double longitude,
+                                                final boolean isOrderByDate, String status) {
         try {
             return dao.getAllExcetoColaborador(codColaborador, limit, offset, latitude, longitude, isOrderByDate, status);
         } catch (SQLException e) {
