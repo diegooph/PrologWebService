@@ -207,7 +207,7 @@ public class RelatoResource {
     }
 
     @GET
-    @Path("/fechados/{codColaborador}/{status}")
+    @Path("/fechados/by-cod-colaborador/{codColaborador}/{status}")
     @Secured(permissions = {Pilares.Seguranca.Relato.VISUALIZAR,
             Pilares.Seguranca.Relato.CLASSIFICAR,
             Pilares.Seguranca.Relato.FECHAR})
