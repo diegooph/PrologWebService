@@ -64,14 +64,14 @@ public class RelatoService {
         }
     }
 
-    public List<Relato> getRealizadosByColaborador(Long codColaborador,
-                                                   int limit,
-                                                   long offset,
-                                                   double latitude,
-                                                   double longitude,
-                                                   boolean isOrderByDate,
-                                                   String status,
-                                                   String campoFiltro) {
+    public List<Relato> getRealizadosByColaborador(@NotNull final Long codColaborador,
+                                                   final int limit,
+                                                   final long offset,
+                                                   final double latitude,
+                                                   final double longitude,
+                                                   final boolean isOrderByDate,
+                                                   @NotNull final String status,
+                                                   @NotNull final String campoFiltro) {
         try {
             return dao.getRealizadosByColaborador(codColaborador,
                                                   limit,

@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.seguranca.relato;
 
 import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorBackwardHelper;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
@@ -81,6 +82,30 @@ public class RelatoResource {
     }
 
     @GET
+    @Path("/{status}/colaborador/{codColaborador}")
+    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR,
+            Pilares.Seguranca.Relato.VISUALIZAR,
+            Pilares.Seguranca.Relato.CLASSIFICAR,
+            Pilares.Seguranca.Relato.FECHAR})
+    public List<Relato> getByCodColaborador(@PathParam("status") @Required final String status,
+                                            @PathParam("codColaborador") @Required final Long codColaborador,
+                                            @QueryParam("limit") final int limit,
+                                            @QueryParam("offset") final long offset,
+                                            @QueryParam("latitude") final double latitude,
+                                            @QueryParam("longitude") final double longitude,
+                                            @QueryParam("isOrderByDate") final boolean isOrderByDate) {
+
+        return service.getRealizadosByColaborador(codColaborador,
+                                                  limit,
+                                                  offset,
+                                                  latitude,
+                                                  longitude,
+                                                  isOrderByDate,
+                                                  status,
+                                                  "realizados");
+    }
+
+    @GET
     @Path("/classificados/{cpf}/{status}")
     @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR,
             Pilares.Seguranca.Relato.VISUALIZAR,
@@ -108,21 +133,19 @@ public class RelatoResource {
     }
 
     @GET
-    @Path("/fechados/{cpf}/{status}")
-    @Secured(permissions = {Pilares.Seguranca.Relato.VISUALIZAR,
-            Pilares.Seguranca.Relato.CLASSIFICAR,
-            Pilares.Seguranca.Relato.FECHAR})
-    public List<Relato> getFechadosByColaborador(
-            @PathParam("cpf") final Long cpf,
-            @PathParam("status") final String status,
+    @Path("/classificados/{codColaborador}/{status}")
+    @Secured(permissions = {Pilares.Seguranca.Relato.REALIZAR,
+            Pilares.Seguranca.Relato.VISUALIZAR,
+            Pilares.Seguranca.Relato.CLASSIFICAR})
+    public List<Relato> getClassificadosByCodColaborador(
+            @PathParam("codColaborador") @Required final Long codColaborador,
+            @PathParam("status") @Required final String status,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final long offset,
             @QueryParam("latitude") final double latitude,
             @QueryParam("longitude") final double longitude,
             @QueryParam("isOrderByDate") final boolean isOrderByDate) {
-        final Long codColaborador =
-                ColaboradorBackwardHelper.getCodColaboradorByCpf(colaboradorAutenticadoProvider.get().getCodigo(),
-                                                                 cpf.toString());
+
         return service.getRealizadosByColaborador(codColaborador,
                                                   limit,
                                                   offset,
@@ -130,7 +153,7 @@ public class RelatoResource {
                                                   longitude,
                                                   isOrderByDate,
                                                   status,
-                                                  "fechados");
+                                                  "classificados");
     }
 
     @GET
@@ -155,6 +178,29 @@ public class RelatoResource {
                                                longitude,
                                                isOrderByDate,
                                                status);
+    }
+
+    @GET
+    @Path("/fechados/{codColaborador}/{status}")
+    @Secured(permissions = {Pilares.Seguranca.Relato.VISUALIZAR,
+            Pilares.Seguranca.Relato.CLASSIFICAR,
+            Pilares.Seguranca.Relato.FECHAR})
+    public List<Relato> getFechadosByCodColaborador(
+            @PathParam("codColaborador") @Required final Long codColaborador,
+            @PathParam("status") @Required final String status,
+            @QueryParam("limit") final int limit,
+            @QueryParam("offset") final long offset,
+            @QueryParam("latitude") final double latitude,
+            @QueryParam("longitude") final double longitude,
+            @QueryParam("isOrderByDate") final boolean isOrderByDate) {
+        return service.getRealizadosByColaborador(codColaborador,
+                                                  limit,
+                                                  offset,
+                                                  latitude,
+                                                  longitude,
+                                                  isOrderByDate,
+                                                  status,
+                                                  "fechados");
     }
 
     @GET
