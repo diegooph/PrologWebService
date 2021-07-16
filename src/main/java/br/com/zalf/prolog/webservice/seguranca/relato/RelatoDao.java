@@ -23,10 +23,17 @@ public interface RelatoDao {
 
 	List<Relato> getAll(Long codUnidade, int limit, long offset, double latitude, double longitude, boolean isOrderByDate, String status) throws SQLException;
 
-	List<Relato> getRealizadosByColaborador(Long cpf, int limit, long offset, double latitude,
-											double longitude, boolean isOrderByDate, String status, String campoFiltro) throws SQLException;
+	List<Relato> getRealizadosByColaborador(Long codColaborador, int limit, long offset, double latitude,
+											double longitude, boolean isOrderByDate, String status, String campoFiltro)
+			throws SQLException;
 
-	List<Relato> getAllExcetoColaborador(Long cpf, int limit, long offset, double latitude, double longitude, boolean isOrderByDate, String status) throws SQLException;
+	List<Relato> getAllExcetoColaborador(Long codColaborador,
+										 int limit,
+										 long offset,
+										 double latitude,
+										 double longitude,
+										 boolean isOrderByDate,
+										 String status) throws SQLException;
 
 	List<Relato> getAllByUnidade(LocalDate dataInicial, LocalDate dataFinal, String equipe,
 								 Long codUnidade,long limit, long offset, String status) throws SQLException;

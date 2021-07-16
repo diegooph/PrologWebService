@@ -64,19 +64,40 @@ public class RelatoService {
         }
     }
 
-    public List<Relato> getRealizadosByColaborador(Long cpf, int limit, long offset, double latitude, double longitude, boolean isOrderByDate, String status, String campoFiltro) {
+    public List<Relato> getRealizadosByColaborador(Long codColaborador,
+                                                   int limit,
+                                                   long offset,
+                                                   double latitude,
+                                                   double longitude,
+                                                   boolean isOrderByDate,
+                                                   String status,
+                                                   String campoFiltro) {
         try {
-            return dao.getRealizadosByColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate, status, campoFiltro);
+            return dao.getRealizadosByColaborador(codColaborador,
+                                                  limit,
+                                                  offset,
+                                                  latitude,
+                                                  longitude,
+                                                  isOrderByDate,
+                                                  status,
+                                                  campoFiltro);
         } catch (SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os relatos. \n" +
-                    "cpf: %d \n" +
-                    "status: %s \n" +
-                    "limit: %d \n" +
-                    "offset: %d \n" +
-                    "latitude: %f \n" +
-                    "longitude: %f \n" +
-                    "isOrderByDate: %b", cpf, status, limit, offset, latitude, longitude, isOrderByDate), e);
-            throw new RuntimeException("Erro ao buscar os relatos realizados pelo colaborador: " + cpf + " e status: " + status);
+                                             "codColaborador: %d \n" +
+                                             "status: %s \n" +
+                                             "limit: %d \n" +
+                                             "offset: %d \n" +
+                                             "latitude: %f \n" +
+                                             "longitude: %f \n" +
+                                             "isOrderByDate: %b",
+                                     codColaborador,
+                                     status,
+                                     limit,
+                                     offset,
+                                     latitude,
+                                     longitude,
+                                     isOrderByDate), e);
+            throw new RuntimeException("Erro ao buscar os relatos realizados pelo colaborador: " + codColaborador + " e status: " + status);
         }
     }
 
@@ -108,12 +129,12 @@ public class RelatoService {
         }
     }
 
-    public List<Relato> getAllExcetoColaborador(Long cpf, int limit, long offset, double latitude, double longitude, boolean isOrderByDate, String status) {
+    public List<Relato> getAllExcetoColaborador(Long codColaborador, int limit, long offset, double latitude, double longitude, boolean isOrderByDate, String status) {
         try {
-            return dao.getAllExcetoColaborador(cpf, limit, offset, latitude, longitude, isOrderByDate, status);
+            return dao.getAllExcetoColaborador(codColaborador, limit, offset, latitude, longitude, isOrderByDate, status);
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Erro ao buscar os relatos exceto colaborador: " + cpf + " e status: " + status);
+            throw new RuntimeException("Erro ao buscar os relatos exceto colaborador: " + codColaborador + " e status: " + status);
         }
     }
 }
