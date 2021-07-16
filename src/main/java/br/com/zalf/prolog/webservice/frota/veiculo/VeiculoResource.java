@@ -25,7 +25,7 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppV
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCadastroDto;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;

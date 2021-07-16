@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidatorExcepti
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
-import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCadastroDto;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -2,8 +2,8 @@ package test.br.com.zalf.prolog.webservice.v3.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
-import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoCadastroDto;
-import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoListagemDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;

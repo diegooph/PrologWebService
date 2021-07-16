@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.v3.fleet.kmprocessos;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.*;
-import br.com.zalf.prolog.webservice.v3.fleet.veiculo.VeiculoService;
-import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle.VeiculoService;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoEntity;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;

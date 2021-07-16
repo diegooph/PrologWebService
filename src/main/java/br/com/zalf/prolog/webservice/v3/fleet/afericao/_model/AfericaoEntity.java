@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.afericao.valores._model.AfericaoPn
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.VeiculoKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

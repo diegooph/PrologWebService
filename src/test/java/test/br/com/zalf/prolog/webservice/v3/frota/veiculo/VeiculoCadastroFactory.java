@@ -1,6 +1,6 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.veiculo;
 
-import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCadastroDto;
 import org.jetbrains.annotations.NotNull;
 
 public class VeiculoCadastroFactory {

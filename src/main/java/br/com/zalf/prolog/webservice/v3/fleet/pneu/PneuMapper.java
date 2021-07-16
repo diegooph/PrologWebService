@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoDestinoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.*;
-import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;

@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.afericao.valores._model.AfericaoPn
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoDestinoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.pneu.pneuservico.PneuServicoRealizadoEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.veiculo._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
