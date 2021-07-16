@@ -181,6 +181,32 @@ public class RelatoResource {
     }
 
     @GET
+    @Path("/fechados/{cpf}/{status}")
+    @Secured(permissions = {Pilares.Seguranca.Relato.VISUALIZAR,
+            Pilares.Seguranca.Relato.CLASSIFICAR,
+            Pilares.Seguranca.Relato.FECHAR})
+    public List<Relato> getFechadosByColaborador(
+            @PathParam("cpf") final Long cpf,
+            @PathParam("status") final String status,
+            @QueryParam("limit") final int limit,
+            @QueryParam("offset") final long offset,
+            @QueryParam("latitude") final double latitude,
+            @QueryParam("longitude") final double longitude,
+            @QueryParam("isOrderByDate") final boolean isOrderByDate) {
+        final Long codColaborador =
+                ColaboradorBackwardHelper.getCodColaboradorByCpf(colaboradorAutenticadoProvider.get().getCodigo(),
+                                                                 cpf.toString());
+        return service.getRealizadosByColaborador(codColaborador,
+                                                  limit,
+                                                  offset,
+                                                  latitude,
+                                                  longitude,
+                                                  isOrderByDate,
+                                                  status,
+                                                  "fechados");
+    }
+
+    @GET
     @Path("/fechados/{codColaborador}/{status}")
     @Secured(permissions = {Pilares.Seguranca.Relato.VISUALIZAR,
             Pilares.Seguranca.Relato.CLASSIFICAR,
