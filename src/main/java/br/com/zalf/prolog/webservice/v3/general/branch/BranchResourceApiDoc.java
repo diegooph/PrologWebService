@@ -31,7 +31,7 @@ public interface BranchResourceApiDoc {
     })
     SuccessResponse updateBranch(
             @ApiParam(value = "Dados da unidade para atualizar.",
-                      required = true) @Valid final BranchUpdateDto unidade);
+                      required = true) @Valid final BranchUpdateDto branchUpdateDto);
 
     @ApiOperation(
             value = "Lista uma unidade específica.",
@@ -47,7 +47,7 @@ public interface BranchResourceApiDoc {
     BranchDto getBranchById(
             @ApiParam(value = "Código da unidade.",
                       required = true,
-                      example = "215") @BranchId final Long codUnidade);
+                      example = "215") @BranchId final Long branchId);
 
     @ApiOperation(
             value = "Lista as unidades de uma empresa.",
@@ -62,8 +62,8 @@ public interface BranchResourceApiDoc {
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
     List<BranchDto> getAllBranches(
-            @ApiParam(value = "Código de empresa.", required = true, example = "10") @CompanyId final Long codEmpresa,
+            @ApiParam(value = "Código de empresa.", required = true, example = "10") @CompanyId final Long companyId,
             @ApiParam(value = "Lista de códigos de grupos - Utilizado para filtrar unidades de grupos específicos. " +
                     "Caso não deseje filtrar, basta não enviar esse parâmetro.",
-                      example = "1") final List<Long> codGrupos);
+                      example = "1") final List<Long> groupsId);
 }
