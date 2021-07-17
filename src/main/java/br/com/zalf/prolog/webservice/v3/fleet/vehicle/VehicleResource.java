@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCreateDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoListagemDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class VehicleResource implements VehicleApiDoc {
     @Override
     public SuccessResponse insert(
             @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Optional final String integrationToken,
-            @Valid final VeiculoCreateDto vehicleCreateDto) throws Throwable {
+            @Valid final VehicleCreateDto vehicleCreateDto) throws Throwable {
         return vehicleService.insert(integrationToken, vehicleCreateDto);
     }
 

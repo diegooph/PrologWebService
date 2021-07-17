@@ -25,7 +25,7 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppV
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCreateDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -52,7 +52,7 @@ public final class VeiculoResource {
     @Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
     @UsedBy(platforms = Platform.WEBSITE)
     public Response insert(@HeaderParam("Authorization") @Required final String userToken,
-                           @Required final VeiculoCreateDto veiculo) {
+                           @Required final VehicleCreateDto veiculo) {
         return service.insert(userToken, veiculo);
     }
 

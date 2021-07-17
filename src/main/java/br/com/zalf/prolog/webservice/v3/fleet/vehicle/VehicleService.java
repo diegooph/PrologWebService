@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
 import br.com.zalf.prolog.webservice.frota.veiculo.validator.VehicleValidator;
 import br.com.zalf.prolog.webservice.integracao.BlockedOperationYaml;
 import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCreateDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle.makemodel.VehicleModelService;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle.makemodel._model.VehicleModelEntity;
@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.vehicle.vehicletype.VehicleTypeSer
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle.vehicletype._model.VehicleTypeEntity;
 import br.com.zalf.prolog.webservice.v3.general.branch.BranchService;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class VehicleService {
     @NotNull
     private final VehicleDao vehicleDao;
@@ -43,29 +45,11 @@ public class VehicleService {
     @NotNull
     private final BlockedOperationYaml blockedOperation;
 
-    @Autowired
-    public VehicleService(@NotNull final VehicleDao vehicleDao,
-                          @NotNull final BranchService branchService,
-                          @NotNull final VehicleModelService vehicleModelService,
-                          @NotNull final VehicleTypeService vehicleTypeService,
-                          @NotNull final VehicleLayoutService vehicleLayoutService,
-                          @NotNull final BlockedOperationYaml blockedOperation,
-                          @NotNull final VehicleMapper mapper) {
-        this.vehicleDao = vehicleDao;
-        this.branchService = branchService;
-        this.vehicleModelService = vehicleModelService;
-        this.vehicleTypeService = vehicleTypeService;
-        this.vehicleLayoutService = vehicleLayoutService;
-        this.blockedOperation = blockedOperation;
-        this.mapper = mapper;
-    }
-
     @NotNull
     @Transactional
     public SuccessResponse insert(@Nullable final String integrationToken,
-                                  @NotNull final VeiculoCreateDto vehicleCreateDto) throws Throwable {
-        blockedOperation.validateBlockedCompanyBranch(vehicleCreateDto.getCompanyId(),
-                                                      vehicleCreateDto.getBranchId());
+                                  @NotNull final VehicleCreateDto vehicleCreateDto) throws Throwable {
+        blockedOperation.validateBlockedCompanyBranch(vehicleCreateDto.getCompanyId(), vehicleCreateDto.getBranchId());
         VehicleValidator.validacaoMotorizadoSemHubodometro(vehicleCreateDto.getHasHubodometer(),
                                                            vehicleCreateDto.getVehicleTypeId());
         final BranchEntity branchEntity = branchService.getBranchById(vehicleCreateDto.getBranchId());

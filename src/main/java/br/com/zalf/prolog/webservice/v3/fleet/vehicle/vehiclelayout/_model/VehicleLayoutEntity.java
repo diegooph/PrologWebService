@@ -35,8 +35,7 @@ public class VehicleLayoutEntity {
     private Set<AxleLayoutEntity> axleLayoutEntities;
 
     public long getAxleQuantity(final char axleType) {
-        return axleLayoutEntities
-                .stream()
+        return axleLayoutEntities.stream()
                 .filter(axleEntity -> axleEntity.getAxleType() == axleType)
                 .count();
     }

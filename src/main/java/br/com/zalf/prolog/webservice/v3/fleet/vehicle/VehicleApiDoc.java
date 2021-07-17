@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.v3.fleet.vehicle;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCreateDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoListagemDto;
 import br.com.zalf.prolog.webservice.v3.validation.BranchesId;
 import io.swagger.annotations.*;
@@ -23,7 +23,7 @@ public interface VehicleApiDoc {
     SuccessResponse insert(
             @ApiParam(hidden = true) final String integrationToken,
             @ApiParam(value = "Dados do veículo para inserir.",
-                      required = true) @Valid final VeiculoCreateDto vehicleCreateDto) throws Throwable;
+                      required = true) @Valid final VehicleCreateDto vehicleCreateDto) throws Throwable;
 
     @ApiOperation(value = "Lista os veículos.", response = SuccessResponse.class)
     @ApiResponses(value = {

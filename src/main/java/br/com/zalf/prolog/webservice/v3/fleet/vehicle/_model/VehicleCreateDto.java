@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Data
-public final class VeiculoCreateDto {
+public final class VehicleCreateDto {
     @CompanyId
     @ApiModelProperty(value = "Código da empresa onde o veículo será cadastrado.", required = true, example = "10")
     @NotNull(message = "O código da empresa não pode ser nulo.")

@@ -29,12 +29,12 @@ public class VehicleMapper {
     }
 
     @NotNull
-    public VeiculoEntity toEntity(@NotNull final VeiculoCreateDto dto,
+    public VeiculoEntity toEntity(@NotNull final VehicleCreateDto dto,
                                   @NotNull final BranchEntity branchEntity,
                                   @NotNull final VehicleLayoutEntity vehicleLayoutEntity,
                                   @NotNull final VehicleTypeEntity vehicleTypeEntity,
                                   @NotNull final VehicleModelEntity vehicleModelEntity,
-                                  @NotNull final OrigemAcaoEnum origemCadastro) {
+                                  @NotNull final OrigemAcaoEnum registerOrigin) {
         return VeiculoEntity.builder()
                 .withCodEmpresa(dto.getCompanyId())
                 .withBranchEntity(branchEntity)
@@ -49,7 +49,7 @@ public class VehicleMapper {
                 .withPossuiHobodometro(dto.getHasHubodometer())
                 .withDataHoraCadatro(Now.getOffsetDateTimeUtc())
                 .withStatusAtivo(true)
-                .withOrigemCadastro(origemCadastro)
+                .withOrigemCadastro(registerOrigin)
                 .build();
     }
 

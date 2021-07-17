@@ -18,7 +18,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDad
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.validator.VehicleValidator;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCreateDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -105,7 +105,7 @@ public final class VeiculoService {
 
     @NotNull
     public Response insert(@NotNull final String userToken,
-                           @NotNull final VeiculoCreateDto veiculo) throws ProLogException {
+                           @NotNull final VehicleCreateDto veiculo) throws ProLogException {
         try {
             VehicleValidator.validacaoAtributosVeiculo(veiculo);
             RouterVeiculo

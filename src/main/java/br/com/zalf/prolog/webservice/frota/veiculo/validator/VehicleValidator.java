@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidatorExcepti
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoCreateDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ public class VehicleValidator {
         throw new IllegalStateException(StringUtils.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    public static void validacaoAtributosVeiculo(@NotNull final VeiculoCreateDto veiculo) throws Throwable {
+    public static void validacaoAtributosVeiculo(@NotNull final VehicleCreateDto veiculo) throws Throwable {
         try {
             validacaoPlaca(veiculo.getVehiclePlate());
             validacaoKmAtual(veiculo.getVehicleKm());
