@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.validator.VehicleValidator;
 import br.com.zalf.prolog.webservice.integracao.BlockedOperationYaml;
 import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle.makemodel.VehicleModelService;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle.makemodel._model.VehicleModelEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle.vehiclelayout.VehicleLayoutService;
@@ -57,23 +57,23 @@ public class VehicleService {
         final VehicleTypeEntity vehicleTypeEntity = vehicleTypeService.getById(vehicleCreateDto.getVehicleTypeId());
         final VehicleLayoutEntity vehicleLayoutEntity =
                 vehicleLayoutService.getById(vehicleTypeEntity.getVehicleLayoutId());
-        final VeiculoEntity saved = vehicleDao.save(mapper.toEntity(vehicleCreateDto,
+        final VehicleEntity saved = vehicleDao.save(mapper.toEntity(vehicleCreateDto,
                                                                     branchEntity,
                                                                     vehicleLayoutEntity,
                                                                     vehicleTypeEntity,
                                                                     vehicleModelEntity,
                                                                     getRegisterOrigin(integrationToken)));
-        return new SuccessResponse(saved.getCodigo(), "Veículo inserido com sucesso.");
+        return new SuccessResponse(saved.getId(), "Veículo inserido com sucesso.");
     }
 
     @NotNull
-    public VeiculoEntity getById(@NotNull final Long vehicleId) {
+    public VehicleEntity getById(@NotNull final Long vehicleId) {
         return vehicleDao.getOne(vehicleId);
     }
 
     @NotNull
     @Transactional
-    public List<VeiculoEntity> getAllVehicles(@NotNull final List<Long> branchesId,
+    public List<VehicleEntity> getAllVehicles(@NotNull final List<Long> branchesId,
                                               final boolean includeInactive,
                                               final int limit,
                                               final int offset) {
@@ -83,20 +83,20 @@ public class VehicleService {
     }
 
     @NotNull
-    public Long updateKmVeiculo(@NotNull final Long codUnidade,
-                                @NotNull final Long codVeiculo,
-                                @NotNull final Long veiculoCodProcesso,
-                                @NotNull final VeiculoTipoProcesso veiculoTipoProcesso,
-                                @NotNull final OffsetDateTime dataHoraProcesso,
-                                final long kmVeiculo,
-                                final boolean devePropagarKmParaReboques) {
-        return vehicleDao.updateKmByCodVeiculo(codUnidade,
-                                               codVeiculo,
-                                               veiculoCodProcesso,
-                                               VeiculoTipoProcesso.valueOf(veiculoTipoProcesso.toString()),
-                                               dataHoraProcesso,
-                                               kmVeiculo,
-                                               devePropagarKmParaReboques);
+    public Long updateKmVeiculo(@NotNull final Long branchId,
+                                @NotNull final Long vehicleId,
+                                @NotNull final Long vehicleProcessId,
+                                @NotNull final VeiculoTipoProcesso vehicleProcessType,
+                                @NotNull final OffsetDateTime processDateTime,
+                                final long vehicleKm,
+                                final boolean shouldPropagateKmToTrailers) {
+        return vehicleDao.updateKmByCodVeiculo(branchId,
+                                               vehicleId,
+                                               vehicleProcessId,
+                                               VeiculoTipoProcesso.valueOf(vehicleProcessType.toString()),
+                                               processDateTime,
+                                               vehicleKm,
+                                               shouldPropagateKmToTrailers);
     }
 
     @NotNull

@@ -13,83 +13,83 @@ import org.jetbrains.annotations.Nullable;
  */
 @Data
 @Value
-public class VeiculoListagemDto {
+public class VehicleDto {
     @ApiModelProperty(value = "Código do veículo.", required = true, example = "12345")
     @NotNull
-    Long codVeiculo;
+    Long vehicleId;
     @ApiModelProperty(value = "Placa do veículo.", required = true, example = "PRO1102")
     @NotNull
-    String placaVeiculo;
+    String vehiclePlate;
     @ApiModelProperty(value = "Identificador de frota do veículo.", example = "FROTA01")
     @Nullable
-    String identificadorFrota;
+    String fleetId;
     @ApiModelProperty(value = "Indica se o veículo possui motor.", required = true, example = "true")
-    boolean veiculoMotorizado;
+    boolean hasEngine;
     @ApiModelProperty(value = "Indica se a carreta possui hunbodômetro.", required = true, example = "true")
-    boolean possuiHubodometro;
+    boolean hasHubodometer;
     @ApiModelProperty(value = "Código da marca do veículo.", required = true, example = "43")
     @NotNull
-    Long codMarcaVeiculo;
+    Long vehicleMakeId;
     @ApiModelProperty(value = "Nome da marca do veículo.", required = true, example = "Volkswagen")
     @NotNull
-    String nomeMarcaVeiculo;
+    String vehicleMakeName;
     @ApiModelProperty(value = "Código do modelo do veículo.", required = true, example = "120")
     @NotNull
-    Long codModeloVeiculo;
+    Long vehicleModelId;
     @ApiModelProperty(value = "Nome do modelo do veículo.", required = true, example = "VW 2220")
     @NotNull
-    String nomeModeloVeiculo;
+    String vehicleModelName;
     @ApiModelProperty(value = "Código do diagrama do veículo. Esse código identifica a estrutura de chassi do veículo.",
                       required = true,
                       example = "1")
     @NotNull
-    Short codDiagramaVeiculo;
+    Short vehicleLayoutId;
     @ApiModelProperty(value = "Quantidade de eixos dianteiros, presentes na estrutura do veículo.",
                       required = true,
                       example = "1")
     @NotNull
-    Long qtdEixosDianteiros;
+    Long frontAxleQuantity;
     @ApiModelProperty(value = "Quantidade de eixos traseiros, presentes na estrutura do veículo.",
                       required = true,
                       example = "2")
     @NotNull
-    Long qtdEixosTraseiro;
+    Long rearAxleQuantity;
     @ApiModelProperty(value = "Código do tipo de veículo.", required = true, example = "12345")
     @NotNull
-    Long codTipoVeiculo;
+    Long vehicleTypeId;
     @ApiModelProperty(value = "Nome do tipo de veículo.", required = true, example = "TRUCK")
     @NotNull
-    String nomeTipoVeiculo;
+    String vehicleTypeName;
     @ApiModelProperty(value = "Código da unidade onde o veículo está alocado.", required = true, example = "215")
     @NotNull
-    Long codUnidadeVeiculo;
+    Long vehicleBranchId;
     @ApiModelProperty(value = "Nome da unidade onde o pneu está alocado.",
                       required = true,
                       example = "Unidade de testes")
     @NotNull
-    String nomeUnidadeVeiculo;
+    String vehicleBranchName;
     @ApiModelProperty(value = "Código do grupo da unidade.", required = true, example = "1")
     @NotNull
-    Long codGrupoVeiculo;
+    Long vehicleGroupId;
     @ApiModelProperty(value = "Nome do grupo da unidade.", required = true, example = "Sudeste")
     @NotNull
-    String nomeGrupoVeiculo;
+    String vehicleGroupName;
     @ApiModelProperty(value = "Km atual do veículo.", required = true, example = "111111")
     @NotNull
-    Long kmAtualVeiculo;
+    Long vehicleKm;
     @ApiModelProperty(value = "Status do veículo.", required = true, example = "true")
-    boolean statusAtivo;
+    boolean isActive;
     @ApiModelProperty(value = "Quantidade de pneus aplicados ao veículo.")
-    int totalPneusAplicados;
+    int totalAppliedTires;
     @ApiModelProperty(value = "Flag indicando se o veículo está acoplado.", required = true, example = "true")
-    boolean veiculoAcoplado;
+    boolean isAttached;
     @ApiModelProperty(value = "Posição em que o veículo está acoplado. Essa propriedade só será enviada caso o " +
             "veículo estiver acoplado.",
                       example = "1")
     @Nullable
-    Short posicaoVeiculoAcoplado;
+    Short positionAttached;
     @ApiModelProperty(value = "Informações do acoplamento em que o veículo se encontra. Essa propriedade só será " +
             "enviada caso o veículo estiver acoplado.")
     @Nullable
-    VeiculosAcopladosListagemDto veiculosAcoplados;
+    VeiculosAcopladosListagemDto attachedVehicles;
 }

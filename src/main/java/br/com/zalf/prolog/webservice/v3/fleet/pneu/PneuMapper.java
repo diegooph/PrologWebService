@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoDestinoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.*;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleEntity;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -49,7 +49,7 @@ public class PneuMapper {
     @NotNull
     private PneuListagemDto toPneuListagemDto(@NotNull final PneuEntity pneu) {
         final ModeloBandaEntity modeloBanda = pneu.getModeloBanda();
-        final VeiculoEntity veiculo = pneu.getVeiculoPneuAplicado();
+        final VehicleEntity veiculo = pneu.getVeiculoPneuAplicado();
         final MovimentacaoDestinoEntity movimentacaoAnalise =
                 pneu.getStatus().equals(StatusPneu.ANALISE)
                         ? pneu.getUltimaMovimentacaoByStatus(OrigemDestinoEnum.ANALISE)
@@ -93,9 +93,9 @@ public class PneuMapper {
                                   modeloBanda == null ? null : pneu.getValorUltimaBandaAplicada(),
                                   pneu.isPneuNovoNuncaRodado(),
                                   pneu.getStatus(),
-                                  veiculo == null ? null : veiculo.getCodigo(),
-                                  veiculo == null ? null : veiculo.getPlaca(),
-                                  veiculo == null ? null : veiculo.getIdentificadorFrota(),
+                                  veiculo == null ? null : veiculo.getId(),
+                                  veiculo == null ? null : veiculo.getPlate(),
+                                  veiculo == null ? null : veiculo.getFleetId(),
                                   pneu.getPosicaoAplicado(),
                                   movimentacaoAnalise == null ? null : movimentacaoAnalise.getRecapadora().getCodigo(),
                                   movimentacaoAnalise == null ? null : movimentacaoAnalise.getRecapadora().getNome(),

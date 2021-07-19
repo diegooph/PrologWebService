@@ -3,7 +3,7 @@ package test.br.com.zalf.prolog.webservice.v3.frota.veiculo;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleDto;
 import com.google.common.truth.Truth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ public class VeiculoIT extends IntegrationTest {
     @Test
     @DisplayName("given correct VeiculoCadastroDto to insert, then return status created")
     void givenCorrectParameters_ThenReturnListVeiculosOk() {
-        final ResponseEntity<List<VeiculoListagemDto>> response =
+        final ResponseEntity<List<VehicleDto>> response =
                 client.getVeiculoListagem(List.of(215L),
                                           true,
                                           2,

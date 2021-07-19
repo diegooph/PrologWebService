@@ -25,29 +25,29 @@ import java.util.Optional;
 @Getter
 @Entity
 @Table(schema = "public", name = "veiculo")
-public class VeiculoEntity {
+public class VehicleEntity {
     @Column(name = "cod_eixos", nullable = false, columnDefinition = "bigint default 1")
-    private final Long codEixos = 1L;
+    private final Long axleId = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_unidade_cadastro", referencedColumnName = "codigo")
-    private BranchEntity branchEntityCadastro;
+    private BranchEntity branchRegisterEntity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_unidade", referencedColumnName = "codigo")
     private BranchEntity branchEntity;
     @Column(name = "cod_empresa", nullable = false)
-    private Long codEmpresa;
+    private Long companyId;
     @Column(name = "placa", length = 7, nullable = false)
-    private String placa;
+    private String plate;
     @Column(name = "identificador_frota", length = 15)
-    private String identificadorFrota;
+    private String fleetId;
     @Column(name = "km", nullable = false)
-    private Long km;
+    private Long vehicleKm;
     @Column(name = "status_ativo", nullable = false)
-    private boolean statusAtivo;
+    private boolean isActive;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_diagrama", referencedColumnName = "codigo")
     private VehicleLayoutEntity vehicleLayoutEntity;
@@ -58,20 +58,20 @@ public class VeiculoEntity {
     @JoinColumn(name = "cod_modelo", referencedColumnName = "codigo")
     private VehicleModelEntity vehicleModelEntity;
     @Column(name = "data_hora_cadastro", nullable = false, columnDefinition = "timestamp with time zone default now()")
-    private OffsetDateTime dataHoraCadatro;
+    private OffsetDateTime createdAt;
     @Column(name = "foi_editado", nullable = false, columnDefinition = "boolean default false")
-    private boolean foiEditado;
+    private boolean wasEdited;
     @Column(name = "motorizado", nullable = false)
-    private boolean motorizado;
+    private boolean hasEngine;
     @Column(name = "possui_hubodometro", nullable = false, columnDefinition = "boolean default false")
-    private boolean possuiHobodometro;
+    private boolean hasHubodometer;
     @Enumerated(EnumType.STRING)
     @Column(name = "origem_cadastro", nullable = false)
-    private OrigemAcaoEnum origemCadastro;
+    private OrigemAcaoEnum registerOrigin;
     @Column(name = "acoplado", nullable = false)
-    private boolean acoplado;
+    private boolean isAttached;
     @Formula(value = "(select count(*) from veiculo_pneu vp where vp.cod_veiculo = codigo)")
-    private Integer qtdPneusAplicados;
+    private Integer appliedTiresQuantity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "veiculo_acoplamento_atual",
                joinColumns = @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo"),
@@ -91,7 +91,7 @@ public class VeiculoEntity {
 
         return acoplamentoProcessoEntity.getAcoplamentoAtualEntities()
                 .stream()
-                .filter(acoplamentoAtualEntity -> acoplamentoAtualEntity.getCodVeiculoAcoplamentoAtual().equals(codigo))
+                .filter(acoplamentoAtualEntity -> acoplamentoAtualEntity.getCodVeiculoAcoplamentoAtual().equals(id))
                 .map(AcoplamentoAtualEntity::getCodPosicao)
                 .findFirst()
                 .orElse(null);

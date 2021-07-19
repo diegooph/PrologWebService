@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.fleet.acoplamento._model;
 
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,12 +40,12 @@ public class AcoplamentoAtualEntity {
     private boolean motorizado;
     @OneToOne
     @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo")
-    private VeiculoEntity veiculoEntity;
+    private VehicleEntity vehicleEntity;
     @Column(name = "acoplado", nullable = false)
     private boolean acoplado;
 
     @NotNull
     public Long getCodVeiculoAcoplamentoAtual() {
-        return veiculoEntity.getCodigo();
+        return vehicleEntity.getId();
     }
 }

@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.afericao.valores._model.AfericaoPn
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoDestinoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.pneu.pneuservico.PneuServicoRealizadoEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleEntity;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -97,7 +97,7 @@ public class PneuEntity {
     @JoinTable(name = "veiculo_pneu",
                joinColumns = @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo"),
                inverseJoinColumns = @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo"))
-    private VeiculoEntity veiculoPneuAplicado;
+    private VehicleEntity veiculoPneuAplicado;
     @Formula(value = "(select vp.posicao from veiculo_pneu vp where vp.cod_pneu = codigo)")
     private Integer posicaoAplicado;
     @OneToMany(mappedBy = "pneu", fetch = FetchType.LAZY)

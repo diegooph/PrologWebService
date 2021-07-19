@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleDto;
 import br.com.zalf.prolog.webservice.v3.validation.BranchesId;
 import io.swagger.annotations.*;
 
@@ -29,13 +29,13 @@ public interface VehicleApiDoc {
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200, message = "Operação efetuada com sucesso.",
-                    response = VeiculoListagemDto.class,
+                    response = VehicleDto.class,
                     responseContainer = "List"),
             @ApiResponse(code = 401, message = "Operação não autorizada", response = Response.class),
             @ApiResponse(code = 404, message = "Operação não encontrada", response = Response.class),
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
-    List<VeiculoListagemDto> getAllVehicles(
+    List<VehicleDto> getAllVehicles(
             @ApiParam(value = "Lista de códigos de unidade.",
                       example = "215",
                       required = true) @Required @BranchesId final List<Long> branchesId,

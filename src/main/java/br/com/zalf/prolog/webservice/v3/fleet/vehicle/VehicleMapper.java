@@ -22,52 +22,52 @@ import java.util.stream.Collectors;
 public class VehicleMapper {
 
     @NotNull
-    public List<VeiculoListagemDto> toDto(@NotNull final List<VeiculoEntity> veiculoEntities) {
+    public List<VehicleDto> toDto(@NotNull final List<VehicleEntity> veiculoEntities) {
         return veiculoEntities.stream()
-                .map(this::createVeiculoListagemDto)
+                .map(this::createVehicleDto)
                 .collect(Collectors.toList());
     }
 
     @NotNull
-    public VeiculoEntity toEntity(@NotNull final VehicleCreateDto dto,
+    public VehicleEntity toEntity(@NotNull final VehicleCreateDto dto,
                                   @NotNull final BranchEntity branchEntity,
                                   @NotNull final VehicleLayoutEntity vehicleLayoutEntity,
                                   @NotNull final VehicleTypeEntity vehicleTypeEntity,
                                   @NotNull final VehicleModelEntity vehicleModelEntity,
                                   @NotNull final OrigemAcaoEnum registerOrigin) {
-        return VeiculoEntity.builder()
-                .withCodEmpresa(dto.getCompanyId())
+        return VehicleEntity.builder()
+                .withCompanyId(dto.getCompanyId())
                 .withBranchEntity(branchEntity)
-                .withBranchEntityCadastro(branchEntity)
+                .withBranchRegisterEntity(branchEntity)
                 .withVehicleLayoutEntity(vehicleLayoutEntity)
-                .withMotorizado(vehicleLayoutEntity.isHasEngine())
+                .withHasEngine(vehicleLayoutEntity.isHasEngine())
                 .withVehicleTypeEntity(vehicleTypeEntity)
                 .withVehicleModelEntity(vehicleModelEntity)
-                .withPlaca(dto.getVehiclePlate())
-                .withIdentificadorFrota(dto.getFleetId())
-                .withKm(dto.getVehicleKm())
-                .withPossuiHobodometro(dto.getHasHubodometer())
-                .withDataHoraCadatro(Now.getOffsetDateTimeUtc())
-                .withStatusAtivo(true)
-                .withOrigemCadastro(registerOrigin)
+                .withPlate(dto.getVehiclePlate())
+                .withFleetId(dto.getFleetId())
+                .withVehicleKm(dto.getVehicleKm())
+                .withHasHubodometer(dto.getHasHubodometer())
+                .withCreatedAt(Now.getOffsetDateTimeUtc())
+                .withIsActive(true)
+                .withRegisterOrigin(registerOrigin)
                 .build();
     }
 
     @NotNull
-    private VeiculoListagemDto createVeiculoListagemDto(@NotNull final VeiculoEntity veiculoEntity) {
-        final VehicleModelEntity vehicleModelEntity = veiculoEntity.getVehicleModelEntity();
-        final VehicleTypeEntity vehicleTypeEntity = veiculoEntity.getVehicleTypeEntity();
-        final VehicleLayoutEntity vehicleLayoutEntity = veiculoEntity.getVehicleLayoutEntity();
-        final BranchEntity branchEntity = veiculoEntity.getBranchEntity();
+    private VehicleDto createVehicleDto(@NotNull final VehicleEntity vehicleEntity) {
+        final VehicleModelEntity vehicleModelEntity = vehicleEntity.getVehicleModelEntity();
+        final VehicleTypeEntity vehicleTypeEntity = vehicleEntity.getVehicleTypeEntity();
+        final VehicleLayoutEntity vehicleLayoutEntity = vehicleEntity.getVehicleLayoutEntity();
+        final BranchEntity branchEntity = vehicleEntity.getBranchEntity();
         final Optional<AcoplamentoProcessoEntity> acoplamentoProcessoEntity =
-                veiculoEntity.getAcoplamentoProcessoEntity();
+                vehicleEntity.getAcoplamentoProcessoEntity();
 
-        return new VeiculoListagemDto(
-                veiculoEntity.getCodigo(),
-                veiculoEntity.getPlaca(),
-                veiculoEntity.getIdentificadorFrota(),
-                veiculoEntity.isMotorizado(),
-                veiculoEntity.isPossuiHobodometro(),
+        return new VehicleDto(
+                vehicleEntity.getId(),
+                vehicleEntity.getPlate(),
+                vehicleEntity.getFleetId(),
+                vehicleEntity.isHasEngine(),
+                vehicleEntity.isHasHubodometer(),
                 vehicleModelEntity.getVehicleMakeEntity().getId(),
                 vehicleModelEntity.getVehicleMakeEntity().getName(),
                 vehicleModelEntity.getId(),
@@ -81,37 +81,37 @@ public class VehicleMapper {
                 branchEntity.getName(),
                 branchEntity.getGroup().getId(),
                 branchEntity.getGroup().getName(),
-                veiculoEntity.getKm(),
-                veiculoEntity.isStatusAtivo(),
-                veiculoEntity.getQtdPneusAplicados(),
-                veiculoEntity.isAcoplado(),
-                veiculoEntity.getPosicaoAcopladoAtual(),
-                acoplamentoProcessoEntity.map(acoplamentoProcesso -> createVeiculosAcoplamentos(veiculoEntity.getCodigo(),
-                                                                                                acoplamentoProcesso.getCodigo(),
-                                                                                                acoplamentoProcesso.getAcoplamentoAtualEntities()))
+                vehicleEntity.getVehicleKm(),
+                vehicleEntity.isActive(),
+                vehicleEntity.getAppliedTiresQuantity(),
+                vehicleEntity.isAttached(),
+                vehicleEntity.getPosicaoAcopladoAtual(),
+                acoplamentoProcessoEntity.map(acoplamentoProcesso -> createAttachedVehicles(vehicleEntity.getId(),
+                                                                                            acoplamentoProcesso.getCodigo(),
+                                                                                            acoplamentoProcesso.getAcoplamentoAtualEntities()))
                         .orElse(null));
     }
 
     @NotNull
-    private VeiculosAcopladosListagemDto createVeiculosAcoplamentos(
+    private VeiculosAcopladosListagemDto createAttachedVehicles(
             @NotNull final Long codVeiculo,
             @NotNull final Long codProcessoAcoplamento,
             @NotNull final Set<AcoplamentoAtualEntity> acoplamentosAtuais) {
-        return new VeiculosAcopladosListagemDto(
-                codProcessoAcoplamento,
-                acoplamentosAtuais.stream()
-                        .filter(acoplamento -> !acoplamento.getCodVeiculoAcoplamentoAtual().equals(codVeiculo))
-                        .map(this::createVeiculoAcoplado)
-                        .collect(Collectors.toList()));
+        final List<VeiculoAcopladoListagemDto> attachedVehicles = acoplamentosAtuais.stream()
+                .filter(acoplamento -> !acoplamento.getCodVeiculoAcoplamentoAtual().equals(codVeiculo))
+                .map(this::createAttachedVehicle)
+                .collect(Collectors.toList());
+        return new VeiculosAcopladosListagemDto(codProcessoAcoplamento, attachedVehicles);
     }
 
     @NotNull
-    private VeiculoAcopladoListagemDto createVeiculoAcoplado(
+    private VeiculoAcopladoListagemDto createAttachedVehicle(
             @NotNull final AcoplamentoAtualEntity acoplamentoAtualEntity) {
-        return new VeiculoAcopladoListagemDto(acoplamentoAtualEntity.getVeiculoEntity().getCodigo(),
-                                              acoplamentoAtualEntity.getVeiculoEntity().getPlaca(),
-                                              acoplamentoAtualEntity.getVeiculoEntity().getIdentificadorFrota(),
-                                              acoplamentoAtualEntity.getVeiculoEntity().isMotorizado(),
+        final VehicleEntity vehicleEntity = acoplamentoAtualEntity.getVehicleEntity();
+        return new VeiculoAcopladoListagemDto(vehicleEntity.getId(),
+                                              vehicleEntity.getPlate(),
+                                              vehicleEntity.getFleetId(),
+                                              vehicleEntity.isHasEngine(),
                                               acoplamentoAtualEntity.getCodPosicao());
     }
 }

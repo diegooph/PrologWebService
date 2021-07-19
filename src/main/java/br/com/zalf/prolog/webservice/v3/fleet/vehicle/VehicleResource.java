@@ -9,7 +9,7 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,7 +55,7 @@ public class VehicleResource implements VehicleApiDoc {
             Pilares.Frota.Veiculo.CADASTRAR,
             Pilares.Frota.Checklist.VISUALIZAR_TODOS})
     @Override
-    public List<VeiculoListagemDto> getAllVehicles(
+    public List<VehicleDto> getAllVehicles(
             @QueryParam("branchesId") @Required final List<Long> branchesId,
             @QueryParam("includeInactive") @DefaultValue("true") final boolean includeInactive,
             @QueryParam("limit") final int limit,

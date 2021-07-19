@@ -76,7 +76,7 @@ public final class ServicoPneuEntity implements EntityKmColetado {
     @NotNull
     @Override
     public VeiculoKmColetado getVeiculoKmColetado() {
-        return VeiculoKmColetado.of(getAfericao().getVeiculo().getCodigo(), kmColetadoVeiculoFechamentoServico);
+        return VeiculoKmColetado.of(getAfericao().getVeiculo().getId(), kmColetadoVeiculoFechamentoServico);
     }
 
     @Transient

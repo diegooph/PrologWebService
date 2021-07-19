@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model;
 
 import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.PneuEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.pneu.pneuservico.PneuServicoRealizadoEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -83,12 +83,12 @@ public final class MovimentacaoEntity {
     }
 
     @NotNull
-    private Optional<VeiculoMovimentacao> createVeiculoMovimentacao(@NotNull final VeiculoEntity veiculo,
+    private Optional<VeiculoMovimentacao> createVeiculoMovimentacao(@NotNull final VehicleEntity veiculo,
                                                                     @NotNull final Long kmColetadoVeiculo,
                                                                     @NotNull final Long codDiagrama) {
-        return Optional.of(new VeiculoMovimentacao(veiculo.getCodigo(),
-                                                   veiculo.getPlaca(),
-                                                   veiculo.getIdentificadorFrota(),
+        return Optional.of(new VeiculoMovimentacao(veiculo.getId(),
+                                                   veiculo.getPlate(),
+                                                   veiculo.getFleetId(),
                                                    kmColetadoVeiculo,
                                                    codDiagrama));
     }

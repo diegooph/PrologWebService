@@ -3,7 +3,7 @@ package test.br.com.zalf.prolog.webservice.v3.frota.veiculo;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -36,7 +36,7 @@ public class VeiculoApiClient {
         return restTemplate.postForEntity(URI.create(RESOURCE), dto, responseType);
     }
 
-    public <T> ResponseEntity<List<VeiculoListagemDto>> getVeiculoListagem(
+    public <T> ResponseEntity<List<VehicleDto>> getVeiculoListagem(
             @NotNull final List<Long> codUnidades,
             final boolean statusAtivo,
             final int limit,
@@ -55,7 +55,7 @@ public class VeiculoApiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
         return restTemplate.exchange(requestEntity,
-                                     new ParameterizedTypeReference<List<VeiculoListagemDto>>() {});
+                                     new ParameterizedTypeReference<List<VehicleDto>>() {});
     }
 
     @NotNull

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +28,7 @@ public final class MovimentacaoDestinoEntity {
     @Nullable
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo")
-    private VeiculoEntity veiculo;
+    private VehicleEntity veiculo;
     @Column(name = "cod_diagrama")
     private Long codDiagrama;
     @Column(name = "km_veiculo")

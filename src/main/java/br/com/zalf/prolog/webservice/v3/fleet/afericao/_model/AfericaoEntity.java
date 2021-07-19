@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.afericao.valores._model.AfericaoPn
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.VeiculoKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,7 +36,7 @@ public final class AfericaoEntity implements EntityKmColetado {
     private Long codUnidade;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo", nullable = false)
-    private VeiculoEntity veiculo;
+    private VehicleEntity veiculo;
     @Column(name = "km_veiculo", nullable = false)
     private Long kmColetadoVeiculo;
     @OneToMany(mappedBy = "afericao", fetch = FetchType.LAZY)
@@ -50,6 +50,6 @@ public final class AfericaoEntity implements EntityKmColetado {
     @NotNull
     @Override
     public VeiculoKmColetado getVeiculoKmColetado() {
-        return VeiculoKmColetado.of(veiculo.getCodigo(), kmColetadoVeiculo);
+        return VeiculoKmColetado.of(veiculo.getId(), kmColetadoVeiculo);
     }
 }
