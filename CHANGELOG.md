@@ -8,6 +8,7 @@ Change Log
 
 ### Refactors
 * Mapeia corretamente erros do Spring nos endpoints V3
+* Remove CPF de relato (PL-3856)
 
 ### Bug Fixes
 * Corrige erro de getConstraint ao receber valor nulo  
