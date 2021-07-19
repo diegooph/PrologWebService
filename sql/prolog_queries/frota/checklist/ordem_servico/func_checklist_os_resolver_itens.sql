@@ -29,7 +29,6 @@ begin
                                                     f_km,
                                                     v_cod_agrupamento_resolucao_em_lote,
                                                     v_tipo_processo,
-                                                    true,
                                                     CURRENT_TIMESTAMP));
 
     foreach v_cod_item in array f_cod_itens
