@@ -91,5 +91,5 @@ public class VehicleDto {
     @ApiModelProperty(value = "Informações do acoplamento em que o veículo se encontra. Essa propriedade só será " +
             "enviada caso o veículo estiver acoplado.")
     @Nullable
-    VeiculosAcopladosListagemDto attachedVehicles;
+    AttachedVehiclesDto attachedProcessVehicles;
 }

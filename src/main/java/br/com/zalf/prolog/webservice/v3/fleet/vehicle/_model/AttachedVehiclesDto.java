@@ -14,11 +14,11 @@ import java.util.List;
  */
 @Data
 @Value
-public class VeiculosAcopladosListagemDto {
+public class AttachedVehiclesDto {
     @ApiModelProperty(value = "Código do processo de acoplamento.", required = true, example = "1")
     @NotNull
-    Long codProcessoAcoplamento;
+    Long attachedProcessId;
     @ApiModelProperty(value = "Informações de cada veículo presente no acoplamento.")
     @NotNull
-    List<VeiculoAcopladoListagemDto> veiculosAcoplados;
+    List<AttachedVehicleDto> attachedVehicles;
 }

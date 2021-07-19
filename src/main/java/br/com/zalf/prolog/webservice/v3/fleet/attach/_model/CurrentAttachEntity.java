@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.acoplamento._model;
+package br.com.zalf.prolog.webservice.v3.fleet.attach._model;
 
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleEntity;
 import lombok.AllArgsConstructor;
@@ -19,33 +19,39 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Entity
-@IdClass(AcoplamentoAtualPk.class)
+@IdClass(CurrentAttachPk.class)
 @Table(schema = "public", name = "veiculo_acoplamento_atual")
-public class AcoplamentoAtualEntity {
+public class CurrentAttachEntity {
     @Id
     @Column(name = "cod_processo")
-    private Long codProcesso;
+    @NotNull
+    private Long attachProcessId;
     @MapsId
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_processo", referencedColumnName = "codigo")
-    private AcoplamentoProcessoEntity acoplamentoProcessoEntity;
+    @NotNull
+    private AttachProcessEntity attachProcessEntity;
     @Column(name = "cod_unidade", nullable = false)
-    private Long codUnidade;
+    @NotNull
+    private Long branchId;
     @Id
     @Column(name = "cod_posicao", nullable = false)
-    private Short codPosicao;
+    @NotNull
+    private Short positionId;
     @Column(name = "cod_diagrama", nullable = false)
-    private Long codDiagrama;
+    @NotNull
+    private Long vehicleLayoutId;
     @Column(name = "motorizado", nullable = false)
-    private boolean motorizado;
+    private boolean hasEngine;
     @OneToOne
     @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo")
+    @NotNull
     private VehicleEntity vehicleEntity;
     @Column(name = "acoplado", nullable = false)
-    private boolean acoplado;
+    private boolean isAttached;
 
     @NotNull
-    public Long getCodVeiculoAcoplamentoAtual() {
+    public Long getCurrentAttachVehicleId() {
         return vehicleEntity.getId();
     }
 }

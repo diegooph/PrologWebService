@@ -1,10 +1,12 @@
-package br.com.zalf.prolog.webservice.v3.fleet.acoplamento._model;
+package br.com.zalf.prolog.webservice.v3.fleet.attach._model;
 
 import br.com.zalf.prolog.webservice.v3.LocalDateTimeUtcAttributeConverter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -21,21 +23,27 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(schema = "public", name = "veiculo_acoplamento_processo")
-public class AcoplamentoProcessoEntity {
+public class AttachProcessEntity {
     @Id
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
+    @NotNull
+    private Long id;
     @Column(name = "cod_unidade", nullable = false)
-    private Long codUnidade;
+    @NotNull
+    private Long branchId;
     @Column(name = "cod_colaborador", nullable = false)
-    private Long codColaborador;
+    @NotNull
+    private Long userId;
     @Convert(converter = LocalDateTimeUtcAttributeConverter.class)
     @Column(name = "data_hora")
-    private LocalDateTime dataHoraRealizacao;
+    @NotNull
+    private LocalDateTime createdAt;
     @Column(name = "observacao")
-    private String observacao;
-    @OneToMany(mappedBy = "acoplamentoProcessoEntity",
+    @Nullable
+    private String notes;
+    @OneToMany(mappedBy = "attachProcessEntity",
                fetch = FetchType.LAZY,
-               targetEntity = AcoplamentoAtualEntity.class)
-    private Set<AcoplamentoAtualEntity> acoplamentoAtualEntities;
+               targetEntity = CurrentAttachEntity.class)
+    @NotNull
+    private Set<CurrentAttachEntity> currentAttachEntities;
 }

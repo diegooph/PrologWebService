@@ -33,15 +33,15 @@ public interface VehicleDao extends JpaRepository<VehicleEntity, Long> {
 
     @NotNull
     @Query("select v from VehicleEntity v " +
-                   "join fetch v.modeloVeiculoEntity mv " +
-                   "join fetch mv.marcaVeiculoEntity mav " +
-                   "join fetch v.tipoVeiculoEntity tv " +
-                   "join fetch v.diagramaEntity d " +
-                   "join fetch d.eixosDiagramaEntities e " +
+                   "join fetch v.vehicleModelEntity vm " +
+                   "join fetch vm.vehicleMakeEntity vma " +
+                   "join fetch v.vehicleTypeEntity vt " +
+                   "join fetch v.vehicleLayoutEntity vl " +
+                   "join fetch vl.axleLayoutEntities al " +
                    "join fetch v.branchEntity u " +
                    "join fetch u.group g " +
-                   "left join fetch v.acoplamentoProcessoEntity ap " +
-                   "left join fetch ap.acoplamentoAtualEntities ate " +
+                   "left join fetch v.attachProcessEntity ap " +
+                   "left join fetch ap.currentAttachEntities ca " +
                    "where u.id in :codUnidades " +
                    "and (:incluirInativos = true or v.isActive = true) " +
                    "order by v.id asc")

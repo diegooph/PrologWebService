@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.acoplamento._model;
+package br.com.zalf.prolog.webservice.v3.fleet.attach._model;
 
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
@@ -15,9 +15,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class AcoplamentoAtualPk implements Serializable {
+public class CurrentAttachPk implements Serializable {
     @NotNull
-    private Long codProcesso;
+    private Long attachProcessId;
     @NotNull
-    private Short codPosicao;
+    private Short positionId;
 }

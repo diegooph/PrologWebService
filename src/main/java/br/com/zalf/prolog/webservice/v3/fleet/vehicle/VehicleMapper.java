@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.v3.fleet.vehicle;
 
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
-import br.com.zalf.prolog.webservice.v3.fleet.acoplamento._model.AcoplamentoAtualEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.acoplamento._model.AcoplamentoProcessoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.attach._model.AttachProcessEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.attach._model.CurrentAttachEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.*;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle.makemodel._model.VehicleModelEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle.vehiclelayout._model.AxleLayoutEntity;
@@ -59,8 +59,7 @@ public class VehicleMapper {
         final VehicleTypeEntity vehicleTypeEntity = vehicleEntity.getVehicleTypeEntity();
         final VehicleLayoutEntity vehicleLayoutEntity = vehicleEntity.getVehicleLayoutEntity();
         final BranchEntity branchEntity = vehicleEntity.getBranchEntity();
-        final Optional<AcoplamentoProcessoEntity> acoplamentoProcessoEntity =
-                vehicleEntity.getAcoplamentoProcessoEntity();
+        final Optional<AttachProcessEntity> attachProcessEntity = vehicleEntity.getAttachProcessEntity();
 
         return new VehicleDto(
                 vehicleEntity.getId(),
@@ -85,33 +84,31 @@ public class VehicleMapper {
                 vehicleEntity.isActive(),
                 vehicleEntity.getAppliedTiresQuantity(),
                 vehicleEntity.isAttached(),
-                vehicleEntity.getPosicaoAcopladoAtual(),
-                acoplamentoProcessoEntity.map(acoplamentoProcesso -> createAttachedVehicles(vehicleEntity.getId(),
-                                                                                            acoplamentoProcesso.getCodigo(),
-                                                                                            acoplamentoProcesso.getAcoplamentoAtualEntities()))
+                vehicleEntity.getCurrentAttachPosition(),
+                attachProcessEntity.map(attachProcess -> createAttachedVehicles(vehicleEntity.getId(),
+                                                                                attachProcess.getId(),
+                                                                                attachProcess.getCurrentAttachEntities()))
                         .orElse(null));
     }
 
     @NotNull
-    private VeiculosAcopladosListagemDto createAttachedVehicles(
-            @NotNull final Long codVeiculo,
-            @NotNull final Long codProcessoAcoplamento,
-            @NotNull final Set<AcoplamentoAtualEntity> acoplamentosAtuais) {
-        final List<VeiculoAcopladoListagemDto> attachedVehicles = acoplamentosAtuais.stream()
-                .filter(acoplamento -> !acoplamento.getCodVeiculoAcoplamentoAtual().equals(codVeiculo))
+    private AttachedVehiclesDto createAttachedVehicles(@NotNull final Long vehicleId,
+                                                       @NotNull final Long attachProcessId,
+                                                       @NotNull final Set<CurrentAttachEntity> currentAttaches) {
+        final List<AttachedVehicleDto> attachedVehicles = currentAttaches.stream()
+                .filter(currentAttach -> !currentAttach.getCurrentAttachVehicleId().equals(vehicleId))
                 .map(this::createAttachedVehicle)
                 .collect(Collectors.toList());
-        return new VeiculosAcopladosListagemDto(codProcessoAcoplamento, attachedVehicles);
+        return new AttachedVehiclesDto(attachProcessId, attachedVehicles);
     }
 
     @NotNull
-    private VeiculoAcopladoListagemDto createAttachedVehicle(
-            @NotNull final AcoplamentoAtualEntity acoplamentoAtualEntity) {
-        final VehicleEntity vehicleEntity = acoplamentoAtualEntity.getVehicleEntity();
-        return new VeiculoAcopladoListagemDto(vehicleEntity.getId(),
-                                              vehicleEntity.getPlate(),
-                                              vehicleEntity.getFleetId(),
-                                              vehicleEntity.isHasEngine(),
-                                              acoplamentoAtualEntity.getCodPosicao());
+    private AttachedVehicleDto createAttachedVehicle(@NotNull final CurrentAttachEntity currentAttachEntity) {
+        final VehicleEntity vehicleEntity = currentAttachEntity.getVehicleEntity();
+        return new AttachedVehicleDto(vehicleEntity.getId(),
+                                      vehicleEntity.getPlate(),
+                                      vehicleEntity.getFleetId(),
+                                      vehicleEntity.isHasEngine(),
+                                      currentAttachEntity.getPositionId());
     }
 }

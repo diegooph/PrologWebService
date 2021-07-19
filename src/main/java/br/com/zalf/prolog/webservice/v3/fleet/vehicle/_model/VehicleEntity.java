@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.v3.fleet.vehicle._model;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
-import br.com.zalf.prolog.webservice.v3.fleet.acoplamento._model.AcoplamentoAtualEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.acoplamento._model.AcoplamentoProcessoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.attach._model.AttachProcessEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.attach._model.CurrentAttachEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle.makemodel._model.VehicleModelEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle.vehiclelayout._model.VehicleLayoutEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle.vehicletype._model.VehicleTypeEntity;
@@ -76,23 +76,23 @@ public class VehicleEntity {
     @JoinTable(name = "veiculo_acoplamento_atual",
                joinColumns = @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo"),
                inverseJoinColumns = @JoinColumn(name = "cod_processo", referencedColumnName = "codigo"))
-    private AcoplamentoProcessoEntity acoplamentoProcessoEntity;
+    private AttachProcessEntity attachProcessEntity;
 
     @NotNull
-    public Optional<AcoplamentoProcessoEntity> getAcoplamentoProcessoEntity() {
-        return Optional.ofNullable(acoplamentoProcessoEntity);
+    public Optional<AttachProcessEntity> getAttachProcessEntity() {
+        return Optional.ofNullable(attachProcessEntity);
     }
 
     @Nullable
-    public Short getPosicaoAcopladoAtual() {
-        if (acoplamentoProcessoEntity == null) {
+    public Short getCurrentAttachPosition() {
+        if (attachProcessEntity == null) {
             return null;
         }
 
-        return acoplamentoProcessoEntity.getAcoplamentoAtualEntities()
+        return attachProcessEntity.getCurrentAttachEntities()
                 .stream()
-                .filter(acoplamentoAtualEntity -> acoplamentoAtualEntity.getCodVeiculoAcoplamentoAtual().equals(id))
-                .map(AcoplamentoAtualEntity::getCodPosicao)
+                .filter(currentAttachEntity -> currentAttachEntity.getCurrentAttachVehicleId().equals(id))
+                .map(CurrentAttachEntity::getPositionId)
                 .findFirst()
                 .orElse(null);
     }
