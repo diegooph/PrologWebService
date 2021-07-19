@@ -36,7 +36,6 @@ begin
                                                          f_km_veiculo,
                                                          v_cod_afericao,
                                                          'AFERICAO',
-                                                         true,
                                                          f_data_hora));
     end if;
 
