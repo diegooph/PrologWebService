@@ -42,10 +42,10 @@ public interface VehicleDao extends JpaRepository<VehicleEntity, Long> {
                    "join fetch u.group g " +
                    "left join fetch v.attachProcessEntity ap " +
                    "left join fetch ap.currentAttachEntities ca " +
-                   "where u.id in :codUnidades " +
-                   "and (:incluirInativos = true or v.isActive = true) " +
+                   "where u.id in :branchesId " +
+                   "and (:includeInactive = true or v.isActive = true) " +
                    "order by v.id asc")
-    List<VehicleEntity> getAllVehicles(@NotNull final List<Long> codUnidades,
-                                       final boolean incluirInativos,
+    List<VehicleEntity> getAllVehicles(@NotNull final List<Long> branchesId,
+                                       final boolean includeInactive,
                                        @NotNull final Pageable pageable);
 }
