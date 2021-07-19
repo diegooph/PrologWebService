@@ -107,15 +107,13 @@ public class VeiculoService {
                                 @NotNull final Long veiculoCodProcesso,
                                 @NotNull final VeiculoTipoProcesso veiculoTipoProcesso,
                                 @NotNull final OffsetDateTime dataHoraProcesso,
-                                final long kmVeiculo,
-                                final boolean devePropagarKmParaReboques) {
+                                final long kmVeiculo) {
         return veiculoDao.updateKmByCodVeiculo(codUnidade,
                                                codVeiculo,
                                                veiculoCodProcesso,
                                                VeiculoTipoProcesso.valueOf(veiculoTipoProcesso.toString()),
                                                dataHoraProcesso,
-                                               kmVeiculo,
-                                               devePropagarKmParaReboques);
+                                               kmVeiculo);
     }
 
     @NotNull
