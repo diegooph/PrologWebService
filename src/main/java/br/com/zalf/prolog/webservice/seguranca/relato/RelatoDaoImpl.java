@@ -594,12 +594,12 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
         return relato;
     }
 
-    private Colaborador createColaborador(@NotNull final String nome,
-                                          @NotNull final Long codigo,
-                                          @NotNull final Long cpf) {
+    private Colaborador createColaborador(final String nome,
+                                          final Long codigo,
+                                          final Long cpf) {
         final Colaborador colaborador = new Colaborador();
         colaborador.setNome(nome);
-        colaborador.setCodigo((codigo));
+        colaborador.setCodigo(codigo);
         colaborador.setCpf(cpf);
         return colaborador;
     }
