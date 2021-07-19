@@ -560,3 +560,5 @@ begin
     return v_cod_afericao_inserida;
 end
 $$;
+
+drop table veiculo_acoplamento_empresa_liberada;
