@@ -6,6 +6,9 @@ Change Log
 ## UNRELEASED
 ##
 
+<a name="v3.5.5"></a>
+## Version [v3.5.5](https://github.com/luizfp/PrologWebService/compare/v3.5.4...v3.5.5) (2021-07-19)
+
 # Features
 * Adiciona código e nome das funcionalidades do dash para agrupamento (PL-3876)
 
@@ -14,8 +17,8 @@ Change Log
 
 ### Bug Fixes
 * Corrige erro de getConstraint ao receber valor nulo  
-* Corrigir erro ao editar modelo de checklist (PL-3528)
-* Corrigir erro ao movimentar pneus em placas com cadastro duplicado em outra empresa (PS-1606)
+* Corrige erro ao editar modelo de checklist (PL-3528)
+* Corrige erro ao movimentar pneus em placas com cadastro duplicado em outra empresa (PS-1606)
 
 <a name="v3.5.4"></a>
 ## Version [v3.5.4](https://github.com/luizfp/PrologWebService/compare/v3.5.3...v3.5.4) (2021-07-11)
