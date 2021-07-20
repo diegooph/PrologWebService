@@ -83,7 +83,7 @@ public interface VeiculoDao {
     List<Marca> getMarcasVeiculosNivelProLog() throws Throwable;
 
     @NotNull
-    List<Marca> 
+    List<Marca>
     getMarcasModelosVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 
     @NotNull
@@ -131,7 +131,8 @@ public interface VeiculoDao {
 
     @NotNull
     Long getCodVeiculoByPlaca(@NotNull final Connection conn,
-                              @NotNull final String placaVeiculo) throws Throwable;
+                              @NotNull final String placaVeiculo,
+                              @NotNull final Long codUnidade) throws Throwable;
 
     @Deprecated
     List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos) throws SQLException;
