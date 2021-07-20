@@ -1,11 +1,11 @@
-package br.com.zalf.prolog.webservice.v3.fleet.servicopneu;
+package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance;
 
 import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.KmProcessoAtualizavel;
-import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.FiltroServicoListagemDto;
-import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuStatus;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.ServicoPneuEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.ServicoPneuStatus;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceFilter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,11 +43,11 @@ public class ServicoPneuService implements KmProcessoAtualizavel {
 
     @NotNull
     @Transactional
-    public List<ServicoPneuEntity> findServicosPneuByFilter(@NotNull final FiltroServicoListagemDto filtro) {
-        final Optional<ServicoPneuStatus> status = Optional.ofNullable(filtro.getStatus());
-        return servicoPneuDao.findServicosPneuByUnidades(filtro.getCodUnidades(),
-                                                         filtro.getCodVeiculo(),
-                                                         filtro.getCodPneu(),
+    public List<ServicoPneuEntity> getAllTireMaintenance(@NotNull final TireMaintenanceFilter filtro) {
+        final Optional<ServicoPneuStatus> status = Optional.ofNullable(filtro.getMaintenanceStatus());
+        return servicoPneuDao.findServicosPneuByUnidades(filtro.getBranchesId(),
+                                                         filtro.getVehicleId(),
+                                                         filtro.getTireId(),
                                                          status.map(ServicoPneuStatus::getAsBoolean).orElse(null),
                                                          OffsetBasedPageRequest.of(filtro.getLimit(),
                                                                                    filtro.getOffset(),

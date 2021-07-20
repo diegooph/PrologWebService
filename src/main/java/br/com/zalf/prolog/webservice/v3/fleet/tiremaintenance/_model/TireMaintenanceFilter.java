@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model;
+package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model;
 
 import lombok.Getter;
 import lombok.Value;
@@ -14,15 +14,15 @@ import java.util.List;
  */
 @Value(staticConstructor = "of")
 @Getter
-public class FiltroServicoListagemDto {
+public class TireMaintenanceFilter {
     @NotNull
-    List<Long> codUnidades;
+    List<Long> branchesId;
     @Nullable
-    Long codVeiculo;
+    ServicoPneuStatus maintenanceStatus;
     @Nullable
-    Long codPneu;
+    Long vehicleId;
     @Nullable
-    ServicoPneuStatus status;
+    Long tireId;
     int limit;
     int offset;
 }

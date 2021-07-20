@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
-import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuListagemDto;
-import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuStatus;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.ServicoPneuStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -24,25 +24,25 @@ public class ServicoPneuApiClient {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    public ResponseEntity<List<ServicoPneuListagemDto>> getServicosByFiltros(final List<Long> codUnidades,
-                                                                             final ServicoPneuStatus status,
-                                                                             final int limit,
-                                                                             final int offset) {
+    public ResponseEntity<List<TireMaintenanceDto>> getServicosByFiltros(final List<Long> codUnidades,
+                                                                         final ServicoPneuStatus status,
+                                                                         final int limit,
+                                                                         final int offset) {
         return getServicosByFiltros(codUnidades, status, null, null, limit, offset);
     }
 
-    public ResponseEntity<List<ServicoPneuListagemDto>> getServicosByFiltros(final List<Long> codUnidades,
-                                                                             final int limit,
-                                                                             final int offset) {
+    public ResponseEntity<List<TireMaintenanceDto>> getServicosByFiltros(final List<Long> codUnidades,
+                                                                         final int limit,
+                                                                         final int offset) {
         return getServicosByFiltros(codUnidades, null, limit, offset);
     }
 
-    public ResponseEntity<List<ServicoPneuListagemDto>> getServicosByFiltros(final List<Long> codUnidades,
-                                                                             final ServicoPneuStatus status,
-                                                                             final Long codVeiculo,
-                                                                             final Long codPneu,
-                                                                             final int limit,
-                                                                             final int offset) {
+    public ResponseEntity<List<TireMaintenanceDto>> getServicosByFiltros(final List<Long> codUnidades,
+                                                                         final ServicoPneuStatus status,
+                                                                         final Long codVeiculo,
+                                                                         final Long codPneu,
+                                                                         final int limit,
+                                                                         final int offset) {
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
                 .queryParam("codUnidades", codUnidades)
@@ -55,6 +55,6 @@ public class ServicoPneuApiClient {
         final RequestEntity<Void> requestEntity = RequestEntity
                 .get(components.toUri())
                 .build();
-        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<ServicoPneuListagemDto>>() {});
+        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<TireMaintenanceDto>>() {});
     }
 }

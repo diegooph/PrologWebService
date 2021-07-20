@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
-import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuListagemDto;
-import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuStatus;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.ServicoPneuStatus;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,19 +26,19 @@ public class ServicoPneuIT extends IntegrationTest {
     @Autowired
     private ServicoPneuApiClient client;
 
-    private boolean containsTestCodUnidade(final ServicoPneuListagemDto dto) {
-        return dto.getCodUnidadeServico().equals(TEST_UNIDADE_ID);
+    private boolean containsTestCodUnidade(final TireMaintenanceDto dto) {
+        return dto.getTireMaintenanceBranchId().equals(TEST_UNIDADE_ID);
     }
 
-    private boolean containsStatus(final ServicoPneuListagemDto dto, final ServicoPneuStatus status) {
-        return dto.getStatus().equals(status);
+    private boolean containsStatus(final TireMaintenanceDto dto, final ServicoPneuStatus status) {
+        return dto.getMaintenanceStatus().equals(status);
     }
 
     @Test
     @DisplayName("Dado apenas parâmetros padrões retorne todos os servicos abertos e fechados")
     void givenDefaultParams_ThenReturnAllServicos() {
 
-        final ResponseEntity<List<ServicoPneuListagemDto>> response = this.client
+        final ResponseEntity<List<TireMaintenanceDto>> response = this.client
                 .getServicosByFiltros(List.of(TEST_UNIDADE_ID), LIMIT, OFFSET);
         assertThat(response.getBody())
                 .satisfies(dtos -> {
@@ -57,7 +57,7 @@ public class ServicoPneuIT extends IntegrationTest {
     @DisplayName("Dado parâmetros padrões e status ABERTO, retorne todos os servicos abertos")
     void givenDefaultParamsAndStatusAberto_ThenReturnServicosAbertos() {
 
-        final ResponseEntity<List<ServicoPneuListagemDto>> response = this.client
+        final ResponseEntity<List<TireMaintenanceDto>> response = this.client
                 .getServicosByFiltros(List.of(TEST_UNIDADE_ID), ServicoPneuStatus.ABERTO, LIMIT, OFFSET);
 
         assertThat(response.getBody())
@@ -74,7 +74,7 @@ public class ServicoPneuIT extends IntegrationTest {
     @Test
     @DisplayName("Dado parâmetros padrões e status FECHADO, retorne todos os servicos fechados")
     void givenDefaultParamsAndStatusFechado_ThenReturnServicosFechados() {
-        final ResponseEntity<List<ServicoPneuListagemDto>> response = this.client
+        final ResponseEntity<List<TireMaintenanceDto>> response = this.client
                 .getServicosByFiltros(List.of(TEST_UNIDADE_ID), ServicoPneuStatus.FECHADO, LIMIT, OFFSET);
 
         assertThat(response.getBody())
@@ -92,7 +92,7 @@ public class ServicoPneuIT extends IntegrationTest {
     @DisplayName("Dado parâmetros padrões e codPneu, retorne todos os serviços com o codPneu")
     void givenDefaultParamsAndCodPneu_ThenReturnServicosWithCodPneu() {
         final long codPneu = 1000L;
-        final ResponseEntity<List<ServicoPneuListagemDto>> response = this.client
+        final ResponseEntity<List<TireMaintenanceDto>> response = this.client
                 .getServicosByFiltros(List.of(TEST_UNIDADE_ID), null, null, codPneu, LIMIT, OFFSET);
         assertThat(response.getBody())
                 .satisfies(dtos -> {
@@ -100,7 +100,7 @@ public class ServicoPneuIT extends IntegrationTest {
                             .isNotEmpty()
                             .hasSize(1)
                             .allMatch(this::containsTestCodUnidade)
-                            .allMatch(dto -> Objects.equals(codPneu, dto.getCodPneu()));
+                            .allMatch(dto -> Objects.equals(codPneu, dto.getTireId()));
                 });
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -109,7 +109,7 @@ public class ServicoPneuIT extends IntegrationTest {
     @DisplayName("Dado parâmetros padrões e codVeiculo, retorne todos os serviços com o codVeiculo")
     void givenDefaultParamsAndCodVeiculo_ThenReturnServicosWithCodVeiculo() {
         final long codVeiculo = 7945L;
-        final ResponseEntity<List<ServicoPneuListagemDto>> response = this.client
+        final ResponseEntity<List<TireMaintenanceDto>> response = this.client
                 .getServicosByFiltros(List.of(TEST_UNIDADE_ID), null, codVeiculo, null, LIMIT, OFFSET);
         assertThat(response.getBody())
                 .satisfies(dtos -> {
@@ -117,7 +117,7 @@ public class ServicoPneuIT extends IntegrationTest {
                             .isNotEmpty()
                             .hasSize(4)
                             .allMatch(this::containsTestCodUnidade)
-                            .allMatch(dto -> Objects.equals(codVeiculo, dto.getCodVeiculo()));
+                            .allMatch(dto -> Objects.equals(codVeiculo, dto.getVehicleId()));
                 });
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }

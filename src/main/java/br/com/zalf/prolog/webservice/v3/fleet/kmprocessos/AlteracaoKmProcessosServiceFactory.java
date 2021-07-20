@@ -7,8 +7,8 @@ import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder.ChecklistWorkOr
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.AlteracaoKmProcesso;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao.MovimentacaoProcessoService;
-import br.com.zalf.prolog.webservice.v3.fleet.servicopneu.ServicoPneuService;
 import br.com.zalf.prolog.webservice.v3.fleet.socorrorota.SocorroRotaService;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance.ServicoPneuService;
 import br.com.zalf.prolog.webservice.v3.fleet.transfer.VehicleTransferService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;

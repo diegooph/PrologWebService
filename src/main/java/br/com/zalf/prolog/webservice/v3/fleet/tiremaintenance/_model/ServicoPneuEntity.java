@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model;
+package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;

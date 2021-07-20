@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.servicopneu;
+package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
@@ -6,10 +6,10 @@ import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.FiltroServicoListagemDto;
-import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuListagemDto;
-import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuStatus;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.ServicoPneuEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.ServicoPneuStatus;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceFilter;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,31 +25,31 @@ import java.util.List;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @ConsoleDebugLog
-@Path("/api/v3/servicos-pneu")
+@Path("/api/v3/tire-maintenances")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @RestController
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class ServicoPneuResource implements ServicoPneuApiDoc {
+public class TireMaintenanceResource implements TireMaintenanceApiDoc {
     @NotNull
     private final ServicoPneuService service;
     @NotNull
-    private final ServicoPneuListagemMapper mapper;
+    private final TireMaintenanceMapper mapper;
 
     @GET
     @ApiExposed
     @Secured(permissions = Pilares.Frota.OrdemServico.Pneu.VISUALIZAR)
     @Override
-    public List<ServicoPneuListagemDto> getServicosByUnidadeAndStatus(
-            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
-            @QueryParam("statusServicoPneu") @Optional final ServicoPneuStatus status,
-            @QueryParam("codVeiculo") @Optional final Long codVeiculo,
-            @QueryParam("codPneu") @Optional final Long codPneu,
+    public List<TireMaintenanceDto> getAllTireMaintenance(
+            @QueryParam("branchesId") @Required final List<Long> branchesId,
+            @QueryParam("maintenanceStatus") @Optional final ServicoPneuStatus maintenanceStatus,
+            @QueryParam("vehicleId") @Optional final Long vehicleId,
+            @QueryParam("tireId") @Optional final Long tireId,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
-        final FiltroServicoListagemDto filtro =
-                FiltroServicoListagemDto.of(codUnidades, codVeiculo, codPneu, status, limit, offset);
-        final List<ServicoPneuEntity> servicosPneu = this.service.findServicosPneuByFilter(filtro);
-        return this.mapper.toDto(servicosPneu);
+        final TireMaintenanceFilter filter =
+                TireMaintenanceFilter.of(branchesId, maintenanceStatus, vehicleId, tireId, limit, offset);
+        final List<ServicoPneuEntity> tireMaintenances = this.service.getAllTireMaintenance(filter);
+        return mapper.toDto(tireMaintenances);
     }
 }

@@ -1,9 +1,9 @@
-package br.com.zalf.prolog.webservice.v3.fleet.servicopneu;
+package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
-import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuListagemDto;
-import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuStatus;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.ServicoPneuStatus;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceDto;
 import br.com.zalf.prolog.webservice.v3.validation.BranchesId;
 import io.swagger.annotations.*;
 
@@ -17,7 +17,7 @@ import java.util.List;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Api(value = "Serviços de pneus", hidden = true)
-public interface ServicoPneuApiDoc {
+public interface TireMaintenanceApiDoc {
 
     @ApiOperation(
             value = "Lista serviços de pneus abertos e fechados.",
@@ -25,24 +25,24 @@ public interface ServicoPneuApiDoc {
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200, message = "Operação efetuada com sucesso.",
-                    response = ServicoPneuListagemDto.class,
+                    response = TireMaintenanceDto.class,
                     responseContainer = "List"),
             @ApiResponse(code = 401, message = "Operação não autorizada", response = Response.class),
             @ApiResponse(code = 404, message = "Operação não encontrada", response = Response.class),
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
-    List<ServicoPneuListagemDto> getServicosByUnidadeAndStatus(
+    List<TireMaintenanceDto> getAllTireMaintenance(
             @ApiParam(value = "Lista de códigos de unidade.",
                       example = "215",
-                      required = true) @Required @BranchesId final List<Long> codUnidades,
+                      required = true) @Required @BranchesId final List<Long> branchesId,
             @ApiParam(value = "Status do serviço - Utilizado para filtrar serviços abertos ou fechados. Caso não " +
                     "deseje filtrar, basta não enviar esse parâmetro.",
                       example = "ABERTO",
-                      allowableValues = "ABERTO, FECHADO") @Optional final ServicoPneuStatus status,
+                      allowableValues = "ABERTO, FECHADO") @Optional final ServicoPneuStatus maintenanceStatus,
             @ApiParam(value = "Código do veículo - Utilizado para filtrar serviços de pneus em um veículo específico." +
-                    " Caso não deseje filtrar, basta não enviar esse parâmetro.") @Optional final Long codVeiculo,
+                    " Caso não deseje filtrar, basta não enviar esse parâmetro.") @Optional final Long vehicleId,
             @ApiParam(value = "Código do pneu - Utilizado para filtrar serviços de um pneu específico. Caso não " +
-                    "deseje filtrar, basta não enviar esse parâmetro.") @Optional final Long codPneu,
+                    "deseje filtrar, basta não enviar esse parâmetro.") @Optional final Long tireId,
             @Max(value = 1000, message = "O limite de busca é 1000 registros.")
             @ApiParam(value = "Limite de serviços de pneus retornados pela busca. O valor máximo é 1000.",
                       example = "1000",

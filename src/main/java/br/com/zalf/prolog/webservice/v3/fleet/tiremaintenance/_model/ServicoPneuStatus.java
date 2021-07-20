@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model;
+package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

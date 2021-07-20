@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.servicopneu.converter;
+package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance.converter;
 
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 

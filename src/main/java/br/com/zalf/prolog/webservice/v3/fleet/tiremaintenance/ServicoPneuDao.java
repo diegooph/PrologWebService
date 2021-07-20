@@ -1,6 +1,6 @@
-package br.com.zalf.prolog.webservice.v3.fleet.servicopneu;
+package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance;
 
-import br.com.zalf.prolog.webservice.v3.fleet.servicopneu._model.ServicoPneuEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.ServicoPneuEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Pageable;
