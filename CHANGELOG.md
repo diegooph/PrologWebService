@@ -13,6 +13,7 @@ Change Log
 * Adiciona código e nome das funcionalidades do dash para agrupamento (PL-3876)
 
 ### Refactors
+* Remove trava de empresa na propagação de km (PL-3699)
 * Mapeia corretamente erros do Spring nos endpoints V3
 
 ### Bug Fixes
