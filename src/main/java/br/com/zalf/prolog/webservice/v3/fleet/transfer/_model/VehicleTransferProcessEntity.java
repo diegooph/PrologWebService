@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.transferenciaveiculo._model;
+package br.com.zalf.prolog.webservice.v3.fleet.transfer._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,26 +21,30 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(schema = "public", name = "veiculo_transferencia_processo")
-public final class TransferenciaVeiculoProcessoEntity {
+public final class VehicleTransferProcessEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
+    @NotNull
+    private Long id;
     @Column(name = "cod_unidade_origem", nullable = false)
-    private Long codUnidadeOrigem;
+    @NotNull
+    private Long fromBranchId;
     @Column(name = "cod_unidade_destino", nullable = false)
-    private Long codUnidadeDestino;
+    @NotNull
+    private Long toBranchId;
     @Column(name = "cod_unidade_colaborador", nullable = false)
-    private Long codUnidadeColaborador;
+    @NotNull
+    private Long userBranchId;
     @OneToMany(mappedBy = "transferenciaVeiculoProcesso", fetch = FetchType.LAZY)
-    private Set<TransferenciaVeiculoInformacaoEntity> transferenciaVeiculoInformacoes;
+    @NotNull
+    private Set<VehicleTransferInfosEntity> vehicleTransferInfosEntities;
 
     @NotNull
-    public Optional<TransferenciaVeiculoInformacaoEntity> getInformacoesTransferenciaVeiculo(
-            @NotNull final Long codVeiculo) {
-        return transferenciaVeiculoInformacoes
+    public Optional<VehicleTransferInfosEntity> getVehicleTransferInfos(@NotNull final Long vehicleId) {
+        return vehicleTransferInfosEntities
                 .stream()
-                .filter(info -> info.getCodVeiculo().equals(codVeiculo))
+                .filter(info -> info.getVehicleId().equals(vehicleId))
                 .findFirst();
     }
 }

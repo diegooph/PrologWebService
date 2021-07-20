@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.transferenciaveiculo._model;
+package br.com.zalf.prolog.webservice.v3.fleet.transfer._model;
 
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.VeiculoKmColetado;
@@ -21,22 +21,25 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "public", name = "veiculo_transferencia_informacoes")
-public final class TransferenciaVeiculoInformacaoEntity implements EntityKmColetado {
+public final class VehicleTransferInfosEntity implements EntityKmColetado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
+    @NotNull
+    private Long id;
     @Column(name = "cod_veiculo", nullable = false)
-    private Long codVeiculo;
+    @NotNull
+    private Long vehicleId;
     @Column(name = "km_veiculo_momento_transferencia", nullable = false)
-    private long kmColetadoVeiculoMomentoTransferencia;
+    private long vehicleKm;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_processo_transferencia", nullable = false)
-    private TransferenciaVeiculoProcessoEntity transferenciaVeiculoProcesso;
+    @NotNull
+    private VehicleTransferProcessEntity transferProcessEntity;
 
     @NotNull
     @Override
     public VeiculoKmColetado getVeiculoKmColetado() {
-        return VeiculoKmColetado.of(codVeiculo, kmColetadoVeiculoMomentoTransferencia);
+        return VeiculoKmColetado.of(vehicleId, vehicleKm);
     }
 }

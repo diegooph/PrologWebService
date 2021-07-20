@@ -9,7 +9,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.KmProcessoAtual
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao.MovimentacaoProcessoService;
 import br.com.zalf.prolog.webservice.v3.fleet.servicopneu.ServicoPneuService;
 import br.com.zalf.prolog.webservice.v3.fleet.socorrorota.SocorroRotaService;
-import br.com.zalf.prolog.webservice.v3.fleet.transferenciaveiculo.TransferenciaVeiculoService;
+import br.com.zalf.prolog.webservice.v3.fleet.transfer.VehicleTransferService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class AlteracaoKmProcessosServiceFactory {
     @NotNull
     private final SocorroRotaService socorroRotaService;
     @NotNull
-    private final TransferenciaVeiculoService transferenciaVeiculoService;
+    private final VehicleTransferService vehicleTransferService;
 
     @NotNull
     public KmProcessoAtualizavel createService(@NotNull final AlteracaoKmProcesso alteracaoKmProcesso) {
@@ -54,7 +54,7 @@ public class AlteracaoKmProcessosServiceFactory {
             case SOCORRO_EM_ROTA:
                 return socorroRotaService;
             case TRANSFERENCIA_DE_VEICULOS:
-                return transferenciaVeiculoService;
+                return vehicleTransferService;
             case ACOPLAMENTO:
             case EDICAO_DE_VEICULOS:
             default:
