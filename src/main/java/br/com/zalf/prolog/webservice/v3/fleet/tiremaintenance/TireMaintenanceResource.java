@@ -6,10 +6,10 @@ import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.ServicoPneuEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.ServicoPneuStatus;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceFilter;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceStatus;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ import java.util.List;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class TireMaintenanceResource implements TireMaintenanceApiDoc {
     @NotNull
-    private final ServicoPneuService service;
+    private final TireMaintenanceService service;
     @NotNull
     private final TireMaintenanceMapper mapper;
 
@@ -42,14 +42,14 @@ public class TireMaintenanceResource implements TireMaintenanceApiDoc {
     @Override
     public List<TireMaintenanceDto> getAllTireMaintenance(
             @QueryParam("branchesId") @Required final List<Long> branchesId,
-            @QueryParam("maintenanceStatus") @Optional final ServicoPneuStatus maintenanceStatus,
+            @QueryParam("maintenanceStatus") @Optional final TireMaintenanceStatus maintenanceStatus,
             @QueryParam("vehicleId") @Optional final Long vehicleId,
             @QueryParam("tireId") @Optional final Long tireId,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
         final TireMaintenanceFilter filter =
                 TireMaintenanceFilter.of(branchesId, maintenanceStatus, vehicleId, tireId, limit, offset);
-        final List<ServicoPneuEntity> tireMaintenances = this.service.getAllTireMaintenance(filter);
+        final List<TireMaintenanceEntity> tireMaintenances = this.service.getAllTireMaintenance(filter);
         return mapper.toDto(tireMaintenances);
     }
 }

@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
-import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.ServicoPneuStatus;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceStatus;
 import br.com.zalf.prolog.webservice.v3.validation.BranchesId;
 import io.swagger.annotations.*;
 
@@ -38,7 +38,7 @@ public interface TireMaintenanceApiDoc {
             @ApiParam(value = "Status do serviço - Utilizado para filtrar serviços abertos ou fechados. Caso não " +
                     "deseje filtrar, basta não enviar esse parâmetro.",
                       example = "ABERTO",
-                      allowableValues = "ABERTO, FECHADO") @Optional final ServicoPneuStatus maintenanceStatus,
+                      allowableValues = "ABERTO, FECHADO") @Optional final TireMaintenanceStatus maintenanceStatus,
             @ApiParam(value = "Código do veículo - Utilizado para filtrar serviços de pneus em um veículo específico." +
                     " Caso não deseje filtrar, basta não enviar esse parâmetro.") @Optional final Long vehicleId,
             @ApiParam(value = "Código do pneu - Utilizado para filtrar serviços de um pneu específico. Caso não " +

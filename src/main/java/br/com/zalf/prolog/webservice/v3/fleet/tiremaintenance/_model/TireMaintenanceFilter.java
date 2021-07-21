@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created on 2021-05-21
@@ -18,11 +19,16 @@ public class TireMaintenanceFilter {
     @NotNull
     List<Long> branchesId;
     @Nullable
-    ServicoPneuStatus maintenanceStatus;
+    TireMaintenanceStatus maintenanceStatus;
     @Nullable
     Long vehicleId;
     @Nullable
     Long tireId;
     int limit;
     int offset;
+
+    @NotNull
+    public Optional<TireMaintenanceStatus> getMaintenanceStatus() {
+        return Optional.ofNullable(maintenanceStatus);
+    }
 }

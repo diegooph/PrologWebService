@@ -10,8 +10,9 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum ServicoPneuStatus {
-    ABERTO(false), FECHADO(true);
+public enum TireMaintenanceStatus {
+    ABERTO(false),
+    FECHADO(true);
 
-    private final Boolean asBoolean;
+    private final Boolean status;
 }

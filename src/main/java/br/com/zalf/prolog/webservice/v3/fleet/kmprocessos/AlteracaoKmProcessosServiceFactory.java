@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.AlteracaoKmProc
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao.MovimentacaoProcessoService;
 import br.com.zalf.prolog.webservice.v3.fleet.socorrorota.SocorroRotaService;
-import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance.ServicoPneuService;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance.TireMaintenanceService;
 import br.com.zalf.prolog.webservice.v3.fleet.transfer.VehicleTransferService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ public class AlteracaoKmProcessosServiceFactory {
     @NotNull
     private final AfericaoService afericaoService;
     @NotNull
-    private final ServicoPneuService servicoPneuService;
+    private final TireMaintenanceService tireMaintenanceService;
     @NotNull
     private final ChecklistService checklistService;
     @NotNull
@@ -44,7 +44,7 @@ public class AlteracaoKmProcessosServiceFactory {
             case AFERICAO:
                 return afericaoService;
             case FECHAMENTO_SERVICO_PNEU:
-                return servicoPneuService;
+                return tireMaintenanceService;
             case CHECKLIST:
                 return checklistService;
             case FECHAMENTO_ITEM_CHECKLIST:

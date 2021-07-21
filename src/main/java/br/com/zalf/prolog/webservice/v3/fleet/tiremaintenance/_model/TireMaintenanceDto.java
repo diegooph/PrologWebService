@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Data
-public class TireMaintenanceDto {
+public final class TireMaintenanceDto {
     @NotNull
     private final Long tireMaintenanceId;
     @NotNull
@@ -29,18 +29,18 @@ public class TireMaintenanceDto {
     private final String vehiclePlate;
     @Nullable
     private final String fleetId;
-    @Nullable
+    @NotNull
     private final Long tireId;
-    @Nullable
+    @NotNull
     private final String tireClientNumber;
-    @Nullable
+    @NotNull
     private final Long tireSizeId;
     @NotNull
     private final Long tireInspectionId;
     @Nullable
-    private final Double tirePressureInspection;
-    @Nullable
     private final Integer tireInspectionPosition;
+    @Nullable
+    private final Double tirePressureInspection;
     @Nullable
     private final Double tireInternalGroove;
     @Nullable
@@ -51,29 +51,31 @@ public class TireMaintenanceDto {
     private final Double tireExternalGroove;
     @Nullable
     private final Double tirePressure;
-    @Nullable
+    @NotNull
     private final Double tirePressureRecommended;
-    private final int vidaAtual;
-    private final int vidaTotal;
+    private final int timesRethreading;
+    private final int maxRetreads;
     @NotNull
     private final LocalDateTime openedAtUtc;
     @NotNull
-    private final ServicoPneuStatus maintenanceStatus;
+    private final TireMaintenanceStatus maintenanceStatus;
+    private final boolean resolvedAutomatically;
     @Nullable
     private final LocalDateTime resolvedAtUtc;
     @Nullable
-    private final Double psiInserida;
+    private final Long resolverUserId;
     @Nullable
-    private final Long kmConserto;
+    private final String resolverUserCpf;
     @Nullable
-    private final String problemaApontado;
-    private final boolean fechadoAutomaticamente;
+    private final String resolverUserName;
     @Nullable
-    private final FormaColetaDadosAfericaoEnum formaColetaDados;
+    private final Long vehicleKmAtResolution;
     @Nullable
-    private final String nomeMecanico;
+    private final Long tireProblemId;
     @Nullable
-    private final String cpfMecanico;
+    private final String tireProblemDescription;
     @Nullable
-    private final Long codMecanico;
+    private final Double tirePressureAfterMaintenance;
+    @Nullable
+    private final FormaColetaDadosAfericaoEnum dataInspectionType;
 }

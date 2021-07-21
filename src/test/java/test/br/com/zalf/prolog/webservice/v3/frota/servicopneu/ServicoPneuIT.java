@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
-import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.ServicoPneuStatus;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class ServicoPneuIT extends IntegrationTest {
         return dto.getTireMaintenanceBranchId().equals(TEST_UNIDADE_ID);
     }
 
-    private boolean containsStatus(final TireMaintenanceDto dto, final ServicoPneuStatus status) {
+    private boolean containsStatus(final TireMaintenanceDto dto, final TireMaintenanceStatus status) {
         return dto.getMaintenanceStatus().equals(status);
     }
 
@@ -46,8 +46,8 @@ public class ServicoPneuIT extends IntegrationTest {
                             .isNotEmpty()
                             .hasSize(LIMIT)
                             .allMatch(this::containsTestCodUnidade)
-                            .anyMatch(dto -> this.containsStatus(dto, ServicoPneuStatus.ABERTO))
-                            .anyMatch(dto -> this.containsStatus(dto, ServicoPneuStatus.FECHADO));
+                            .anyMatch(dto -> this.containsStatus(dto, TireMaintenanceStatus.ABERTO))
+                            .anyMatch(dto -> this.containsStatus(dto, TireMaintenanceStatus.FECHADO));
                 });
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -58,7 +58,7 @@ public class ServicoPneuIT extends IntegrationTest {
     void givenDefaultParamsAndStatusAberto_ThenReturnServicosAbertos() {
 
         final ResponseEntity<List<TireMaintenanceDto>> response = this.client
-                .getServicosByFiltros(List.of(TEST_UNIDADE_ID), ServicoPneuStatus.ABERTO, LIMIT, OFFSET);
+                .getServicosByFiltros(List.of(TEST_UNIDADE_ID), TireMaintenanceStatus.ABERTO, LIMIT, OFFSET);
 
         assertThat(response.getBody())
                 .satisfies(dtos -> {
@@ -66,7 +66,7 @@ public class ServicoPneuIT extends IntegrationTest {
                             .isNotEmpty()
                             .hasSize(2)
                             .allMatch(this::containsTestCodUnidade)
-                            .allMatch(dto -> this.containsStatus(dto, ServicoPneuStatus.ABERTO));
+                            .allMatch(dto -> this.containsStatus(dto, TireMaintenanceStatus.ABERTO));
                 });
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -75,7 +75,7 @@ public class ServicoPneuIT extends IntegrationTest {
     @DisplayName("Dado parâmetros padrões e status FECHADO, retorne todos os servicos fechados")
     void givenDefaultParamsAndStatusFechado_ThenReturnServicosFechados() {
         final ResponseEntity<List<TireMaintenanceDto>> response = this.client
-                .getServicosByFiltros(List.of(TEST_UNIDADE_ID), ServicoPneuStatus.FECHADO, LIMIT, OFFSET);
+                .getServicosByFiltros(List.of(TEST_UNIDADE_ID), TireMaintenanceStatus.FECHADO, LIMIT, OFFSET);
 
         assertThat(response.getBody())
                 .satisfies(dtos -> {
@@ -83,7 +83,7 @@ public class ServicoPneuIT extends IntegrationTest {
                             .isNotEmpty()
                             .hasSize(2)
                             .allMatch(this::containsTestCodUnidade)
-                            .allMatch(dto -> this.containsStatus(dto, ServicoPneuStatus.FECHADO));
+                            .allMatch(dto -> this.containsStatus(dto, TireMaintenanceStatus.FECHADO));
                 });
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }

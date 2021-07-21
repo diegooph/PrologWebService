@@ -3,8 +3,8 @@ package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance;
 import br.com.zalf.prolog.webservice.v3.fleet.afericao._model.AfericaoAlternativaEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.afericao.valores._model.AfericaoPneuValorEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.ColaboradorEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.ServicoPneuEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -20,51 +20,50 @@ import java.util.stream.Collectors;
 @Component
 public class TireMaintenanceMapper {
     @NotNull
-    public List<TireMaintenanceDto> toDto(@NotNull final List<ServicoPneuEntity> tireMaintenances) {
+    public List<TireMaintenanceDto> toDto(@NotNull final List<TireMaintenanceEntity> tireMaintenances) {
         return tireMaintenances.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     @NotNull
-    private TireMaintenanceDto toDto(@NotNull final ServicoPneuEntity tireMaintenance) {
+    private TireMaintenanceDto toDto(@NotNull final TireMaintenanceEntity tireMaintenance) {
         final Optional<AfericaoPneuValorEntity> valor = tireMaintenance.getValorAfericaoRelatedToPneu();
-        final Optional<ColaboradorEntity> mecanico = Optional.ofNullable(tireMaintenance.getMecanico());
-        final Optional<AfericaoAlternativaEntity> alternativa = Optional.ofNullable(tireMaintenance.getAlternativa());
-        return TireMaintenanceDto.builder()
-                .tireMaintenanceId(tireMaintenance.getCodigo())
-                .tireMaintenanceBranchId(tireMaintenance.getCodUnidade())
-                .tireMaintenanceType(tireMaintenance.getTipoServico())
-                .quantidadeApontamentos(tireMaintenance.getQuantidadeApontamentos())
-                .dataResolucao(tireMaintenance.getDataHoraResolucao())
-                .fechadoAutomaticamente(tireMaintenance.isFechadoAutomaticamente())
-                .formaColetaDados(tireMaintenance.getFormaColetaDadosFechamento())
-                .psiInserida(tireMaintenance.getPsiAposConserto())
-                .kmConserto(tireMaintenance.getKmColetadoVeiculoFechamentoServico())
-                .status(tireMaintenance.getStatus())
-                .codPneu(tireMaintenance.getPneu().getCodigo())
-                .codCliente(tireMaintenance.getPneu().getCodigoCliente())
-                .codDimensaoPneu(tireMaintenance.getPneu().getDimensaoPneu().getCodigo())
-                .sulcoInterno(tireMaintenance.getPneu().getAlturaSulcoInterno())
-                .sulcoCentralInterno(tireMaintenance.getPneu().getAlturaSulcoCentralInterno())
-                .sulcoCentralExterno(tireMaintenance.getPneu().getAlturaSulcoCentralExterno())
-                .sulcoExterno(tireMaintenance.getPneu().getAlturaSulcoExterno())
-                .menorSulco(tireMaintenance.getPneu().getMenorSulco())
-                .psi(tireMaintenance.getPneu().getPressaoAtual())
-                .psiRecomendada(tireMaintenance.getPneu().getPressaoRecomendada())
-                .vidaAtual(tireMaintenance.getPneu().getVidaAtual())
-                .vidaTotal(tireMaintenance.getPneu().getVidaTotal())
-                .psiAfericao(valor.map(AfericaoPneuValorEntity::getPsi).orElse(null))
-                .posicaoPneuAberturaServico(valor.map(AfericaoPneuValorEntity::getPosicao).orElse(null))
-                .codAfericao(tireMaintenance.getAfericao().getCodigo())
-                .dataHoraAbertura(tireMaintenance.getAfericao().getDataHora())
-                .codVeiculo(tireMaintenance.getAfericao().getVeiculo().getId())
-                .placa(tireMaintenance.getAfericao().getVeiculo().getPlate())
-                .identificadorFrota(tireMaintenance.getAfericao().getVeiculo().getFleetId())
-                .codMecanico(mecanico.map(ColaboradorEntity::getCodigo).orElse(null))
-                .nomeMecanico(mecanico.map(ColaboradorEntity::getNome).orElse(null))
-                .cpfMecanico(mecanico.map(ColaboradorEntity::getCpfFormatado).orElse(null))
-                .problemaApontado(alternativa.map(AfericaoAlternativaEntity::getAlternativa).orElse(null))
-                .build();
+        final Optional<ColaboradorEntity> resolverUser = tireMaintenance.getResolverUser();
+        final Optional<AfericaoAlternativaEntity> tireMaintenanceProblem = tireMaintenance.getTireMaintenanceProblem();
+        return new TireMaintenanceDto(
+                tireMaintenance.getId(),
+                tireMaintenance.getMaintenanceType(),
+                tireMaintenance.getBranchId(),
+                tireMaintenance.getAmountTimesPointed(),
+                tireMaintenance.getTireInspection().getVeiculo().getId(),
+                tireMaintenance.getTireInspection().getVeiculo().getPlate(),
+                tireMaintenance.getTireInspection().getVeiculo().getFleetId(),
+                tireMaintenance.getTire().getCodigo(),
+                tireMaintenance.getTire().getCodigoCliente(),
+                tireMaintenance.getTire().getDimensaoPneu().getCodigo(),
+                tireMaintenance.getTireInspection().getCodigo(),
+                valor.map(AfericaoPneuValorEntity::getPosicao).orElse(null),
+                valor.map(AfericaoPneuValorEntity::getPsi).orElse(null),
+                tireMaintenance.getTire().getAlturaSulcoInterno(),
+                tireMaintenance.getTire().getAlturaSulcoCentralInterno(),
+                tireMaintenance.getTire().getAlturaSulcoCentralExterno(),
+                tireMaintenance.getTire().getAlturaSulcoExterno(),
+                tireMaintenance.getTire().getPressaoAtual(),
+                tireMaintenance.getTire().getPressaoRecomendada(),
+                tireMaintenance.getTire().getVidaAtual(),
+                tireMaintenance.getTire().getVidaTotal(),
+                tireMaintenance.getTireInspection().getDataHora(),
+                tireMaintenance.getTireMaintenanceStatus(),
+                tireMaintenance.isResolvedAutomatically(),
+                tireMaintenance.getResolvedAt(),
+                resolverUser.map(ColaboradorEntity::getCodigo).orElse(null),
+                resolverUser.map(ColaboradorEntity::getCpfFormatado).orElse(null),
+                resolverUser.map(ColaboradorEntity::getNome).orElse(null),
+                tireMaintenance.getVehicleKmAtResolution(),
+                tireMaintenanceProblem.map(AfericaoAlternativaEntity::getCodigo).orElse(null),
+                tireMaintenanceProblem.map(AfericaoAlternativaEntity::getAlternativa).orElse(null),
+                tireMaintenance.getTirePressureAfterMaintenance(),
+                tireMaintenance.getDataInspectionType());
     }
 }

@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceDto;
-import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.ServicoPneuStatus;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -25,7 +25,7 @@ public class ServicoPneuApiClient {
     private TestRestTemplate restTemplate;
 
     public ResponseEntity<List<TireMaintenanceDto>> getServicosByFiltros(final List<Long> codUnidades,
-                                                                         final ServicoPneuStatus status,
+                                                                         final TireMaintenanceStatus status,
                                                                          final int limit,
                                                                          final int offset) {
         return getServicosByFiltros(codUnidades, status, null, null, limit, offset);
@@ -38,7 +38,7 @@ public class ServicoPneuApiClient {
     }
 
     public ResponseEntity<List<TireMaintenanceDto>> getServicosByFiltros(final List<Long> codUnidades,
-                                                                         final ServicoPneuStatus status,
+                                                                         final TireMaintenanceStatus status,
                                                                          final Long codVeiculo,
                                                                          final Long codPneu,
                                                                          final int limit,

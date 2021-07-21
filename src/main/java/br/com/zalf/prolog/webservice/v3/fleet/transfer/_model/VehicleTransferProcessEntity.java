@@ -36,7 +36,7 @@ public final class VehicleTransferProcessEntity {
     @Column(name = "cod_unidade_colaborador", nullable = false)
     @NotNull
     private Long userBranchId;
-    @OneToMany(mappedBy = "transferenciaVeiculoProcesso", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "transferProcessEntity", fetch = FetchType.LAZY)
     @NotNull
     private Set<VehicleTransferInfosEntity> vehicleTransferInfosEntities;
 
