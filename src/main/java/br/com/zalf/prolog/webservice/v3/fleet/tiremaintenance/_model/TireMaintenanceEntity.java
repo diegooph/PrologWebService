@@ -118,8 +118,8 @@ public final class TireMaintenanceEntity implements EntityKmColetado {
     @NotNull
     public TireMaintenanceStatus getTireMaintenanceStatus() {
         return isResolvedAutomatically() || resolverUser != null
-                ? TireMaintenanceStatus.FECHADO
-                : TireMaintenanceStatus.ABERTO;
+                ? TireMaintenanceStatus.RESOLVED
+                : TireMaintenanceStatus.OPEN;
     }
 
     @NotNull

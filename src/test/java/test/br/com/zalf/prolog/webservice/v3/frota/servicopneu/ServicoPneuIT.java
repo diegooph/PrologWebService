@@ -46,8 +46,8 @@ public class ServicoPneuIT extends IntegrationTest {
                             .isNotEmpty()
                             .hasSize(LIMIT)
                             .allMatch(this::containsTestCodUnidade)
-                            .anyMatch(dto -> this.containsStatus(dto, TireMaintenanceStatus.ABERTO))
-                            .anyMatch(dto -> this.containsStatus(dto, TireMaintenanceStatus.FECHADO));
+                            .anyMatch(dto -> this.containsStatus(dto, TireMaintenanceStatus.OPEN))
+                            .anyMatch(dto -> this.containsStatus(dto, TireMaintenanceStatus.RESOLVED));
                 });
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -58,7 +58,7 @@ public class ServicoPneuIT extends IntegrationTest {
     void givenDefaultParamsAndStatusAberto_ThenReturnServicosAbertos() {
 
         final ResponseEntity<List<TireMaintenanceDto>> response = this.client
-                .getServicosByFiltros(List.of(TEST_UNIDADE_ID), TireMaintenanceStatus.ABERTO, LIMIT, OFFSET);
+                .getServicosByFiltros(List.of(TEST_UNIDADE_ID), TireMaintenanceStatus.OPEN, LIMIT, OFFSET);
 
         assertThat(response.getBody())
                 .satisfies(dtos -> {
@@ -66,7 +66,7 @@ public class ServicoPneuIT extends IntegrationTest {
                             .isNotEmpty()
                             .hasSize(2)
                             .allMatch(this::containsTestCodUnidade)
-                            .allMatch(dto -> this.containsStatus(dto, TireMaintenanceStatus.ABERTO));
+                            .allMatch(dto -> this.containsStatus(dto, TireMaintenanceStatus.OPEN));
                 });
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -75,7 +75,7 @@ public class ServicoPneuIT extends IntegrationTest {
     @DisplayName("Dado parâmetros padrões e status FECHADO, retorne todos os servicos fechados")
     void givenDefaultParamsAndStatusFechado_ThenReturnServicosFechados() {
         final ResponseEntity<List<TireMaintenanceDto>> response = this.client
-                .getServicosByFiltros(List.of(TEST_UNIDADE_ID), TireMaintenanceStatus.FECHADO, LIMIT, OFFSET);
+                .getServicosByFiltros(List.of(TEST_UNIDADE_ID), TireMaintenanceStatus.RESOLVED, LIMIT, OFFSET);
 
         assertThat(response.getBody())
                 .satisfies(dtos -> {
@@ -83,7 +83,7 @@ public class ServicoPneuIT extends IntegrationTest {
                             .isNotEmpty()
                             .hasSize(2)
                             .allMatch(this::containsTestCodUnidade)
-                            .allMatch(dto -> this.containsStatus(dto, TireMaintenanceStatus.FECHADO));
+                            .allMatch(dto -> this.containsStatus(dto, TireMaintenanceStatus.RESOLVED));
                 });
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
