@@ -49,7 +49,7 @@ public class TireMaintenanceResource implements TireMaintenanceApiDoc {
             @QueryParam("offset") final int offset) {
         final TireMaintenanceFilter filter =
                 TireMaintenanceFilter.of(branchesId, maintenanceStatus, vehicleId, tireId, limit, offset);
-        final List<TireMaintenanceEntity> tireMaintenances = this.service.getAllTireMaintenance(filter);
+        final List<TireMaintenanceEntity> tireMaintenances = service.getAllTireMaintenance(filter);
         return mapper.toDto(tireMaintenances);
     }
 }

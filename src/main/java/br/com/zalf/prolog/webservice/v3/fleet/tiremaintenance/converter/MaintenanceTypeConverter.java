@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance.converter;
 
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -11,14 +12,14 @@ import javax.persistence.Converter;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Converter(autoApply = true)
-public class TipoServicoConverter implements AttributeConverter<TipoServico, String> {
+public class MaintenanceTypeConverter implements AttributeConverter<TipoServico, String> {
     @Override
-    public String convertToDatabaseColumn(final TipoServico tipoServico) {
+    public String convertToDatabaseColumn(@NotNull final TipoServico tipoServico) {
         return tipoServico.asString();
     }
 
     @Override
-    public TipoServico convertToEntityAttribute(final String s) {
+    public TipoServico convertToEntityAttribute(@NotNull final String s) {
         return TipoServico.fromString(s);
     }
 }

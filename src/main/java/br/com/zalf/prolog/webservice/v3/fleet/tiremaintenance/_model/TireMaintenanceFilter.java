@@ -31,4 +31,9 @@ public class TireMaintenanceFilter {
     public Optional<TireMaintenanceStatus> getMaintenanceStatus() {
         return Optional.ofNullable(maintenanceStatus);
     }
+
+    @Nullable
+    public Boolean getMaintenanceStatusAsBoolean() {
+        return getMaintenanceStatus().map(TireMaintenanceStatus::getStatus).orElse(null);
+    }
 }

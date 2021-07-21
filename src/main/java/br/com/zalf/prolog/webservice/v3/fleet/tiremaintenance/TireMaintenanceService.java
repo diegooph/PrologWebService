@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetad
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceFilter;
-import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceStatus;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +45,7 @@ public class TireMaintenanceService implements KmProcessoAtualizavel {
         return tireMaintenanceDao.getAllTireMaintenance(filter.getBranchesId(),
                                                         filter.getVehicleId(),
                                                         filter.getTireId(),
-                                                        filter.getMaintenanceStatus()
-                                                                .map(TireMaintenanceStatus::getStatus)
-                                                                .orElse(null),
+                                                        filter.getMaintenanceStatusAsBoolean(),
                                                         OffsetBasedPageRequest.of(filter.getLimit(),
                                                                                   filter.getOffset(),
                                                                                   Sort.unsorted()));
