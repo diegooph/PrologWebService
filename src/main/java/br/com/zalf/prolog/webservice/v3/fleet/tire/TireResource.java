@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.pneu;
+package br.com.zalf.prolog.webservice.v3.fleet.tire;
 
 import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
@@ -9,8 +9,8 @@ import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.PneuCadastroDto;
-import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.PneuListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireCreateDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,15 +27,15 @@ import java.util.List;
  */
 @Controller
 @ConsoleDebugLog
-@Path("/api/v3/pneus")
+@Path("/api/v3/tires")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class PneuResource implements PneuApiDoc {
+public class TireResource implements TireApiDoc {
     @NotNull
-    private final PneuService service;
+    private final TireService service;
 
     @Autowired
-    public PneuResource(@NotNull final PneuService service) {
+    public TireResource(@NotNull final TireService service) {
         this.service = service;
     }
 
@@ -44,10 +44,10 @@ public class PneuResource implements PneuApiDoc {
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Override
     public SuccessResponse insert(
-            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Optional final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Optional final String integrationToken,
             @QueryParam("ignoreDotValidation") @DefaultValue("true") final boolean ignoreDotValidation,
-            @Valid final PneuCadastroDto pneuCadastro) throws Throwable {
-        return this.service.insert(tokenIntegracao, pneuCadastro, ignoreDotValidation);
+            @Valid final TireCreateDto tireCreateDto) throws Throwable {
+        return service.insert(integrationToken, tireCreateDto, ignoreDotValidation);
     }
 
     @Override
@@ -61,11 +61,11 @@ public class PneuResource implements PneuApiDoc {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
-    public List<PneuListagemDto> getPneusByStatus(
-            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
-            @QueryParam("statusPneu") @Optional final StatusPneu statusPneu,
+    public List<TireDto> getAllTires(
+            @QueryParam("branchesId") @Required final List<Long> branchesId,
+            @QueryParam("tireStatus") @Optional final StatusPneu tireStatus,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
-        return service.getPneusByStatus(codUnidades, statusPneu, limit, offset);
+        return service.getAllTires(branchesId, tireStatus, limit, offset);
     }
 }

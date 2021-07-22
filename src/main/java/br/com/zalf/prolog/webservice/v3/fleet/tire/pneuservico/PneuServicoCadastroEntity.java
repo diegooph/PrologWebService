@@ -1,7 +1,8 @@
-package br.com.zalf.prolog.webservice.v3.fleet.pneu.pneuservico;
+package br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -12,21 +13,20 @@ import javax.persistence.*;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Entity
-@Table(name = "pneu_servico_realizado_incrementa_vida", schema = "public")
+@Table(name = "pneu_servico_cadastro", schema = "public")
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PneuServicoRealizadoIncrementaVidaEntity {
+public class PneuServicoCadastroEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private Long codigo;
+    @Column(name = "cod_pneu", nullable = false)
+    private Long codPneu;
     @Column(name = "cod_servico_realizado", nullable = false)
     private Long codServicoRealizado;
-    @Column(name = "cod_modelo_banda", nullable = false)
-    private Long codModeloBanda;
-    @Column(name = "vida_nova_pneu", nullable = false)
-    private Integer vidaNovaPneu;
     @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
     private String fonteServicoRealizado;
 }

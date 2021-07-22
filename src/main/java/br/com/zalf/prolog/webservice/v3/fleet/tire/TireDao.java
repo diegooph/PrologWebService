@@ -1,7 +1,7 @@
-package br.com.zalf.prolog.webservice.v3.fleet.pneu;
+package br.com.zalf.prolog.webservice.v3.fleet.tire;
 
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
-import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.PneuEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.PneuEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +18,7 @@ import java.util.List;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Repository
-public interface PneuDao extends JpaRepository<PneuEntity, Long> {
+public interface TireDao extends JpaRepository<PneuEntity, Long> {
     @NotNull
     @Query("select p from PneuEntity p " +
                    "join fetch p.unidade u " +
@@ -38,15 +38,15 @@ public interface PneuDao extends JpaRepository<PneuEntity, Long> {
                    "left join fetch mov.movimentacaoOrigem " +
                    "left join fetch mov.movimentacaoProcesso movP " +
                    "left join fetch movP.colaboradorRealizacaoProcesso c " +
-                   "where u.id in :codUnidades " +
-                   "and (:statusPneu is null or p.status = :statusPneu) " +
+                   "where u.id in :branchesId " +
+                   "and (:tireStatus is null or p.status = :tireStatus) " +
                    "order by p.codigo asc")
-    List<PneuEntity> getPneusByStatus(@NotNull final List<Long> codUnidades,
-                                      @Nullable final StatusPneu statusPneu,
-                                      @NotNull final Pageable pageable);
+    List<PneuEntity> getAllTires(@NotNull final List<Long> branchesId,
+                                 @Nullable final StatusPneu tireStatus,
+                                 @NotNull final Pageable pageable);
 
     @Modifying
-    @Query("update PneuEntity p set p.status = :statusPneu where p.codigo = :codPneu")
-    void updateStatus(@NotNull final Long codPneu,
-                      @NotNull final StatusPneu statusPneu);
+    @Query("update PneuEntity p set p.status = :tireStatus where p.codigo = :tireId")
+    void updateTireStatus(@NotNull final Long tireId,
+                          @NotNull final StatusPneu tireStatus);
 }

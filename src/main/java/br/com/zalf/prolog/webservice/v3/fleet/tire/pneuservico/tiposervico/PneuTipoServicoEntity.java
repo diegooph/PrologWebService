@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.pneu.pneuservico.tiposervico;
+package br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.tiposervico;
 
 import lombok.Data;
 import lombok.Getter;

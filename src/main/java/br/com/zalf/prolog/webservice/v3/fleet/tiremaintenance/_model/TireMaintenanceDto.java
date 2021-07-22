@@ -53,7 +53,7 @@ public final class TireMaintenanceDto {
     private final Double tirePressure;
     @NotNull
     private final Double tirePressureRecommended;
-    private final int timesRethreading;
+    private final int timesRetreaded;
     private final int maxRetreads;
     @NotNull
     private final LocalDateTime openedAtUtc;

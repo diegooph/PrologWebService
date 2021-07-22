@@ -2,8 +2,8 @@ package test.br.com.zalf.prolog.webservice.v3.frota.pneu;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
-import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.PneuCadastroDto;
-import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.PneuListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireCreateDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class PneuIT extends IntegrationTest {
     @Test
     @DisplayName("given correct PneuCadastro to insert, then return status created")
     void givenCorrectPneuCadastroToInsert_ThenReturnStatusCreated() {
-        final PneuCadastroDto pneuForCreation = PneuCadastroFactory.createCorrectPneuCadastro();
+        final TireCreateDto pneuForCreation = PneuCadastroFactory.createCorrectPneuCadastro();
         final ResponseEntity<SuccessResponse> response = client.insert(pneuForCreation);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -35,9 +35,9 @@ public class PneuIT extends IntegrationTest {
     @Test
     @DisplayName("given parameters to search, then return a list of pneus")
     void givenParametersToSearch_ThenReturnListOfPneus() {
-        final ResponseEntity<List<PneuListagemDto>> response =
+        final ResponseEntity<List<TireDto>> response =
                 client.getPneusByStatus(List.of(215L), null, 1000, 0);
-        final List<PneuListagemDto> pneus = response.getBody();
+        final List<TireDto> pneus = response.getBody();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(pneus).isNotNull();
         assertThat(pneus).isNotEmpty();

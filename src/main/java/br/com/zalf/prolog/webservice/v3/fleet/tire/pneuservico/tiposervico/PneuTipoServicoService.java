@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.pneu.pneuservico.tiposervico;
+package br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.tiposervico;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.fleet.afericao.valores._model;
 
 import br.com.zalf.prolog.webservice.v3.fleet.afericao._model.AfericaoEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.PneuEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.PneuEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

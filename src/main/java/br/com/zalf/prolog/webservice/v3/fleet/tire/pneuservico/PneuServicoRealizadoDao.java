@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.pneu.pneuservico;
+package br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -9,6 +9,5 @@ import org.springframework.stereotype.Repository;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Repository
-public interface PneuServicoRealizadoIncrementaVidaDao
-        extends JpaRepository<PneuServicoRealizadoIncrementaVidaEntity, Long> {
+public interface PneuServicoRealizadoDao extends JpaRepository<PneuServicoRealizadoEntity, Long> {
 }

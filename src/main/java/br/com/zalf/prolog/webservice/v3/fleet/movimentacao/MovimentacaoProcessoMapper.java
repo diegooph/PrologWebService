@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.v3.fleet.movimentacao;
 
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.*;
-import br.com.zalf.prolog.webservice.v3.fleet.pneu._model.PneuEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.pneu.pneuservico.PneuServicoRealizadoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.PneuEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.PneuServicoRealizadoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
