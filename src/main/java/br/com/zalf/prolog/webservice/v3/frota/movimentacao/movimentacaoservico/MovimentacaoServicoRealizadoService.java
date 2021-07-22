@@ -27,7 +27,7 @@ public class MovimentacaoServicoRealizadoService {
     @NotNull
     private final MovimentacaoPneuServicoRealizadoRecapadoraDao movimentacaoPneuServicoRealizadoRecapadoraDao;
 
-     public void insertMovimentacaoServicoPneu(@NotNull final MovimentacaoEntity movimentacaoEntity) {
+    public void insertMovimentacaoServicoPneu(@NotNull final MovimentacaoEntity movimentacaoEntity) {
         validaServicosRealizados(movimentacaoEntity.getPneu().getCodigo(), movimentacaoEntity.getServicosRealizados());
         movimentacaoEntity.getServicosRealizados()
                 .forEach(pneuServicoRealizado -> saveServicoRealizadoPneu(movimentacaoEntity, pneuServicoRealizado));
@@ -37,16 +37,16 @@ public class MovimentacaoServicoRealizadoService {
                                           @NotNull final PneuServicoRealizadoEntity pneuServicoRealizadoEntity) {
         final PneuServicoRealizadoEntity servicoRealizadoEntitySaved =
                 pneuServicoService.insertServicoPneu(pneuServicoRealizadoEntity.getPneuServicoRealizado(),
-                        pneuServicoRealizadoEntity.getCusto(),
-                        pneuServicoRealizadoEntity.getTipoServico(),
-                        PneuServicoRealizado.FONTE_MOVIMENTACAO);
+                                                     pneuServicoRealizadoEntity.getCusto(),
+                                                     pneuServicoRealizadoEntity.getTipoServico(),
+                                                     PneuServicoRealizado.FONTE_MOVIMENTACAO);
 
         insertMovimentacaoPneuServicoRealizado(movimentacaoEntity.getCodigo(), servicoRealizadoEntitySaved.getCodigo());
 
         final Long codRecapadora = movimentacaoEntity.getMovimentacaoDestino().getRecapadora().getCodigo();
         insertMovimentacaoPneuServicoRealizadoRecapadora(movimentacaoEntity.getCodigo(),
-                servicoRealizadoEntitySaved.getCodigo(),
-                codRecapadora);
+                                                         servicoRealizadoEntitySaved.getCodigo(),
+                                                         codRecapadora);
     }
 
     private void insertMovimentacaoPneuServicoRealizado(

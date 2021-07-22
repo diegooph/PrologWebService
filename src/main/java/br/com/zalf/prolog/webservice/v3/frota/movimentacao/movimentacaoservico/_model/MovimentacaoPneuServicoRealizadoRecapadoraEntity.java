@@ -32,7 +32,9 @@ public class MovimentacaoPneuServicoRealizadoRecapadoraEntity {
     private Long codServicoRealizadoMovimentacao;
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cod_servico_realizado_movimentacao", referencedColumnName = "cod_servico_realizado", nullable = false)
+    @JoinColumn(name = "cod_servico_realizado_movimentacao",
+                referencedColumnName = "cod_servico_realizado",
+                nullable = false)
     private MovimentacaoPneuServicoRealizadoEntity movimentacaoPneuServicoRealizado;
     @Id
     @Column(name = "cod_recapadora", nullable = false)

@@ -63,12 +63,12 @@ public final class MovimentacaoProcessoResource implements MovimentacaoProcessoA
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
         return mapper.toDto(service.getListagemMovimentacoes(codUnidades,
-                dataInicial,
-                dataFinal,
-                codColaborador,
-                codVeiculo,
-                codPneu,
-                limit,
-                offset));
+                                                             dataInicial,
+                                                             dataFinal,
+                                                             codColaborador,
+                                                             codVeiculo,
+                                                             codPneu,
+                                                             limit,
+                                                             offset));
     }
 }
