@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.v3.fleet.kmprocessos;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
-import br.com.zalf.prolog.webservice.v3.fleet.afericao.AfericaoService;
 import br.com.zalf.prolog.webservice.v3.fleet.checklist.ChecklistService;
 import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder.ChecklistWorkOrderService;
+import br.com.zalf.prolog.webservice.v3.fleet.inspection.InspectionService;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.AlteracaoKmProcesso;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao.MovimentacaoProcessoService;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AlteracaoKmProcessosServiceFactory {
     @NotNull
-    private final AfericaoService afericaoService;
+    private final InspectionService inspectionService;
     @NotNull
     private final TireMaintenanceService tireMaintenanceService;
     @NotNull
@@ -42,7 +42,7 @@ public class AlteracaoKmProcessosServiceFactory {
     public KmProcessoAtualizavel createService(@NotNull final AlteracaoKmProcesso alteracaoKmProcesso) {
         switch (alteracaoKmProcesso.getTipoProcesso()) {
             case AFERICAO:
-                return afericaoService;
+                return inspectionService;
             case FECHAMENTO_SERVICO_PNEU:
                 return tireMaintenanceService;
             case CHECKLIST:

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.afericao._model;
+package br.com.zalf.prolog.webservice.v3.fleet.inspection._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoColetaAfericao;
@@ -8,11 +8,24 @@ import org.springframework.beans.factory.annotation.Value;
 import java.time.LocalDateTime;
 
 /**
- * Created on 2021-02-11
+ * Created on 2021-02-09
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-public interface AfericaoAvulsaProjection {
+public interface VehicleInspectionProjection {
+
+    @Value("#{target.COD_VEICULO}")
+    Long getCodVeiculo();
+
+    @Value("#{target.PLACA_VEICULO}")
+    String getPlacaVeiculo();
+
+    @Value("#{target.IDENTIFICADOR_FROTA}")
+    String getIdentificadorFrota();
+
+    @Value("#{target.KM_VEICULO}")
+    Long getKmVeiculo();
+
     @Value("#{target.COD_AFERICAO}")
     Long getCodigo();
 
@@ -38,7 +51,7 @@ public interface AfericaoAvulsaProjection {
     FormaColetaDadosAfericaoEnum getFormaColetaDadosAfericao();
 
     @Value("#{target.COD_COLABORADOR}")
-    Long getCodColaboradroAferidor();
+    Long getCodColaboradorAferidor();
 
     @Value("#{target.CPF}")
     String getCpfAferidor();

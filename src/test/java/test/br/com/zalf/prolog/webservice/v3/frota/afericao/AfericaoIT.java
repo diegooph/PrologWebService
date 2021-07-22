@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.afericao;
 
-import br.com.zalf.prolog.webservice.v3.fleet.afericao._model.AfericaoAvulsaDto;
-import br.com.zalf.prolog.webservice.v3.fleet.afericao._model.AfericaoPlacaDto;
+import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.TireInspectionDto;
+import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.VehicleInspectionDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +26,14 @@ public class AfericaoIT extends IntegrationTest {
     @Test
     @DisplayName("Dado parâmetros corretos, retorne List<AfericaoPlacaDto> e status OK")
     void givenCorrectParameters_ThenReturnListAfericaoPlacaDtoAndStatusOk() {
-        final ResponseEntity<List<AfericaoPlacaDto>> response =
+        final ResponseEntity<List<VehicleInspectionDto>> response =
                 client.getAfericoesPlacas(List.of(215L),
                                           "2019-01-01",
                                           LocalDate.now().toString(),
                                           100,
                                           0);
         final HttpStatus status = response.getStatusCode();
-        final List<AfericaoPlacaDto> body = response.getBody();
+        final List<VehicleInspectionDto> body = response.getBody();
         assertThat(status).isEqualTo(HttpStatus.OK);
         assertThat(body).isNotNull();
         assertThat(body.stream().findFirst().get()).isNotNull();
@@ -42,7 +42,7 @@ public class AfericaoIT extends IntegrationTest {
     @Test
     @DisplayName("Dado parâmetros corretos, retorne List<AfericaoAvulsaDto> e status OK")
     void givenCorrectParameters_ThenReturnListAfericaoAvulsaDtoAndStatusOk() {
-        final ResponseEntity<List<AfericaoAvulsaDto>> response =
+        final ResponseEntity<List<TireInspectionDto>> response =
                 client.getAfericoesAvulsas(List.of(215L),
                                            "2019-01-01",
                                            LocalDate.now().toString(),
@@ -50,7 +50,7 @@ public class AfericaoIT extends IntegrationTest {
                                            0);
 
         final HttpStatus status = response.getStatusCode();
-        final List<AfericaoAvulsaDto> body = response.getBody();
+        final List<TireInspectionDto> body = response.getBody();
         assertThat(status).isEqualTo(HttpStatus.OK);
         assertThat(body).isNotNull();
         assertThat(body.stream().findFirst().get()).isNotNull();

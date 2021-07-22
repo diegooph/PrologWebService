@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.afericao.converter;
+package br.com.zalf.prolog.webservice.v3.fleet.inspection.converter;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +12,7 @@ import javax.persistence.Converter;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Converter(autoApply = true)
-public class FormaColetaDadosConverter implements AttributeConverter<FormaColetaDadosAfericaoEnum, String> {
+public class DataInspectionTypeConverter implements AttributeConverter<FormaColetaDadosAfericaoEnum, String> {
     @Override
     @Nullable
     public String convertToDatabaseColumn(@Nullable final FormaColetaDadosAfericaoEnum formaColetaDados) {

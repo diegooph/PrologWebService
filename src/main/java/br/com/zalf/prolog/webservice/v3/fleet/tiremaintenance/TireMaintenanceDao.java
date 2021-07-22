@@ -20,12 +20,12 @@ public interface TireMaintenanceDao extends JpaRepository<TireMaintenanceEntity,
     @NotNull
     @Query("select tm from TireMaintenanceEntity tm " +
                    "join fetch tm.tire t " +
-                   "join fetch tm.tireInspection ti " +
-                   "join fetch ti.veiculo v " +
-                   "join fetch ti.valoresAfericao va " +
-                   "join fetch va.pneu vapkp " +
+                   "join fetch tm.inspectionEntity ti " +
+                   "join fetch ti.vehicleEntity v " +
+                   "join fetch ti.inspectionMeasureEntities va " +
+                   "join fetch va.tireEntity vapkp " +
                    "left join fetch tm.resolverUser ru " +
-                   "left join fetch tm.tireMaintenanceProblem tmp " +
+                   "left join fetch tm.tireMaintenanceProblemEntity tmp " +
                    "where tm.branchId in :branchesId " +
                    "and (:maintenanceStatus is null " +
                    "or (:maintenanceStatus = true and (tm.isResolvedAutomatically = true or ru is not null)) " +

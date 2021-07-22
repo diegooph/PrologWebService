@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance;
 
-import br.com.zalf.prolog.webservice.v3.fleet.afericao._model.AfericaoAlternativaEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.afericao.valores._model.AfericaoPneuValorEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.InspectionMeasureEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.ColaboradorEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceProblemEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -28,23 +28,24 @@ public class TireMaintenanceMapper {
 
     @NotNull
     private TireMaintenanceDto toDto(@NotNull final TireMaintenanceEntity tireMaintenance) {
-        final Optional<AfericaoPneuValorEntity> valor = tireMaintenance.getValorAfericaoRelatedToPneu();
+        final Optional<InspectionMeasureEntity> valor = tireMaintenance.getValorAfericaoRelatedToPneu();
         final Optional<ColaboradorEntity> resolverUser = tireMaintenance.getResolverUser();
-        final Optional<AfericaoAlternativaEntity> tireMaintenanceProblem = tireMaintenance.getTireMaintenanceProblem();
+        final Optional<TireMaintenanceProblemEntity> tireMaintenanceProblem =
+                tireMaintenance.getTireMaintenanceProblemEntity();
         return new TireMaintenanceDto(
                 tireMaintenance.getId(),
                 tireMaintenance.getMaintenanceType(),
                 tireMaintenance.getBranchId(),
                 tireMaintenance.getAmountTimesPointed(),
-                tireMaintenance.getTireInspection().getVeiculo().getId(),
-                tireMaintenance.getTireInspection().getVeiculo().getPlate(),
-                tireMaintenance.getTireInspection().getVeiculo().getFleetId(),
+                tireMaintenance.getInspectionEntity().getVehicleEntity().getId(),
+                tireMaintenance.getInspectionEntity().getVehicleEntity().getPlate(),
+                tireMaintenance.getInspectionEntity().getVehicleEntity().getFleetId(),
                 tireMaintenance.getTire().getId(),
                 tireMaintenance.getTire().getClientNumber(),
                 tireMaintenance.getTire().getTireSizeEntity().getId(),
-                tireMaintenance.getTireInspection().getCodigo(),
-                valor.map(AfericaoPneuValorEntity::getPosicao).orElse(null),
-                valor.map(AfericaoPneuValorEntity::getPsi).orElse(null),
+                tireMaintenance.getInspectionEntity().getId(),
+                valor.map(InspectionMeasureEntity::getTirePositionApplied).orElse(null),
+                valor.map(InspectionMeasureEntity::getMeasuredPressure).orElse(null),
                 tireMaintenance.getTire().getInternalGroove(),
                 tireMaintenance.getTire().getMiddleInternalGroove(),
                 tireMaintenance.getTire().getMiddleExternalGroove(),
@@ -53,7 +54,7 @@ public class TireMaintenanceMapper {
                 tireMaintenance.getTire().getRecommendedPressure(),
                 tireMaintenance.getTire().getTimesRetreaded(),
                 tireMaintenance.getTire().getMaxRetreads(),
-                tireMaintenance.getTireInspection().getDataHora(),
+                tireMaintenance.getInspectionEntity().getInspectedAt(),
                 tireMaintenance.getTireMaintenanceStatus(),
                 tireMaintenance.isResolvedAutomatically(),
                 tireMaintenance.getResolvedAt(),
@@ -61,8 +62,8 @@ public class TireMaintenanceMapper {
                 resolverUser.map(ColaboradorEntity::getCpfFormatado).orElse(null),
                 resolverUser.map(ColaboradorEntity::getNome).orElse(null),
                 tireMaintenance.getVehicleKmAtResolution(),
-                tireMaintenanceProblem.map(AfericaoAlternativaEntity::getCodigo).orElse(null),
-                tireMaintenanceProblem.map(AfericaoAlternativaEntity::getAlternativa).orElse(null),
+                tireMaintenanceProblem.map(TireMaintenanceProblemEntity::getId).orElse(null),
+                tireMaintenanceProblem.map(TireMaintenanceProblemEntity::getName).orElse(null),
                 tireMaintenance.getTirePressureAfterMaintenance(),
                 tireMaintenance.getDataInspectionType());
     }

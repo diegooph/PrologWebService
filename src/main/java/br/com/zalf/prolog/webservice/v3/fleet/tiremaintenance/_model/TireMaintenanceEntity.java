@@ -3,9 +3,8 @@ package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.v3.LocalDateTimeUtcAttributeConverter;
-import br.com.zalf.prolog.webservice.v3.fleet.afericao._model.AfericaoAlternativaEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.afericao._model.AfericaoEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.afericao.valores._model.AfericaoPneuValorEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.InspectionEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.InspectionMeasureEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.VeiculoKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.ColaboradorEntity;
@@ -46,7 +45,7 @@ public final class TireMaintenanceEntity implements EntityKmColetado {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_afericao", nullable = false)
     @NotNull
-    private AfericaoEntity tireInspection;
+    private InspectionEntity inspectionEntity;
     @Column(name = "km_momento_conserto")
     @Nullable
     private Long vehicleKmAtResolution;
@@ -74,7 +73,7 @@ public final class TireMaintenanceEntity implements EntityKmColetado {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_alternativa", referencedColumnName = "codigo")
     @Nullable
-    private AfericaoAlternativaEntity tireMaintenanceProblem;
+    private TireMaintenanceProblemEntity tireMaintenanceProblemEntity;
     @Column(name = "tempo_realizacao_millis")
     @Nullable
     private Long resolutionAmountTimeInMilliseconds;
@@ -101,12 +100,12 @@ public final class TireMaintenanceEntity implements EntityKmColetado {
         if (vehicleKmAtResolution == null) {
             throw new IllegalStateException("O KM não pode ser null!");
         }
-        return VeiculoKmColetado.of(tireInspection.getVeiculo().getId(), vehicleKmAtResolution);
+        return VeiculoKmColetado.of(inspectionEntity.getVehicleEntity().getId(), vehicleKmAtResolution);
     }
 
     @NotNull
-    public Optional<AfericaoAlternativaEntity> getTireMaintenanceProblem() {
-        return Optional.ofNullable(tireMaintenanceProblem);
+    public Optional<TireMaintenanceProblemEntity> getTireMaintenanceProblemEntity() {
+        return Optional.ofNullable(tireMaintenanceProblemEntity);
     }
 
     @NotNull
@@ -123,9 +122,9 @@ public final class TireMaintenanceEntity implements EntityKmColetado {
     }
 
     @NotNull
-    public Optional<AfericaoPneuValorEntity> getValorAfericaoRelatedToPneu() {
-        return tireInspection.getValoresAfericao().stream()
-                .filter(valor -> Objects.equals(valor.getPneu(), tire))
+    public Optional<InspectionMeasureEntity> getValorAfericaoRelatedToPneu() {
+        return inspectionEntity.getInspectionMeasureEntities().stream()
+                .filter(measureEntity -> Objects.equals(measureEntity.getTireEntity(), tire))
                 .findFirst();
     }
 }

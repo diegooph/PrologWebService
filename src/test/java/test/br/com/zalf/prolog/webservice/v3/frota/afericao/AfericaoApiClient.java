@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.afericao;
 
-import br.com.zalf.prolog.webservice.v3.fleet.afericao._model.AfericaoAvulsaDto;
-import br.com.zalf.prolog.webservice.v3.fleet.afericao._model.AfericaoPlacaDto;
+import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.TireInspectionDto;
+import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.VehicleInspectionDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -30,11 +30,11 @@ public class AfericaoApiClient {
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<List<AfericaoPlacaDto>> getAfericoesPlacas(@NotNull final List<Long> codUnidades,
-                                                                     @NotNull final String dataInicial,
-                                                                     @NotNull final String dataFinal,
-                                                                     final int limit,
-                                                                     final int offset) {
+    public ResponseEntity<List<VehicleInspectionDto>> getAfericoesPlacas(@NotNull final List<Long> codUnidades,
+                                                                         @NotNull final String dataInicial,
+                                                                         @NotNull final String dataFinal,
+                                                                         final int limit,
+                                                                         final int offset) {
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
                 .path("/veiculos")
@@ -51,11 +51,11 @@ public class AfericaoApiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
 
-        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<AfericaoPlacaDto>>() {});
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<VehicleInspectionDto>>() {});
     }
 
     @NotNull
-    public ResponseEntity<List<AfericaoAvulsaDto>> getAfericoesAvulsas(@NotNull final List<Long> codUnidades,
+    public ResponseEntity<List<TireInspectionDto>> getAfericoesAvulsas(@NotNull final List<Long> codUnidades,
                                                                        @NotNull final String dataInicial,
                                                                        @NotNull final String dataFinal,
                                                                        final int limit,
@@ -76,6 +76,6 @@ public class AfericaoApiClient {
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<AfericaoAvulsaDto>>() {});
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<TireInspectionDto>>() {});
     }
 }

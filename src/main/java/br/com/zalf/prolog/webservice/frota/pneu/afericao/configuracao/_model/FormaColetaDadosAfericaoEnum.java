@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Stream;

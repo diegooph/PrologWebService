@@ -1,7 +1,6 @@
-package br.com.zalf.prolog.webservice.v3.fleet.afericao._model;
+package br.com.zalf.prolog.webservice.v3.fleet.inspection._model;
 
 import br.com.zalf.prolog.webservice.v3.LocalDateTimeUtcAttributeConverter;
-import br.com.zalf.prolog.webservice.v3.fleet.afericao.valores._model.AfericaoPneuValorEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.VeiculoKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceEntity;
@@ -11,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,29 +27,39 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(schema = "public", name = "afericao")
-public final class AfericaoEntity implements EntityKmColetado {
+public final class InspectionEntity implements EntityKmColetado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
+    @NotNull
+    private Long id;
     @Column(name = "cod_unidade", nullable = false)
-    private Long codUnidade;
+    @NotNull
+    private Long branchId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo", nullable = false)
-    private VehicleEntity veiculo;
+    @Nullable
+    private VehicleEntity vehicleEntity;
     @Column(name = "km_veiculo", nullable = false)
-    private Long kmColetadoVeiculo;
-    @OneToMany(mappedBy = "tireInspection", fetch = FetchType.LAZY)
-    private Set<TireMaintenanceEntity> servicosGeradosPneu;
+    @Nullable
+    private Long vehicleKm;
+    @OneToMany(mappedBy = "inspectionEntity", fetch = FetchType.LAZY)
+    @Nullable
+    private Set<TireMaintenanceEntity> tireMaintenanceEntities;
     @Convert(converter = LocalDateTimeUtcAttributeConverter.class)
     @Column(name = "data_hora")
-    private LocalDateTime dataHora;
-    @OneToMany(mappedBy = "afericao", fetch = FetchType.LAZY, targetEntity = AfericaoPneuValorEntity.class)
-    private Set<AfericaoPneuValorEntity> valoresAfericao;
+    @NotNull
+    private LocalDateTime inspectedAt;
+    @OneToMany(mappedBy = "inspectionEntity", fetch = FetchType.LAZY, targetEntity = InspectionMeasureEntity.class)
+    @NotNull
+    private Set<InspectionMeasureEntity> inspectionMeasureEntities;
 
     @NotNull
     @Override
     public VeiculoKmColetado getVeiculoKmColetado() {
-        return VeiculoKmColetado.of(veiculo.getId(), kmColetadoVeiculo);
+        if (vehicleEntity == null || vehicleKm == null) {
+            throw new IllegalStateException("O KM não pode ser null!");
+        }
+        return VeiculoKmColetado.of(vehicleEntity.getId(), vehicleKm);
     }
 }

@@ -1,6 +1,7 @@
-package br.com.zalf.prolog.webservice.v3.fleet.afericao._model;
+package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model;
 
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -9,17 +10,19 @@ import javax.persistence.*;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-
+@Data
 @Entity
 @Table(name = "afericao_alternativa_manutencao_inspecao", schema = "public")
-@Data
-public class AfericaoAlternativaEntity {
+public final class TireMaintenanceProblemEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
+    @NotNull
+    private Long id;
     @Column(name = "alternativa", nullable = false)
-    private String alternativa;
+    @NotNull
+    private String name;
     @Column(name = "status_ativo", nullable = false)
-    private Boolean ativo;
+    @NotNull
+    private Boolean isActive;
 }

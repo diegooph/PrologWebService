@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.v3.fleet.tire._model;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
-import br.com.zalf.prolog.webservice.v3.fleet.afericao.valores._model.AfericaoPneuValorEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.InspectionMeasureEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoDestinoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.PneuServicoRealizadoEntity;
@@ -110,9 +110,9 @@ public final class TireEntity {
     @Column(name = "origem_cadastro", nullable = false)
     @NotNull
     private OrigemAcaoEnum registerOrigin;
-    @OneToMany(mappedBy = "pneu", fetch = FetchType.LAZY, targetEntity = AfericaoPneuValorEntity.class)
+    @OneToMany(mappedBy = "tireEntity", fetch = FetchType.LAZY, targetEntity = InspectionMeasureEntity.class)
     @Nullable
-    private Set<AfericaoPneuValorEntity> valoresPneu;
+    private Set<InspectionMeasureEntity> inspectionMeasureEntities;
     @OneToMany(mappedBy = "pneuServicoRealizado", fetch = FetchType.LAZY)
     @Nullable
     private Set<PneuServicoRealizadoEntity> servicosRealizados;
