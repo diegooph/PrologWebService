@@ -39,7 +39,7 @@ public class MovimentacaoServicoRealizadoService {
                 pneuServicoService.insertServicoPneu(pneuServicoRealizadoEntity.getPneuServicoRealizado(),
                         pneuServicoRealizadoEntity.getCusto(),
                         pneuServicoRealizadoEntity.getTipoServico(),
-                        PneuServicoRealizado.FONTE_CADASTRO);
+                        PneuServicoRealizado.FONTE_MOVIMENTACAO);
 
         insertMovimentacaoPneuServicoRealizado(movimentacaoEntity.getCodigo(), servicoRealizadoEntitySaved.getCodigo());
 
