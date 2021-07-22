@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model;
 
-import br.com.zalf.prolog.webservice.v3.fleet.tire._model.PneuEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleEntity;
 import lombok.AllArgsConstructor;
@@ -42,7 +42,7 @@ public final class MovimentacaoEntity {
     private MovimentacaoProcessoEntity movimentacaoProcesso;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo", nullable = false)
-    private PneuEntity pneu;
+    private TireEntity pneu;
     @Column(name = "sulco_interno")
     private Double sulcoInterno;
     @Column(name = "sulco_central_interno")

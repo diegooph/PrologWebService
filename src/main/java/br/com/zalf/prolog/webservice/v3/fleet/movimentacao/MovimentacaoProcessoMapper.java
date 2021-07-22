@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.fleet.movimentacao;
 
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.*;
-import br.com.zalf.prolog.webservice.v3.fleet.tire._model.PneuEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.PneuServicoRealizadoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,14 +54,14 @@ public final class MovimentacaoProcessoMapper {
             @NotNull final MovimentacaoEntity movimentacaoEntity) {
         final MovimentacaoOrigemEntity movimentacaoOrigem = movimentacaoEntity.getMovimentacaoOrigem();
         final MovimentacaoDestinoEntity movimentacaoDestino = movimentacaoEntity.getMovimentacaoDestino();
-        final PneuEntity pneu = movimentacaoEntity.getPneu();
+        final TireEntity tireMoved = movimentacaoEntity.getPneu();
         final RecapadoraEntity recapadoraDestino = movimentacaoDestino.getRecapadora();
         final Optional<Set<PneuServicoRealizadoEntity>> servicosRealizadosOptional =
                 Optional.ofNullable(movimentacaoEntity.getServicosRealizados());
         return new MovimentacaoListagemDto(movimentacaoEntity.getCodigo(),
-                                           pneu.getCodigo(),
-                                           pneu.getCodigoCliente(),
-                                           pneu.getDimensaoPneu().getCodigo(),
+                                           tireMoved.getId(),
+                                           tireMoved.getClientNumber(),
+                                           tireMoved.getTireSizeEntity().getCodigo(),
                                            movimentacaoEntity.getVida(),
                                            movimentacaoEntity.getSulcoInterno(),
                                            movimentacaoEntity.getSulcoCentralInterno(),

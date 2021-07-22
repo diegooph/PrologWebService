@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico;
 
-import br.com.zalf.prolog.webservice.v3.fleet.tire._model.PneuEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.tiposervico.PneuTipoServicoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +33,7 @@ public class PneuServicoRealizadoEntity {
     private Long codUnidade;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo")
-    private PneuEntity pneuServicoRealizado;
+    private TireEntity pneuServicoRealizado;
     @Column(name = "custo", nullable = false)
     private BigDecimal custo;
     @Column(name = "vida", nullable = false)

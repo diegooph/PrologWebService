@@ -34,8 +34,8 @@ public interface MovimentacaoProcessoDao extends JpaRepository<MovimentacaoProce
                    + "where mpe.codUnidade in :codUnidades "
                    + "and tz_date(mpe.dataHoraRealizacao, u.timezone) between :dataInicial and :dataFinal "
                    + "and (:codColaborador is null or crp.codigo = :codColaborador) "
-                   + "and (:codVeiculo is null or mo.veiculo.codigo = :codVeiculo or md.veiculo.codigo = :codVeiculo) "
-                   + "and (:codPneu is null or m.pneu.codigo = :codPneu) "
+                   + "and (:codVeiculo is null or mo.veiculo.id = :codVeiculo or md.veiculo.id = :codVeiculo) "
+                   + "and (:codPneu is null or m.pneu.id = :codPneu) "
                    + "order by mpe.codigo, m.codigo")
     List<MovimentacaoProcessoEntity> getListagemMovimentacoes(@NotNull final List<Long> codUnidades,
                                                               @NotNull final LocalDate dataInicial,

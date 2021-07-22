@@ -22,70 +22,71 @@ import java.util.stream.Collectors;
 @Component
 public class TireMapper {
     @NotNull
-    public PneuEntity toEntity(@NotNull final TireCreateDto dto, @NotNull final OrigemAcaoEnum registerOrigin) {
-        return PneuEntity.builder()
-                .codEmpresa(dto.getCompanyId())
-                .unidade(createUnidade(dto.getBranchId()))
-                .codigoCliente(dto.getTireClientNumber())
-                .modeloPneu(createModeloPneu(dto.getTireModelId()))
-                .dimensaoPneu(createDimensaoPneuEntity(dto.getTireSizeId()))
-                .pressaoRecomendada(dto.getTirePressureRecommended())
-                .status(StatusPneu.ESTOQUE)
-                .vidaAtual(dto.getTimesRetreaded())
-                .vidaTotal(dto.getMaxRetreads())
-                .modeloBanda(dto.getTireTreadId() == null ? null : createModeloBanda(dto.getTireTreadId()))
-                .dot(dto.getTireDot())
-                .valor(dto.getTirePrice())
-                .dataHoraCadastro(Now.getOffsetDateTimeUtc())
-                .pneuNovoNuncaRodado(dto.getIsTireNew())
-                .codUnidadeCadastro(dto.getBranchId())
-                .origemCadastro(registerOrigin)
+    public TireEntity toEntity(@NotNull final TireCreateDto dto, @NotNull final OrigemAcaoEnum registerOrigin) {
+        return TireEntity.builder()
+                .withCompanyId(dto.getCompanyId())
+                .withBranchEntity(createBranchEntity(dto.getBranchId()))
+                .withClientNumber(dto.getTireClientNumber())
+                .withTireModelEntity(createTireModelEntity(dto.getTireModelId()))
+                .withTireSizeEntity(createTireSizeEntity(dto.getTireSizeId()))
+                .withRecommendedPressure(dto.getTirePressureRecommended())
+                .withTireStatus(StatusPneu.ESTOQUE)
+                .withTimesRetreaded(dto.getTimesRetreaded())
+                .withMaxRetreads(dto.getMaxRetreads())
+                .withTreadModelEntity(
+                        dto.getTireTreadId() == null ? null : createTreadModelEntity(dto.getTireTreadId()))
+                .withDot(dto.getTireDot())
+                .withPrice(dto.getTirePrice())
+                .withCreatedAt(Now.getOffsetDateTimeUtc())
+                .withIsTireNew(dto.getIsTireNew())
+                .withBranchIdRegister(dto.getBranchId())
+                .withRegisterOrigin(registerOrigin)
                 .build();
     }
 
     @NotNull
-    public List<TireDto> toDto(@NotNull final List<PneuEntity> pneus) {
+    public List<TireDto> toDto(@NotNull final List<TireEntity> pneus) {
         return pneus.stream().map(this::toDto).collect(Collectors.toList());
     }
 
     @NotNull
-    private TireDto toDto(@NotNull final PneuEntity pneu) {
-        final ModeloBandaEntity modeloBanda = pneu.getModeloBanda();
-        final VehicleEntity veiculo = pneu.getVeiculoPneuAplicado();
+    private TireDto toDto(@NotNull final TireEntity pneu) {
+        final ModeloBandaEntity modeloBanda = pneu.getTreadModelEntity();
+        final VehicleEntity veiculo = pneu.getVehicleApplied();
         final MovimentacaoDestinoEntity movimentacaoAnalise =
-                pneu.getStatus().equals(StatusPneu.ANALISE)
+                pneu.getTireStatus().equals(StatusPneu.ANALISE)
                         ? pneu.getUltimaMovimentacaoByStatus(OrigemDestinoEnum.ANALISE)
                         : null;
         final MovimentacaoDestinoEntity movimentacaoDescarte =
-                pneu.getStatus().equals(StatusPneu.DESCARTE)
+                pneu.getTireStatus().equals(StatusPneu.DESCARTE)
                         ? pneu.getUltimaMovimentacaoByStatus(OrigemDestinoEnum.DESCARTE)
                         : null;
-        return TireDto.of(pneu.getCodigo(),
-                          pneu.getCodigoCliente(),
-                          pneu.getUnidade().getGroup().getId(),
-                          pneu.getUnidade().getGroup().getName(),
-                          pneu.getUnidade().getId(),
-                          pneu.getUnidade().getName(),
-                          pneu.getVidaAtual(),
-                          pneu.getVidaTotal(),
-                          pneu.getPressaoRecomendada(),
-                          pneu.getPressaoAtual(),
-                          pneu.getAlturaSulcoExterno(),
-                          pneu.getAlturaSulcoCentralExterno(),
-                          pneu.getAlturaSulcoCentralInterno(),
-                          pneu.getAlturaSulcoInterno(),
+        return TireDto.of(pneu.getId(),
+                          pneu.getClientNumber(),
+                          pneu.getBranchEntity().getGroup().getId(),
+                          pneu.getBranchEntity().getGroup().getName(),
+                          pneu.getBranchEntity().getId(),
+                          pneu.getBranchEntity().getName(),
+                          pneu.getTimesRetreaded(),
+                          pneu.getMaxRetreads(),
+                          pneu.getRecommendedPressure(),
+                          pneu.getCurrentPressure(),
+                          pneu.getExternalGroove(),
+                          pneu.getMiddleExternalGroove(),
+                          pneu.getMiddleInternalGroove(),
+                          pneu.getInternalGroove(),
                           pneu.getDot(),
-                          pneu.getDimensaoPneu().getCodigo(),
-                          pneu.getDimensaoPneu().getAltura().doubleValue(),
-                          pneu.getDimensaoPneu().getLargura().doubleValue(),
-                          pneu.getDimensaoPneu().getAro(),
-                          pneu.getModeloPneu().getMarca().getCodigo(),
-                          pneu.getModeloPneu().getMarca().getNome(),
-                          pneu.getModeloPneu().getCodigo(),
-                          pneu.getModeloPneu().getNome(),
-                          pneu.getModeloPneu().getQuantidadeSulcos().intValue(),
-                          pneu.getModeloPneu().getAlturaSulcos(),
-                          pneu.getValor(),
+                          pneu.getTireSizeEntity().getCodigo(),
+                          pneu.getTireSizeEntity().getAltura().doubleValue(),
+                          pneu.getTireSizeEntity().getLargura().doubleValue(),
+                          pneu.getTireSizeEntity().getAro(),
+                          pneu.getTireModelEntity().getMarca().getCodigo(),
+                          pneu.getTireModelEntity().getMarca().getNome(),
+                          pneu.getTireModelEntity().getCodigo(),
+                          pneu.getTireModelEntity().getNome(),
+                          pneu.getTireModelEntity().getQuantidadeSulcos().intValue(),
+                          pneu.getTireModelEntity().getAlturaSulcos(),
+                          pneu.getPrice(),
                           modeloBanda == null ? null : modeloBanda.getMarcaBanda().getCodigo(),
                           modeloBanda == null ? null : modeloBanda.getMarcaBanda().getNome(),
                           modeloBanda == null ? null : modeloBanda.getCodigo(),
@@ -93,12 +94,12 @@ public class TireMapper {
                           modeloBanda == null ? null : modeloBanda.getQuantidadeSulcos().intValue(),
                           modeloBanda == null ? null : modeloBanda.getAlturaSulcos(),
                           modeloBanda == null ? null : pneu.getValorUltimaBandaAplicada(),
-                          pneu.isPneuNovoNuncaRodado(),
-                          pneu.getStatus(),
+                          pneu.isTireNew(),
+                          pneu.getTireStatus(),
                           veiculo == null ? null : veiculo.getId(),
                           veiculo == null ? null : veiculo.getPlate(),
                           veiculo == null ? null : veiculo.getFleetId(),
-                          pneu.getPosicaoAplicado(),
+                          pneu.getPositionApplied(),
                           movimentacaoAnalise == null ? null : movimentacaoAnalise.getRecapadora().getCodigo(),
                           movimentacaoAnalise == null ? null : movimentacaoAnalise.getRecapadora().getNome(),
                           movimentacaoAnalise == null ? null : movimentacaoAnalise.getCodColeta(),
@@ -109,22 +110,22 @@ public class TireMapper {
     }
 
     @NotNull
-    private BranchEntity createUnidade(@NotNull final Long codUnidadeAlocado) {
+    private BranchEntity createBranchEntity(@NotNull final Long codUnidadeAlocado) {
         return BranchEntity.builder().withId(codUnidadeAlocado).build();
     }
 
     @NotNull
-    private DimensaoPneuEntity createDimensaoPneuEntity(@NotNull final Long codDimensaoPneu) {
+    private DimensaoPneuEntity createTireSizeEntity(@NotNull final Long codDimensaoPneu) {
         return DimensaoPneuEntity.builder().withCodigo(codDimensaoPneu).build();
     }
 
     @NotNull
-    private ModeloPneuEntity createModeloPneu(@NotNull final Long codModeloPneu) {
+    private ModeloPneuEntity createTireModelEntity(@NotNull final Long codModeloPneu) {
         return ModeloPneuEntity.builder().withCodigo(codModeloPneu).build();
     }
 
     @NotNull
-    private ModeloBandaEntity createModeloBanda(@NotNull final Long codModeloBanda) {
+    private ModeloBandaEntity createTreadModelEntity(@NotNull final Long codModeloBanda) {
         return ModeloBandaEntity.builder().withCodigo(codModeloBanda).build();
     }
 }

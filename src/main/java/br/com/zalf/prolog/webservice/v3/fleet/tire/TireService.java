@@ -6,9 +6,9 @@ import br.com.zalf.prolog.webservice.frota.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.integracao.BlockedOperationYaml;
 import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
-import br.com.zalf.prolog.webservice.v3.fleet.tire._model.PneuEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.PneuServicoService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -45,13 +45,13 @@ public class TireService {
         operacoesBloqueadas.validateBlockedCompanyBranch(tireCreateDto.getCompanyId(),
                                                          tireCreateDto.getBranchId());
         validateTire(tireCreateDto, ignoreDotValidation);
-        final PneuEntity pneuInsert = tireMapper.toEntity(tireCreateDto, getRegisterOrigin(integrationToken));
-        final PneuEntity savedPneu = tireDao.save(pneuInsert);
-        if (savedPneu.isRecapado()) {
+        final TireEntity tireInsert = tireMapper.toEntity(tireCreateDto, getRegisterOrigin(integrationToken));
+        final TireEntity savedTire = tireDao.save(tireInsert);
+        if (savedTire.isRetreaded()) {
             //noinspection ConstantConditions
-            pneuServicoService.insertServicoCadastroPneu(savedPneu, tireCreateDto.getTireTreadPrice());
+            pneuServicoService.insertServicoCadastroPneu(savedTire, tireCreateDto.getTireTreadPrice());
         }
-        return new SuccessResponse(savedPneu.getCodigo(), "Pneu inserido com sucesso.");
+        return new SuccessResponse(savedTire.getId(), "Pneu inserido com sucesso.");
     }
 
     @Transactional
@@ -60,7 +60,7 @@ public class TireService {
                                      @Nullable final StatusPneu tireStatus,
                                      final int limit,
                                      final int offset) {
-        final List<PneuEntity> pneusByStatus =
+        final List<TireEntity> pneusByStatus =
                 tireDao.getAllTires(branchesId, tireStatus, OffsetBasedPageRequest.of(limit, offset, Sort.unsorted()));
         return tireMapper.toDto(pneusByStatus);
     }

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.fleet.afericao.valores._model;
 
 import br.com.zalf.prolog.webservice.v3.fleet.afericao._model.AfericaoEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.tire._model.PneuEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,7 +30,7 @@ public class AfericaoPneuValorEntity {
     @MapsId
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo")
-    private PneuEntity pneu;
+    private TireEntity pneu;
     @Id
     @Column(name = "cod_pneu")
     private Long codPneu;

@@ -31,7 +31,7 @@ public interface TireMaintenanceDao extends JpaRepository<TireMaintenanceEntity,
                    "or (:maintenanceStatus = true and (tm.isResolvedAutomatically = true or ru is not null)) " +
                    "or (:maintenanceStatus = false and (tm.isResolvedAutomatically = false and ru is null))) " +
                    "and (:vehicleId is null or :vehicleId = v.id) " +
-                   "and (:tireId is null or :tireId = t.codigo)")
+                   "and (:tireId is null or :tireId = t.id)")
     List<TireMaintenanceEntity> getAllTireMaintenance(@NotNull final List<Long> branchesId,
                                                       @Nullable final Long vehicleId,
                                                       @Nullable final Long tireId,

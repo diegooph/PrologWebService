@@ -9,7 +9,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.afericao.valores._model.AfericaoPn
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.VeiculoKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.ColaboradorEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.tire._model.PneuEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -56,7 +56,7 @@ public final class TireMaintenanceEntity implements EntityKmColetado {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo")
     @NotNull
-    private PneuEntity tire;
+    private TireEntity tire;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cpf_mecanico", referencedColumnName = "cpf")
     @Nullable

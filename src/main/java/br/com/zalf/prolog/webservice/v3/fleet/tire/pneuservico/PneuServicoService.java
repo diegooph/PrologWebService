@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
-import br.com.zalf.prolog.webservice.v3.fleet.tire._model.PneuEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.tiposervico.PneuTipoServicoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.tiposervico.PneuTipoServicoService;
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +41,7 @@ public class PneuServicoService {
 
     @NotNull
     @Transactional
-    public PneuServicoRealizadoEntity insertServicoCadastroPneu(@NotNull final PneuEntity pneuCadastrado,
+    public PneuServicoRealizadoEntity insertServicoCadastroPneu(@NotNull final TireEntity pneuCadastrado,
                                                                 @NotNull final BigDecimal valorBanda) {
         final PneuTipoServicoEntity tipoServicoIncrementaVidaCadastroPneu =
                 pneuTipoServicoService.getTipoServicoIncrementaVidaCadastroPneu();

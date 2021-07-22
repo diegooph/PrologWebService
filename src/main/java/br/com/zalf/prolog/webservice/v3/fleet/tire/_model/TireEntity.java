@@ -30,92 +30,118 @@ import java.util.stream.Stream;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@Entity
-@Table(name = "pneu", schema = "public")
-@Builder(toBuilder = true)
+@Builder(toBuilder = true, setterPrefix = "with")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class PneuEntity {
+@Entity
+@Table(name = "pneu", schema = "public")
+public class TireEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
+    @NotNull
+    private Long id;
     @Column(name = "cod_empresa", nullable = false)
-    private Long codEmpresa;
+    @NotNull
+    private Long companyId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_unidade", referencedColumnName = "codigo")
-    private BranchEntity unidade;
+    @NotNull
+    private BranchEntity branchEntity;
     @Column(name = "codigo_cliente", nullable = false)
-    private String codigoCliente;
+    @NotNull
+    private String clientNumber;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_modelo", referencedColumnName = "codigo")
-    private ModeloPneuEntity modeloPneu;
+    @NotNull
+    private ModeloPneuEntity tireModelEntity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_dimensao", referencedColumnName = "codigo")
-    private DimensaoPneuEntity dimensaoPneu;
+    @NotNull
+    private DimensaoPneuEntity tireSizeEntity;
     @Column(name = "pressao_recomendada", nullable = false)
-    private Double pressaoRecomendada;
+    @NotNull
+    private Double recommendedPressure;
     @Column(name = "pressao_atual")
-    private Double pressaoAtual;
+    @Nullable
+    private Double currentPressure;
     @Column(name = "altura_sulco_interno")
-    private Double alturaSulcoInterno;
+    @Nullable
+    private Double internalGroove;
     @Column(name = "altura_sulco_central_interno")
-    private Double alturaSulcoCentralInterno;
+    @Nullable
+    private Double middleInternalGroove;
     @Column(name = "altura_sulco_central_externo")
-    private Double alturaSulcoCentralExterno;
+    @Nullable
+    private Double middleExternalGroove;
     @Column(name = "altura_sulco_externo")
-    private Double alturaSulcoExterno;
+    @Nullable
+    private Double externalGroove;
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private StatusPneu status;
+    @NotNull
+    private StatusPneu tireStatus;
     @Column(name = "vida_atual")
-    private Integer vidaAtual;
+    @NotNull
+    private Integer timesRetreaded;
     @Column(name = "vida_total")
-    private Integer vidaTotal;
+    @NotNull
+    private Integer maxRetreads;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_modelo_banda", referencedColumnName = "codigo")
-    private ModeloBandaEntity modeloBanda;
+    @Nullable
+    private ModeloBandaEntity treadModelEntity;
     @Column(name = "dot", length = 20)
+    @Nullable
     private String dot;
     @Column(name = "valor", nullable = false)
-    private BigDecimal valor;
+    @NotNull
+    private BigDecimal price;
     @Column(name = "data_hora_cadastro", columnDefinition = "timestamp with time zone default now()")
-    private OffsetDateTime dataHoraCadastro;
+    @NotNull
+    private OffsetDateTime createdAt;
     @Column(name = "pneu_novo_nunca_rodado", columnDefinition = "boolean default false", nullable = false)
-    private boolean pneuNovoNuncaRodado;
+    private boolean isTireNew;
     @Column(name = "cod_unidade_cadastro", nullable = false)
-    private Long codUnidadeCadastro;
+    @NotNull
+    private Long branchIdRegister;
     @Enumerated(EnumType.STRING)
     @Column(name = "origem_cadastro", nullable = false)
-    private OrigemAcaoEnum origemCadastro;
+    @NotNull
+    private OrigemAcaoEnum registerOrigin;
     @OneToMany(mappedBy = "pneu", fetch = FetchType.LAZY, targetEntity = AfericaoPneuValorEntity.class)
+    @Nullable
     private Set<AfericaoPneuValorEntity> valoresPneu;
     @OneToMany(mappedBy = "pneuServicoRealizado", fetch = FetchType.LAZY)
+    @Nullable
     private Set<PneuServicoRealizadoEntity> servicosRealizados;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "veiculo_pneu",
                joinColumns = @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo"),
                inverseJoinColumns = @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo"))
-    private VehicleEntity veiculoPneuAplicado;
+    @Nullable
+    private VehicleEntity vehicleApplied;
     @Formula(value = "(select vp.posicao from veiculo_pneu vp where vp.cod_pneu = codigo)")
-    private Integer posicaoAplicado;
+    @Nullable
+    private Integer positionApplied;
     @OneToMany(mappedBy = "pneu", fetch = FetchType.LAZY)
+    @Nullable
     private Set<MovimentacaoEntity> movimentacoesPneu;
 
-    public boolean isRecapado() {
-        return vidaAtual > 1;
+    public boolean isRetreaded() {
+        return timesRetreaded > 1;
     }
 
     @NotNull
-    public Integer getVidaAnterior() {
-        return this.vidaAtual - 1;
+    public Integer getPreviousRetread() {
+        return timesRetreaded - 1;
     }
 
     @Transient
     @Nullable
-    public Double getMenorSulco() {
-        return Stream.of(alturaSulcoInterno, alturaSulcoCentralInterno, alturaSulcoCentralExterno, alturaSulcoExterno)
+    public Double getLowerGroove() {
+        return Stream.of(internalGroove, middleInternalGroove, middleExternalGroove, externalGroove)
                 .filter(Objects::nonNull)
                 .min(Double::compareTo)
                 .orElse(null);
@@ -123,6 +149,9 @@ public class PneuEntity {
 
     @Nullable
     public BigDecimal getValorUltimaBandaAplicada() {
+        if (servicosRealizados == null) {
+            return null;
+        }
         return servicosRealizados.stream()
                 .filter(PneuServicoRealizadoEntity::isIncrementaVida)
                 .max(Comparator.comparing(PneuServicoRealizadoEntity::getCodigo))
@@ -132,6 +161,9 @@ public class PneuEntity {
 
     @Nullable
     public MovimentacaoDestinoEntity getUltimaMovimentacaoByStatus(@NotNull final OrigemDestinoEnum statusPneu) {
+        if (movimentacoesPneu == null) {
+            return null;
+        }
         return movimentacoesPneu.stream()
                 .map(MovimentacaoEntity::getMovimentacaoDestino)
                 .filter(destino -> destino.getTipoDestino().equals(statusPneu))

@@ -103,7 +103,6 @@ public class VehicleEntity {
         if (attachProcessEntity == null) {
             return null;
         }
-
         return attachProcessEntity.getCurrentAttachEntities()
                 .stream()
                 .filter(currentAttachEntity -> currentAttachEntity.getCurrentAttachVehicleId().equals(id))
