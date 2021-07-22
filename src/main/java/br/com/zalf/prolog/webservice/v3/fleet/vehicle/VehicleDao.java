@@ -39,7 +39,7 @@ public interface VehicleDao extends JpaRepository<VehicleEntity, Long> {
                    "join fetch v.vehicleLayoutEntity vl " +
                    "join fetch vl.axleLayoutEntities al " +
                    "join fetch v.branchEntity u " +
-                   "join fetch u.group g " +
+                   "join fetch u.groupEntity g " +
                    "left join fetch v.attachProcessEntity ap " +
                    "left join fetch ap.currentAttachEntities ca " +
                    "where u.id in :branchesId " +

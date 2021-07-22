@@ -51,8 +51,8 @@ public class TireMapper {
 
     @NotNull
     private TireDto toDto(@NotNull final TireEntity pneu) {
-        final TreadModelEntity modeloBanda = pneu.getTreadModelEntity();
-        final VehicleEntity veiculo = pneu.getVehicleApplied();
+        final TreadModelEntity treadModelEntity = pneu.getTreadModelEntity();
+        final VehicleEntity vehicleApplied = pneu.getVehicleApplied();
         final MovimentacaoDestinoEntity movimentacaoAnalise =
                 pneu.getTireStatus().equals(StatusPneu.ANALISE)
                         ? pneu.getUltimaMovimentacaoByStatus(OrigemDestinoEnum.ANALISE)
@@ -63,8 +63,8 @@ public class TireMapper {
                         : null;
         return TireDto.of(pneu.getId(),
                           pneu.getClientNumber(),
-                          pneu.getBranchEntity().getGroup().getId(),
-                          pneu.getBranchEntity().getGroup().getName(),
+                          pneu.getBranchEntity().getGroupEntity().getId(),
+                          pneu.getBranchEntity().getGroupEntity().getName(),
                           pneu.getBranchEntity().getId(),
                           pneu.getBranchEntity().getName(),
                           pneu.getTimesRetreaded(),
@@ -87,18 +87,18 @@ public class TireMapper {
                           pneu.getTireModelEntity().getGroovesQuantity().intValue(),
                           pneu.getTireModelEntity().getGroovesWidth(),
                           pneu.getPrice(),
-                          modeloBanda == null ? null : modeloBanda.getTreadBrandEntity().getId(),
-                          modeloBanda == null ? null : modeloBanda.getTreadBrandEntity().getName(),
-                          modeloBanda == null ? null : modeloBanda.getId(),
-                          modeloBanda == null ? null : modeloBanda.getName(),
-                          modeloBanda == null ? null : modeloBanda.getGroovesQuantity().intValue(),
-                          modeloBanda == null ? null : modeloBanda.getGroovesWidth(),
-                          modeloBanda == null ? null : pneu.getValorUltimaBandaAplicada(),
+                          treadModelEntity == null ? null : treadModelEntity.getTreadBrandEntity().getId(),
+                          treadModelEntity == null ? null : treadModelEntity.getTreadBrandEntity().getName(),
+                          treadModelEntity == null ? null : treadModelEntity.getId(),
+                          treadModelEntity == null ? null : treadModelEntity.getName(),
+                          treadModelEntity == null ? null : treadModelEntity.getGroovesQuantity().intValue(),
+                          treadModelEntity == null ? null : treadModelEntity.getGroovesWidth(),
+                          treadModelEntity == null ? null : pneu.getValorUltimaBandaAplicada(),
                           pneu.isTireNew(),
                           pneu.getTireStatus(),
-                          veiculo == null ? null : veiculo.getId(),
-                          veiculo == null ? null : veiculo.getPlate(),
-                          veiculo == null ? null : veiculo.getFleetId(),
+                          vehicleApplied == null ? null : vehicleApplied.getId(),
+                          vehicleApplied == null ? null : vehicleApplied.getPlate(),
+                          vehicleApplied == null ? null : vehicleApplied.getFleetId(),
                           pneu.getPositionApplied(),
                           movimentacaoAnalise == null ? null : movimentacaoAnalise.getRecapadora().getCodigo(),
                           movimentacaoAnalise == null ? null : movimentacaoAnalise.getRecapadora().getNome(),

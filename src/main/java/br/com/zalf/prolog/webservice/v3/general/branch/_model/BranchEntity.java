@@ -39,7 +39,7 @@ public class BranchEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_regional", referencedColumnName = "codigo")
     @NotNull
-    private GroupEntity group;
+    private GroupEntity groupEntity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_empresa", referencedColumnName = "codigo")
     @NotNull

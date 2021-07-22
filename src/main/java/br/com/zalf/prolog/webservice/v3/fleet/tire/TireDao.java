@@ -22,7 +22,7 @@ public interface TireDao extends JpaRepository<TireEntity, Long> {
     @NotNull
     @Query("select t from TireEntity t " +
                    "join fetch t.branchEntity b " +
-                   "join fetch b.group " +
+                   "join fetch b.groupEntity " +
                    "join fetch t.tireSizeEntity " +
                    "join fetch t.tireModelEntity tm " +
                    "join fetch tm.tireBrandEntity " +

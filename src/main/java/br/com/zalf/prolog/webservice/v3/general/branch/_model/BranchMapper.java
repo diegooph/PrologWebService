@@ -31,8 +31,8 @@ public final class BranchMapper {
                              branch.getAdditionalId(),
                              branch.getBranchLatitude(),
                              branch.getBranchLongitude(),
-                             branch.getGroup().getId(),
-                             branch.getGroup().getName());
+                             branch.getGroupEntity().getId(),
+                             branch.getGroupEntity().getName());
     }
 
     @NotNull

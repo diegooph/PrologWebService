@@ -19,14 +19,14 @@ import java.util.Optional;
 public interface BranchDao extends JpaRepository<BranchEntity, Long> {
     @NotNull
     @Query("select u from BranchEntity u " +
-                   "join fetch u.group " +
+                   "join fetch u.groupEntity " +
                    "join fetch u.companyEntity " +
                    "where u.id = :branchId")
     Optional<BranchEntity> getBranchById(@NotNull final Long branchId);
 
     @NotNull
     @Query("select u from BranchEntity u " +
-                   "join fetch u.group g " +
+                   "join fetch u.groupEntity g " +
                    "join fetch u.companyEntity c " +
                    "where c.id = :companyId " +
                    "and ((:groupsId) is null or g.id in (:groupsId))")
