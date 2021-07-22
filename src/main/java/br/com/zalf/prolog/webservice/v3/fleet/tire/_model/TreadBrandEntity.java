@@ -13,26 +13,22 @@ import javax.persistence.*;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@Entity
-@Table(name = "dimensao_pneu", schema = "public")
 @Builder(toBuilder = true, setterPrefix = "with")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class DimensaoPneuEntity {
+@Entity
+@Table(name = "marca_banda", schema = "public")
+public final class TreadBrandEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
-    @Column(name = "altura", nullable = false)
-    private Integer altura;
-    @Column(name = "largura", nullable = false)
-    private Integer largura;
-    @Column(name = "aro", nullable = false)
-    private Double aro;
-
     @NotNull
-    public String getDimensaoUserFriendly() {
-        return largura + "/" + altura + " R" + aro;
-    }
+    private Long id;
+    @Column(name = "nome", nullable = false)
+    @NotNull
+    private String name;
+    @Column(name = "cod_empresa", nullable = false)
+    @NotNull
+    private Long companyId;
 }

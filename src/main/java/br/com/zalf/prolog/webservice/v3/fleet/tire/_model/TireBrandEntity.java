@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -12,19 +13,19 @@ import javax.persistence.*;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@Entity
-@Table(name = "marca_banda", schema = "public")
 @Builder(toBuilder = true, setterPrefix = "with")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class MarcaBandaEntity {
+@Entity
+@Table(name = "marca_pneu", schema = "public")
+public final class TireBrandEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
+    @NotNull
+    private Long id;
     @Column(name = "nome", nullable = false)
-    private String nome;
-    @Column(name = "cod_empresa", nullable = false)
-    private Long codEmpresa;
+    @NotNull
+    private String name;
 }

@@ -30,7 +30,7 @@ public class PneuServicoRealizadoCreator {
             @NotNull final String fonteCadastro) {
         return PneuServicoRealizadoIncrementaVidaEntity.builder()
                 .codServicoRealizado(servicoRealizado.getCodigo())
-                .codModeloBanda(pneuCadastrado.getTreadModelEntity().getCodigo())
+                .codModeloBanda(pneuCadastrado.getTreadModelEntity().getId())
                 .vidaNovaPneu(pneuCadastrado.getTimesRetreaded())
                 .fonteServicoRealizado(fonteCadastro)
                 .build();

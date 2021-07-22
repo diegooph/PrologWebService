@@ -41,7 +41,7 @@ public class TireMaintenanceMapper {
                 tireMaintenance.getTireInspection().getVeiculo().getFleetId(),
                 tireMaintenance.getTire().getId(),
                 tireMaintenance.getTire().getClientNumber(),
-                tireMaintenance.getTire().getTireSizeEntity().getCodigo(),
+                tireMaintenance.getTire().getTireSizeEntity().getId(),
                 tireMaintenance.getTireInspection().getCodigo(),
                 valor.map(AfericaoPneuValorEntity::getPosicao).orElse(null),
                 valor.map(AfericaoPneuValorEntity::getPsi).orElse(null),

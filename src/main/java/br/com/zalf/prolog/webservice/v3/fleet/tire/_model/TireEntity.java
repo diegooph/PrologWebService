@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 @Getter
 @Entity
 @Table(name = "pneu", schema = "public")
-public class TireEntity {
+public final class TireEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
@@ -55,11 +55,11 @@ public class TireEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_modelo", referencedColumnName = "codigo")
     @NotNull
-    private ModeloPneuEntity tireModelEntity;
+    private TireModelEntity tireModelEntity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_dimensao", referencedColumnName = "codigo")
     @NotNull
-    private DimensaoPneuEntity tireSizeEntity;
+    private TireSizeEntity tireSizeEntity;
     @Column(name = "pressao_recomendada", nullable = false)
     @NotNull
     private Double recommendedPressure;
@@ -91,7 +91,7 @@ public class TireEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_modelo_banda", referencedColumnName = "codigo")
     @Nullable
-    private ModeloBandaEntity treadModelEntity;
+    private TreadModelEntity treadModelEntity;
     @Column(name = "dot", length = 20)
     @Nullable
     private String dot;

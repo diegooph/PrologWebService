@@ -61,7 +61,7 @@ public final class MovimentacaoProcessoMapper {
         return new MovimentacaoListagemDto(movimentacaoEntity.getCodigo(),
                                            tireMoved.getId(),
                                            tireMoved.getClientNumber(),
-                                           tireMoved.getTireSizeEntity().getCodigo(),
+                                           tireMoved.getTireSizeEntity().getId(),
                                            movimentacaoEntity.getVida(),
                                            movimentacaoEntity.getSulcoInterno(),
                                            movimentacaoEntity.getSulcoCentralInterno(),

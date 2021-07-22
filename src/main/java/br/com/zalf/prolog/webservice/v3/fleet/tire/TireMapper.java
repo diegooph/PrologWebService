@@ -51,7 +51,7 @@ public class TireMapper {
 
     @NotNull
     private TireDto toDto(@NotNull final TireEntity pneu) {
-        final ModeloBandaEntity modeloBanda = pneu.getTreadModelEntity();
+        final TreadModelEntity modeloBanda = pneu.getTreadModelEntity();
         final VehicleEntity veiculo = pneu.getVehicleApplied();
         final MovimentacaoDestinoEntity movimentacaoAnalise =
                 pneu.getTireStatus().equals(StatusPneu.ANALISE)
@@ -76,23 +76,23 @@ public class TireMapper {
                           pneu.getMiddleInternalGroove(),
                           pneu.getInternalGroove(),
                           pneu.getDot(),
-                          pneu.getTireSizeEntity().getCodigo(),
-                          pneu.getTireSizeEntity().getAltura().doubleValue(),
-                          pneu.getTireSizeEntity().getLargura().doubleValue(),
-                          pneu.getTireSizeEntity().getAro(),
-                          pneu.getTireModelEntity().getMarca().getCodigo(),
-                          pneu.getTireModelEntity().getMarca().getNome(),
-                          pneu.getTireModelEntity().getCodigo(),
-                          pneu.getTireModelEntity().getNome(),
-                          pneu.getTireModelEntity().getQuantidadeSulcos().intValue(),
-                          pneu.getTireModelEntity().getAlturaSulcos(),
+                          pneu.getTireSizeEntity().getId(),
+                          pneu.getTireSizeEntity().getWidth().doubleValue(),
+                          pneu.getTireSizeEntity().getAspectRation().doubleValue(),
+                          pneu.getTireSizeEntity().getDiameter(),
+                          pneu.getTireModelEntity().getTireBrandEntity().getId(),
+                          pneu.getTireModelEntity().getTireBrandEntity().getName(),
+                          pneu.getTireModelEntity().getId(),
+                          pneu.getTireModelEntity().getName(),
+                          pneu.getTireModelEntity().getGroovesQuantity().intValue(),
+                          pneu.getTireModelEntity().getGroovesWidth(),
                           pneu.getPrice(),
-                          modeloBanda == null ? null : modeloBanda.getMarcaBanda().getCodigo(),
-                          modeloBanda == null ? null : modeloBanda.getMarcaBanda().getNome(),
-                          modeloBanda == null ? null : modeloBanda.getCodigo(),
-                          modeloBanda == null ? null : modeloBanda.getNome(),
-                          modeloBanda == null ? null : modeloBanda.getQuantidadeSulcos().intValue(),
-                          modeloBanda == null ? null : modeloBanda.getAlturaSulcos(),
+                          modeloBanda == null ? null : modeloBanda.getTreadBrandEntity().getId(),
+                          modeloBanda == null ? null : modeloBanda.getTreadBrandEntity().getName(),
+                          modeloBanda == null ? null : modeloBanda.getId(),
+                          modeloBanda == null ? null : modeloBanda.getName(),
+                          modeloBanda == null ? null : modeloBanda.getGroovesQuantity().intValue(),
+                          modeloBanda == null ? null : modeloBanda.getGroovesWidth(),
                           modeloBanda == null ? null : pneu.getValorUltimaBandaAplicada(),
                           pneu.isTireNew(),
                           pneu.getTireStatus(),
@@ -115,17 +115,17 @@ public class TireMapper {
     }
 
     @NotNull
-    private DimensaoPneuEntity createTireSizeEntity(@NotNull final Long codDimensaoPneu) {
-        return DimensaoPneuEntity.builder().withCodigo(codDimensaoPneu).build();
+    private TireSizeEntity createTireSizeEntity(@NotNull final Long codDimensaoPneu) {
+        return TireSizeEntity.builder().withId(codDimensaoPneu).build();
     }
 
     @NotNull
-    private ModeloPneuEntity createTireModelEntity(@NotNull final Long codModeloPneu) {
-        return ModeloPneuEntity.builder().withCodigo(codModeloPneu).build();
+    private TireModelEntity createTireModelEntity(@NotNull final Long codModeloPneu) {
+        return TireModelEntity.builder().withId(codModeloPneu).build();
     }
 
     @NotNull
-    private ModeloBandaEntity createTreadModelEntity(@NotNull final Long codModeloBanda) {
-        return ModeloBandaEntity.builder().withCodigo(codModeloBanda).build();
+    private TreadModelEntity createTreadModelEntity(@NotNull final Long codModeloBanda) {
+        return TreadModelEntity.builder().withId(codModeloBanda).build();
     }
 }

@@ -111,10 +111,10 @@ public class TireDto {
     String tireModelName;
     @ApiModelProperty(value = "Quantidade de sulcos que o modelo do pneu possui.", required = true, example = "4")
     @NotNull
-    Integer tireModelGrooveQuantity;
+    Integer tireModelGroovesQuantity;
     @ApiModelProperty(value = "Altura do sulco do modelo do pneu, quando novo.", required = true, example = "16")
     @NotNull
-    Double tireModelGrooveWidthInMillimeters;
+    Double tireModelGroovesWidthInMillimeters;
     @ApiModelProperty(value = "Valor do pneu, ou, custo de aquisição do pneu.", required = true, example = "1500,00")
     @NotNull
     BigDecimal tirePrice;
@@ -142,12 +142,12 @@ public class TireDto {
             "caso o pneu estiver na primeira vida.",
                       example = "3")
     @Nullable
-    Integer tireTreadModelGrooveQuantity;
+    Integer tireTreadModelGroovesQuantity;
     @ApiModelProperty(value = "Altura do sulco do modelo da banda, quando recapado. Esta propriedade não será enviada" +
             " caso o pneu estiver na primeira vida.",
                       example = "14")
     @Nullable
-    Double tireTreadModelGrooveWidthInMillimeters;
+    Double tireTreadModelGroovesWidthInMillimeters;
     @ApiModelProperty(value = "Valor da banda, ou, custo de recapagem do pneu. Esta propriedade não será enviada caso" +
             " o pneu estiver na primeira vida.",
                       example = "1500,00")

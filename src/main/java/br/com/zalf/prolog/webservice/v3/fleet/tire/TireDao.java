@@ -25,9 +25,9 @@ public interface TireDao extends JpaRepository<TireEntity, Long> {
                    "join fetch b.group " +
                    "join fetch t.tireSizeEntity " +
                    "join fetch t.tireModelEntity tm " +
-                   "join fetch tm.marca " +
+                   "join fetch tm.tireBrandEntity " +
                    "left join fetch t.treadModelEntity ttm " +
-                   "left join fetch ttm.marcaBanda " +
+                   "left join fetch ttm.treadBrandEntity " +
                    "left join fetch t.servicosRealizados psr " +
                    "left join fetch psr.tipoServico " +
                    "left join fetch t.vehicleApplied " +
