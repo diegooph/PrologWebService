@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.v3.frota.pneu;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
@@ -54,7 +56,7 @@ public class PneuService {
     @Transactional
     public SuccessResponse insert(@Nullable final String tokenIntegracao,
                                   @NotNull final PneuCadastroDto pneuCadastroDto,
-                                  final boolean ignoreDotValidation) throws Throwable{
+                                  final boolean ignoreDotValidation) throws Throwable {
         try {
             operacoesBloqueadas.validateEmpresaUnidadeBloqueada(pneuCadastroDto.getCodEmpresaAlocado(),
                                                                 pneuCadastroDto.getCodUnidadeAlocado());
@@ -69,8 +71,8 @@ public class PneuService {
                 final PneuTipoServicoEntity tipoServicoIncrementaVidaPneu =
                         this.pneuServicoService.getPneuTipoServicoEntity();
                 this.pneuServicoService.insertServicoPneu(savedPneu, pneuCadastroDto.getValorBandaPneu(),
-                        tipoServicoIncrementaVidaPneu,
-                        PneuServicoRealizado.FONTE_CADASTRO);
+                                                          tipoServicoIncrementaVidaPneu,
+                                                          PneuServicoRealizado.FONTE_CADASTRO);
             }
             return new SuccessResponse(savedPneu.getCodigo(), "Pneu inserido com sucesso.");
         } catch (final Throwable t) {
