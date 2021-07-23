@@ -13,9 +13,8 @@ import java.util.stream.Collectors;
  */
 @Component
 public final class UnidadeMapper {
-
     @NotNull
-    public List<UnidadeVisualizacaoListagemDto> toDto(@NotNull final List<UnidadeProjection> unidades) {
+    public List<UnidadeVisualizacaoListagemDto> toDto(@NotNull final List<UnidadeEntity> unidades) {
         return unidades
                 .stream()
                 .map(this::toDto)
@@ -23,19 +22,19 @@ public final class UnidadeMapper {
     }
 
     @NotNull
-    public UnidadeVisualizacaoListagemDto toDto(@NotNull final UnidadeProjection unidade) {
+    public UnidadeVisualizacaoListagemDto toDto(@NotNull final UnidadeEntity unidade) {
         return new UnidadeVisualizacaoListagemDto(
-                unidade.getCodigoUnidade(),
-                unidade.getNomeUnidade(),
+                unidade.getCodigo(),
+                unidade.getNome(),
                 unidade.getTotalColaboradores(),
-                unidade.getTimezoneUnidade(),
-                unidade.getDataHoraCadastroUnidade(),
-                unidade.isUnidadeAtiva(),
+                unidade.getTimezone(),
+                unidade.getDataHoraCadastro(),
+                unidade.isAtivo(),
                 unidade.getCodAuxiliar(),
                 unidade.getLatitudeUnidade(),
                 unidade.getLongitudeUnidade(),
-                unidade.getCodRegional(),
-                unidade.getNomeRegional());
+                unidade.getGrupo().getCodigo(),
+                unidade.getGrupo().getNome());
     }
 
     @NotNull

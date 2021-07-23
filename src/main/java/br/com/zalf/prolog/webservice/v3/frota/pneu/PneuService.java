@@ -1,13 +1,12 @@
 package br.com.zalf.prolog.webservice.v3.frota.pneu;
 
-import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.integracao.OperacoesBloqueadasYaml;
+import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuListagemDto;
@@ -16,7 +15,7 @@ import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico._moda
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -55,10 +54,10 @@ public class PneuService {
     @Transactional
     public SuccessResponse insert(@Nullable final String tokenIntegracao,
                                   @NotNull final PneuCadastroDto pneuCadastroDto,
-                                  final boolean ignoreDotValidation) {
+                                  final boolean ignoreDotValidation) throws Throwable{
         try {
             operacoesBloqueadas.validateEmpresaUnidadeBloqueada(pneuCadastroDto.getCodEmpresaAlocado(),
-                    pneuCadastroDto.getCodUnidadeAlocado());
+                                                                pneuCadastroDto.getCodUnidadeAlocado());
             validatePneu(pneuCadastroDto, ignoreDotValidation);
             final PneuEntity pneuEntity = pneuMapper.toEntity(pneuCadastroDto);
             final PneuEntity pneuInsert = pneuEntity.toBuilder()
@@ -88,16 +87,19 @@ public class PneuService {
                                                   @Nullable final StatusPneu statusPneu,
                                                   final int limit,
                                                   final int offset) {
-        try {
-            final List<PneuEntity> pneusByStatus =
-                    pneuDao.getPneusByStatus(codUnidades, statusPneu, PageRequest.of(offset, limit));
-            return pneuMapper.toPneuListagemDto(pneusByStatus);
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar pneus.", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar pneus, tente novamente.");
-        }
+        final List<PneuEntity> pneusByStatus =
+                pneuDao.getPneusByStatus(codUnidades,
+                                         statusPneu,
+                                         OffsetBasedPageRequest.of(limit, offset, Sort.unsorted()));
+        return pneuMapper.toPneuListagemDto(pneusByStatus);
+    }
+
+    @NotNull
+    @Transactional
+    public SuccessResponse updateStatusPneu(@NotNull final Long codPneu,
+                                            @NotNull final StatusPneu statusPneu) {
+        pneuDao.updateStatus(codPneu, StatusPneu.valueOf(statusPneu.toString()));
+        return new SuccessResponse(codPneu, "Alterado o status do pneu com sucesso.");
     }
 
     private void validatePneu(@NotNull final PneuCadastroDto pneuCadastroDto,
@@ -117,21 +119,6 @@ public class PneuService {
     @NotNull
     private OrigemAcaoEnum getOrigemCadastro(@Nullable final String tokenIntegracao) {
         return tokenIntegracao != null ? OrigemAcaoEnum.API : OrigemAcaoEnum.PROLOG_WEB;
-    }
-
-    @NotNull
-    @Transactional
-    public SuccessResponse updateStatusPneu(@NotNull final Long codPneu,
-                                  @NotNull final StatusPneu statusPneu) {
-        try {
-            pneuDao.updateStatus(codPneu, statusPneu.valueOf(statusPneu.toString()));
-            return new SuccessResponse(codPneu, "Alterado o status do pneu com sucesso.");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao atualizar o status do pneu.", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao atualizar o status do pneu, tente novamente.");
-        }
     }
 }
 

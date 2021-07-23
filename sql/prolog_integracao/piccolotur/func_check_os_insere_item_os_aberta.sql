@@ -51,7 +51,7 @@ begin
     -- Validamos se o código da unidade da O.S bate com a empresa do Token
     if (v_cod_empresa_os is null)
     then
-        perform public.throw_generic_error(
+        perform public.throw_client_side_error(
                 format('[ERRO DE VÍNCULO] O token "%s" não está autorizado para a unidade "%s"',
                        f_token_integracao,
                        f_cod_unidade_os));
@@ -64,7 +64,7 @@ begin
             where c.codigo = f_cod_checklist
               and c.cod_unidade = f_cod_unidade_os))
     then
-        perform public.throw_generic_error(
+        perform public.throw_client_side_error(
                 format('[ERRO DE VÍNCULO] O checklist "%s" não encontra-se na base de dados do ProLog',
                        f_cod_checklist));
     end if;
@@ -76,7 +76,7 @@ begin
             where crn.cod_checklist = f_cod_checklist
               and crn.cod_pergunta = v_codigo_pergunta))
     then
-        perform public.throw_generic_error(
+        perform public.throw_client_side_error(
                 format('[ERRO DE VÍNCULO] A pergunta "%s" não possui vínculo com o checklist "%s"',
                        f_cod_contexto_pergunta_checklist,
                        f_cod_checklist));
@@ -90,7 +90,7 @@ begin
               and crn.cod_pergunta = v_codigo_pergunta
               and crn.cod_alternativa = v_codigo_alternativa))
     then
-        perform public.throw_generic_error(
+        perform public.throw_client_side_error(
                 format('[ERRO DE VÍNCULO] A alternativa "%s" não possui vínculo com a pergunta "%s"',
                        f_cod_contexto_alternativa_checklist,
                        f_cod_contexto_pergunta_checklist));
@@ -104,7 +104,7 @@ begin
                               and cineg.cod_contexto_pergunta = f_cod_contexto_pergunta_checklist
                               and cineg.cod_contexto_alternativa = f_cod_contexto_alternativa_checklist)))
     then
-        perform public.throw_generic_error(
+        perform public.throw_client_side_error(
                 format(
                             '[ERRO DE VÍNCULO] Não existe vínculo entre o cod_checklist "%s",' ||
                             ' cod_pergunta "%s" e cod_alternativa "%s"',
@@ -120,7 +120,7 @@ begin
                         and cos.cod_unidade = f_cod_unidade_os
                         and cos.cod_checklist != f_cod_checklist))
     then
-        perform public.throw_generic_error(
+        perform public.throw_client_side_error(
                 format('[ERRO] A OS %s já está aberta para outro checklist'));
     end if;
 

@@ -2,7 +2,7 @@ database:
   properties:
     host: "localhost"
     port: "5432"
-    name: "teste_lucas_2"
+    name: "prolog_novo_bd"
   connection:
     user: "postgres"
     password: "postgres"

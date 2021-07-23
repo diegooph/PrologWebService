@@ -48,7 +48,7 @@ begin
             -- Bloqueia caso a data de resolução seja menor ou igual que a data de realização do checklist
             if v_data_realizacao_checklist is not null and v_data_realizacao_checklist >= f_data_hora_inicio_resolucao
             then
-                perform throw_generic_error(format(
+                perform throw_client_side_error (format(
                         v_error_message,
                         format_with_tz(f_data_hora_inicio_resolucao, tz_unidade(f_cod_unidade), 'DD/MM/YYYY HH24:MI'),
                         format_with_tz(v_data_realizacao_checklist, tz_unidade(f_cod_unidade), 'DD/MM/YYYY HH24:MI'),

@@ -15,6 +15,11 @@ import java.sql.SQLException;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
+    @NotNull
+    @Override
+    public final ProLogException doTranslate(@NotNull final SQLException sqlException) {
+        return doTranslate(sqlException, sqlException.getMessage());
+    }
 
     @NotNull
     @Override
@@ -122,11 +127,13 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
         return constraint.getDetailMessage(tableName);
     }
 
+
     @NotNull
     private ConstraintsCheckEnum getPSQLErrorConstraint(@NotNull final SQLException sqlException) {
-        if (sqlException instanceof PSQLException) {
+        if (sqlException instanceof PSQLException &&
+                ((PSQLException) sqlException).getServerErrorMessage().getConstraint() != null) {
             return ConstraintsCheckEnum.fromString(((PSQLException) sqlException).getServerErrorMessage()
-                                                           .getConstraint());
+                    .getConstraint());
         }
         return ConstraintsCheckEnum.DEFAULT;
     }

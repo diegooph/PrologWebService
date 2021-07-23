@@ -56,7 +56,7 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
     @Path("/{codUnidade}")
     @Override
     public UnidadeVisualizacaoListagemDto getUnidadeByCodigo(@PathParam("codUnidade") final Long codUnidade) {
-        return mapper.toDto(service.getUnidadeByCodigo(codUnidade));
+        return mapper.toDto(service.getByCod(codUnidade));
     }
 
     @ApiExposed

@@ -101,11 +101,13 @@ begin
                                on im.cod_item_os = cosi.codigo
                      left join checklist_respostas_midias_alternativas_nok an
                                on im.cod_midia_nok = an.codigo
-            where f_if(f_cod_unidade is null, true, cos.cod_unidade = f_cod_unidade)
-              and f_if(f_cod_os is null, true, cos.codigo = f_cod_os)
-              and f_if(f_cod_veiculo is null, true, c.cod_veiculo = f_cod_veiculo)
-              and f_if(f_prioridade_alternativa is null, true, cap.prioridade = f_prioridade_alternativa)
-              and f_if(f_status_itens is null, true, cosi.status_resolucao = f_status_itens)
+            where case when f_cod_unidade is not null then cos.cod_unidade = f_cod_unidade else true end
+              and case when f_cod_os is not null then cos.codigo = f_cod_os else true end
+              and case when f_cod_veiculo is not null then c.cod_veiculo = f_cod_veiculo else true end
+              and case when f_status_itens is not null then cosi.status_resolucao = f_status_itens else true end
+              and case
+                      when f_prioridade_alternativa is not null then cap.prioridade = f_prioridade_alternativa
+                      else true end
             limit f_limit offset f_offset
         ),
              dados_veiculo as (

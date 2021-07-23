@@ -1,9 +1,12 @@
 package br.com.zalf.prolog.webservice.errorhandling.error;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.errorhandling.exception.SqlExceptionV2Wrapper;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
+import br.com.zalf.prolog.webservice.errorhandling.sql.ProLogSqlExceptionTranslator;
 import com.google.common.collect.ImmutableMap;
 import io.sentry.SentryEvent;
 import io.sentry.SentryLevel;
@@ -11,6 +14,9 @@ import io.sentry.protocol.Message;
 import org.glassfish.jersey.server.ParamException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.postgresql.util.PSQLException;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -19,6 +25,7 @@ import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -30,15 +37,28 @@ import java.util.stream.Collectors;
 public final class InternalExceptionMapper {
     @NotNull
     public static Response toResponse(final Throwable throwable) {
+        if (throwable instanceof SqlExceptionV2Wrapper) {
+            final SqlExceptionV2Wrapper sqlExceptionV2Wrapper = (SqlExceptionV2Wrapper) throwable;
+            if (sqlExceptionV2Wrapper.getParentException() instanceof DataAccessException) {
+                final PSQLException psqlException = (PSQLException) throwable.getCause().getCause();
+                final ProLogSqlExceptionTranslator translator = Injection.provideProLogSqlExceptionTranslator();
+                return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
+                                      createPrologError(translator.doTranslate(psqlException)));
+            }
+            if (sqlExceptionV2Wrapper.getParentException() instanceof SQLException) {
+                final SQLException sqlException = (SQLException) sqlExceptionV2Wrapper.getParentException();
+                final ProLogSqlExceptionTranslator translator = Injection.provideProLogSqlExceptionTranslator();
+                return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
+                                      createPrologError(translator.doTranslate(sqlException)));
+            }
+        }
         if (throwable instanceof NotAuthorizedException) {
-            return createResponse(
-                    Response.Status.UNAUTHORIZED.getStatusCode(),
-                    createPrologError((NotAuthorizedException) throwable));
+            return createResponse(Response.Status.UNAUTHORIZED.getStatusCode(),
+                                  createPrologError((NotAuthorizedException) throwable));
         }
         if (throwable instanceof ForbiddenException) {
-            return createResponse(
-                    Response.Status.FORBIDDEN.getStatusCode(),
-                    createPrologError((ForbiddenException) throwable));
+            return createResponse(Response.Status.FORBIDDEN.getStatusCode(),
+                                  createPrologError((ForbiddenException) throwable));
         }
         if (throwable instanceof ConstraintViolationException) {
             return createResponse(
@@ -46,14 +66,18 @@ public final class InternalExceptionMapper {
                     createPrologError(convertToClientSideErrorException((ConstraintViolationException) throwable)));
         }
         if (throwable instanceof ParamException) {
-            return createResponse(
-                    Response.Status.BAD_REQUEST.getStatusCode(),
-                    createPrologError(convertToClientSideErrorException((ParamException) throwable)));
+            return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
+                                  createPrologError(convertToClientSideErrorException((ParamException) throwable)));
         }
         if (throwable instanceof NotFoundException) {
-            return createResponse(
-                    Response.Status.NOT_FOUND.getStatusCode(),
-                    createPrologError((NotFoundException) throwable));
+            return createResponse(Response.Status.NOT_FOUND.getStatusCode(),
+                                  createPrologError((NotFoundException) throwable));
+        }
+        if (throwable instanceof DataIntegrityViolationException) {
+            final PSQLException psqlException = (PSQLException) throwable.getCause().getCause();
+            final ProLogSqlExceptionTranslator translator = Injection.provideProLogSqlExceptionTranslator();
+            return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
+                                  createPrologError(translator.doTranslate(psqlException)));
         }
 
         final ProLogException proLogException = convertToPrologException(throwable);

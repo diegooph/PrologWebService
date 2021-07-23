@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
@@ -59,7 +60,24 @@ public final class IntegracaoAspect {
         final Method methodToDelegate = sistema.getClass().getDeclaredMethod(
                 calledMethod.getName(),
                 calledMethod.getParameterTypes());
-        return methodToDelegate.invoke(sistema, joinPoint.getArgs());
+        return tryToInvoke(methodToDelegate, sistema, joinPoint);
+    }
+
+    @NotNull
+    private Object tryToInvoke(@NotNull final Method methodToDelegate,
+                               @NotNull final SistemaIntegrado sistema,
+                               @NotNull final ProceedingJoinPoint joinPoint) throws Throwable {
+        try {
+            return methodToDelegate.invoke(sistema, joinPoint.getArgs());
+        } catch (final RuntimeException e) {
+            throw e;
+        } catch (final Throwable t) {
+            // Caso estourar uma exception no invoke, pegamos a causa para poder mostrar bonitinha no Front.
+            if (t instanceof InvocationTargetException) {
+                throw t.getCause();
+            }
+            throw t;
+        }
     }
 
     @NotNull

@@ -1,103 +1,104 @@
-CREATE OR REPLACE FUNCTION FUNC_PNEU_GET_PNEU_BY_PLACA(F_PLACA VARCHAR(7))
-  RETURNS TABLE (
-    NOME_MARCA_PNEU              VARCHAR(255),
-    COD_MARCA_PNEU               BIGINT,
-    CODIGO                       BIGINT,
-    CODIGO_CLIENTE               VARCHAR(255),
-    COD_UNIDADE_ALOCADO          BIGINT,
-    COD_REGIONAL_ALOCADO         BIGINT,
-    PRESSAO_ATUAL                REAL,
-    VIDA_ATUAL                   INTEGER,
-    VIDA_TOTAL                   INTEGER,
-    PNEU_NOVO_NUNCA_RODADO       BOOLEAN,
-    NOME_MODELO_PNEU             VARCHAR(255),
-    COD_MODELO_PNEU              BIGINT,
-    QT_SULCOS_MODELO_PNEU        SMALLINT,
-    ALTURA_SULCOS_MODELO_PNEU    REAL,
-    ALTURA                       INTEGER,
-    LARGURA                      INTEGER,
-    ARO                          REAL,
-    COD_DIMENSAO                 BIGINT,
-    PRESSAO_RECOMENDADA          REAL,
-    ALTURA_SULCO_CENTRAL_INTERNO REAL,
-    ALTURA_SULCO_CENTRAL_EXTERNO REAL,
-    ALTURA_SULCO_INTERNO         REAL,
-    ALTURA_SULCO_EXTERNO         REAL,
-    STATUS                       VARCHAR(255),
-    DOT                          VARCHAR(20),
-    VALOR                        REAL,
-    COD_MODELO_BANDA             BIGINT,
-    NOME_MODELO_BANDA            VARCHAR(255),
-    QT_SULCOS_MODELO_BANDA       SMALLINT,
-    ALTURA_SULCOS_MODELO_BANDA   REAL,
-    COD_MARCA_BANDA              BIGINT,
-    NOME_MARCA_BANDA             VARCHAR(255),
-    VALOR_BANDA                  REAL,
-    POSICAO_PNEU                 INTEGER,
-    POSICAO_APLICADO_CLIENTE     VARCHAR(255),
-    COD_VEICULO_APLICADO         BIGINT,
-    PLACA_APLICADO               VARCHAR(7),
-    IDENTIFICADOR_FROTA          TEXT
-  )
-LANGUAGE SQL
-AS $$
-SELECT
-  MP.NOME                                  AS NOME_MARCA_PNEU,
-  MP.CODIGO                                AS COD_MARCA_PNEU,
-  P.CODIGO,
-  P.CODIGO_CLIENTE,
-  U.CODIGO                                 AS COD_UNIDADE_ALOCADO,
-  R.CODIGO                                 AS COD_REGIONAL_ALOCADO,
-  P.PRESSAO_ATUAL,
-  P.VIDA_ATUAL,
-  P.VIDA_TOTAL,
-  P.PNEU_NOVO_NUNCA_RODADO,
-  MOP.NOME                                 AS NOME_MODELO_PNEU,
-  MOP.CODIGO                               AS COD_MODELO_PNEU,
-  MOP.QT_SULCOS                            AS QT_SULCOS_MODELO_PNEU,
-  MOP.ALTURA_SULCOS                        AS ALTURA_SULCOS_MODELO_PNEU,
-  PD.ALTURA,
-  PD.LARGURA,
-  PD.ARO,
-  PD.CODIGO                                AS COD_DIMENSAO,
-  P.PRESSAO_RECOMENDADA,
-  P.ALTURA_SULCO_CENTRAL_INTERNO,
-  P.ALTURA_SULCO_CENTRAL_EXTERNO,
-  P.ALTURA_SULCO_INTERNO,
-  P.ALTURA_SULCO_EXTERNO,
-  P.STATUS,
-  P.DOT,
-  P.VALOR,
-  MOB.CODIGO                               AS COD_MODELO_BANDA,
-  MOB.NOME                                 AS NOME_MODELO_BANDA,
-  MOB.QT_SULCOS                            AS QT_SULCOS_MODELO_BANDA,
-  MOB.ALTURA_SULCOS                        AS ALTURA_SULCOS_MODELO_BANDA,
-  MAB.CODIGO                               AS COD_MARCA_BANDA,
-  MAB.NOME                                 AS NOME_MARCA_BANDA,
-  PVV.VALOR                                AS VALOR_BANDA,
-  PO.POSICAO_PROLOG                        AS POSICAO_PNEU,
-  COALESCE(PPNE.NOMENCLATURA :: TEXT, '-') AS POSICAO_APLICADO_CLIENTE,
-  VEI.CODIGO                               AS COD_VEICULO_APLICADO,
-  VEI.PLACA                                AS PLACA_APLICADO,
-  VEI.IDENTIFICADOR_FROTA                  AS IDENTIFICADOR_FROTA
-FROM PNEU P
-  JOIN MODELO_PNEU MOP ON MOP.CODIGO = P.COD_MODELO
-  JOIN MARCA_PNEU MP ON MP.CODIGO = MOP.COD_MARCA
-  JOIN DIMENSAO_PNEU PD ON PD.CODIGO = P.COD_DIMENSAO
-  JOIN UNIDADE U ON U.CODIGO = P.COD_UNIDADE
-  JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO
-  LEFT JOIN VEICULO_PNEU VP ON P.CODIGO = VP.COD_PNEU
-  LEFT JOIN VEICULO VEI ON VEI.CODIGO = VP.COD_VEICULO
-  LEFT JOIN VEICULO_TIPO VT ON VT.CODIGO = VEI.COD_TIPO AND VT.COD_EMPRESA = P.COD_EMPRESA
-  LEFT JOIN VEICULO_DIAGRAMA VD ON VT.COD_DIAGRAMA = VD.CODIGO
-  LEFT JOIN PNEU_ORDEM PO ON VP.POSICAO = PO.POSICAO_PROLOG
-  LEFT JOIN MODELO_BANDA MOB ON MOB.CODIGO = P.COD_MODELO_BANDA AND MOB.COD_EMPRESA = U.COD_EMPRESA
-  LEFT JOIN MARCA_BANDA MAB ON MAB.CODIGO = MOB.COD_MARCA AND MAB.COD_EMPRESA = MOB.COD_EMPRESA
-  LEFT JOIN PNEU_VALOR_VIDA PVV ON PVV.COD_PNEU = P.CODIGO AND PVV.VIDA = P.VIDA_ATUAL
-  LEFT JOIN PNEU_POSICAO_NOMENCLATURA_EMPRESA PPNE ON
-                                                     PPNE.COD_EMPRESA = P.COD_EMPRESA AND
-                                                     PPNE.COD_DIAGRAMA = VD.CODIGO AND
-                                                     PPNE.POSICAO_PROLOG = VP.POSICAO
-WHERE VEI.PLACA = F_PLACA
-ORDER BY PO.ORDEM_EXIBICAO ASC;
+create or replace function func_pneu_get_pneu_by_placa(f_placa varchar(7), f_cod_unidade bigint)
+    returns table
+            (
+                nome_marca_pneu              varchar(255),
+                cod_marca_pneu               bigint,
+                codigo                       bigint,
+                codigo_cliente               varchar(255),
+                cod_unidade_alocado          bigint,
+                cod_regional_alocado         bigint,
+                pressao_atual                real,
+                vida_atual                   integer,
+                vida_total                   integer,
+                pneu_novo_nunca_rodado       boolean,
+                nome_modelo_pneu             varchar(255),
+                cod_modelo_pneu              bigint,
+                qt_sulcos_modelo_pneu        smallint,
+                altura_sulcos_modelo_pneu    real,
+                altura                       integer,
+                largura                      integer,
+                aro                          real,
+                cod_dimensao                 bigint,
+                pressao_recomendada          real,
+                altura_sulco_central_interno real,
+                altura_sulco_central_externo real,
+                altura_sulco_interno         real,
+                altura_sulco_externo         real,
+                status                       varchar(255),
+                dot                          varchar(20),
+                valor                        real,
+                cod_modelo_banda             bigint,
+                nome_modelo_banda            varchar(255),
+                qt_sulcos_modelo_banda       smallint,
+                altura_sulcos_modelo_banda   real,
+                cod_marca_banda              bigint,
+                nome_marca_banda             varchar(255),
+                valor_banda                  real,
+                posicao_pneu                 integer,
+                posicao_aplicado_cliente     varchar(255),
+                cod_veiculo_aplicado         bigint,
+                placa_aplicado               varchar(7),
+                identificador_frota          text
+            )
+    language sql
+as
+$$
+select mp.nome                                  as nome_marca_pneu,
+       mp.codigo                                as cod_marca_pneu,
+       p.codigo,
+       p.codigo_cliente,
+       u.codigo                                 as cod_unidade_alocado,
+       r.codigo                                 as cod_regional_alocado,
+       p.pressao_atual,
+       p.vida_atual,
+       p.vida_total,
+       p.pneu_novo_nunca_rodado,
+       mop.nome                                 as nome_modelo_pneu,
+       mop.codigo                               as cod_modelo_pneu,
+       mop.qt_sulcos                            as qt_sulcos_modelo_pneu,
+       mop.altura_sulcos                        as altura_sulcos_modelo_pneu,
+       pd.altura,
+       pd.largura,
+       pd.aro,
+       pd.codigo                                as cod_dimensao,
+       p.pressao_recomendada,
+       p.altura_sulco_central_interno,
+       p.altura_sulco_central_externo,
+       p.altura_sulco_interno,
+       p.altura_sulco_externo,
+       p.status,
+       p.dot,
+       p.valor,
+       mob.codigo                               as cod_modelo_banda,
+       mob.nome                                 as nome_modelo_banda,
+       mob.qt_sulcos                            as qt_sulcos_modelo_banda,
+       mob.altura_sulcos                        as altura_sulcos_modelo_banda,
+       mab.codigo                               as cod_marca_banda,
+       mab.nome                                 as nome_marca_banda,
+       pvv.valor                                as valor_banda,
+       po.posicao_prolog                        as posicao_pneu,
+       coalesce(ppne.nomenclatura :: text, '-') as posicao_aplicado_cliente,
+       vei.codigo                               as cod_veiculo_aplicado,
+       vei.placa                                as placa_aplicado,
+       vei.identificador_frota                  as identificador_frota
+from pneu p
+         join modelo_pneu mop on mop.codigo = p.cod_modelo
+         join marca_pneu mp on mp.codigo = mop.cod_marca
+         join dimensao_pneu pd on pd.codigo = p.cod_dimensao
+         join unidade u on u.codigo = p.cod_unidade
+         join regional r on u.cod_regional = r.codigo
+         left join veiculo_pneu vp on p.codigo = vp.cod_pneu
+         left join veiculo vei on vei.codigo = vp.cod_veiculo
+         left join veiculo_tipo vt on vt.codigo = vei.cod_tipo and vt.cod_empresa = p.cod_empresa
+         left join veiculo_diagrama vd on vt.cod_diagrama = vd.codigo
+         left join pneu_ordem po on vp.posicao = po.posicao_prolog
+         left join modelo_banda mob on mob.codigo = p.cod_modelo_banda and mob.cod_empresa = u.cod_empresa
+         left join marca_banda mab on mab.codigo = mob.cod_marca and mab.cod_empresa = mob.cod_empresa
+         left join pneu_valor_vida pvv on pvv.cod_pneu = p.codigo and pvv.vida = p.vida_atual
+         left join pneu_posicao_nomenclatura_empresa ppne
+                   on ppne.cod_empresa = p.cod_empresa and ppne.cod_diagrama = vd.codigo and
+                      ppne.posicao_prolog = vp.posicao
+where vei.placa = f_placa
+  and vei.cod_empresa = (select u.cod_empresa from unidade u where u.codigo = f_cod_unidade)
+order by po.ordem_exibicao;
 $$;

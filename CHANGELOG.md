@@ -1,3 +1,4 @@
+
 Change Log
 ==========
 
@@ -5,6 +6,56 @@ Change Log
 ## UNRELEASED
 ##
 
+<a name="v3.5.5"></a>
+## Version [v3.5.5](https://github.com/luizfp/PrologWebService/compare/v3.5.4...v3.5.5) (2021-07-19)
+
+# Features
+* Adiciona código e nome das funcionalidades do dash para agrupamento (PL-3876)
+
+### Refactors
+* Mapeia corretamente erros do Spring nos endpoints V3
+
+### Bug Fixes
+* Corrige erro de getConstraint ao receber valor nulo  
+* Corrige erro ao editar modelo de checklist (PL-3528)
+* Corrige erro ao movimentar pneus em placas com cadastro duplicado em outra empresa (PS-1606)
+
+<a name="v3.5.4"></a>
+## Version [v3.5.4](https://github.com/luizfp/PrologWebService/compare/v3.5.3...v3.5.4) (2021-07-11)
+
+### Bug Fixes
+* Corrige fechamento de serviço de pneu
+
+<a name="v3.5.3"></a>
+## Version [v3.5.3](https://github.com/luizfp/PrologWebService/compare/v3.5.2...v3.5.3) (2021-07-08)
+
+
+### Bug Fixes
+* Corrige processo de movimentação para buscar informações da placa correta
+* Corrige processo de aferição para buscar configurações da placa correta
+* Corrigir busca e avaliação de solicitação de folga
+* Corrige mapeamento de erros de banco do V2
+* Deixa de logar exception no sentry para mensagem de token não autorizado
+* Trata mensagem de erro em métodos roteados (integrados) com AOP
+
+<a name="v3.5.2"></a>
+## Version [v3.5.2](https://github.com/luizfp/PrologWebService/compare/v3.5.1...v3.5.2) (2021-07-05)
+
+### Refactors
+* Centraliza mapeamentos das exceptions (PL-3700)
+* Adiciona permissão de aferição placa na busca de campos personalizados
+
+### Bug Fixes
+* Corrigir uso de PageRequest na API v3 (PL-3704)
+* Corrige mapeamento de erros de banco do V2
+
+<a name="v3.5.1"></a>
+## Version [v3.5.1](https://github.com/luizfp/PrologWebService/compare/v3.5.0...v3.5.1) (2021-06-29)
+
+### Refactors
+* Listagem de unidades retorna vazio quando não passa codGrupo (PL-3692)
+* Retorna vazio na busca de campos personalizados na integração - Nepomuceno
+* Corrige listagem de relatos de outros setores (PL-3709)
 
 <a name="v3.5.0"></a>
 ## Version [v3.5.0](https://github.com/luizfp/PrologWebService/compare/v3.4.0...v3.5.0) (2021-06-21)

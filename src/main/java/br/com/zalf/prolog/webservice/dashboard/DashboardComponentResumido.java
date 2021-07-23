@@ -1,106 +1,27 @@
 package br.com.zalf.prolog.webservice.dashboard;
 
 import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
+import lombok.Builder;
+import lombok.Data;
 
 /**
  * Created on 1/24/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@Data
+@Builder(toBuilder = true, setterPrefix = "with")
 public final class DashboardComponentResumido {
-    private Integer codigoComponente;
-    private String titulo;
-    private String subtitulo;
-    private String descricao;
-    private String urlEndpointDados;
-
-    private int codPilarProLog;
-    private int qtdBlocosHorizontais;
-    private int qtdBlocosVerticais;
-    private int ordem;
-    private IdentificadorTipoComponente identificadorTipo;
-
-    public DashboardComponentResumido() {
-
-    }
-
-    public Integer getCodigoComponente() {
-        return codigoComponente;
-    }
-
-    public void setCodigoComponente(Integer codigoComponente) {
-        this.codigoComponente = codigoComponente;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public String getSubtitulo() {
-        return subtitulo;
-    }
-
-    public void setSubtitulo(String subtitulo) {
-        this.subtitulo = subtitulo;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public String getUrlEndpointDados() {
-        return urlEndpointDados;
-    }
-
-    public void setUrlEndpointDados(String urlEndpointDados) {
-        this.urlEndpointDados = urlEndpointDados;
-    }
-
-    public int getCodPilarProLog() {
-        return codPilarProLog;
-    }
-
-    public void setCodPilarProLog(int codPilarProLog) {
-        this.codPilarProLog = codPilarProLog;
-    }
-
-    public int getQtdBlocosHorizontais() {
-        return qtdBlocosHorizontais;
-    }
-
-    public void setQtdBlocosHorizontais(int qtdBlocosHorizontais) {
-        this.qtdBlocosHorizontais = qtdBlocosHorizontais;
-    }
-
-    public int getQtdBlocosVerticais() {
-        return qtdBlocosVerticais;
-    }
-
-    public void setQtdBlocosVerticais(int qtdBlocosVerticais) {
-        this.qtdBlocosVerticais = qtdBlocosVerticais;
-    }
-
-    public int getOrdem() {
-        return ordem;
-    }
-
-    public void setOrdem(int ordem) {
-        this.ordem = ordem;
-    }
-
-    public IdentificadorTipoComponente getIdentificadorTipo() {
-        return identificadorTipo;
-    }
-
-    public void setIdentificadorTipo(IdentificadorTipoComponente identificadorTipo) {
-        this.identificadorTipo = identificadorTipo;
-    }
+    private final Integer codigoComponente;
+    private final String titulo;
+    private final String subtitulo;
+    private final String descricao;
+    private final String urlEndpointDados;
+    private final int codAgrupamento;
+    private final String nomeAgrupamento;
+    private final int codPilarProLog;
+    private final int qtdBlocosHorizontais;
+    private final int qtdBlocosVerticais;
+    private final int ordem;
+    private final IdentificadorTipoComponente identificadorTipo;
 }

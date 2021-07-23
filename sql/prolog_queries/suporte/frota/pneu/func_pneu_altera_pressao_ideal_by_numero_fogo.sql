@@ -1,65 +1,65 @@
-CREATE OR REPLACE FUNCTION SUPORTE.FUNC_PNEU_ALTERA_PRESSAO_IDEAL_BY_NUMERO_FOGO(F_COD_EMPRESA BIGINT,
-                                                                                 F_COD_UNIDADE BIGINT,
-                                                                                 F_NUMERO_FOGO TEXT,
-                                                                                 F_NOVA_PRESSAO_RECOMENDADA BIGINT,
-                                                                                 OUT AVISO_PRESSAO_ALTERADA TEXT)
-    RETURNS TEXT
-    LANGUAGE PLPGSQL
-    SECURITY DEFINER
-AS
+create or replace function suporte.func_pneu_altera_pressao_ideal_by_numero_fogo(f_cod_empresa bigint,
+                                                                                 f_cod_unidade bigint,
+                                                                                 f_numero_fogo text,
+                                                                                 f_nova_pressao_recomendada bigint,
+                                                                                 out aviso_pressao_alterada text)
+    returns text
+    language plpgsql
+    security definer
+as
 $$
-DECLARE
-    QTD_LINHAS_ATUALIZADAS     BIGINT;
-    PRESSAO_MINIMA_RECOMENDADA BIGINT := 25;
-    PRESSAO_MAXIMA_RECOMENDADA BIGINT := 150;
-BEGIN
-    PERFORM SUPORTE.FUNC_HISTORICO_SALVA_EXECUCAO();
-    PERFORM FUNC_GARANTE_INTEGRIDADE_EMPRESA_UNIDADE(F_COD_EMPRESA, F_COD_UNIDADE);
+declare
+    qtd_linhas_atualizadas     bigint;
+    pressao_minima_recomendada bigint := 0;
+    pressao_maxima_recomendada bigint := 150;
+begin
+    perform suporte.func_historico_salva_execucao();
+    perform func_garante_integridade_empresa_unidade(f_cod_empresa, f_cod_unidade);
 
     --Verifica se a pressao informada está dentro das recomendadas.
-    IF (F_NOVA_PRESSAO_RECOMENDADA NOT BETWEEN PRESSAO_MINIMA_RECOMENDADA AND PRESSAO_MAXIMA_RECOMENDADA)
-    THEN
-        RAISE EXCEPTION 'Pressão recomendada não está dentro dos valores pré-estabelecidos.
-                        Mínima Recomendada: % ---- Máxima Recomendada: %', PRESSAO_MINIMA_RECOMENDADA,
-            PRESSAO_MAXIMA_RECOMENDADA;
-    END IF;
+    if (f_nova_pressao_recomendada not between pressao_minima_recomendada and pressao_maxima_recomendada)
+    then
+        raise exception 'Pressão recomendada não está dentro dos valores pré-estabelecidos.
+                        Mínima Recomendada: % ---- Máxima Recomendada: %', pressao_minima_recomendada,
+            pressao_maxima_recomendada;
+    end if;
 
     -- Verifica se existe o número de fogo informado.
-    IF NOT EXISTS(SELECT PD.CODIGO
-                  FROM PNEU PD
-                  WHERE PD.CODIGO_CLIENTE = F_NUMERO_FOGO
-                    AND PD.COD_EMPRESA = F_COD_EMPRESA)
-    THEN
-        RAISE EXCEPTION 'Número de fogo % não está cadastrado na empresa %!', F_NUMERO_FOGO, F_COD_EMPRESA;
-    END IF;
+    if not exists(select pd.codigo
+                  from pneu pd
+                  where pd.codigo_cliente = f_numero_fogo
+                    and pd.cod_empresa = f_cod_empresa)
+    then
+        raise exception 'Número de fogo % não está cadastrado na empresa %!', f_numero_fogo, f_cod_empresa;
+    end if;
 
-    UPDATE PNEU
-    SET PRESSAO_RECOMENDADA = F_NOVA_PRESSAO_RECOMENDADA
-    WHERE CODIGO_CLIENTE = F_NUMERO_FOGO
-      AND COD_UNIDADE = F_COD_UNIDADE
-      AND COD_EMPRESA = F_COD_EMPRESA;
+    update pneu
+    set pressao_recomendada = f_nova_pressao_recomendada
+    where codigo_cliente = f_numero_fogo
+      and cod_unidade = f_cod_unidade
+      and cod_empresa = f_cod_empresa;
 
-    GET DIAGNOSTICS QTD_LINHAS_ATUALIZADAS = ROW_COUNT;
+    get diagnostics qtd_linhas_atualizadas = row_count;
 
-    IF (QTD_LINHAS_ATUALIZADAS <= 0)
-    THEN
-        RAISE EXCEPTION 'Erro ao atualizar a pressão recomendada com estes parâemtros:
+    if (qtd_linhas_atualizadas <= 0)
+    then
+        raise exception 'Erro ao atualizar a pressão recomendada com estes parâemtros:
                      Empresa %, Unidade %, Número de fogo %, Nova pressão %',
-            F_COD_EMPRESA,
-            F_COD_UNIDADE,
-            F_NUMERO_FOGO,
-            F_NOVA_PRESSAO_RECOMENDADA;
-    END IF;
+            f_cod_unidade,
+            f_cod_empresa,
+            f_numero_fogo,
+            f_nova_pressao_recomendada;
+    end if;
 
-    SELECT CONCAT('Pressão recomendada do pneu com número de fogo ',
-                  F_NUMERO_FOGO,
+    select concat('Pressão recomendada do pneu com número de fogo ',
+                  f_numero_fogo,
                   ' da empresa ',
-                  F_COD_EMPRESA,
+                  f_cod_empresa,
                   ' da unidade ',
-                  F_COD_UNIDADE,
+                  f_cod_unidade,
                   ' alterada para ',
-                  F_NOVA_PRESSAO_RECOMENDADA,
+                  f_nova_pressao_recomendada,
                   ' psi')
-    INTO AVISO_PRESSAO_ALTERADA;
-END;
+    into aviso_pressao_alterada;
+end;
 $$;

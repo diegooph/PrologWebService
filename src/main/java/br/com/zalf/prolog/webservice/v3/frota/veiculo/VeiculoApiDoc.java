@@ -23,7 +23,7 @@ public interface VeiculoApiDoc {
     SuccessResponse insert(
             @ApiParam(hidden = true) final String tokenIntegracao,
             @ApiParam(value = "Dados do veículo para inserir.",
-                      required = true) @Valid final VeiculoCadastroDto veiculoCadastroDto);
+                      required = true) @Valid final VeiculoCadastroDto veiculoCadastroDto) throws Throwable;
 
     @ApiOperation(value = "Lista os veículos.", response = SuccessResponse.class)
     @ApiResponses(value = {

@@ -1,9 +1,11 @@
 package br.com.zalf.prolog.webservice.v3.geral.empresa;
 
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * Created on 2021-05-17
@@ -36,4 +38,7 @@ public class EmpresaEntity {
 
     @Column(name = "logo_consta_site_comercial", nullable = false, columnDefinition = "default false")
     private boolean logoConstaSiteComercial;
+
+    @OneToMany(mappedBy = "empresaEntity", fetch = FetchType.LAZY, targetEntity = UnidadeEntity.class)
+    private Set<UnidadeEntity> unidades;
 }

@@ -38,7 +38,7 @@ public class ColaboradorService {
             final String errorMessage = "Erro ao inserir o colaborador, tente novamente.";
             Log.e(TAG, errorMessage, e);
             throw Injection
-                    .provideColaboradorExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(e, errorMessage);
         }
     }
@@ -54,7 +54,7 @@ public class ColaboradorService {
             final String errorMessage = "Erro ao atualizar colaborador, tente novamente.";
             Log.e(TAG, String.format("Erro ao atualizar o colaborador de código: %d", colaborador.getCodigo()), e);
             throw Injection
-                    .provideColaboradorExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(e, errorMessage);
         }
     }
@@ -89,7 +89,7 @@ public class ColaboradorService {
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao buscar o colaborador com CPF %d", cpf), throwable);
             throw Injection
-                    .provideColaboradorExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao buscar colaborador, tente novamente");
         }
     }
@@ -101,7 +101,7 @@ public class ColaboradorService {
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao buscar o colaborador com token %s", token), throwable);
             throw Injection
-                    .provideColaboradorExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao buscar colaborador, tente novamente");
         }
     }
@@ -123,7 +123,7 @@ public class ColaboradorService {
             final String errorMessage = "Erro ao buscar os colaboradores";
             Log.e(TAG, String.format("Erro ao buscar todos os colaboradores da unidade %d", codUnidade), e);
             throw Injection
-                    .provideColaboradorExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(e, errorMessage);
         }
     }
@@ -137,7 +137,7 @@ public class ColaboradorService {
             final String errorMessage = "Erro ao buscar os colaboradores.";
             Log.e(TAG, String.format(errorMessage), e);
             throw Injection
-                    .provideColaboradorExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(e, errorMessage);
         }
     }
@@ -149,7 +149,7 @@ public class ColaboradorService {
             final String errorMessage = "Erro ao buscar os colaboradores";
             Log.e(TAG, String.format("Erro ao buscar todos os colaboradores da empresa %d", codEmrpesa), e);
             throw Injection
-                    .provideColaboradorExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(e, errorMessage);
         }
     }
@@ -269,7 +269,7 @@ public class ColaboradorService {
     public Long getCodColaboradorByCpf(@NotNull final Long codEmpresa, @NotNull final String cpfColaborador)
             throws Throwable {
         try {
-            return dao.getCodColaboradorByCpf(codEmpresa, cpfColaborador);
+            return dao.getCodColaboradorByCpfAndCodEmpresa(codEmpresa, cpfColaborador);
         } catch (final SQLException e) {
             Log.e(TAG,
                   String.format("Erro ao buscar o código do colaborador " +

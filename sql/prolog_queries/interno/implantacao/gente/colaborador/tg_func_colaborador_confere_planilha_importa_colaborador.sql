@@ -15,7 +15,7 @@ DECLARE
     V_SIMILARIDADE_SETOR          REAL;
     V_COD_FUNCAO_BANCO            BIGINT;
     V_SIMILARIDADE_FUNCAO         REAL;
-    V_FUNCAO_DELETADA             BOOLEAN;
+    V_EXISTE_FUNCAO_DELETADA      BOOLEAN;
     V_VALOR_SIMILARIDADE_PAISES   REAL     := 0.4;
     V_NOME_PAIS                   VARCHAR(255);
     V_SIGLA_ISO2                  CHAR(2);
@@ -301,29 +301,37 @@ BEGIN
         -- Deletada: update para remover a deleção.
         -- Não similar: cadastra.
         -- Não existente: cadastra.
+        -- Caso exista
         IF (NEW.FUNCAO_FORMATADA_IMPORT IS NULL)
         THEN
             V_QTD_ERROS = V_QTD_ERROS + 1;
             V_MSGS_ERROS = CONCAT(V_MSGS_ERROS, V_QTD_ERROS, '- A FUNÇÃO NÃO PODE SER NULA.', V_QUEBRA_LINHA);
         ELSE
-            -- Procura função similar no banco.
+            -- Procura função similar no banco que não esteja deletada.
             SELECT DISTINCT ON
-                (NEW.FUNCAO_FORMATADA_IMPORT) FD.CODIGO                                                         AS COD_FUNCAO,
-                                              MAX(FUNC_GERA_SIMILARIDADE(NEW.FUNCAO_FORMATADA_IMPORT, FD.NOME)) AS SIMILARIEDADE_FUNCAO
-            INTO V_COD_FUNCAO_BANCO, V_SIMILARIDADE_FUNCAO, V_FUNCAO_DELETADA
-            FROM FUNCAO_DATA FD
-            WHERE FD.COD_EMPRESA = NEW.COD_EMPRESA
-            GROUP BY NEW.FUNCAO_FORMATADA_IMPORT, FD.NOME, FD.CODIGO
+                (NEW.FUNCAO_FORMATADA_IMPORT) F.CODIGO                                           AS COD_FUNCAO,
+                MAX(FUNC_GERA_SIMILARIDADE(NEW.FUNCAO_FORMATADA_IMPORT, F.NOME)) AS SIMILARIEDADE_FUNCAO
+            INTO V_COD_FUNCAO_BANCO, V_SIMILARIDADE_FUNCAO
+            FROM FUNCAO F
+            WHERE F.COD_EMPRESA = NEW.COD_EMPRESA
+            GROUP BY NEW.FUNCAO_FORMATADA_IMPORT, F.NOME, F.CODIGO
             ORDER BY NEW.FUNCAO_FORMATADA_IMPORT, SIMILARIEDADE_FUNCAO DESC;
 
-            -- Se a similaridade da funcao for menor que o exigido ou nula: Cadastra.
+            -- Se a similaridade da funcao for menor que o exigido ou nula: Verifica se há alguma similar deletada.
             IF (V_SIMILARIDADE_FUNCAO < V_VALOR_SIMILARIDADE OR V_SIMILARIDADE_FUNCAO IS NULL)
             THEN
-                INSERT INTO FUNCAO_DATA (NOME, COD_EMPRESA)
-                VALUES (NEW.FUNCAO_EDITAVEL, NEW.COD_EMPRESA) RETURNING CODIGO INTO V_COD_FUNCAO_BANCO;
-            ELSE
+                 SELECT DISTINCT ON
+                    (NEW.FUNCAO_FORMATADA_IMPORT) FD.CODIGO                    AS COD_FUNCAO,
+                    MAX(FUNC_GERA_SIMILARIDADE(
+                        NEW.FUNCAO_FORMATADA_IMPORT, FD.NOME)) AS SIMILARIEDADE_FUNCAO,
+                    FD.DELETADO
+                INTO V_COD_FUNCAO_BANCO, V_SIMILARIDADE_FUNCAO, V_EXISTE_FUNCAO_DELETADA
+                FROM FUNCAO_DATA FD
+                WHERE FD.COD_EMPRESA = NEW.COD_EMPRESA AND FD.DELETADO = TRUE
+                GROUP BY NEW.FUNCAO_FORMATADA_IMPORT, FD.NOME, FD.CODIGO
+                ORDER BY NEW.FUNCAO_FORMATADA_IMPORT, SIMILARIEDADE_FUNCAO DESC;
                 -- Se a similaridade da funcao for maior que o exigido e ela estiver deletada: Realiza update.
-                IF (V_SIMILARIDADE_FUNCAO > V_VALOR_SIMILARIDADE AND V_FUNCAO_DELETADA)
+                IF (V_SIMILARIDADE_FUNCAO > V_VALOR_SIMILARIDADE AND V_EXISTE_FUNCAO_DELETADA)
                 THEN
                     UPDATE FUNCAO_DATA
                     SET DELETADO            = FALSE,
@@ -331,6 +339,10 @@ BEGIN
                         PG_USERNAME_DELECAO = NULL
                     WHERE CODIGO = V_COD_FUNCAO_BANCO
                       AND COD_EMPRESA = NEW.COD_EMPRESA;
+                    -- Se não, cadastra.
+                    ELSE
+                    INSERT INTO FUNCAO_DATA (NOME, COD_EMPRESA)
+                    VALUES (NEW.FUNCAO_EDITAVEL, NEW.COD_EMPRESA) RETURNING CODIGO INTO V_COD_FUNCAO_BANCO;
                 END IF;
             END IF;
         END IF;

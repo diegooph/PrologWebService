@@ -1,44 +1,44 @@
-CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_RELATORIO_REALIZADOS_ABAIXO_TEMPO_DEFINIDO(
-  F_COD_UNIDADES                  BIGINT[],
-  F_TEMPO_REALIZACAO_MILLIS       BIGINT,
-  F_DATA_HOJE_UTC                 DATE,
-  F_DIAS_RETROATIVOS_PARA_BUSCAR  BIGINT)
-  RETURNS TABLE(
-    UNIDADE                                                             TEXT,
-    NOME                                                                TEXT,
-    "QUANTIDADE CHECKLISTS REALIZADOS ABAIXO TEMPO ESPECIFICO"          BIGINT,
-    "QUANTIDADE CHECKLISTS REALIZADOS"                                  BIGINT
-  )
-LANGUAGE PLPGSQL
-AS $$
-DECLARE
-  DATA_INICIAL       DATE := F_DATA_HOJE_UTC + INTERVAL '1' DAY - (INTERVAL '1' DAY * F_DIAS_RETROATIVOS_PARA_BUSCAR);
-  DATA_FINAL         DATE := F_DATA_HOJE_UTC + INTERVAL '1' DAY;
-BEGIN
-  RETURN QUERY
-    WITH PRE_SELECT AS (
-        SELECT
-          U.NOME :: TEXT                                                AS NOME_UNIDADE,
-          CO.NOME :: TEXT                                               AS NOME_COLABORADOR,
-          COUNT(CL.CPF_COLABORADOR)
-            FILTER (WHERE TEMPO_REALIZACAO < F_TEMPO_REALIZACAO_MILLIS) AS REALIZADOS_ABAIXO_TEMPO_DEFINIDO,
-          COUNT(CL.CPF_COLABORADOR)                                     AS REALIZADOS
-        FROM CHECKLIST CL
-          JOIN UNIDADE U
-            ON CL.COD_UNIDADE = U.CODIGO
-          JOIN COLABORADOR CO
-            ON CO.CPF = CL.CPF_COLABORADOR
-        WHERE CL.COD_UNIDADE = ANY (F_COD_UNIDADES)
-              AND (CL.DATA_HORA AT TIME ZONE TZ_UNIDADE(CL.COD_UNIDADE)) :: DATE BETWEEN DATA_INICIAL AND DATA_FINAL
-        GROUP BY U.CODIGO, CO.CPF, CO.NOME
-        ORDER BY REALIZADOS_ABAIXO_TEMPO_DEFINIDO DESC, CO.NOME ASC
-    )
-    SELECT
-      PS.NOME_UNIDADE,
-      PS.NOME_COLABORADOR,
-      PS.REALIZADOS_ABAIXO_TEMPO_DEFINIDO,
-      PS.REALIZADOS
-  FROM PRE_SELECT PS
-  WHERE PS.REALIZADOS_ABAIXO_TEMPO_DEFINIDO > 0;
-END;
+create or replace function func_checklist_relatorio_realizados_abaixo_tempo_definido(f_cod_unidades bigint[],
+                                                                                     f_tempo_realizacao_millis bigint,
+                                                                                     f_data_hoje_utc date,
+                                                                                     f_dias_retroativos_para_buscar bigint)
+    returns table
+            (
+                unidade                                                    text,
+                nome                                                       text,
+                "QUANTIDADE CHECKLISTS REALIZADOS ABAIXO TEMPO ESPECIFICO" bigint,
+                "QUANTIDADE CHECKLISTS REALIZADOS"                         bigint
+            )
+    language plpgsql
+as
+$$
+declare
+    data_inicial constant date := f_data_hoje_utc + interval '1' day -
+                                  (interval '1' day * f_dias_retroativos_para_buscar);
+    data_final   constant date := f_data_hoje_utc + interval '1' day;
+begin
+    return query
+        with pre_select as (
+            select cl.cod_unidade                                              as cod_unidade,
+                   cl.cpf_colaborador                                          as cpf_colaborador,
+                   count(cl.cpf_colaborador)                                   as total_realizados,
+                   count(cl.cpf_colaborador)
+                   filter (where tempo_realizacao < f_tempo_realizacao_millis) as realizados_abaixo_tempo_definido
+            from checklist cl
+            where cl.cod_unidade = any (f_cod_unidades)
+              and cl.data_hora_realizacao_tz_aplicado between data_inicial and data_final
+            group by cl.cod_unidade, cl.cpf_colaborador
+        )
+        select u.nome::text,
+               co.nome::text,
+               ps.realizados_abaixo_tempo_definido,
+               ps.total_realizados
+        from pre_select ps
+                 join unidade u
+                      on ps.cod_unidade = u.codigo
+                 join colaborador co
+                      on ps.cpf_colaborador = co.cpf
+        where ps.realizados_abaixo_tempo_definido > 0
+        order by ps.realizados_abaixo_tempo_definido desc, co.nome;
+end;
 $$;

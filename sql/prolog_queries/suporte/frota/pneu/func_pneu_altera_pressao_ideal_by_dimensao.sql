@@ -1,97 +1,97 @@
-CREATE OR REPLACE FUNCTION SUPORTE.FUNC_PNEU_ALTERA_PRESSAO_IDEAL_BY_DIMENSAO(F_COD_EMPRESA BIGINT,
-                                                                              F_COD_UNIDADE BIGINT,
-                                                                              F_COD_DIMENSAO BIGINT,
-                                                                              F_NOVA_PRESSAO_RECOMENDADA BIGINT,
-                                                                              F_QTD_PNEUS_IMPACTADOS BIGINT,
-                                                                              OUT AVISO_PRESSAO_ALTERADA TEXT)
-    RETURNS TEXT
-    LANGUAGE PLPGSQL
-    SECURITY DEFINER
-AS
+create or replace function suporte.func_pneu_altera_pressao_ideal_by_dimensao(f_cod_empresa bigint,
+                                                                              f_cod_unidade bigint,
+                                                                              f_cod_dimensao bigint,
+                                                                              f_nova_pressao_recomendada bigint,
+                                                                              f_qtd_pneus_impactados bigint,
+                                                                              out aviso_pressao_alterada text)
+    returns text
+    language plpgsql
+    security definer
+as
 $$
-DECLARE
-    QTD_REAL_PNEUS_IMPACTADOS  BIGINT;
-    PRESSAO_MINIMA_RECOMENDADA BIGINT := 25;
-    PRESSAO_MAXIMA_RECOMENDADA BIGINT := 150;
-BEGIN
-    PERFORM SUPORTE.FUNC_HISTORICO_SALVA_EXECUCAO();
-    --Verifica se a pressao informada está dentro das recomendadas.
-    IF (F_NOVA_PRESSAO_RECOMENDADA NOT BETWEEN PRESSAO_MINIMA_RECOMENDADA AND PRESSAO_MAXIMA_RECOMENDADA)
-    THEN
-        RAISE EXCEPTION 'Pressão recomendada não está dentro dos valores pré-estabelecidos.
-                        Mínima Recomendada: % ---- Máxima Recomendada: %', PRESSAO_MINIMA_RECOMENDADA,
-            PRESSAO_MAXIMA_RECOMENDADA;
-    END IF;
+declare
+    qtd_real_pneus_impactados  bigint;
+    pressao_minima_recomendada bigint := 0;
+    pressao_maxima_recomendada bigint := 150;
+begin
+    perform suporte.func_historico_salva_execucao();
+    -- Verifica se a pressao informada está dentro das recomendadas.
+    if (f_nova_pressao_recomendada not between pressao_minima_recomendada and pressao_maxima_recomendada)
+    then
+        raise exception 'Pressão recomendada não está dentro dos valores pré-estabelecidos.
+                        Mínima Recomendada: % ---- Máxima Recomendada: %', pressao_minima_recomendada,
+            pressao_maxima_recomendada;
+    end if;
 
     -- Verifica se a empresa existe.
-    IF NOT EXISTS(SELECT E.CODIGO
-                  FROM EMPRESA E
-                  WHERE E.CODIGO = F_COD_EMPRESA)
-    THEN
-        RAISE EXCEPTION 'Empresa de código % não existe!', F_COD_EMPRESA;
-    END IF;
+    if not exists(select e.codigo
+                  from empresa e
+                  where e.codigo = f_cod_empresa)
+    then
+        raise exception 'Empresa de código % não existe!', f_cod_empresa;
+    end if;
 
     -- Verifica se a unidade existe.
-    IF NOT EXISTS(SELECT U.CODIGO
-                  FROM UNIDADE U
-                  WHERE U.CODIGO = F_COD_UNIDADE)
-    THEN
-        RAISE EXCEPTION 'Unidade de código % não existe!', F_COD_UNIDADE;
-    END IF;
+    if not exists(select u.codigo
+                  from unidade u
+                  where u.codigo = f_cod_unidade)
+    then
+        raise exception 'Unidade de código % não existe!', f_cod_unidade;
+    end if;
 
     -- Verifica se existe a dimensão informada.
-    IF NOT EXISTS(SELECT DM.CODIGO
-                  FROM DIMENSAO_PNEU DM
-                  WHERE DM.CODIGO = F_COD_DIMENSAO)
-    THEN
-        RAISE EXCEPTION 'Dimensao de código % não existe!', F_COD_DIMENSAO;
-    END IF;
+    if not exists(select dm.codigo
+                  from dimensao_pneu dm
+                  where dm.codigo = f_cod_dimensao)
+    then
+        raise exception 'Dimensao de código % não existe!', f_cod_dimensao;
+    end if;
 
     -- Verifica se a unidade é da empresa informada.
-    IF NOT EXISTS(SELECT U.CODIGO
-                  FROM UNIDADE U
-                  WHERE U.CODIGO = F_COD_UNIDADE
-                    AND U.COD_EMPRESA = F_COD_EMPRESA)
-    THEN
-        RAISE EXCEPTION 'A unidade % não pertence a empresa %!', F_COD_UNIDADE, F_COD_EMPRESA;
-    END IF;
+    if not exists(select u.codigo
+                  from unidade u
+                  where u.codigo = f_cod_unidade
+                    and u.cod_empresa = f_cod_empresa)
+    then
+        raise exception 'A unidade % não pertence a empresa %!', f_cod_unidade, f_cod_empresa;
+    end if;
 
     -- Verifica se algum pneu possui dimensão informada.
-    IF NOT EXISTS(SELECT P.COD_DIMENSAO
-                  FROM PNEU P
-                  WHERE P.COD_DIMENSAO = F_COD_DIMENSAO
-                    AND P.COD_UNIDADE = F_COD_UNIDADE
-                    AND P.COD_EMPRESA = F_COD_EMPRESA)
-    THEN
-        RAISE EXCEPTION 'Não existem pneus com a dimensão % na unidade %', F_COD_DIMENSAO, F_COD_UNIDADE;
-    END IF;
+    if not exists(select p.cod_dimensao
+                  from pneu p
+                  where p.cod_dimensao = f_cod_dimensao
+                    and p.cod_unidade = f_cod_unidade
+                    and p.cod_empresa = f_cod_empresa)
+    then
+        raise exception 'Não existem pneus com a dimensão % na unidade %', f_cod_dimensao, f_cod_unidade;
+    end if;
 
     -- Verifica quantidade de pneus impactados.
-    SELECT COUNT(P.CODIGO)
-    FROM PNEU P
-    WHERE P.COD_DIMENSAO = F_COD_DIMENSAO
-      AND P.COD_UNIDADE = F_COD_UNIDADE
-      AND P.COD_EMPRESA = F_COD_EMPRESA
-    INTO QTD_REAL_PNEUS_IMPACTADOS;
-    IF (QTD_REAL_PNEUS_IMPACTADOS <> F_QTD_PNEUS_IMPACTADOS)
-    THEN
-        RAISE EXCEPTION 'A quantidade de pneus informados como impactados pela mudança de pressão (%) não condiz com a
-                       quantidade real de pneus que serão afetados!', F_QTD_PNEUS_IMPACTADOS;
-    END IF;
+    select count(p.codigo)
+    from pneu p
+    where p.cod_dimensao = f_cod_dimensao
+      and p.cod_unidade = f_cod_unidade
+      and p.cod_empresa = f_cod_empresa
+    into qtd_real_pneus_impactados;
+    if (qtd_real_pneus_impactados <> f_qtd_pneus_impactados)
+    then
+        raise exception 'A quantidade de pneus informados como impactados pela mudança de pressão (%) não condiz com a
+                       quantidade real de pneus que serão afetados!', f_qtd_pneus_impactados;
+    end if;
 
-    UPDATE PNEU
-    SET PRESSAO_RECOMENDADA = F_NOVA_PRESSAO_RECOMENDADA
-    WHERE COD_DIMENSAO = F_COD_DIMENSAO
-      AND COD_UNIDADE = F_COD_UNIDADE
-      AND COD_EMPRESA = F_COD_EMPRESA;
+    update pneu
+    set pressao_recomendada = f_nova_pressao_recomendada
+    where cod_dimensao = f_cod_dimensao
+      and cod_unidade = f_cod_unidade
+      and cod_empresa = f_cod_empresa;
 
-    SELECT CONCAT('Pressão recomendada dos pneus com dimensão ',
-                  F_COD_DIMENSAO,
+    select concat('Pressão recomendada dos pneus com dimensão ',
+                  f_cod_dimensao,
                   ' da unidade ',
-                  F_COD_UNIDADE,
+                  f_cod_unidade,
                   ' alterada para ',
-                  F_NOVA_PRESSAO_RECOMENDADA,
+                  f_nova_pressao_recomendada,
                   ' psi')
-    INTO AVISO_PRESSAO_ALTERADA;
-END;
+    into aviso_pressao_alterada;
+end;
 $$;

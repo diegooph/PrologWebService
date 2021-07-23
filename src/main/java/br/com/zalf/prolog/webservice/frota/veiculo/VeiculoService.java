@@ -74,7 +74,7 @@ public final class VeiculoService {
     @Deprecated
     public Veiculo getVeiculoByPlaca(@NotNull final String userToken,
                                      @NotNull final String placa,
-                                     @Nullable final Long codUnidade,
+                                     @NotNull final Long codUnidade,
                                      final boolean withPneus) {
         try {
             return RouterVeiculo
@@ -117,7 +117,7 @@ public final class VeiculoService {
                                              "userToken: %s\n" +
                                              "codUnidade: %d", userToken, veiculo.getCodUnidadeAlocado()), t);
             throw Injection
-                    .provideVeiculoExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir o veículo, tente novamente");
         }
     }
@@ -137,7 +137,7 @@ public final class VeiculoService {
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao atualizar o veículo de código: %d", veiculo.getCodigo()), t);
             throw Injection
-                    .provideVeiculoExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(t, "Erro ao atualizar veículo, tente novamente");
         }
     }
@@ -162,7 +162,7 @@ public final class VeiculoService {
                                         "codVeiculo: %d\n", codColaboradorResponsavelEdicao, veiculo.getCodigo()),
                   t);
             throw Injection
-                    .provideVeiculoExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(t, "Erro ao atualizar o status do veículo, tente novamente.");
         }
     }
@@ -186,7 +186,7 @@ public final class VeiculoService {
             final String errorMessage = "Erro ao buscar marcas de veículos";
             Log.e(TAG, errorMessage, t);
             throw Injection
-                    .provideVeiculoExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(t, errorMessage);
         }
     }
@@ -198,7 +198,7 @@ public final class VeiculoService {
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar marcas e modelos de veículos da empresa %d", codEmpresa), t);
             throw Injection
-                    .provideVeiculoExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar marcas e modelos de veículos");
         }
     }
@@ -217,7 +217,7 @@ public final class VeiculoService {
                                              "Empresa: %d\n" +
                                              "codMarca: %d", codEmpresa, codMarca), t);
             throw Injection
-                    .provideVeiculoExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(t, "Erro ao cadastrar modelo de veículo, tente novamente");
         }
     }
@@ -229,7 +229,7 @@ public final class VeiculoService {
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar os diagramas dos veículos.", t);
             throw Injection
-                    .provideVeiculoExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar diagramas, tente novamente");
         }
     }
@@ -328,7 +328,7 @@ public final class VeiculoService {
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar o estado do veículo.", t);
             throw Injection
-                    .provideVeiculoExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar estado do veiculo, tente novamente");
         }
     }

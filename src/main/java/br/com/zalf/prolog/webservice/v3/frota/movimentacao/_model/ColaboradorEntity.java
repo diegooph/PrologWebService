@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao._model;
 
+import br.com.zalf.prolog.webservice.v3.geral.empresa.EmpresaEntity;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,9 @@ public final class ColaboradorEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_unidade")
     private UnidadeEntity unidade;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_empresa")
+    private EmpresaEntity empresa;
 
     @NotNull
     public ZoneId getColaboradorZoneId() {

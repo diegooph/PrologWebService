@@ -12,5 +12,8 @@ import java.sql.SQLException;
  */
 public interface SqlExceptionTranslator {
     @NotNull
+    ProLogException doTranslate(@NotNull final SQLException sqlException);
+
+    @NotNull
     ProLogException doTranslate(@NotNull final SQLException sqlException, @NotNull final String fallBackErrorMessage);
 }

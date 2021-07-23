@@ -26,3 +26,16 @@ from pg_locks l
 order by database,
          relation,
          pid;
+
+-- Shows all permissions from an user.
+select n.nspname as "Schema",
+       case c.relkind
+           when 'r' then 'table'
+           when 'v' then 'view'
+           when 'm' then 'materialized view'
+           when 'S' then 'sequence'
+           when 'f' then 'foreign table'
+           end   as "Type"
+from pg_catalog.pg_class c
+         left join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+where pg_catalog.array_to_string(c.relacl, E'\n') like '%username%';

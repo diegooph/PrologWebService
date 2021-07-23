@@ -54,13 +54,14 @@ public interface VeiculoDao {
     @Deprecated
     @NotNull
     Veiculo getVeiculoByPlaca(@NotNull final String placa,
-                              @Nullable final Long codUnidade,
+                              @NotNull final Long codUnidade,
                               final boolean withPneus) throws SQLException;
 
     @Deprecated
     @NotNull
     Veiculo getVeiculoByPlaca(@NotNull final Connection conn,
                               @NotNull final String placa,
+                              @NotNull final Long codUnidade,
                               final boolean withPneus) throws Throwable;
 
     void updateKmByPlaca(String placa, long km, Connection conn) throws SQLException;
@@ -82,7 +83,7 @@ public interface VeiculoDao {
     List<Marca> getMarcasVeiculosNivelProLog() throws Throwable;
 
     @NotNull
-    List<Marca> 
+    List<Marca>
     getMarcasModelosVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 
     @NotNull
@@ -94,10 +95,12 @@ public interface VeiculoDao {
 
     List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException;
 
-    Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException;
+    Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final String placa,
+                                                        @NotNull final Long codUnidade) throws SQLException;
 
     Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final Connection conn,
-                                                        @NotNull final String placa) throws SQLException;
+                                                        @NotNull final String placa,
+                                                        @NotNull final Long codUnidade) throws SQLException;
 
     Optional<DiagramaVeiculo> getDiagramaVeiculoByCod(@NotNull final Short codDiagrama) throws SQLException;
 
@@ -128,7 +131,8 @@ public interface VeiculoDao {
 
     @NotNull
     Long getCodVeiculoByPlaca(@NotNull final Connection conn,
-                              @NotNull final String placaVeiculo) throws Throwable;
+                              @NotNull final String placaVeiculo,
+                              @NotNull final Long codUnidade) throws Throwable;
 
     @Deprecated
     List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos) throws SQLException;

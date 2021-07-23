@@ -244,9 +244,13 @@ public final class VeiculoResource {
             Pilares.Frota.Veiculo.CADASTRAR,
             Pilares.Frota.Veiculo.ALTERAR})
     @Path("/sem-pneus/{placa}")
+    @AppVersionCodeHandler(
+            targetVersionCode = 124,
+            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public Veiculo getVeiculoByPlacaSemPneus(@HeaderParam("Authorization") final String userToken,
                                              @PathParam("placa") final String placa,
-                                             @QueryParam("codUnidade") @Optional final Long codUnidade) {
+                                             @QueryParam("codUnidade") final Long codUnidade) {
         return service.getVeiculoByPlaca(userToken, placa, codUnidade, false);
     }
 
@@ -266,13 +270,12 @@ public final class VeiculoResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @Path("/com-pneus/{placa}")
     @AppVersionCodeHandler(
-            implementation = DefaultAppVersionCodeHandler.class,
-            targetVersionCode = 68,
+            targetVersionCode = 124,
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public Veiculo getVeiculoByPlacaComPneus(@HeaderParam("Authorization") final String userToken,
                                              @PathParam("placa") final String placa,
-                                             @QueryParam("codUnidade") @Optional final Long codUnidade) {
+                                             @QueryParam("codUnidade") final Long codUnidade) {
         return service.getVeiculoByPlaca(userToken, placa, codUnidade, true);
     }
 

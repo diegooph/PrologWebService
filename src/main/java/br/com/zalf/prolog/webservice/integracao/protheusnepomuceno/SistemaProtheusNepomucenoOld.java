@@ -327,6 +327,11 @@ public final class SistemaProtheusNepomucenoOld extends Sistema {
             @NotNull final Long codUnidade,
             @NotNull final TipoProcessoColetaAfericao tipoProcessoColetaAfericao,
             @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable {
+        // Aferições de placas não possuem campos personalizados, nesses casos retornamos uma lista vazia.
+        if (tipoProcessoColetaAfericao.equals(TipoProcessoColetaAfericao.PLACA)) {
+            return Collections.emptyList();
+        }
+
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
