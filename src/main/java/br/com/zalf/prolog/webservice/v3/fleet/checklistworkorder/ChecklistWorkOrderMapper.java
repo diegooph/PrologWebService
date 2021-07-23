@@ -73,7 +73,7 @@ public final class ChecklistWorkOrderMapper {
                 workOrderProjection.getQuestionContextId(),
                 workOrderProjection.getOptionId(),
                 workOrderProjection.getOptionContextId(),
-                workOrderProjection.getOptionAddicionalId(),
+                workOrderProjection.getOptionAdditionalId(),
                 StatusItemOrdemServico.fromString(workOrderProjection.getWorkOrderItemStatus()),
                 workOrderProjection.getAmountTimesPointed(),
                 workOrderProjection.getResolverUserId(),

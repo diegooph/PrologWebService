@@ -18,22 +18,22 @@ import java.util.List;
 public interface ChecklistDao extends JpaRepository<ChecklistEntity, Long> {
     @NotNull
     @Query(value = "select * from func_checklist_get_listagem(" +
-            "f_cod_unidades => to_bigint_array(:codUnidades), " +
-            "f_data_inicial => date(:dataInicial), " +
-            "f_data_final => date(:dataFinal), " +
-            "f_cod_colaborador => to_bigint(:codColaborador), " +
-            "f_cod_veiculo => to_bigint(:codVeiculo), " +
-            "f_cod_tipo_veiculo => to_bigint(:codTipoVeiculo), " +
-            "f_incluir_respostas => :incluirRespostas, " +
+            "f_cod_unidades => to_bigint_array(:branchesId), " +
+            "f_data_inicial => date(:initialDate), " +
+            "f_data_final => date(:finalDate), " +
+            "f_cod_colaborador => to_bigint(:userId), " +
+            "f_cod_veiculo => to_bigint(:vehicleId), " +
+            "f_cod_tipo_veiculo => to_bigint(:vehicleTypeId), " +
+            "f_incluir_respostas => :includeAnswers, " +
             "f_limit => :limit, " +
             "f_offset => :offset);", nativeQuery = true)
-    List<ChecklistProjection> getChecklistsListagem(@NotNull final List<Long> codUnidades,
-                                                    @NotNull final LocalDate dataInicial,
-                                                    @NotNull final LocalDate dataFinal,
-                                                    @Nullable final Long codColaborador,
-                                                    @Nullable final Long codVeiculo,
-                                                    @Nullable final Long codTipoVeiculo,
-                                                    boolean incluirRespostas,
+    List<ChecklistProjection> getChecklistsListagem(@NotNull final List<Long> branchesId,
+                                                    @NotNull final LocalDate initialDate,
+                                                    @NotNull final LocalDate finalDate,
+                                                    @Nullable final Long userId,
+                                                    @Nullable final Long vehicleId,
+                                                    @Nullable final Long vehicleTypeId,
+                                                    boolean includeAnswers,
                                                     int limit,
                                                     int offset);
 }

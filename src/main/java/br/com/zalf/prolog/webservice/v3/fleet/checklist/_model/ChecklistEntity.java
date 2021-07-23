@@ -25,17 +25,20 @@ public final class ChecklistEntity implements EntityKmColetado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
+    @NotNull
+    private Long id;
     @Column(name = "cod_unidade", nullable = false)
-    private Long codUnidade;
+    @NotNull
+    private Long branchId;
     @Column(name = "cod_veiculo", nullable = false)
-    private Long codVeiculo;
+    @NotNull
+    private Long vehicleId;
     @Column(name = "km_veiculo", nullable = false)
-    private long kmColetadoVeiculo;
+    private long vehicleKm;
 
     @NotNull
     @Override
     public VeiculoKmColetado getVeiculoKmColetado() {
-        return VeiculoKmColetado.of(codVeiculo, kmColetadoVeiculo);
+        return VeiculoKmColetado.of(vehicleId, vehicleKm);
     }
 }

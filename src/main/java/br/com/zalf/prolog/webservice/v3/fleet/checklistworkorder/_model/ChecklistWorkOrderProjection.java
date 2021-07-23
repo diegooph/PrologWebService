@@ -72,7 +72,7 @@ public interface ChecklistWorkOrderProjection {
     long getOptionId();
 
     @Value("#{target.option_additional_id}")
-    String getOptionAddicionalId();
+    String getOptionAdditionalId();
 
     @Value("#{target.option_context_id}")
     long getOptionContextId();

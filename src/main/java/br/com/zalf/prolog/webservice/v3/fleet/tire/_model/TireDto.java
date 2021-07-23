@@ -196,7 +196,7 @@ public class TireDto {
     @ApiModelProperty(value = "Código de coleta. Essa propriedade só será enviado caso o status do pneu for ANALISE.",
                       example = "12345678")
     @Nullable
-    String tireRepairAddicionalCode;
+    String tireRepairAdditionalCode;
     @ApiModelProperty(value = "Código do motivo de descarte do pneu. Essa propriedade só será enviado caso o status " +
             "do pneu for DESCARTE.",
                       example = "12345")

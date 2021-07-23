@@ -43,6 +43,6 @@ public final class ChecklistWorkOrderItemEntity implements EntityKmColetado {
         if (vehicleKmAtResolution == null) {
             throw new IllegalStateException("O KM não pode ser null!");
         }
-        return VeiculoKmColetado.of(workOrderEntity.getChecklist().getCodVeiculo(), vehicleKmAtResolution);
+        return VeiculoKmColetado.of(workOrderEntity.getChecklist().getVehicleId(), vehicleKmAtResolution);
     }
 }

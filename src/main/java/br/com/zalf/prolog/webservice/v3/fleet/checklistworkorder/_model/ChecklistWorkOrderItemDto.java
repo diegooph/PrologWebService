@@ -37,7 +37,7 @@ public final class ChecklistWorkOrderItemDto {
             "for configurada na alternativa.",
                       example = "Serviço=FREIO")
     @Nullable
-    private final String optionAddicionalId;
+    private final String optionAdditionalId;
     @ApiModelProperty(value = "Status do item. Podendo ser RESOLVIDO ou PENDENTE.",
                       required = true,
                       example = "RESOLVIDO")

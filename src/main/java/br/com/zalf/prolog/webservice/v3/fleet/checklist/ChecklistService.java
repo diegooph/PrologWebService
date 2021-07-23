@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.fleet.checklist;
 
 import br.com.zalf.prolog.webservice.v3.fleet.checklist._model.ChecklistEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.checklist._model.ChecklistListagemFiltro;
+import br.com.zalf.prolog.webservice.v3.fleet.checklist._model.ChecklistFilter;
 import br.com.zalf.prolog.webservice.v3.fleet.checklist._model.ChecklistProjection;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.KmProcessoAtualizavel;
@@ -21,27 +21,26 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ChecklistService implements KmProcessoAtualizavel {
-    private static final String TAG = ChecklistService.class.getSimpleName();
     @NotNull
     private final ChecklistDao checklistDao;
 
     @NotNull
     @Override
     public EntityKmColetado getEntityKmColetado(@NotNull final Long entityId,
-                                                @NotNull final Long codVeiculo) {
-        return getByCodigo(entityId);
+                                                @NotNull final Long vehicleId) {
+        return getById(entityId);
     }
 
     @Override
-    public void updateKmColetadoProcesso(@NotNull final Long codProcesso,
-                                         @NotNull final Long codVeiculo,
-                                         final long novoKm) {
-        updateKmColetado(codProcesso, novoKm);
+    public void updateKmColetadoProcesso(@NotNull final Long checklistId,
+                                         @NotNull final Long vehicleId,
+                                         final long newKm) {
+        updateVehicleKmAtChecklist(checklistId, newKm);
     }
 
     @NotNull
-    public ChecklistEntity getByCodigo(@NotNull final Long codigo) {
-        return checklistDao.getOne(codigo);
+    public ChecklistEntity getById(@NotNull final Long checklistId) {
+        return checklistDao.getOne(checklistId);
     }
 
     public void update(@NotNull final ChecklistEntity checklistEntity) {
@@ -49,26 +48,25 @@ public class ChecklistService implements KmProcessoAtualizavel {
     }
 
     @Transactional
-    public void updateKmColetado(@NotNull final Long codChecklist,
-                                 final long novoKm) {
-        final ChecklistEntity entity = getByCodigo(codChecklist)
+    public void updateVehicleKmAtChecklist(@NotNull final Long checklistId,
+                                           final long newKm) {
+        final ChecklistEntity entity = getById(checklistId)
                 .toBuilder()
-                .withKmColetadoVeiculo(novoKm)
+                .withVehicleKm(newKm)
                 .build();
         update(entity);
     }
 
     @NotNull
-    public List<ChecklistProjection> getChecklistsListagem(
-            @NotNull final ChecklistListagemFiltro checklistListagemFiltro) {
-        return checklistDao.getChecklistsListagem(checklistListagemFiltro.getCodUnidades(),
-                                                  checklistListagemFiltro.getDataInicial(),
-                                                  checklistListagemFiltro.getDataFinal(),
-                                                  checklistListagemFiltro.getCodColaborador(),
-                                                  checklistListagemFiltro.getCodVeiculo(),
-                                                  checklistListagemFiltro.getCodTipoVeiculo(),
-                                                  checklistListagemFiltro.isIncluirRespostas(),
-                                                  checklistListagemFiltro.getLimit(),
-                                                  checklistListagemFiltro.getOffset());
+    public List<ChecklistProjection> getAllChecklists(@NotNull final ChecklistFilter checklistFilter) {
+        return checklistDao.getChecklistsListagem(checklistFilter.getBranchesId(),
+                                                  checklistFilter.getInitialDate(),
+                                                  checklistFilter.getFinalDate(),
+                                                  checklistFilter.getUserId(),
+                                                  checklistFilter.getVehicleId(),
+                                                  checklistFilter.getVehicleTypeId(),
+                                                  checklistFilter.isIncludeAnswers(),
+                                                  checklistFilter.getLimit(),
+                                                  checklistFilter.getOffset());
     }
 }
