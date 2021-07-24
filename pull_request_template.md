@@ -1,10 +1,6 @@
 ## :scroll: Descrição
 <!--- Descreva suas mudanças em detalhes -->
 
-
-## :bulb: Motivação e Contexto
-<!--- Por que essa mudança é necessária? Que problema ela resolve? -->
-
 ## :green_heart: Como você testou?
 <!--- Informe os testes realizados, de forma breve. Também adicione com qual BD os testes foram feitos. -->
 
@@ -12,9 +8,8 @@
 <!--- Coloque um `x` nos boxes que se aplicam -->
 #### Gerais
 - [ ] Atualizar o CHANGELOG
-- [ ] Atualizar apresentação do Sprint Review
-- [ ] REVISOR: review da tarefa verificando DoDs e/ou critérios de aceitação (1 por 1)
 - [ ] Foi aplicado um ordenamento que faz sentido para os usuários (caso seja uma listagem)?
+- [ ] REVISOR: review da tarefa verificando DoDs e/ou critérios de aceitação (1 por 1)
 
 #### [BD] Específicas
 - [ ] Migration funciona no setup do BD local?
@@ -28,7 +23,6 @@
 - [ ] Além de funcionar, os dados mostrados estão corretos?
 - [ ] Testou apenas com a permissão da função liberada?
 - [ ] Testou com o menor e maior nível de acesso a informação (0 e 3)?
-
 
 ## :crystal_ball: Próximos passos
 - [ ] Mover migration para pasta 'done'
