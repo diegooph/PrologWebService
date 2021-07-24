@@ -30,10 +30,10 @@ public class InspectionService implements KmProcessoAtualizavel {
     }
 
     @Override
-    public void updateKmColetadoProcesso(@NotNull final Long inspectionId,
+    public void updateKmColetadoProcesso(@NotNull final Long processId,
                                          @NotNull final Long vehicleId,
                                          final long newKm) {
-        updateVehicleKmAtInspection(inspectionId, newKm);
+        updateVehicleKmAtInspection(processId, newKm);
     }
 
     @NotNull

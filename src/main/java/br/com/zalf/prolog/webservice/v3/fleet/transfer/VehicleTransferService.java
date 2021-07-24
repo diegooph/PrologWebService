@@ -34,10 +34,10 @@ public class VehicleTransferService implements KmProcessoAtualizavel {
     }
 
     @Override
-    public void updateKmColetadoProcesso(@NotNull final Long transferProcessId,
+    public void updateKmColetadoProcesso(@NotNull final Long processId,
                                          @NotNull final Long vehicleId,
                                          final long newKm) {
-        updateVehicleKmAtTransfer(transferProcessId, vehicleId, newKm);
+        updateVehicleKmAtTransfer(processId, vehicleId, newKm);
     }
 
     @NotNull

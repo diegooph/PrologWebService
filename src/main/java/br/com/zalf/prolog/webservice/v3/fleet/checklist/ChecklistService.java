@@ -32,10 +32,10 @@ public class ChecklistService implements KmProcessoAtualizavel {
     }
 
     @Override
-    public void updateKmColetadoProcesso(@NotNull final Long checklistId,
+    public void updateKmColetadoProcesso(@NotNull final Long processId,
                                          @NotNull final Long vehicleId,
                                          final long newKm) {
-        updateVehicleKmAtChecklist(checklistId, newKm);
+        updateVehicleKmAtChecklist(processId, newKm);
     }
 
     @NotNull

@@ -10,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 public interface KmProcessoAtualizavel {
     @NotNull
     EntityKmColetado getEntityKmColetado(@NotNull final Long entityId,
-                                         @NotNull final Long codVeiculo);
+                                         @NotNull final Long vehicleId);
 
-    void updateKmColetadoProcesso(@NotNull final Long codProcesso,
-                                  @NotNull final Long codVeiculo,
-                                  final long novoKm);
+    void updateKmColetadoProcesso(@NotNull final Long processId,
+                                  @NotNull final Long vehicleId,
+                                  final long newKm);
 }

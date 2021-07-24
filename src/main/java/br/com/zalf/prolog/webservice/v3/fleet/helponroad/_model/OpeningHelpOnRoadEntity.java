@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.socorrorota._model;
+package br.com.zalf.prolog.webservice.v3.fleet.helponroad._model;
 
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.VeiculoKmColetado;
@@ -21,23 +21,23 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "public", name = "socorro_rota_abertura")
-public final class AberturaSocorroRotaEntity implements EntityKmColetado {
+public final class OpeningHelpOnRoadEntity implements EntityKmColetado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
+    private Long id;
     @Column(name = "cod_veiculo_problema", nullable = false)
-    private Long codVeiculo;
+    private Long vehicleId;
     @Column(name = "cod_socorro_rota", nullable = false)
-    private Long codSocorroRota;
+    private Long helpOnRoadId;
     @Column(name = "cod_empresa", nullable = false)
-    private Long codEmpresa;
+    private Long companyId;
     @Column(name = "km_veiculo_abertura", nullable = false)
-    private long kmColetadoVeiculoAberturaSocorro;
+    private long kmCollectedOpening;
 
     @NotNull
     @Override
     public VeiculoKmColetado getVeiculoKmColetado() {
-        return VeiculoKmColetado.of(codVeiculo, kmColetadoVeiculoAberturaSocorro);
+        return VeiculoKmColetado.of(vehicleId, kmCollectedOpening);
     }
 }

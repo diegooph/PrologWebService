@@ -3,11 +3,11 @@ package br.com.zalf.prolog.webservice.v3.fleet.kmprocessos;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.v3.fleet.checklist.ChecklistService;
 import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder.ChecklistWorkOrderService;
+import br.com.zalf.prolog.webservice.v3.fleet.helponroad.HelpOnRoadService;
 import br.com.zalf.prolog.webservice.v3.fleet.inspection.InspectionService;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.AlteracaoKmProcesso;
 import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao.MovimentacaoProcessoService;
-import br.com.zalf.prolog.webservice.v3.fleet.socorrorota.SocorroRotaService;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance.TireMaintenanceService;
 import br.com.zalf.prolog.webservice.v3.fleet.transfer.VehicleTransferService;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class AlteracaoKmProcessosServiceFactory {
     @NotNull
     private final MovimentacaoProcessoService movimentacaoProcessoService;
     @NotNull
-    private final SocorroRotaService socorroRotaService;
+    private final HelpOnRoadService helpOnRoadService;
     @NotNull
     private final VehicleTransferService vehicleTransferService;
 
@@ -52,7 +52,7 @@ public class AlteracaoKmProcessosServiceFactory {
             case MOVIMENTACAO:
                 return movimentacaoProcessoService;
             case SOCORRO_EM_ROTA:
-                return socorroRotaService;
+                return helpOnRoadService;
             case TRANSFERENCIA_DE_VEICULOS:
                 return vehicleTransferService;
             case ACOPLAMENTO:

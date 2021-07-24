@@ -30,15 +30,15 @@ public class ChecklistWorkOrderService implements KmProcessoAtualizavel {
     @NotNull
     @Override
     public EntityKmColetado getEntityKmColetado(@NotNull final Long entityId,
-                                                @NotNull final Long codVeiculo) {
+                                                @NotNull final Long vehicleId) {
         return getWorkOrderItemById(entityId);
     }
 
     @Override
-    public void updateKmColetadoProcesso(@NotNull final Long codProcesso,
-                                         @NotNull final Long codVeiculo,
-                                         final long novoKm) {
-        updateVehicleKmAtResolution(codProcesso, novoKm);
+    public void updateKmColetadoProcesso(@NotNull final Long processId,
+                                         @NotNull final Long vehicleId,
+                                         final long newKm) {
+        updateVehicleKmAtResolution(processId, newKm);
     }
 
     @NotNull
