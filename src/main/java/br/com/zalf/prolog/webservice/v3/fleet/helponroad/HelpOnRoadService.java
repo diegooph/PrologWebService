@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.v3.fleet.helponroad;
 
 import br.com.zalf.prolog.webservice.v3.fleet.helponroad._model.OpeningHelpOnRoadEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.KmProcessoAtualizavel;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.ProcessKmUpdatable;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,19 +15,19 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class HelpOnRoadService implements KmProcessoAtualizavel {
+public class HelpOnRoadService implements ProcessKmUpdatable {
     @NotNull
     private final HelpOnRoadOpeningDao helpOnRoadOpeningDao;
 
     @NotNull
     @Override
-    public EntityKmColetado getEntityKmColetado(@NotNull final Long entityId,
-                                                @NotNull final Long vehicleId) {
+    public KmCollectedEntity getEntityKmCollected(@NotNull final Long entityId,
+                                                  @NotNull final Long vehicleId) {
         return getOpeningHelpOnRoadEntityByHelpOnRoadId(entityId);
     }
 
     @Override
-    public void updateKmColetadoProcesso(@NotNull final Long processId,
+    public void updateProcessKmCollected(@NotNull final Long processId,
                                          @NotNull final Long vehicleId,
                                          final long newKm) {
         updateKmCollectedOpeningHelpOnRoad(processId, newKm);

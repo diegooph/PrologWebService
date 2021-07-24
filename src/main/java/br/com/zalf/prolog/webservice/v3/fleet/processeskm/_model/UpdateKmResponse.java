@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model;
+package br.com.zalf.prolog.webservice.v3.fleet.processeskm._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -10,7 +10,7 @@ import lombok.Value;
  */
 @AllArgsConstructor(staticName = "of")
 @Value
-public class AlteracaoKmResponse {
-    long kmAntigo;
-    boolean kmFoiAlterado;
+public class UpdateKmResponse {
+    long oldKm;
+    boolean wasKmUpdated;
 }

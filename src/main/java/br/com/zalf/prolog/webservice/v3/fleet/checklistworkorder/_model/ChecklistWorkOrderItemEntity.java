@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model;
 
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.VeiculoKmColetado;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedVehicle;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +22,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "public", name = "checklist_ordem_servico_itens")
-public final class ChecklistWorkOrderItemEntity implements EntityKmColetado {
+public final class ChecklistWorkOrderItemEntity implements KmCollectedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
@@ -39,10 +39,10 @@ public final class ChecklistWorkOrderItemEntity implements EntityKmColetado {
 
     @NotNull
     @Override
-    public VeiculoKmColetado getVeiculoKmColetado() {
+    public KmCollectedVehicle getKmCollectedVehicle() {
         if (vehicleKmAtResolution == null) {
             throw new IllegalStateException("O KM não pode ser null!");
         }
-        return VeiculoKmColetado.of(workOrderEntity.getChecklist().getVehicleId(), vehicleKmAtResolution);
+        return KmCollectedVehicle.of(workOrderEntity.getChecklist().getVehicleId(), vehicleKmAtResolution);
     }
 }

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.fleet.helponroad._model;
 
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.VeiculoKmColetado;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedVehicle;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +21,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "public", name = "socorro_rota_abertura")
-public final class OpeningHelpOnRoadEntity implements EntityKmColetado {
+public final class OpeningHelpOnRoadEntity implements KmCollectedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
@@ -37,7 +37,7 @@ public final class OpeningHelpOnRoadEntity implements EntityKmColetado {
 
     @NotNull
     @Override
-    public VeiculoKmColetado getVeiculoKmColetado() {
-        return VeiculoKmColetado.of(vehicleId, kmCollectedOpening);
+    public KmCollectedVehicle getKmCollectedVehicle() {
+        return KmCollectedVehicle.of(vehicleId, kmCollectedOpening);
     }
 }

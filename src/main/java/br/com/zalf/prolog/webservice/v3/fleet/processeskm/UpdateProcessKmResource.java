@@ -1,12 +1,12 @@
-package br.com.zalf.prolog.webservice.v3.fleet.kmprocessos;
+package br.com.zalf.prolog.webservice.v3.fleet.processeskm;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.AlteracaoKmProcessoDto;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.AlteracaoKmProcessoMapper;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.UpdateProcessKmDto;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.UpdateProcessKmMapper;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,18 +27,18 @@ import javax.ws.rs.core.SecurityContext;
  */
 @Controller
 @ConsoleDebugLog
-@Path("/api/v3/processos-coleta-km")
+@Path("/api/v3/km-collected-processes")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public final class AlteracaoKmProcessosResource {
+public final class UpdateProcessKmResource {
     @NotNull
-    private final AlteracaoKmProcessosService service;
+    private final UpdateProcessKmService service;
     @NotNull
-    private final AlteracaoKmProcessoMapper mapper;
+    private final UpdateProcessKmMapper mapper;
 
     @Autowired
-    public AlteracaoKmProcessosResource(@NotNull final AlteracaoKmProcessosService service,
-                                        @NotNull final AlteracaoKmProcessoMapper mapper) {
+    public UpdateProcessKmResource(@NotNull final UpdateProcessKmService service,
+                                   @NotNull final UpdateProcessKmMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
@@ -47,9 +47,9 @@ public final class AlteracaoKmProcessosResource {
     @Secured(permissions = Pilares.Frota.Veiculo.ALTERAR)
     @NotNull
     public SuccessResponse updateKmProcesso(@Context final SecurityContext securityContext,
-                                            @NotNull @Valid final AlteracaoKmProcessoDto alteracaoKmProcesso) {
-        final ColaboradorAutenticado colaborador = (ColaboradorAutenticado) securityContext.getUserPrincipal();
-        service.updateKmProcesso(mapper.toAlteracaoKmProcesso(alteracaoKmProcesso, colaborador.getCodigo()));
-        return new SuccessResponse(null, "KM atualizado com sucesso!");
+                                            @NotNull @Valid final UpdateProcessKmDto updateProcessKmDto) {
+        final ColaboradorAutenticado user = (ColaboradorAutenticado) securityContext.getUserPrincipal();
+        service.updateProcessKm(mapper.toUpdateProcessKm(updateProcessKmDto, user.getCodigo()));
+        return new SuccessResponse(null, "Km successfully updated!");
     }
 }

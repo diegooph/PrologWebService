@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model;
+package br.com.zalf.prolog.webservice.v3.fleet.processeskm._model;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
 import lombok.AllArgsConstructor;
@@ -15,17 +15,17 @@ import org.jetbrains.annotations.Nullable;
 @Value
 @Builder(setterPrefix = "with")
 @AllArgsConstructor
-public class AlteracaoKmProcesso {
+public class UpdateProcessKm {
     @NotNull
-    Long codEmpresa;
+    Long companyId;
     @NotNull
-    Long codVeiculo;
+    Long vehicleId;
     @NotNull
-    Long codProcesso;
+    Long processId;
     @NotNull
-    VeiculoTipoProcesso tipoProcesso;
+    VeiculoTipoProcesso processType;
     @Nullable
-    Long codColaboradorAlteracao;
+    Long userIdUpdate;
     @NotNull
-    Long novoKm;
+    Long newKm;
 }

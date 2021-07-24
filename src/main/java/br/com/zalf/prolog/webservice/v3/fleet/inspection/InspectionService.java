@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.v3.fleet.inspection;
 
 import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.*;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.KmProcessoAtualizavel;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.ProcessKmUpdatable;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,19 +18,19 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class InspectionService implements KmProcessoAtualizavel {
+public class InspectionService implements ProcessKmUpdatable {
     @NotNull
     private final InspectionDao inspectionDao;
 
     @NotNull
     @Override
-    public EntityKmColetado getEntityKmColetado(@NotNull final Long entityId,
-                                                @NotNull final Long vehicleId) {
+    public KmCollectedEntity getEntityKmCollected(@NotNull final Long entityId,
+                                                  @NotNull final Long vehicleId) {
         return getById(entityId);
     }
 
     @Override
-    public void updateKmColetadoProcesso(@NotNull final Long processId,
+    public void updateProcessKmCollected(@NotNull final Long processId,
                                          @NotNull final Long vehicleId,
                                          final long newKm) {
         updateVehicleKmAtInspection(processId, newKm);

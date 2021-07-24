@@ -3,8 +3,8 @@ package br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistWorkOrderItemEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistWorkOrderProjection;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.KmProcessoAtualizavel;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.ProcessKmUpdatable;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class ChecklistWorkOrderService implements KmProcessoAtualizavel {
+public class ChecklistWorkOrderService implements ProcessKmUpdatable {
     @NotNull
     private final ChecklistWorkOrderDao workOrderDao;
     @NotNull
@@ -29,13 +29,13 @@ public class ChecklistWorkOrderService implements KmProcessoAtualizavel {
 
     @NotNull
     @Override
-    public EntityKmColetado getEntityKmColetado(@NotNull final Long entityId,
-                                                @NotNull final Long vehicleId) {
+    public KmCollectedEntity getEntityKmCollected(@NotNull final Long entityId,
+                                                  @NotNull final Long vehicleId) {
         return getWorkOrderItemById(entityId);
     }
 
     @Override
-    public void updateKmColetadoProcesso(@NotNull final Long processId,
+    public void updateProcessKmCollected(@NotNull final Long processId,
                                          @NotNull final Long vehicleId,
                                          final long newKm) {
         updateVehicleKmAtResolution(processId, newKm);

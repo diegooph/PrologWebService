@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model;
+package br.com.zalf.prolog.webservice.v3.fleet.processeskm._model;
 
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Value(staticConstructor = "of")
-public class VeiculoKmColetado {
+public class KmCollectedVehicle {
     @NotNull
-    Long codVeiculo;
-    long kmColetado;
+    Long vehicleId;
+    long kmCollected;
 }

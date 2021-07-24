@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.v3.fleet.inspection._model;
 
 import br.com.zalf.prolog.webservice.v3.LocalDateTimeUtcAttributeConverter;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.VeiculoKmColetado;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedVehicle;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleEntity;
 import lombok.AllArgsConstructor;
@@ -27,7 +27,7 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(schema = "public", name = "afericao")
-public final class InspectionEntity implements EntityKmColetado {
+public final class InspectionEntity implements KmCollectedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
@@ -56,10 +56,10 @@ public final class InspectionEntity implements EntityKmColetado {
 
     @NotNull
     @Override
-    public VeiculoKmColetado getVeiculoKmColetado() {
+    public KmCollectedVehicle getKmCollectedVehicle() {
         if (vehicleEntity == null || vehicleKm == null) {
             throw new IllegalStateException("O KM não pode ser null!");
         }
-        return VeiculoKmColetado.of(vehicleEntity.getId(), vehicleKm);
+        return KmCollectedVehicle.of(vehicleEntity.getId(), vehicleKm);
     }
 }

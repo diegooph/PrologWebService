@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model;
 
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.VeiculoKmColetado;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedVehicle;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +23,7 @@ public class VeiculoMovimentacao {
     long kmColetado;
 
     @NotNull
-    public VeiculoKmColetado toVeiculoKmColetado() {
-        return VeiculoKmColetado.of(getCodVeiculo(), getKmColetado());
+    public KmCollectedVehicle toVeiculoKmColetado() {
+        return KmCollectedVehicle.of(getCodVeiculo(), getKmColetado());
     }
 }

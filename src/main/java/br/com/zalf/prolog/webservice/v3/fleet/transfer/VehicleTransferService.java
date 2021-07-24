@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.fleet.transfer;
 
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.KmProcessoAtualizavel;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.ProcessKmUpdatable;
 import br.com.zalf.prolog.webservice.v3.fleet.transfer._model.VehicleTransferInfosEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.transfer._model.VehicleTransferProcessEntity;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class VehicleTransferService implements KmProcessoAtualizavel {
+public class VehicleTransferService implements ProcessKmUpdatable {
     @NotNull
     private final VehicleTransferDao vehicleTransferDao;
     @NotNull
@@ -26,7 +26,7 @@ public class VehicleTransferService implements KmProcessoAtualizavel {
 
     @NotNull
     @Override
-    public EntityKmColetado getEntityKmColetado(@NotNull final Long entityId, @NotNull final Long vehicleId) {
+    public KmCollectedEntity getEntityKmCollected(@NotNull final Long entityId, @NotNull final Long vehicleId) {
         final VehicleTransferProcessEntity processEntity = getById(entityId);
         final Optional<VehicleTransferInfosEntity> transferInfos = processEntity.getVehicleTransferInfos(vehicleId);
         return transferInfos.orElseThrow(() -> new IllegalStateException(
@@ -34,7 +34,7 @@ public class VehicleTransferService implements KmProcessoAtualizavel {
     }
 
     @Override
-    public void updateKmColetadoProcesso(@NotNull final Long processId,
+    public void updateProcessKmCollected(@NotNull final Long processId,
                                          @NotNull final Long vehicleId,
                                          final long newKm) {
         updateVehicleKmAtTransfer(processId, vehicleId, newKm);

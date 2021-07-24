@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance;
 
 import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.KmProcessoAtualizavel;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.ProcessKmUpdatable;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceFilter;
 import lombok.RequiredArgsConstructor;
@@ -21,19 +21,19 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class TireMaintenanceService implements KmProcessoAtualizavel {
+public class TireMaintenanceService implements ProcessKmUpdatable {
     @NotNull
     private final TireMaintenanceDao tireMaintenanceDao;
 
     @NotNull
     @Override
-    public EntityKmColetado getEntityKmColetado(@NotNull final Long entityId,
-                                                @NotNull final Long vehicleId) {
+    public KmCollectedEntity getEntityKmCollected(@NotNull final Long entityId,
+                                                  @NotNull final Long vehicleId) {
         return getById(entityId);
     }
 
     @Override
-    public void updateKmColetadoProcesso(@NotNull final Long processId,
+    public void updateProcessKmCollected(@NotNull final Long processId,
                                          @NotNull final Long vehicleId,
                                          final long newKm) {
         updateVehicleKmAtResolution(processId, newKm);

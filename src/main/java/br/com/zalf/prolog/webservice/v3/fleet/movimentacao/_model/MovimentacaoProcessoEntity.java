@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model;
 
 import br.com.zalf.prolog.webservice.commons.util.datetime.TimezoneUtils;
 import br.com.zalf.prolog.webservice.v3.LocalDateTimeUtcAttributeConverter;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.EntityKmColetado;
-import br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model.VeiculoKmColetado;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedVehicle;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,7 +26,7 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(schema = "public", name = "movimentacao_processo")
-public final class MovimentacaoProcessoEntity implements EntityKmColetado {
+public final class MovimentacaoProcessoEntity implements KmCollectedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
@@ -46,7 +46,7 @@ public final class MovimentacaoProcessoEntity implements EntityKmColetado {
 
     @NotNull
     @Override
-    public VeiculoKmColetado getVeiculoKmColetado() {
+    public KmCollectedVehicle getKmCollectedVehicle() {
         return getVeiculo()
                 .orElseThrow(() -> {
                     throw new IllegalStateException(String.format(

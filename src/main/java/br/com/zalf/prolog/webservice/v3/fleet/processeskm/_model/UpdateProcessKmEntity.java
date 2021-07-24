@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.kmprocessos._model;
+package br.com.zalf.prolog.webservice.v3.fleet.processeskm._model;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
@@ -21,25 +21,25 @@ import java.time.OffsetDateTime;
 @Getter
 @Entity
 @Table(schema = "public", name = "veiculo_processo_alteracao_km")
-public final class AlteracaoKmProcessoEntity {
+public final class UpdateProcessKmEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    private Long codigo;
+    private Long id;
     @Column(name = "data_hora_alteracao", nullable = false)
-    private OffsetDateTime dataHoraAlteracaoKm;
+    private OffsetDateTime kmUpdatedAt;
     @Column(name = "cod_colaborador_alteracao")
-    private Long codColaboradorAlteracaoKm;
+    private Long userIdUpdate;
     @Enumerated(EnumType.STRING)
     @Column(name = "origem_alteracao", nullable = false)
-    private OrigemAcaoEnum origemAlteracao;
+    private OrigemAcaoEnum updateSource;
     @Column(name = "cod_processo_alterado", nullable = false)
-    private Long codProcessoAlterado;
+    private Long processIdUpdated;
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_processo_alterado", nullable = false)
-    private VeiculoTipoProcesso tipoProcessoAlterado;
+    private VeiculoTipoProcesso processTypeUpdated;
     @Column(name = "km_antigo", nullable = false)
-    private long kmAntigo;
+    private long oldKm;
     @Column(name = "km_novo", nullable = false)
-    private long kmNovo;
+    private long newKm;
 }
