@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
-import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
@@ -8,13 +7,11 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoListagemDto;
-import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoInsercaoDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import java.util.List;
@@ -38,12 +35,6 @@ public final class MovimentacaoProcessoResource implements MovimentacaoProcessoA
                                         @NotNull final MovimentacaoProcessoMapper mapper) {
         this.service = service;
         this.mapper = mapper;
-    }
-
-    @POST
-    public SuccessResponse insertProcessoMovimentacao(
-            @NotNull final MovimentacaoProcessoInsercaoDto movimentacaoProcessoInsercaoDto) {
-        return service.insertProcessoMovimentacao(mapper.toEntity(movimentacaoProcessoInsercaoDto));
     }
 
     @GET
