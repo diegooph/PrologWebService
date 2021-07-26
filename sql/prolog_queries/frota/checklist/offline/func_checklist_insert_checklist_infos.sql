@@ -53,7 +53,6 @@ begin
                                                f_km_coletado,
                                                v_cod_novo_checklist,
                                                'CHECKLIST',
-                                               true,
                                                f_data_hora_realizacao));
 
     insert into checklist_data(codigo,

@@ -47,7 +47,6 @@ begin
                                                      f_km_veiculo_abertura,
                                                      f_cod_abertura,
                                                      'SOCORRO_EM_ROTA',
-                                                     true,
                                                      f_data_hora_abertura));
 
     -- Insere na tabela pai.
