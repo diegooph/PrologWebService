@@ -30,11 +30,11 @@ public class MovimentacaoServicoRealizadoService {
     public void insertMovimentacaoServicoPneu(@NotNull final MovimentacaoEntity movimentacaoEntity) {
         validaServicosRealizados(movimentacaoEntity.getPneu().getCodigo(), movimentacaoEntity.getServicosRealizados());
         movimentacaoEntity.getServicosRealizados()
-                .forEach(pneuServicoRealizado -> saveServicoRealizadoPneu(movimentacaoEntity, pneuServicoRealizado));
+                .forEach(pneuServicoRealizado -> insertServicoRealizadoPneu(movimentacaoEntity, pneuServicoRealizado));
     }
 
-    private void saveServicoRealizadoPneu(@NotNull final MovimentacaoEntity movimentacaoEntity,
-                                          @NotNull final PneuServicoRealizadoEntity pneuServicoRealizadoEntity) {
+    private void insertServicoRealizadoPneu(@NotNull final MovimentacaoEntity movimentacaoEntity,
+                                            @NotNull final PneuServicoRealizadoEntity pneuServicoRealizadoEntity) {
         final PneuServicoRealizadoEntity servicoRealizadoEntitySaved =
                 pneuServicoService.insertServicoPneu(pneuServicoRealizadoEntity.getPneuServicoRealizado(),
                                                      pneuServicoRealizadoEntity.getCusto(),
