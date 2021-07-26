@@ -6,6 +6,10 @@ Change Log
 ## UNRELEASED
 ##
 
+### Bug Fixes
+* Corrige erro no mapeamento de PSI em serviços fechados (PL-3866)
+
+
 <a name="v3.5.5"></a>
 ## Version [v3.5.5](https://github.com/luizfp/PrologWebService/compare/v3.5.4...v3.5.5) (2021-07-19)
 
