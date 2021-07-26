@@ -64,7 +64,7 @@ public class PneuServicoService {
     }
 
     @NotNull
-    public PneuTipoServicoEntity getPneuTipoServicoEntity() {
+    public PneuTipoServicoEntity getPneuTipoServicoIncrementaVidaCadastroEntity() {
         final PneuTipoServicoEntity tipoServicoIncrementaVidaCadastroPneu =
                 pneuTipoServicoService.getTipoServicoIncrementaVidaPneu();
         return tipoServicoIncrementaVidaCadastroPneu;
