@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico._modal;
+package br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico._model;
 
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico._modal.PneuTipoServicoEntity;

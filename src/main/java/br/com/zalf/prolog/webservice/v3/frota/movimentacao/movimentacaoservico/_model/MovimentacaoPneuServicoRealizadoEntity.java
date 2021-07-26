@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao.movimentacaoservico._model;
 
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoEntity;
-import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico._modal.PneuServicoRealizadoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico._model.PneuServicoRealizadoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
