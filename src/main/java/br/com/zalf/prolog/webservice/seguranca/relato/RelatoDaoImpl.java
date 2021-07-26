@@ -148,8 +148,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                                final long offset,
                                final double latitude,
                                final double longitude,
-                               final boolean
-                                       isOrderByDate,
+                               final boolean isOrderByDate,
                                final String status) throws SQLException {
         final List<Relato> relatos = new ArrayList<>();
         Connection conn = null;
