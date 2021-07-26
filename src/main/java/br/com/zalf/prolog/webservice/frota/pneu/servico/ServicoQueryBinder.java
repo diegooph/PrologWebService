@@ -272,6 +272,7 @@ final class ServicoQueryBinder {
                                                                            "PNEU_PROBLEMA.ALTURA_SULCO_INTERNO AS " +
                                                                            "SULCO_INTERNO_ATUAL, " +
                                                                            "PNEU_PROBLEMA.PRESSAO_ATUAL, " +
+                                                                           "AV.PSI AS PRESSAO_PNEU_PROBLEMA, " +
                                                                            "   AV.POSICAO AS POSICAO_PNEU_PROBLEMA, " +
                                                                            "   AV.VIDA_MOMENTO_AFERICAO AS " +
                                                                            "VIDA_PNEU_PROBLEMA, " +
