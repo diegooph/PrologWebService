@@ -114,12 +114,12 @@ public class MovimentacaoProcessoService implements KmProcessoAtualizavel {
             @NotNull final MovimentacaoProcessoEntity movimentacaoProcessoEntity) {
 
         final MovimentacaoProcessoEntity processoEntitySaved = movimentacaoProcessoDao.save(movimentacaoProcessoEntity);
-        processoEntitySaved.getMovimentacoes().forEach(this::saveMovimentacao);
+        processoEntitySaved.getMovimentacoes().forEach(this::insertMovimentacao);
 
         return new SuccessResponse(1L, "Vai dar boa raça!");
     }
 
-    private void saveMovimentacao(@NotNull final MovimentacaoEntity movimentacaoEntity) {
+    private void insertMovimentacao(@NotNull final MovimentacaoEntity movimentacaoEntity) {
         final MovimentacaoEntity movimentacaoEntitySaved = movimentacaoDao.save(movimentacaoEntity);
         if (movimentacaoEntitySaved.isFromTo(OrigemDestinoEnum.ANALISE, OrigemDestinoEnum.ESTOQUE)) {
             insertMovimentacaoAnaliseEstoque(movimentacaoEntitySaved);
