@@ -221,6 +221,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
     }
 
     @Override
+    @NotNull
     public List<Relato> getRealizadosByColaborador(@NotNull final Long codColaborador,
                                                    final int limit,
                                                    final long offset,
@@ -299,13 +300,14 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
     }
 
     @Override
+    @NotNull
     public List<Relato> getAllExcetoColaborador(@NotNull final Long codColaborador,
-                                                final int limit,
-                                                final long offset,
-                                                final double latitude,
-                                                final double longitude,
-                                                final boolean isOrderByDate,
-                                                @NotNull final String status) throws SQLException {
+                                                         final int limit,
+                                                         final long offset,
+                                                         final double latitude,
+                                                         final double longitude,
+                                                         final boolean isOrderByDate,
+                                                         @NotNull final String status) throws SQLException {
         final List<Relato> relatos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
