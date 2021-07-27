@@ -1,12 +1,14 @@
 package br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
+import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico._model.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico.PneuTipoServicoService;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico._modal.PneuTipoServicoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -20,7 +22,7 @@ import java.math.BigDecimal;
 @Service
 public class PneuServicoService {
     @NotNull
-    private final PneuServicoRealizadoDao pneuServicoDao;
+    private final PneuServicoRealizadoDao pneuServicoRealizadoDao;
     @NotNull
     private final PneuServicoRealizadoIncrementaVidaDao pneuServicoRealizadoIncrementaVidaDao;
     @NotNull
@@ -30,11 +32,11 @@ public class PneuServicoService {
 
     @Autowired
     public PneuServicoService(
-            @NotNull final PneuServicoRealizadoDao pneuServicoDao,
+            @NotNull final PneuServicoRealizadoDao pneuServicoRealizadoDao,
             @NotNull final PneuServicoRealizadoIncrementaVidaDao pneuServicoRealizadoIncrementaVidaDao,
             @NotNull final PneuServicoCadastroDao pneuServicoCadastroDao,
             @NotNull final PneuTipoServicoService pneuTipoServicoService) {
-        this.pneuServicoDao = pneuServicoDao;
+        this.pneuServicoRealizadoDao = pneuServicoRealizadoDao;
         this.pneuServicoRealizadoIncrementaVidaDao = pneuServicoRealizadoIncrementaVidaDao;
         this.pneuServicoCadastroDao = pneuServicoCadastroDao;
         this.pneuTipoServicoService = pneuTipoServicoService;
@@ -47,15 +49,15 @@ public class PneuServicoService {
                                                         @NotNull final PneuTipoServicoEntity pneuTipoServicoEntity,
                                                         @NotNull final String fonteServicoRealizado) {
         final PneuServicoRealizadoEntity savedServicoRealizado =
-                pneuServicoDao.save(
+                pneuServicoRealizadoDao.save(
                         PneuServicoRealizadoCreator.createServicoRealizado(pneuTipoServicoEntity,
-                                pneuServicoRealizado,
-                                fonteServicoRealizado,
-                                valorBanda));
+                                                                           pneuServicoRealizado,
+                                                                           fonteServicoRealizado,
+                                                                           valorBanda));
         if (pneuTipoServicoEntity.isIncrementaVida()) {
             insertPneuServicoRealizadoIncrementaVida(pneuServicoRealizado,
-                    fonteServicoRealizado,
-                    savedServicoRealizado);
+                                                     fonteServicoRealizado,
+                                                     savedServicoRealizado);
         }
         if (fonteServicoRealizado.equals(PneuServicoRealizado.FONTE_CADASTRO)) {
             insertPneuServicoRealizadoCadastro(fonteServicoRealizado, savedServicoRealizado);
@@ -75,14 +77,24 @@ public class PneuServicoService {
                                                           @NotNull final PneuServicoRealizadoEntity savedServicoRealizado) {
         pneuServicoRealizadoIncrementaVidaDao.save(
                 PneuServicoRealizadoCreator.createServicoRealizadoIncrementaVida(pneuCadastrado,
-                        savedServicoRealizado,
-                        fonteServicoRealizado));
+                                                                                 savedServicoRealizado,
+                                                                                 fonteServicoRealizado));
     }
 
     private void insertPneuServicoRealizadoCadastro(@NotNull final String fonteServicoRealizado,
                                                     @NotNull final PneuServicoRealizadoEntity savedServicoRealizado) {
         pneuServicoCadastroDao.save(
                 PneuServicoRealizadoCreator.createFromPneuServico(savedServicoRealizado,
-                        fonteServicoRealizado));
+                                                                  fonteServicoRealizado));
+    }
+
+    @NotNull
+    public Long getCodigoRecapadora(@NotNull final Long codPneu,
+                                    @NotNull final String analise,
+                                    final int limit,
+                                    final int offset) {
+        return pneuServicoRealizadoDao.getCodigoRecapadora(codPneu,
+                                                           analise,
+                                                           OffsetBasedPageRequest.of(limit, offset, Sort.unsorted()));
     }
 }

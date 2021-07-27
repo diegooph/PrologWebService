@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao.movimentacaoservico;
 
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao.movimentacaoservico.validation.MovimentacaoValidator;
@@ -27,14 +28,22 @@ public class MovimentacaoServicoRealizadoService {
     @NotNull
     private final MovimentacaoValidator movimentacaoValidator;
 
-    public void insertMovimentacaoServicoPneu(@NotNull final MovimentacaoEntity movimentacaoEntity) {
-        movimentacaoValidator.validaServicosRealizados(movimentacaoEntity.getPneu().getCodigo(), movimentacaoEntity.getServicosRealizados());
+    public void insertMovimentacaoServicoPneu(@NotNull final MovimentacaoEntity movimentacaoEntity,
+                                              final int limit,
+                                              final int offset) {
+        movimentacaoValidator.validaServicosRealizados(movimentacaoEntity.getPneu().getCodigo(),
+                                                       movimentacaoEntity.getServicosRealizados());
         movimentacaoEntity.getServicosRealizados()
-                .forEach(pneuServicoRealizado -> insertServicoRealizadoPneu(movimentacaoEntity, pneuServicoRealizado));
+                .forEach(pneuServicoRealizado -> insertServicoRealizadoPneu(movimentacaoEntity,
+                                                                            pneuServicoRealizado,
+                                                                            limit,
+                                                                            offset));
     }
 
     private void insertServicoRealizadoPneu(@NotNull final MovimentacaoEntity movimentacaoEntity,
-                                            @NotNull final PneuServicoRealizadoEntity pneuServicoRealizadoEntity) {
+                                            @NotNull final PneuServicoRealizadoEntity pneuServicoRealizadoEntity,
+                                            final int limit,
+                                            final int offset) {
         final PneuServicoRealizadoEntity servicoRealizadoEntitySaved =
                 pneuServicoService.insertServicoPneu(pneuServicoRealizadoEntity.getPneuServicoRealizado(),
                                                      pneuServicoRealizadoEntity.getCusto(),
@@ -43,10 +52,9 @@ public class MovimentacaoServicoRealizadoService {
 
         insertMovimentacaoPneuServicoRealizado(movimentacaoEntity.getCodigo(), servicoRealizadoEntitySaved.getCodigo());
 
-        final Long codRecapadora = movimentacaoEntity.getMovimentacaoDestino().getRecapadora().getCodigo();
-        insertMovimentacaoPneuServicoRealizadoRecapadora(movimentacaoEntity.getCodigo(),
-                                                         servicoRealizadoEntitySaved.getCodigo(),
-                                                         codRecapadora);
+        final Long codRecapadora = pneuServicoService.getCodigoRecapadora(movimentacaoEntity.getPneu().getCodigo(),
+                                                                          OrigemDestinoEnum.ANALISE.asString(),
+                                                                          limit, offset);
     }
 
     private void insertMovimentacaoPneuServicoRealizado(
