@@ -8,7 +8,7 @@ Change Log
 
 ### Bug Fixes
 * Corrige erro no mapeamento de PSI em serviços fechados (PL-3866)
-
+* Corrige o relatório 'Placas com pneus abaixo do limite' para não exibir placas inativas (PS-3610)
 
 <a name="v3.5.5"></a>
 ## Version [v3.5.5](https://github.com/luizfp/PrologWebService/compare/v3.5.4...v3.5.5) (2021-07-19)
