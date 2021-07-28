@@ -15,26 +15,26 @@ import java.util.Set;
 @Component
 public class MovimentacaoValidator {
     public void validaServicosRealizados(@NotNull final Long codPneu,
-                                          @NotNull final Set<PneuServicoRealizadoEntity> servicosRealizados) {
-        validaIsEmpty(codPneu, servicosRealizados);
-        final long totalServicosIncrementamVida = servicosRealizados.stream()
-                .filter(PneuServicoRealizadoEntity::isIncrementaVida)
-                .count();
-        validaTotalServicos(totalServicosIncrementamVida);
+                                         @NotNull final Set<PneuServicoRealizadoEntity> servicosRealizados) {
+        validaTemServicosAplicados(codPneu, servicosRealizados);
+        validaUnicoServicoIncrementaVidaAplicado(servicosRealizados);
     }
 
-    private void validaIsEmpty(final @NotNull Long codPneu,
-                               final @NotNull Set<PneuServicoRealizadoEntity> servicosRealizados) {
+    private void validaTemServicosAplicados(@NotNull final Long codPneu,
+                                            @NotNull final Set<PneuServicoRealizadoEntity> servicosRealizados) {
         if (servicosRealizados.isEmpty()) {
             throw new IllegalStateException(
                     "O pneu " + codPneu + " foi movido dá análise para o estoque e não teve nenhum serviço aplicado!");
         }
     }
 
-    private void validaTotalServicos(final long totalServicosIncrementamVida) {
+    private void validaUnicoServicoIncrementaVidaAplicado(
+            @NotNull final Set<PneuServicoRealizadoEntity> servicosRealizados) {
+        final long totalServicosIncrementamVida = servicosRealizados.stream()
+                .filter(PneuServicoRealizadoEntity::isIncrementaVida)
+                .count();
         if (totalServicosIncrementamVida > 1) {
             throw new GenericException("Não é possível realizar dois serviços de troca de banda na mesma movimentação");
         }
     }
-
 }
