@@ -64,8 +64,6 @@ public interface PneuDao {
 
     List<Marca> getMarcaModeloPneuByCodEmpresa(Long codEmpresa) throws SQLException;
 
-    List<PneuComum.Dimensao> getDimensoes() throws SQLException;
-
     @NotNull
     Pneu getPneuByCod(@NotNull final Long codPneu, @NotNull final Long codUnidade) throws Throwable;
 
