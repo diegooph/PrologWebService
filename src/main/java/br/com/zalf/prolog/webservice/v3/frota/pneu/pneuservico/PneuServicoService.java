@@ -65,9 +65,7 @@ public class PneuServicoService {
 
     @NotNull
     public PneuTipoServicoEntity getPneuTipoServicoIncrementaVidaCadastroEntity() {
-        final PneuTipoServicoEntity tipoServicoIncrementaVidaCadastroPneu =
-                pneuTipoServicoService.getTipoServicoIncrementaVidaPneu();
-        return tipoServicoIncrementaVidaCadastroPneu;
+        return pneuTipoServicoService.getTipoServicoIncrementaVidaPneu();
     }
 
     private void insertPneuServicoRealizadoIncrementaVida(@NotNull final PneuEntity pneuCadastrado,
@@ -82,8 +80,7 @@ public class PneuServicoService {
     private void insertPneuServicoRealizadoCadastro(@NotNull final String fonteServicoRealizado,
                                                     @NotNull final PneuServicoRealizadoEntity savedServicoRealizado) {
         pneuServicoCadastroDao.save(
-                PneuServicoRealizadoCreator.createFromPneuServico(savedServicoRealizado,
-                                                                  fonteServicoRealizado));
+                PneuServicoRealizadoCreator.createFromPneuServico(savedServicoRealizado, fonteServicoRealizado));
     }
 
     @NotNull
