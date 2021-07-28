@@ -67,10 +67,11 @@ public class PneuService {
                     .build();
             final PneuEntity savedPneu = pneuDao.save(pneuInsert);
             if (savedPneu.isRecapado()) {
-                //noinspection ConstantConditions
                 final PneuTipoServicoEntity tipoServicoIncrementaVidaPneu =
                         this.pneuServicoService.getPneuTipoServicoIncrementaVidaCadastroEntity();
-                this.pneuServicoService.insertServicoPneu(savedPneu, pneuCadastroDto.getValorBandaPneu(),
+                //noinspection ConstantConditions
+                this.pneuServicoService.insertServicoPneu(savedPneu,
+                                                          pneuCadastroDto.getValorBandaPneu(),
                                                           tipoServicoIncrementaVidaPneu,
                                                           PneuServicoRealizado.FONTE_CADASTRO);
             }
