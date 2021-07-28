@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * Created on 2021-05-18
@@ -25,11 +26,25 @@ public class DimensaoPneuEntity {
     @Column(name = "codigo", nullable = false)
     private Long codigo;
     @Column(name = "altura", nullable = false)
-    private Integer altura;
+    private Double altura;
     @Column(name = "largura", nullable = false)
-    private Integer largura;
+    private Double largura;
     @Column(name = "aro", nullable = false)
     private Double aro;
+    @Column(name = "cod_empresa", nullable = false)
+    private Long codEmpresa;
+    @Column(name = "cod_auxiliar", nullable = false)
+    private Long codAuxiliar;
+    @Column(name = "status_ativo", nullable = false)
+    private boolean statusAtivo;
+    @Column(name = "data_hora_cadastro", nullable = false)
+    private LocalDateTime dataHoraCadastro;
+    @Column(name = "cod_colaborador_cadastro", nullable = false)
+    private Long codColaboradorCadastro;
+    @Column(name = "data_hora_ultima_atualizacao", nullable = false)
+    private LocalDateTime dataHoraUltimaAtualizacao;
+    @Column(name = "cod_colaborador_ultima_atualizacao", nullable = false)
+    private Long codColaboradorUltimaAtualizacao;
 
     @NotNull
     public String getDimensaoUserFriendly() {
