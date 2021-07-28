@@ -29,15 +29,15 @@ import java.util.List;
 @Path("api/v3/checklists")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class Checklist implements ChecklistApiDoc {
+public class ChecklistResource implements ChecklistApiDoc {
     @NotNull
     private final ChecklistService checklistService;
     @NotNull
     private final ChecklistMapper checklistMapper;
 
     @Autowired
-    public Checklist(@NotNull final ChecklistService checklistService,
-                     @NotNull final ChecklistMapper checklistMapper) {
+    public ChecklistResource(@NotNull final ChecklistService checklistService,
+                             @NotNull final ChecklistMapper checklistMapper) {
         this.checklistService = checklistService;
         this.checklistMapper = checklistMapper;
     }
