@@ -1,14 +1,12 @@
 package br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
-import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico._model.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico.PneuTipoServicoService;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico._modal.PneuTipoServicoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -89,12 +87,7 @@ public class PneuServicoService {
     }
 
     @NotNull
-    public Long getCodigoRecapadora(@NotNull final Long codPneu,
-                                    @NotNull final String analise,
-                                    final int limit,
-                                    final int offset) {
-        return pneuServicoRealizadoDao.getCodigoRecapadora(codPneu,
-                                                           analise,
-                                                           OffsetBasedPageRequest.of(limit, offset, Sort.unsorted()));
+    public Long getCodigoRecapadora(@NotNull final Long codPneu, @NotNull final String analise) {
+        return pneuServicoRealizadoDao.getCodigoRecapadora(codPneu, analise);
     }
 }

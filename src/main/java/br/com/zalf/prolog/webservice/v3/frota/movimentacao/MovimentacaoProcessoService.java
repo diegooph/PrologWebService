@@ -122,14 +122,11 @@ public class MovimentacaoProcessoService implements KmProcessoAtualizavel {
     private void insertMovimentacao(@NotNull final MovimentacaoEntity movimentacaoEntity) {
         final MovimentacaoEntity movimentacaoEntitySaved = movimentacaoDao.save(movimentacaoEntity);
         if (movimentacaoEntitySaved.isFromTo(OrigemDestinoEnum.ANALISE, OrigemDestinoEnum.ESTOQUE)) {
-            //como melhorar?
-            insertMovimentacaoAnaliseEstoque(movimentacaoEntitySaved, 1, 0);
+            insertMovimentacaoAnaliseEstoque(movimentacaoEntitySaved);
         }
     }
 
-    private void insertMovimentacaoAnaliseEstoque(@NotNull final MovimentacaoEntity movimentacaoEntity,
-                                                  final int limit,
-                                                  final int offset) {
-        movimentacaoServicoRealizadoService.insertMovimentacaoServicoPneu(movimentacaoEntity, limit, offset);
+    private void insertMovimentacaoAnaliseEstoque(@NotNull final MovimentacaoEntity movimentacaoEntity) {
+        movimentacaoServicoRealizadoService.insertMovimentacaoServicoPneu(movimentacaoEntity);
     }
 }

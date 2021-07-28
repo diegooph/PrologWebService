@@ -28,22 +28,15 @@ public class MovimentacaoServicoRealizadoService {
     @NotNull
     private final MovimentacaoValidator movimentacaoValidator;
 
-    public void insertMovimentacaoServicoPneu(@NotNull final MovimentacaoEntity movimentacaoEntity,
-                                              final int limit,
-                                              final int offset) {
+    public void insertMovimentacaoServicoPneu(@NotNull final MovimentacaoEntity movimentacaoEntity) {
         movimentacaoValidator.validaServicosRealizados(movimentacaoEntity.getPneu().getCodigo(),
                                                        movimentacaoEntity.getServicosRealizados());
         movimentacaoEntity.getServicosRealizados()
-                .forEach(pneuServicoRealizado -> insertServicoRealizadoPneu(movimentacaoEntity,
-                                                                            pneuServicoRealizado,
-                                                                            limit,
-                                                                            offset));
+                .forEach(pneuServicoRealizado -> insertServicoRealizadoPneu(movimentacaoEntity, pneuServicoRealizado));
     }
 
     private void insertServicoRealizadoPneu(@NotNull final MovimentacaoEntity movimentacaoEntity,
-                                            @NotNull final PneuServicoRealizadoEntity pneuServicoRealizadoEntity,
-                                            final int limit,
-                                            final int offset) {
+                                            @NotNull final PneuServicoRealizadoEntity pneuServicoRealizadoEntity) {
         final PneuServicoRealizadoEntity servicoRealizadoEntitySaved =
                 pneuServicoService.insertServicoPneu(pneuServicoRealizadoEntity.getPneuServicoRealizado(),
                                                      pneuServicoRealizadoEntity.getCusto(),
@@ -53,13 +46,15 @@ public class MovimentacaoServicoRealizadoService {
         insertMovimentacaoPneuServicoRealizado(movimentacaoEntity.getCodigo(), servicoRealizadoEntitySaved.getCodigo());
 
         final Long codRecapadora = pneuServicoService.getCodigoRecapadora(movimentacaoEntity.getPneu().getCodigo(),
-                                                                          OrigemDestinoEnum.ANALISE.asString(),
-                                                                          limit, offset);
+                                                                          OrigemDestinoEnum.ANALISE.asString());
+
+        insertMovimentacaoPneuServicoRealizadoRecapadora(movimentacaoEntity.getCodigo(),
+                                                         servicoRealizadoEntitySaved.getCodigo(),
+                                                         codRecapadora);
     }
 
-    private void insertMovimentacaoPneuServicoRealizado(
-            @NotNull final Long codMovimentacao,
-            @NotNull final Long codPneuServicoRealizado) {
+    private void insertMovimentacaoPneuServicoRealizado(@NotNull final Long codMovimentacao,
+                                                        @NotNull final Long codPneuServicoRealizado) {
         movimentacaoPneuServicoRealizadoDao.save(
                 MovimentacaoServicoRealizadoCreator.createMovimentacaoPneuServicoRealizado(
                         codMovimentacao,
@@ -67,10 +62,9 @@ public class MovimentacaoServicoRealizadoService {
                         PneuServicoRealizado.FONTE_MOVIMENTACAO));
     }
 
-    private void insertMovimentacaoPneuServicoRealizadoRecapadora(
-            @NotNull final Long codMovimentacao,
-            @NotNull final Long codPneuServicoRealizado,
-            @NotNull final Long codRecapadora) {
+    private void insertMovimentacaoPneuServicoRealizadoRecapadora(@NotNull final Long codMovimentacao,
+                                                                  @NotNull final Long codPneuServicoRealizado,
+                                                                  @NotNull final Long codRecapadora) {
         movimentacaoPneuServicoRealizadoRecapadoraDao.save(
                 MovimentacaoServicoRealizadoCreator.createMovimentacaoPneuServicoRealizadoRecapadora(
                         codMovimentacao,
