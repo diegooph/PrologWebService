@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico;
 
+import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico._modal.PneuTipoServicoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class PneuTipoServicoService {
 
     @NotNull
     @Transactional
-    public PneuTipoServicoEntity getTipoServicoIncrementaVidaCadastroPneu() {
-        return dao.getTipoServicoIncrementaVidaCadastroPneu();
+    public PneuTipoServicoEntity getTipoServicoIncrementaVidaPneu() {
+        return dao.getTipoServicoIncrementaVidaPneu();
     }
 }

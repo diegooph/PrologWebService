@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestin
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoDestinoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoEntity;
-import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoRealizadoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico._model.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
 import br.com.zalf.prolog.webservice.v3.frota.afericao.valores._model.AfericaoPneuValorEntity;
@@ -23,7 +23,6 @@ import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Stream;
 
 /**

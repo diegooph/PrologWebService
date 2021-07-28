@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico;
 
+import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico._modal.PneuTipoServicoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,5 +19,5 @@ public interface PneuTipoServicoDao extends JpaRepository<PneuTipoServicoEntity,
                    "and pts.statusAtivo = true " +
                    "and pts.incrementaVida = true " +
                    "and pts.utilizadoCadastroPneu = true")
-    PneuTipoServicoEntity getTipoServicoIncrementaVidaCadastroPneu();
+    PneuTipoServicoEntity getTipoServicoIncrementaVidaPneu();
 }
