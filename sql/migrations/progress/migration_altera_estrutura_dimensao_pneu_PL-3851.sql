@@ -229,8 +229,6 @@ alter table dimensao_pneu add column cod_colaborador_cadastro bigint;
 alter table dimensao_pneu add column data_hora_ultima_atualizacao date;
 alter table dimensao_pneu add column cod_colaborador_ultima_atualizacao bigint;
 
-
-
 create or replace function suporte.func_pneu_cadastra_dimensao_pneu(f_altura bigint,
                                                                     f_largura bigint,
                                                                     f_aro real,
@@ -284,8 +282,11 @@ begin
 end
 $$;
 
---todo corrigir
+alter table dimensao_pneu drop constraint unique_dimensao_pneu;
+alter table dimensao_pneu add constraint  unique_dimensao_pneu unique (altura, largura, aro, cod_empresa);
+
 insert into dimensao_pneu (altura, largura, aro, cod_empresa, status_ativo,
                            cod_colaborador_cadastro, data_hora_ultima_atualizacao, cod_colaborador_ultima_atualizacao)
 select distinct d.altura, d.largura, d.aro, e.codigo, true, 2316, now(), 2316 from dimensao_pneu d join pneu_data pd on d.codigo = pd.cod_dimensao
                                             join empresa e on pd.cod_empresa = e.codigo;
+
