@@ -2,13 +2,13 @@ package br.com.zalf.prolog.webservice.v3.fleet.movimentacao;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoDestinoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoOrigemEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoProcessoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.movimentacao.movimentacaoservico.MovimentacaoServicoRealizadoService;
 import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.ProcessKmUpdatable;
 import lombok.RequiredArgsConstructor;
