@@ -1,3 +1,5 @@
+drop function if exists func_dashboard_get_componentes_colaborador(f_user_token text);
+
 create or replace function func_dashboard_get_componentes_colaborador(f_user_token text)
     returns table
             (

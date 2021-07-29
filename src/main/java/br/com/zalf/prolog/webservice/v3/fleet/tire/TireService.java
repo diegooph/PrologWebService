@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.v3.fleet.tire;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.error.PneuValidator;
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.integracao.BlockedOperationYaml;
 import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
@@ -10,6 +11,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.PneuServicoService;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.tiposervico.PneuTipoServicoEntity;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,8 +50,13 @@ public class TireService {
         final TireEntity tireInsert = tireMapper.toEntity(tireCreateDto, getRegisterOrigin(integrationToken));
         final TireEntity savedTire = tireDao.save(tireInsert);
         if (savedTire.isRetreaded()) {
+            final PneuTipoServicoEntity tipoServicoIncrementaVidaPneu =
+                    this.pneuServicoService.getPneuTipoServicoIncrementaVidaCadastroEntity();
             //noinspection ConstantConditions
-            pneuServicoService.insertServicoCadastroPneu(savedTire, tireCreateDto.getTireTreadPrice());
+            this.pneuServicoService.insertServicoPneu(savedTire,
+                                                      tireCreateDto.getTireTreadPrice(),
+                                                      tipoServicoIncrementaVidaPneu,
+                                                      PneuServicoRealizado.FONTE_CADASTRO);
         }
         return new SuccessResponse(savedTire.getId(), "Pneu inserido com sucesso.");
     }

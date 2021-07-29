@@ -1,3 +1,29 @@
+alter table relato
+    add column cod_colaborador bigint;
+update relato
+set cod_colaborador = cd.codigo
+from colaborador_data cd
+where cd.cpf = relato.cpf_colaborador;
+alter table relato
+    alter column cod_colaborador set not null;
+
+alter table relato
+    add column cod_colaborador_classificacao bigint;
+update relato
+set cod_colaborador_classificacao = cd.codigo
+from colaborador_data cd
+where cd.cpf = relato.cpf_classificacao;
+
+alter table relato
+    add column cod_colaborador_fechamento bigint;
+update relato
+set cod_colaborador_fechamento = cd.codigo
+from colaborador_data cd
+where cd.cpf = relato.cpf_fechamento;
+
+alter table relato drop column cpf_colaborador, drop column cpf_classificacao, drop column cpf_fechamento;
+
+
 create or replace function func_relatorio_extrato_relatos(f_data_inicial date, f_data_final date, f_cod_unidade bigint, f_equipe text)
     returns TABLE("CÓDIGO" bigint, "DATA DO ENVIO" text, "INVÁLIDO" character, "ENVIADO" character, "CLASSIFICADO" character, "FECHADO" character, "ALTERNATIVA" text, "DESCRIÇÃO" text, "COD_PDV" integer, "RELATADO POR - CPF" text, "RELATADO POR - NOME" text, "EQUIPE" text, "DATA CLASSIFICAÇÃO" text, "TEMPO PARA CLASSIFICAÇÃO (DIAS)" integer, "CLASSIFICADO POR - CPF" text, "CLASSIFICADO POR - NOME" text, "DATA FECHAMENTO" text, "TEMPO PARA FECHAMENTO (DIAS)" integer, "FECHADO POR - CPF" text, "FECHADO POR - NOME" text, "OBS FECHAMENTO" text, "LATITUDE" text, "LONGITUDE" text, "LINK MAPS" text, "FOTO 1" text, "FOTO 2" text, "FOTO 3" text)
     language sql

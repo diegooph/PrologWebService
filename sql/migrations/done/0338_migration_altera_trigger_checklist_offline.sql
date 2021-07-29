@@ -1,3 +1,4 @@
+-- Foi adicionado o 'security definer'.
 create or replace function tg_func_checklist_update_versao_dados_offline_empresa_liberada()
     returns trigger as
 $TG_FUNC_UPDATE_VERSAO_DADOS_CHECKLIST_OFFLINE_EMPRESA_LIBERADA$
@@ -10,10 +11,3 @@ end;
 $TG_FUNC_UPDATE_VERSAO_DADOS_CHECKLIST_OFFLINE_EMPRESA_LIBERADA$
     security definer
     language plpgsql;
-
--- Cria trigger para incrementar a versão dos dados de checklist offline caso a empresa tenha sido liberada.
-create trigger tg_update_versao_dados_checklist_offline_empresa_liberada
-    after delete
-    on checklist_offline_empresa_bloqueada
-    for each row
-execute procedure tg_func_checklist_update_versao_dados_offline_empresa_liberada();

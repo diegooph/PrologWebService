@@ -6,13 +6,25 @@ Change Log
 ## UNRELEASED
 ##
 
+### Bug Fixes
+* Corrige erro no mapeamento de PSI em serviços fechados (PL-3866)
+* Corrige o relatório 'Placas com pneus abaixo do limite' para não exibir placas inativas (PS-3610)
+
+<a name="v3.5.5"></a>
+## Version [v3.5.5](https://github.com/luizfp/PrologWebService/compare/v3.5.4...v3.5.5) (2021-07-19)
+
+# Features
+* Adiciona código e nome das funcionalidades do dash para agrupamento (PL-3876)
+
 ### Refactors
+* Remove trava de empresa na propagação de km (PL-3699)
 * Mapeia corretamente erros do Spring nos endpoints V3
+* Remove CPF de relato (PL-3856)
 
 ### Bug Fixes
 * Corrige erro de getConstraint ao receber valor nulo  
-* Corrigir erro ao editar modelo de checklist (PL-3528)
-* Corrigir erro ao movimentar pneus em placas com cadastro duplicado em outra empresa (PS-1606)
+* Corrige erro ao editar modelo de checklist (PL-3528)
+* Corrige erro ao movimentar pneus em placas com cadastro duplicado em outra empresa (PS-1606)
 
 <a name="v3.5.4"></a>
 ## Version [v3.5.4](https://github.com/luizfp/PrologWebService/compare/v3.5.3...v3.5.4) (2021-07-11)

@@ -806,7 +806,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "            ELSE 0 END) AS QT_PNEUS_ABAIXO_LIMITE " +
                     "      FROM VEICULO_PNEU VP JOIN PNEU P " +
                     "          ON P.CODIGO = VP.COD_PNEU AND VP.COD_UNIDADE = P.COD_UNIDADE " +
-                    "        JOIN VEICULO V ON V.CODIGO = VP.COD_VEICULO" +
+                    "        JOIN VEICULO V ON V.CODIGO = VP.COD_VEICULO AND V.STATUS_ATIVO" +
                     "        JOIN PNEU_RESTRICAO_UNIDADE ERP " +
                     "          ON ERP.COD_UNIDADE = VP.COD_UNIDADE " +
                     "      WHERE VP.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +

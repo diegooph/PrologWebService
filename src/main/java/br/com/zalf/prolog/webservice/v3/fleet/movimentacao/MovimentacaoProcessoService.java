@@ -1,6 +1,9 @@
 package br.com.zalf.prolog.webservice.v3.fleet.movimentacao;
 
+import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoDestinoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoEntity;
@@ -29,9 +32,13 @@ public class MovimentacaoProcessoService implements ProcessKmUpdatable {
     @NotNull
     private final MovimentacaoProcessoDao movimentacaoProcessoDao;
     @NotNull
+    private final MovimentacaoDao movimentacaoDao;
+    @NotNull
     private final MovimentacaoOrigemDao movimentacaoOrigemDao;
     @NotNull
     private final MovimentacaoDestinoDao movimentacaoDestinoDao;
+    @NotNull
+    private final MovimentacaoServicoRealizadoService movimentacaoServicoRealizadoService;
 
     @NotNull
     @Override
@@ -102,5 +109,27 @@ public class MovimentacaoProcessoService implements ProcessKmUpdatable {
                                                                 OffsetBasedPageRequest.of(limit,
                                                                                           offset,
                                                                                           Sort.unsorted()));
+    }
+
+    @NotNull
+    @Transactional
+    public SuccessResponse insertProcessoMovimentacao(
+            @NotNull final MovimentacaoProcessoEntity movimentacaoProcessoEntity) {
+
+        final MovimentacaoProcessoEntity processoEntitySaved = movimentacaoProcessoDao.save(movimentacaoProcessoEntity);
+        processoEntitySaved.getMovimentacoes().forEach(this::insertMovimentacao);
+
+        return new SuccessResponse(1L, "Vai dar boa raça!");
+    }
+
+    private void insertMovimentacao(@NotNull final MovimentacaoEntity movimentacaoEntity) {
+        final MovimentacaoEntity movimentacaoEntitySaved = movimentacaoDao.save(movimentacaoEntity);
+        if (movimentacaoEntitySaved.isFromTo(OrigemDestinoEnum.ANALISE, OrigemDestinoEnum.ESTOQUE)) {
+            insertMovimentacaoAnaliseEstoque(movimentacaoEntitySaved);
+        }
+    }
+
+    private void insertMovimentacaoAnaliseEstoque(@NotNull final MovimentacaoEntity movimentacaoEntity) {
+        movimentacaoServicoRealizadoService.insertMovimentacaoServicoPneu(movimentacaoEntity);
     }
 }

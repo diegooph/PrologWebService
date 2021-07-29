@@ -27,12 +27,14 @@
 --      possuir um veículo motorizado,  então o km inserido no processo será o atual.
 --
 --. Obs: veículos que tiveram o km modificado pela propagação terão seu histórico salvo em uma tabela específica.
+drop function func_veiculo_update_km_atual(f_cod_unidade bigint, f_cod_veiculo bigint, f_km_coletado bigint,
+                                           f_cod_processo bigint, f_tipo_processo text, f_deve_propagar_km boolean,
+                                           f_data_hora timestamp with time zone);
 create or replace function func_veiculo_update_km_atual(f_cod_unidade bigint,
                                                         f_cod_veiculo bigint,
                                                         f_km_coletado bigint,
                                                         f_cod_processo bigint,
                                                         f_tipo_processo text,
-                                                        f_deve_propagar_km boolean,
                                                         f_data_hora timestamp with time zone)
     returns bigint
     language plpgsql
@@ -56,26 +58,6 @@ begin
              left join veiculo_acoplamento_atual vaa on v.codigo = vaa.cod_veiculo
     where v.codigo = f_cod_veiculo
     into strict v_km_atual, v_possui_hubodometro, v_motorizado, v_cod_processo_acoplamento, v_cod_empresa;
-
-    case when exists(select vael.cod_empresa
-                     from veiculo_acoplamento_empresa_liberada vael
-                     where vael.cod_empresa = v_cod_empresa)
-        then
-            f_deve_propagar_km = true;
-        else
-            f_deve_propagar_km = false;
-        end case;
-
-    if not f_deve_propagar_km
-    then
-        if v_km_atual < f_km_coletado
-        then
-            update veiculo set km = f_km_coletado where codigo = f_cod_veiculo;
-            return f_km_coletado;
-        else
-            return f_km_coletado;
-        end if;
-    end if;
 
     case when (f_km_coletado is not null) then
         case when ((v_motorizado is true or v_possui_hubodometro is true) and v_km_atual > f_km_coletado)
