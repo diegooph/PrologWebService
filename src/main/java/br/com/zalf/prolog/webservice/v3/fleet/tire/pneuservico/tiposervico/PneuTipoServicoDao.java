@@ -18,5 +18,5 @@ public interface PneuTipoServicoDao extends JpaRepository<PneuTipoServicoEntity,
                    "and pts.statusAtivo = true " +
                    "and pts.incrementaVida = true " +
                    "and pts.utilizadoCadastroPneu = true")
-    PneuTipoServicoEntity getTipoServicoIncrementaVidaCadastroPneu();
+    PneuTipoServicoEntity getTipoServicoIncrementaVidaPneu();
 }

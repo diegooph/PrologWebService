@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model;
 
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleEntity;
@@ -80,6 +81,28 @@ public final class MovimentacaoEntity {
         }
 
         return Optional.empty();
+    }
+
+    @NotNull
+    public OrigemDestinoEnum getTipoOrigem() {
+        return this.getMovimentacaoOrigem().getTipoOrigem();
+    }
+
+    @NotNull
+    public OrigemDestinoEnum getTipoDestino() {
+        return this.getMovimentacaoDestino().getTipoDestino();
+    }
+
+    public boolean isFromTo(@NotNull final OrigemDestinoEnum origem, @NotNull final OrigemDestinoEnum destino) {
+        return this.getTipoOrigem().equals(origem) && this.getTipoDestino().equals(destino);
+    }
+
+    public boolean temServicoIncrementaVida() {
+        return this.servicosRealizados.stream()
+                .filter(PneuServicoRealizadoEntity::isIncrementaVida)
+                .findFirst()
+                .map(PneuServicoRealizadoEntity::isIncrementaVida)
+                .orElse(false);
     }
 
     @NotNull

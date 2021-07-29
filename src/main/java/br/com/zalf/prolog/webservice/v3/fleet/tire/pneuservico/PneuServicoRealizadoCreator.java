@@ -11,7 +11,7 @@ public class PneuServicoRealizadoCreator {
     public static PneuServicoRealizadoEntity createServicoRealizado(
             @NotNull final PneuTipoServicoEntity tipoServicoIncrementaVidaCadastroPneu,
             @NotNull final TireEntity tireCreated,
-            @NotNull final String fonteCadastro,
+            @NotNull final String fonteServicoRealizado,
             @NotNull final BigDecimal tireTreadPrice) {
         return PneuServicoRealizadoEntity.builder()
                 .tipoServico(tipoServicoIncrementaVidaCadastroPneu)
@@ -19,7 +19,7 @@ public class PneuServicoRealizadoCreator {
                 .pneuServicoRealizado(createTireEntity(tireCreated.getId()))
                 .custo(tireTreadPrice)
                 .vida(tireCreated.getPreviousRetread())
-                .fonteServicoRealizado(fonteCadastro)
+                .fonteServicoRealizado(fonteServicoRealizado)
                 .build();
     }
 
@@ -27,23 +27,23 @@ public class PneuServicoRealizadoCreator {
     public static PneuServicoRealizadoIncrementaVidaEntity createServicoRealizadoIncrementaVida(
             @NotNull final TireEntity pneuCadastrado,
             @NotNull final PneuServicoRealizadoEntity servicoRealizado,
-            @NotNull final String fonteCadastro) {
+            @NotNull final String fonteServicoRealizado) {
         return PneuServicoRealizadoIncrementaVidaEntity.builder()
                 .codServicoRealizado(servicoRealizado.getCodigo())
                 .codModeloBanda(pneuCadastrado.getTreadModelEntity().getId())
                 .vidaNovaPneu(pneuCadastrado.getTimesRetreaded())
-                .fonteServicoRealizado(fonteCadastro)
+                .fonteServicoRealizado(fonteServicoRealizado)
                 .build();
     }
 
     @NotNull
     public static PneuServicoCadastroEntity createFromPneuServico(
             @NotNull final PneuServicoRealizadoEntity servicoRealizado,
-            @NotNull final String fonteCadastro) {
+            @NotNull final String fonteServicoRealizado) {
         return PneuServicoCadastroEntity.builder()
                 .codPneu(servicoRealizado.getPneuServicoRealizado().getId())
                 .codServicoRealizado(servicoRealizado.getCodigo())
-                .fonteServicoRealizado(fonteCadastro)
+                .fonteServicoRealizado(fonteServicoRealizado)
                 .build();
     }
 
