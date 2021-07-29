@@ -39,7 +39,7 @@ import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
-import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -320,7 +320,7 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @Override
     public void insert(
-            @NotNull final VeiculoCadastroDto veiculo,
+            @NotNull final VehicleCreateDto veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         getIntegradorProLog().insert(veiculo, checklistOfflineListener);
     }

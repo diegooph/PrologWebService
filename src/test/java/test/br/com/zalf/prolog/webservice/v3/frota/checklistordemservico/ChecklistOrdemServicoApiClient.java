@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
-import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistWorkOrderDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -28,7 +28,7 @@ public final class ChecklistOrdemServicoApiClient {
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<List<ChecklistOrdemServicoListagemDto>> getOrdensServico(
+    public ResponseEntity<List<ChecklistWorkOrderDto>> getOrdensServico(
             @NotNull final List<Long> codUnidades,
             final int limit,
             final int offset) {
@@ -49,7 +49,7 @@ public final class ChecklistOrdemServicoApiClient {
                 .build();
 
         return restTemplate.exchange(reqEntity,
-                                     new ParameterizedTypeReference<List<ChecklistOrdemServicoListagemDto>>() {});
+                                     new ParameterizedTypeReference<List<ChecklistWorkOrderDto>>() {});
     }
 
     @NotNull

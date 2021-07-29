@@ -1,6 +1,6 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.pneu;
 
-import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireCreateDto;
 
 import java.math.BigDecimal;
 
@@ -11,19 +11,19 @@ import java.math.BigDecimal;
  */
 public class PneuCadastroFactory {
 
-    public static PneuCadastroDto createCorrectPneuCadastro() {
-        return PneuCadastroDto.of(3L,
-                                  215L,
-                                  "teste04",
-                                  131L,
-                                  10L,
-                                  2,
-                                  3,
-                                  100.00,
-                                  "0001",
-                                  new BigDecimal("1500"),
-                                  false,
-                                  11L,
-                                  new BigDecimal("100"));
+    public static TireCreateDto createCorrectPneuCadastro() {
+        return TireCreateDto.of(3L,
+                                215L,
+                                "teste04",
+                                131L,
+                                10L,
+                                2,
+                                3,
+                                100.00,
+                                "0001",
+                                new BigDecimal("1500"),
+                                false,
+                                11L,
+                                new BigDecimal("100"));
     }
 }

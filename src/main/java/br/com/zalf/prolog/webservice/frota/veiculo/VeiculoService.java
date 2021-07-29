@@ -16,9 +16,9 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoSta
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
-import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoValidator;
+import br.com.zalf.prolog.webservice.frota.veiculo.validator.VehicleValidator;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
-import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -105,9 +105,9 @@ public final class VeiculoService {
 
     @NotNull
     public Response insert(@NotNull final String userToken,
-                           @NotNull final VeiculoCadastroDto veiculo) throws ProLogException {
+                           @NotNull final VehicleCreateDto veiculo) throws ProLogException {
         try {
-            VeiculoValidator.validacaoAtributosVeiculo(veiculo);
+            VehicleValidator.validacaoAtributosVeiculo(veiculo);
             RouterVeiculo
                     .create(dao, userToken)
                     .insert(veiculo, Injection.provideDadosChecklistOfflineChangedListener());
@@ -115,7 +115,7 @@ public final class VeiculoService {
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
                                              "userToken: %s\n" +
-                                             "codUnidade: %d", userToken, veiculo.getCodUnidadeAlocado()), t);
+                                             "codUnidade: %d", userToken, veiculo.getBranchId()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir o veículo, tente novamente");
@@ -127,7 +127,7 @@ public final class VeiculoService {
                            @NotNull final String userToken,
                            @NotNull final VeiculoEdicao veiculo) {
         try {
-            VeiculoValidator.validacaoAtributosVeiculo(veiculo);
+            VehicleValidator.validacaoAtributosVeiculo(veiculo);
             RouterVeiculo
                     .create(dao, userToken)
                     .update(codColaboradorResponsavelEdicao,
@@ -147,7 +147,7 @@ public final class VeiculoService {
                                  @NotNull final String userToken,
                                  @NotNull final VeiculoEdicaoStatus veiculo) {
         try {
-            VeiculoValidator.validacaoAtributosVeiculo(veiculo);
+            VehicleValidator.validacaoAtributosVeiculo(veiculo);
             final VeiculoEdicao edicao = dao
                     .getVeiculoByCodigo(veiculo.getCodigo())
                     .toVeiculoEdicao(veiculo.isStatusAtivo());

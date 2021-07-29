@@ -3,8 +3,8 @@ package test.br.com.zalf.prolog.webservice.v3.frota.pneu;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
-import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuCadastroDto;
-import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireCreateDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,15 +35,15 @@ public class PneuApiClient {
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<SuccessResponse> insert(@NotNull final PneuCadastroDto dto) {
+    public ResponseEntity<SuccessResponse> insert(@NotNull final TireCreateDto dto) {
         return restTemplate.postForEntity(URI.create(RESOURCE), dto, SuccessResponse.class);
     }
 
     @NotNull
-    public ResponseEntity<List<PneuListagemDto>> getPneusByStatus(@NotNull final List<Long> codUnidades,
-                                                                  @Nullable final StatusPneu statusPneu,
-                                                                  final int limit,
-                                                                  final int offset) {
+    public ResponseEntity<List<TireDto>> getPneusByStatus(@NotNull final List<Long> codUnidades,
+                                                          @Nullable final StatusPneu statusPneu,
+                                                          final int limit,
+                                                          final int offset) {
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
                 .queryParam("codUnidades", codUnidades.stream()
@@ -57,7 +57,7 @@ public class PneuApiClient {
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<PneuListagemDto>>() {});
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<TireDto>>() {});
     }
 
     @NotNull

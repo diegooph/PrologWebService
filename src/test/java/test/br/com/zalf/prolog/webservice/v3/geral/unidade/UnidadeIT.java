@@ -3,10 +3,10 @@ package test.br.com.zalf.prolog.webservice.v3.geral.unidade;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BadRequestException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
-import br.com.zalf.prolog.webservice.v3.geral.unidade.UnidadeDao;
-import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEdicaoDto;
-import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
-import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeVisualizacaoListagemDto;
+import br.com.zalf.prolog.webservice.v3.general.branch.BranchDao;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchDto;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
+import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchUpdateDto;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,7 @@ public class UnidadeIT extends IntegrationTest {
     @Autowired
     private UnidadeApiClient client;
     @Autowired
-    private UnidadeDao dao;
+    private BranchDao dao;
 
     private <T> void assertBaseValidations(final ResponseEntity<T> responseEntity) {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -38,9 +38,9 @@ public class UnidadeIT extends IntegrationTest {
     @Test
     @DisplayName("Dado código da unidade, retorne a UnidadeVisualizacaoListagem correspondente.")
     void givenCodUnidadeToRequest_ThenReturnUnidadeVisualizacaoListagemAndStatusOK() {
-        final ResponseEntity<UnidadeVisualizacaoListagemDto> response = client.getUnidadeByCodigo(TEST_UNIDADE_ID);
+        final ResponseEntity<BranchDto> response = client.getUnidadeByCodigo(TEST_UNIDADE_ID);
         assertBaseValidations(response);
-        assertThat(response.getBody().getCodUnidade()).isEqualTo(TEST_UNIDADE_ID);
+        assertThat(response.getBody().getBranchId()).isEqualTo(TEST_UNIDADE_ID);
     }
 
     @Test
@@ -48,7 +48,7 @@ public class UnidadeIT extends IntegrationTest {
     void givenCodUnidadeAndCodRegionais_ThenReturnListUnidadeVisualizacaoListagemAndStatusOk() {
         final Long codEmpresa = 3L;
         final List<Long> codsRegionais = Collections.singletonList(1L);
-        final ResponseEntity<List<UnidadeVisualizacaoListagemDto>> response =
+        final ResponseEntity<List<BranchDto>> response =
                 client.getUnidadesListagem(codEmpresa, codsRegionais);
         assertBaseValidations(response);
         response.getBody().stream()
@@ -58,7 +58,7 @@ public class UnidadeIT extends IntegrationTest {
 
     @Nested
     class PersistenceTests {
-        private UnidadeEntity baseEntity;
+        private BranchEntity baseEntity;
 
         @BeforeEach
         void setUp() {
@@ -68,17 +68,17 @@ public class UnidadeIT extends IntegrationTest {
         @Test
         @DisplayName("Dado UnidadeEdicaoDto, retorne SuccessResponse")
         void givenUnidadeEdicaoDto_ThenReturnSuccessResponseAndStatusOk() {
-            final UnidadeEdicaoDto dtoToUpdate =
+            final BranchUpdateDto dtoToUpdate =
                     UnidadeEdicaoDtoFactory.createValidUnidadeEdicaoDtoToUpdate(baseEntity);
             final ResponseEntity<SuccessResponse> response = client.updateUnidade(dtoToUpdate);
             assertBaseValidations(response);
-            assertThat(response.getBody().getUniqueItemId()).isEqualTo(dtoToUpdate.getCodUnidade());
+            assertThat(response.getBody().getUniqueItemId()).isEqualTo(dtoToUpdate.getBranchId());
         }
 
         @Test
         @DisplayName("Dado DTO com código de unidade inválido, retorne BadRequestException")
         void givenUnidadeEdicaoDtoWithInvalidCodUnidade_ThenReturnBadRequestException() {
-            final UnidadeEdicaoDto dtoWithInvalidCodUnidade =
+            final BranchUpdateDto dtoWithInvalidCodUnidade =
                     UnidadeEdicaoDtoFactory.createUnidadeEdicaoDtoWithInvalidCodUnidade(baseEntity);
             final ResponseEntity<BadRequestException> response =
                     client.updateUnidade(dtoWithInvalidCodUnidade, BadRequestException.class);

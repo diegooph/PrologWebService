@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.checklist;
 
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
-import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.checklist._model.ChecklistDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +31,15 @@ public class ChecklistApiClient {
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<List<ChecklistListagemDto>> getChecklistsByFitlro(@NotNull final List<Long> codUnidades,
-                                                                            @NotNull final String dataInicial,
-                                                                            @NotNull final String dataFinal,
-                                                                            @Nullable final Long codColaborador,
-                                                                            @Nullable final Long codVeiculo,
-                                                                            @Nullable final Long codTipoVeiculo,
-                                                                            final boolean incluirRespostas,
-                                                                            final int limit,
-                                                                            final int offset) {
+    public ResponseEntity<List<ChecklistDto>> getChecklistsByFitlro(@NotNull final List<Long> codUnidades,
+                                                                    @NotNull final String dataInicial,
+                                                                    @NotNull final String dataFinal,
+                                                                    @Nullable final Long codColaborador,
+                                                                    @Nullable final Long codVeiculo,
+                                                                    @Nullable final Long codTipoVeiculo,
+                                                                    final boolean incluirRespostas,
+                                                                    final int limit,
+                                                                    final int offset) {
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
                 .queryParam("codUnidades", codUnidades.stream()
@@ -58,7 +58,7 @@ public class ChecklistApiClient {
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<ChecklistListagemDto>>() {});
+        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<ChecklistDto>>() {});
     }
 
     public ResponseEntity<ClientSideErrorException> getChecklistsWithWrongTypeUnidades(
