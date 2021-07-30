@@ -5,10 +5,10 @@ import br.com.zalf.prolog.webservice.v3.fleet.checklist.ChecklistService;
 import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder.ChecklistWorkOrderService;
 import br.com.zalf.prolog.webservice.v3.fleet.helponroad.HelpOnRoadService;
 import br.com.zalf.prolog.webservice.v3.fleet.inspection.InspectionService;
-import br.com.zalf.prolog.webservice.v3.fleet.movimentacao.MovimentacaoProcessoService;
 import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.ProcessKmUpdatable;
 import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.UpdateProcessKm;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance.TireMaintenanceService;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremovement.TireMovementProcessService;
 import br.com.zalf.prolog.webservice.v3.fleet.transfer.VehicleTransferService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +32,7 @@ public class UpdateProcessKmServiceFactory {
     @NotNull
     private final ChecklistWorkOrderService checklistWorkOrderService;
     @NotNull
-    private final MovimentacaoProcessoService movimentacaoProcessoService;
+    private final TireMovementProcessService tireMovementProcessService;
     @NotNull
     private final HelpOnRoadService helpOnRoadService;
     @NotNull
@@ -50,7 +50,7 @@ public class UpdateProcessKmServiceFactory {
             case FECHAMENTO_ITEM_CHECKLIST:
                 return checklistWorkOrderService;
             case MOVIMENTACAO:
-                return movimentacaoProcessoService;
+                return tireMovementProcessService;
             case SOCORRO_EM_ROTA:
                 return helpOnRoadService;
             case TRANSFERENCIA_DE_VEICULOS:

@@ -4,9 +4,9 @@ import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.InspectionMeasureEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoDestinoEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.PneuServicoRealizadoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremovement._model.TireMovementDestinationEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremovement._model.TireMovementEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tireservice._model.TireServiceEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleEntity;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
 import lombok.AllArgsConstructor;
@@ -113,9 +113,9 @@ public final class TireEntity {
     @OneToMany(mappedBy = "tireEntity", fetch = FetchType.LAZY, targetEntity = InspectionMeasureEntity.class)
     @Nullable
     private Set<InspectionMeasureEntity> inspectionMeasureEntities;
-    @OneToMany(mappedBy = "pneuServicoRealizado", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tireServiceTypeEntity", fetch = FetchType.LAZY)
     @Nullable
-    private Set<PneuServicoRealizadoEntity> servicosRealizados;
+    private Set<TireServiceEntity> tireServiceEntities;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "veiculo_pneu",
                joinColumns = @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo"),
@@ -125,9 +125,9 @@ public final class TireEntity {
     @Formula(value = "(select vp.posicao from veiculo_pneu vp where vp.cod_pneu = codigo)")
     @Nullable
     private Integer positionApplied;
-    @OneToMany(mappedBy = "pneu", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tireEntity", fetch = FetchType.LAZY)
     @Nullable
-    private Set<MovimentacaoEntity> movimentacoesPneu;
+    private Set<TireMovementEntity> tireMovementEntities;
 
     public boolean isRetreaded() {
         return timesRetreaded > 1;
@@ -148,26 +148,26 @@ public final class TireEntity {
     }
 
     @Nullable
-    public BigDecimal getValorUltimaBandaAplicada() {
-        if (servicosRealizados == null) {
+    public BigDecimal getPriceLastTreadApplied() {
+        if (tireServiceEntities == null) {
             return null;
         }
-        return servicosRealizados.stream()
-                .filter(PneuServicoRealizadoEntity::isIncrementaVida)
-                .max(Comparator.comparing(PneuServicoRealizadoEntity::getCodigo))
-                .map(PneuServicoRealizadoEntity::getCusto)
+        return tireServiceEntities.stream()
+                .filter(TireServiceEntity::isIncreaseLifeCycle)
+                .max(Comparator.comparing(TireServiceEntity::getId))
+                .map(TireServiceEntity::getServiceCost)
                 .orElse(null);
     }
 
     @Nullable
-    public MovimentacaoDestinoEntity getUltimaMovimentacaoByStatus(@NotNull final OrigemDestinoEnum statusPneu) {
-        if (movimentacoesPneu == null) {
+    public TireMovementDestinationEntity getLastTireMovementByStatus(@NotNull final OrigemDestinoEnum tireStatus) {
+        if (tireMovementEntities == null) {
             return null;
         }
-        return movimentacoesPneu.stream()
-                .map(MovimentacaoEntity::getMovimentacaoDestino)
-                .filter(destino -> destino.getTipoDestino().equals(statusPneu))
-                .max(Comparator.comparing(MovimentacaoDestinoEntity::getCodMovimentacao))
+        return tireMovementEntities.stream()
+                .map(TireMovementEntity::getTireMovementDestinationEntity)
+                .filter(destination -> destination.getMovementDestinationType().equals(tireStatus))
+                .max(Comparator.comparing(TireMovementDestinationEntity::getTireMovementId))
                 .orElse(null);
     }
 }

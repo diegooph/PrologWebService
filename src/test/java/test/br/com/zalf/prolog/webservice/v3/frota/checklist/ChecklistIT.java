@@ -55,7 +55,7 @@ public class ChecklistIT extends IntegrationTest {
                                              0);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody().get(0).getChecklistItems()).isNull();
+        assertThat(responseEntity.getBody().get(0).getPerguntasChecklist()).isNull();
     }
 
     @Test
@@ -73,7 +73,7 @@ public class ChecklistIT extends IntegrationTest {
                                              0);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody().get(0).getChecklistItems()).isNotNull();
+        assertThat(responseEntity.getBody().get(0).getPerguntasChecklist()).isNotNull();
     }
 
     @Test

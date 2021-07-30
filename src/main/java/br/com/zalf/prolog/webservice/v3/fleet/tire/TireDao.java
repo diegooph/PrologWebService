@@ -28,16 +28,16 @@ public interface TireDao extends JpaRepository<TireEntity, Long> {
                    "join fetch tm.tireBrandEntity " +
                    "left join fetch t.treadModelEntity ttm " +
                    "left join fetch ttm.treadBrandEntity " +
-                   "left join fetch t.servicosRealizados psr " +
-                   "left join fetch psr.tipoServico " +
+                   "left join fetch t.tireServiceEntities psr " +
+                   "left join fetch psr.tireServiceTypeEntity " +
                    "left join fetch t.vehicleApplied " +
-                   "left join fetch t.movimentacoesPneu mov " +
-                   "left join fetch mov.movimentacaoDestino movD " +
-                   "left join fetch movD.recapadora " +
+                   "left join fetch t.tireMovementEntities mov " +
+                   "left join fetch mov.tireMovementDestinationEntity movD " +
+                   "left join fetch movD.retreaderEntity " +
                    // Fizemos JOIN com essas propriedades por mais que não precisava, para não gerar N+1 requests ao BD.
-                   "left join fetch mov.movimentacaoOrigem " +
-                   "left join fetch mov.movimentacaoProcesso movP " +
-                   "left join fetch movP.colaboradorRealizacaoProcesso c " +
+                   "left join fetch mov.tireMovementSourceEntity " +
+                   "left join fetch mov.tireMovementProcessEntity movP " +
+                   "left join fetch movP.movementProcessBy c " +
                    "where b.id in :branchesId " +
                    "and (:tireStatus is null or t.tireStatus = :tireStatus) " +
                    "order by t.id asc")

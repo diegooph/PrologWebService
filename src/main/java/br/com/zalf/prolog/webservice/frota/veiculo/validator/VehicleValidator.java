@@ -23,14 +23,14 @@ public class VehicleValidator {
 
     public static void validacaoAtributosVeiculo(@NotNull final VehicleCreateDto veiculo) throws Throwable {
         try {
-            validacaoPlaca(veiculo.getVehiclePlate());
-            validacaoKmAtual(veiculo.getVehicleKm());
-            validacaoModelo(veiculo.getVehicleModelId());
-            validacaoTipo(veiculo.getVehicleTypeId());
+            validacaoPlaca(veiculo.getPlacaVeiculo());
+            validacaoKmAtual(veiculo.getKmAtualVeiculo());
+            validacaoModelo(veiculo.getCodModeloVeiculo());
+            validacaoTipo(veiculo.getCodTipoVeiculo());
         } catch (final Exception e) {
             throw new GenericException(e.getMessage(), null, GenericException.NO_LOGS_INTO_SENTRY);
         }
-        validacaoMotorizadoSemHubodometro(veiculo.getHasHubodometer(), veiculo.getVehicleTypeId());
+        validacaoMotorizadoSemHubodometro(veiculo.getPossuiHubodometro(), veiculo.getCodTipoVeiculo());
     }
 
     public static void validacaoAtributosVeiculo(@NotNull final VeiculoEdicao veiculo) throws Throwable {

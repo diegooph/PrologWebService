@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
-import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoProcessoListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremovement._model.TireMovimentProcessDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public final class MovimentacaoProcessoIT extends IntegrationTest {
     @Test
     @DisplayName("Dado mínimos parâmetros corretos, retorne List<MovimentacaoProcessoListagemDto> e status OK")
     void givenMinimumCorrectParameters_ThenReturnListMovimentacaoProcessoStatusOk() {
-        final ResponseEntity<List<MovimentacaoProcessoListagemDto>> response =
+        final ResponseEntity<List<TireMovimentProcessDto>> response =
                 client.getMovimentacacaoProcessos(List.of(215L),
                                                   "2018-01-01",
                                                   "2021-12-12",

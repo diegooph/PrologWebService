@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
-import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoProcessoListagemDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremovement._model.TireMovimentProcessDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -29,7 +29,7 @@ public final class MovimentacaoProcessoApiClient {
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<List<MovimentacaoProcessoListagemDto>> getMovimentacacaoProcessos(
+    public ResponseEntity<List<TireMovimentProcessDto>> getMovimentacacaoProcessos(
             @NotNull final List<Long> codUnidades,
             @NotNull final String dataInicial,
             @NotNull final String dataFinal,
@@ -50,7 +50,7 @@ public final class MovimentacaoProcessoApiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
         return restTemplate.exchange(requestEntity,
-                                     new ParameterizedTypeReference<List<MovimentacaoProcessoListagemDto>>() {});
+                                     new ParameterizedTypeReference<List<TireMovimentProcessDto>>() {});
     }
 
     @NotNull

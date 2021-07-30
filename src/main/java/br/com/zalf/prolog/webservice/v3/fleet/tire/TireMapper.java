@@ -4,8 +4,8 @@ import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
-import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.MovimentacaoDestinoEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.*;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremovement._model.TireMovementDestinationEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleEntity;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
 import org.jetbrains.annotations.NotNull;
@@ -45,68 +45,68 @@ public class TireMapper {
     }
 
     @NotNull
-    public List<TireDto> toDto(@NotNull final List<TireEntity> pneus) {
-        return pneus.stream().map(this::toDto).collect(Collectors.toList());
+    public List<TireDto> toDto(@NotNull final List<TireEntity> tires) {
+        return tires.stream().map(this::toDto).collect(Collectors.toList());
     }
 
     @NotNull
-    private TireDto toDto(@NotNull final TireEntity pneu) {
-        final TreadModelEntity treadModelEntity = pneu.getTreadModelEntity();
-        final VehicleEntity vehicleApplied = pneu.getVehicleApplied();
-        final MovimentacaoDestinoEntity movimentacaoAnalise =
-                pneu.getTireStatus().equals(StatusPneu.ANALISE)
-                        ? pneu.getUltimaMovimentacaoByStatus(OrigemDestinoEnum.ANALISE)
+    private TireDto toDto(@NotNull final TireEntity tireEntity) {
+        final TreadModelEntity treadModelEntity = tireEntity.getTreadModelEntity();
+        final VehicleEntity vehicleApplied = tireEntity.getVehicleApplied();
+        final TireMovementDestinationEntity analysisMovement =
+                tireEntity.getTireStatus().equals(StatusPneu.ANALISE)
+                        ? tireEntity.getLastTireMovementByStatus(OrigemDestinoEnum.ANALISE)
                         : null;
-        final MovimentacaoDestinoEntity movimentacaoDescarte =
-                pneu.getTireStatus().equals(StatusPneu.DESCARTE)
-                        ? pneu.getUltimaMovimentacaoByStatus(OrigemDestinoEnum.DESCARTE)
+        final TireMovementDestinationEntity scrapMovement =
+                tireEntity.getTireStatus().equals(StatusPneu.DESCARTE)
+                        ? tireEntity.getLastTireMovementByStatus(OrigemDestinoEnum.DESCARTE)
                         : null;
-        return TireDto.of(pneu.getId(),
-                          pneu.getClientNumber(),
-                          pneu.getBranchEntity().getGroupEntity().getId(),
-                          pneu.getBranchEntity().getGroupEntity().getName(),
-                          pneu.getBranchEntity().getId(),
-                          pneu.getBranchEntity().getName(),
-                          pneu.getTimesRetreaded(),
-                          pneu.getMaxRetreads(),
-                          pneu.getRecommendedPressure(),
-                          pneu.getCurrentPressure(),
-                          pneu.getExternalGroove(),
-                          pneu.getMiddleExternalGroove(),
-                          pneu.getMiddleInternalGroove(),
-                          pneu.getInternalGroove(),
-                          pneu.getDot(),
-                          pneu.getTireSizeEntity().getId(),
-                          pneu.getTireSizeEntity().getWidth().doubleValue(),
-                          pneu.getTireSizeEntity().getAspectRation().doubleValue(),
-                          pneu.getTireSizeEntity().getDiameter(),
-                          pneu.getTireModelEntity().getTireBrandEntity().getId(),
-                          pneu.getTireModelEntity().getTireBrandEntity().getName(),
-                          pneu.getTireModelEntity().getId(),
-                          pneu.getTireModelEntity().getName(),
-                          pneu.getTireModelEntity().getGroovesQuantity().intValue(),
-                          pneu.getTireModelEntity().getGroovesWidth(),
-                          pneu.getPrice(),
+        return TireDto.of(tireEntity.getId(),
+                          tireEntity.getClientNumber(),
+                          tireEntity.getBranchEntity().getGroupEntity().getId(),
+                          tireEntity.getBranchEntity().getGroupEntity().getName(),
+                          tireEntity.getBranchEntity().getId(),
+                          tireEntity.getBranchEntity().getName(),
+                          tireEntity.getTimesRetreaded(),
+                          tireEntity.getMaxRetreads(),
+                          tireEntity.getRecommendedPressure(),
+                          tireEntity.getCurrentPressure(),
+                          tireEntity.getExternalGroove(),
+                          tireEntity.getMiddleExternalGroove(),
+                          tireEntity.getMiddleInternalGroove(),
+                          tireEntity.getInternalGroove(),
+                          tireEntity.getDot(),
+                          tireEntity.getTireSizeEntity().getId(),
+                          tireEntity.getTireSizeEntity().getWidth().doubleValue(),
+                          tireEntity.getTireSizeEntity().getAspectRation().doubleValue(),
+                          tireEntity.getTireSizeEntity().getDiameter(),
+                          tireEntity.getTireModelEntity().getTireBrandEntity().getId(),
+                          tireEntity.getTireModelEntity().getTireBrandEntity().getName(),
+                          tireEntity.getTireModelEntity().getId(),
+                          tireEntity.getTireModelEntity().getName(),
+                          tireEntity.getTireModelEntity().getGroovesQuantity().intValue(),
+                          tireEntity.getTireModelEntity().getGroovesWidth(),
+                          tireEntity.getPrice(),
                           treadModelEntity == null ? null : treadModelEntity.getTreadBrandEntity().getId(),
                           treadModelEntity == null ? null : treadModelEntity.getTreadBrandEntity().getName(),
                           treadModelEntity == null ? null : treadModelEntity.getId(),
                           treadModelEntity == null ? null : treadModelEntity.getName(),
                           treadModelEntity == null ? null : treadModelEntity.getGroovesQuantity().intValue(),
                           treadModelEntity == null ? null : treadModelEntity.getGroovesWidth(),
-                          treadModelEntity == null ? null : pneu.getValorUltimaBandaAplicada(),
-                          pneu.isTireNew(),
-                          pneu.getTireStatus(),
+                          treadModelEntity == null ? null : tireEntity.getPriceLastTreadApplied(),
+                          tireEntity.isTireNew(),
+                          tireEntity.getTireStatus(),
                           vehicleApplied == null ? null : vehicleApplied.getId(),
                           vehicleApplied == null ? null : vehicleApplied.getPlate(),
                           vehicleApplied == null ? null : vehicleApplied.getFleetId(),
-                          pneu.getPositionApplied(),
-                          movimentacaoAnalise == null ? null : movimentacaoAnalise.getRecapadora().getCodigo(),
-                          movimentacaoAnalise == null ? null : movimentacaoAnalise.getRecapadora().getNome(),
-                          movimentacaoAnalise == null ? null : movimentacaoAnalise.getCodColeta(),
-                          movimentacaoDescarte == null ? null : movimentacaoDescarte.getCodMotivoDescarte(),
-                          movimentacaoDescarte == null ? null : movimentacaoDescarte.getUrlImagemDescarte1(),
-                          movimentacaoDescarte == null ? null : movimentacaoDescarte.getUrlImagemDescarte2(),
-                          movimentacaoDescarte == null ? null : movimentacaoDescarte.getUrlImagemDescarte3());
+                          tireEntity.getPositionApplied(),
+                          analysisMovement == null ? null : analysisMovement.getRetreaderEntity().getId(),
+                          analysisMovement == null ? null : analysisMovement.getRetreaderEntity().getName(),
+                          analysisMovement == null ? null : analysisMovement.getAdditionalInformation(),
+                          scrapMovement == null ? null : scrapMovement.getScrapReasonId(),
+                          scrapMovement == null ? null : scrapMovement.getUrlScrapImage1(),
+                          scrapMovement == null ? null : scrapMovement.getUrlScrapImage2(),
+                          scrapMovement == null ? null : scrapMovement.getUrlScrapImage3());
     }
 
     @NotNull

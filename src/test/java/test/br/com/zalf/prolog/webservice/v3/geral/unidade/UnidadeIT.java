@@ -40,7 +40,7 @@ public class UnidadeIT extends IntegrationTest {
     void givenCodUnidadeToRequest_ThenReturnUnidadeVisualizacaoListagemAndStatusOK() {
         final ResponseEntity<BranchDto> response = client.getUnidadeByCodigo(TEST_UNIDADE_ID);
         assertBaseValidations(response);
-        assertThat(response.getBody().getBranchId()).isEqualTo(TEST_UNIDADE_ID);
+        assertThat(response.getBody().getCodUnidade()).isEqualTo(TEST_UNIDADE_ID);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class UnidadeIT extends IntegrationTest {
                     UnidadeEdicaoDtoFactory.createValidUnidadeEdicaoDtoToUpdate(baseEntity);
             final ResponseEntity<SuccessResponse> response = client.updateUnidade(dtoToUpdate);
             assertBaseValidations(response);
-            assertThat(response.getBody().getUniqueItemId()).isEqualTo(dtoToUpdate.getBranchId());
+            assertThat(response.getBody().getUniqueItemId()).isEqualTo(dtoToUpdate.getCodUnidade());
         }
 
         @Test

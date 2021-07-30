@@ -10,8 +10,9 @@ import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.PneuServicoService;
-import br.com.zalf.prolog.webservice.v3.fleet.tire.pneuservico.tiposervico.PneuTipoServicoEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tireservice.TireServiceService;
+import br.com.zalf.prolog.webservice.v3.fleet.tireservice.servicetype.TireServiceTypeEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tireservice.servicetype.TireServiceTypeService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +36,9 @@ public class TireService {
     @NotNull
     private final TireMapper tireMapper;
     @NotNull
-    private final PneuServicoService pneuServicoService;
+    private final TireServiceService tireServiceService;
+    @NotNull
+    private final TireServiceTypeService tireServiceTypeService;
     @NotNull
     private final BlockedOperationYaml operacoesBloqueadas;
 
@@ -44,19 +47,19 @@ public class TireService {
     public SuccessResponse insert(@Nullable final String integrationToken,
                                   @NotNull final TireCreateDto tireCreateDto,
                                   final boolean ignoreDotValidation) throws Throwable {
-        operacoesBloqueadas.validateBlockedCompanyBranch(tireCreateDto.getCompanyId(),
-                                                         tireCreateDto.getBranchId());
+        operacoesBloqueadas.validateBlockedCompanyBranch(tireCreateDto.getCodEmpresaAlocado(),
+                                                         tireCreateDto.getCodUnidadeAlocado());
         validateTire(tireCreateDto, ignoreDotValidation);
         final TireEntity tireInsert = tireMapper.toEntity(tireCreateDto, getRegisterOrigin(integrationToken));
         final TireEntity savedTire = tireDao.save(tireInsert);
         if (savedTire.isRetreaded()) {
-            final PneuTipoServicoEntity tipoServicoIncrementaVidaPneu =
-                    this.pneuServicoService.getPneuTipoServicoIncrementaVidaCadastroEntity();
+            final TireServiceTypeEntity tireServiceTypeIncreaseLifeCycle =
+                    tireServiceTypeService.getTireServiceTypeIncreaseLifeCycle();
             //noinspection ConstantConditions
-            this.pneuServicoService.insertServicoPneu(savedTire,
-                                                      tireCreateDto.getTireTreadPrice(),
-                                                      tipoServicoIncrementaVidaPneu,
-                                                      PneuServicoRealizado.FONTE_CADASTRO);
+            tireServiceService.insertTireService(savedTire,
+                                                 tireCreateDto.getValorBandaPneu(),
+                                                 tireServiceTypeIncreaseLifeCycle,
+                                                 PneuServicoRealizado.FONTE_CADASTRO);
         }
         return new SuccessResponse(savedTire.getId(), "Pneu inserido com sucesso.");
     }
@@ -82,14 +85,15 @@ public class TireService {
 
     private void validateTire(@NotNull final TireCreateDto tireCreateDto,
                               final boolean ignoreDotValidation) throws Throwable {
-        PneuValidator.validacaoVida(tireCreateDto.getTimesRetreaded(), tireCreateDto.getMaxRetreads());
-        PneuValidator.validacaoVidaPneuNovoNuncaRodado(tireCreateDto.getTimesRetreaded(), tireCreateDto.getIsTireNew());
+        PneuValidator.validacaoVida(tireCreateDto.getVidaAtualPneu(), tireCreateDto.getVidaTotalPneu());
+        PneuValidator.validacaoVidaPneuNovoNuncaRodado(tireCreateDto.getVidaAtualPneu(),
+                                                       tireCreateDto.getPneuNovoNuncaRodado());
         if (!ignoreDotValidation) {
-            PneuValidator.validacaoDot(tireCreateDto.getTireDot());
+            PneuValidator.validacaoDot(tireCreateDto.getDotPneu());
         }
-        if (tireCreateDto.getTimesRetreaded() > 1) {
-            PneuValidator.validacaoModeloDaBanda(tireCreateDto.getTireTreadId());
-            PneuValidator.validacaoValorDaBanda(tireCreateDto.getTireTreadPrice());
+        if (tireCreateDto.getVidaAtualPneu() > 1) {
+            PneuValidator.validacaoModeloDaBanda(tireCreateDto.getCodModeloBanda());
+            PneuValidator.validacaoValorDaBanda(tireCreateDto.getValorBandaPneu());
         }
     }
 

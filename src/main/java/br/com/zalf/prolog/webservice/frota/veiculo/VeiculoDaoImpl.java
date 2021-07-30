@@ -62,20 +62,20 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                                                  "F_COD_TIPO := ?," +
                                                  "F_POSSUI_HUBODOMETRO := ?," +
                                                  "F_ORIGEM_CADASTRO := ?) AS CODIGO;");
-            stmt.setLong(1, veiculo.getBranchId());
-            stmt.setString(2, veiculo.getVehiclePlate().toUpperCase());
-            stmt.setString(3, StringUtils.trimToNull(veiculo.getFleetId()));
-            stmt.setLong(4, veiculo.getVehicleKm());
-            stmt.setLong(5, veiculo.getVehicleModelId());
-            stmt.setLong(6, veiculo.getVehicleTypeId());
-            stmt.setBoolean(7, veiculo.getHasHubodometer());
+            stmt.setLong(1, veiculo.getCodUnidadeAlocado());
+            stmt.setString(2, veiculo.getPlacaVeiculo().toUpperCase());
+            stmt.setString(3, StringUtils.trimToNull(veiculo.getIdentificadorFrota()));
+            stmt.setLong(4, veiculo.getKmAtualVeiculo());
+            stmt.setLong(5, veiculo.getCodModeloVeiculo());
+            stmt.setLong(6, veiculo.getCodTipoVeiculo());
+            stmt.setBoolean(7, veiculo.getPossuiHubodometro());
             stmt.setString(8, OrigemAcaoEnum.PROLOG_WEB.asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codVeiculoInserido = rSet.getLong("CODIGO");
                 if (codVeiculoInserido <= 0) {
                     throw new SQLException("Erro ao inserir veículo:\n" +
-                                                   "codUnidade: " + veiculo.getBranchId() + "\n" +
+                                                   "codUnidade: " + veiculo.getCodUnidadeAlocado() + "\n" +
                                                    "codVeiculoInserido: " + codVeiculoInserido);
                 }
                 // Avisamos ao Listener que um veículo foi inserido.

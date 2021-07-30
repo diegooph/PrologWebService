@@ -49,12 +49,14 @@ public class VehicleService {
     @Transactional
     public SuccessResponse insert(@Nullable final String integrationToken,
                                   @NotNull final VehicleCreateDto vehicleCreateDto) throws Throwable {
-        blockedOperation.validateBlockedCompanyBranch(vehicleCreateDto.getCompanyId(), vehicleCreateDto.getBranchId());
-        VehicleValidator.validacaoMotorizadoSemHubodometro(vehicleCreateDto.getHasHubodometer(),
-                                                           vehicleCreateDto.getVehicleTypeId());
-        final BranchEntity branchEntity = branchService.getBranchById(vehicleCreateDto.getBranchId());
-        final VehicleModelEntity vehicleModelEntity = vehicleModelService.getById(vehicleCreateDto.getVehicleModelId());
-        final VehicleTypeEntity vehicleTypeEntity = vehicleTypeService.getById(vehicleCreateDto.getVehicleTypeId());
+        blockedOperation.validateBlockedCompanyBranch(vehicleCreateDto.getCodEmpresaAlocado(),
+                                                      vehicleCreateDto.getCodUnidadeAlocado());
+        VehicleValidator.validacaoMotorizadoSemHubodometro(vehicleCreateDto.getPossuiHubodometro(),
+                                                           vehicleCreateDto.getCodTipoVeiculo());
+        final BranchEntity branchEntity = branchService.getBranchById(vehicleCreateDto.getCodUnidadeAlocado());
+        final VehicleModelEntity vehicleModelEntity =
+                vehicleModelService.getById(vehicleCreateDto.getCodModeloVeiculo());
+        final VehicleTypeEntity vehicleTypeEntity = vehicleTypeService.getById(vehicleCreateDto.getCodTipoVeiculo());
         final VehicleLayoutEntity vehicleLayoutEntity =
                 vehicleLayoutService.getById(vehicleTypeEntity.getVehicleLayoutId());
         final VehicleEntity saved = vehicleDao.save(mapper.toEntity(vehicleCreateDto,

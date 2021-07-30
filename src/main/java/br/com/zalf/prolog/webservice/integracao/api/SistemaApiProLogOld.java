@@ -41,7 +41,7 @@ public final class SistemaApiProLogOld extends Sistema {
     public void insert(
             @NotNull final VehicleCreateDto veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        if (unidadeEstaComIntegracaoAtiva(veiculo.getBranchId())) {
+        if (unidadeEstaComIntegracaoAtiva(veiculo.getCodUnidadeAlocado())) {
             throw new BloqueadoIntegracaoException("Para inserir veículos utilize o seu sistema de gestão");
         }
         getIntegradorProLog().insert(veiculo, checklistOfflineListener);

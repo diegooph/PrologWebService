@@ -14,22 +14,22 @@ public class UnidadeEdicaoDtoFactory {
     @NotNull
     public static BranchUpdateDto createValidUnidadeEdicaoDtoToUpdate(@NotNull final BranchEntity entity) {
         return BranchUpdateDto.builder()
-                .branchId(entity.getId())
-                .branchName(entity.getName())
-                .branchAdditionalId(entity.getAdditionalId())
-                .branchLongitude(entity.getBranchLongitude())
-                .branchLatitude(entity.getBranchLatitude())
+                .codUnidade(entity.getId())
+                .nomeUnidade(entity.getName())
+                .codAuxiliarUnidade(entity.getAdditionalId())
+                .longitudeUnidade(entity.getBranchLongitude())
+                .latitudeUnidade(entity.getBranchLatitude())
                 .build();
     }
 
     @NotNull
     public static BranchUpdateDto createUnidadeEdicaoDtoWithInvalidCodUnidade(@NotNull final BranchEntity entity) {
         return BranchUpdateDto.builder()
-                .branchId(-1L)
-                .branchName(entity.getName())
-                .branchAdditionalId(entity.getAdditionalId())
-                .branchLongitude(entity.getBranchLongitude())
-                .branchLatitude(entity.getBranchLatitude())
+                .codUnidade(-1L)
+                .nomeUnidade(entity.getName())
+                .codAuxiliarUnidade(entity.getAdditionalId())
+                .longitudeUnidade(entity.getBranchLongitude())
+                .latitudeUnidade(entity.getBranchLatitude())
                 .build();
     }
 }

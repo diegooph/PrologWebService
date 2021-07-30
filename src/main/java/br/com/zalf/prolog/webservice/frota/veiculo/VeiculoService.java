@@ -115,7 +115,7 @@ public final class VeiculoService {
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
                                              "userToken: %s\n" +
-                                             "codUnidade: %d", userToken, veiculo.getBranchId()), t);
+                                             "codUnidade: %d", userToken, veiculo.getCodUnidadeAlocado()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir o veículo, tente novamente");

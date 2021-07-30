@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance;
 
 import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.InspectionMeasureEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.movimentacao._model.ColaboradorEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceProblemEntity;
+import br.com.zalf.prolog.webservice.v3.user.ColaboradorEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
