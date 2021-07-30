@@ -16,51 +16,51 @@ import org.jetbrains.annotations.Nullable;
 public class ChecklistAnswerOptionDto {
     @ApiModelProperty(value = "Código da alternativa", required = true, example = "12345")
     @NotNull
-    Long answerOptionId;
+    Long codAlternativa;
     @ApiModelProperty(value = "Código de contexto da alternativa. Esse código só será alterado caso a alternativa " +
             "sofra alterações que mudem seu contexto.",
                       required = true,
                       example = "12345")
     @NotNull
-    Long answerOptionContextId;
+    Long codContextoAlternativa;
     @ApiModelProperty(value = "Descrição da alternativa", required = true, example = "Sem freio")
     @NotNull
-    String answerOptionDescription;
+    String descricaoAlternativa;
     @ApiModelProperty(value = "Ordem da alternativa. Utilizado para mostrar ao colaborador no momento da realização.",
                       required = true,
                       example = "1")
-    int answerOptionExhibitionOrder;
+    int ordemAlternativa;
     @ApiModelProperty(value = "Prioridade da alternativa. Podendo ser CRITICA, ALTA ou BAIXA.",
                       required = true,
                       example = "CRITICA")
     @NotNull
-    PrioridadeAlternativa answerOptionPriority;
+    PrioridadeAlternativa prioridadeAlternativa;
     @ApiModelProperty(value = "Flag indicando se a alternativa é 'Outros'. Alternativa Outros exigem que o " +
             "colaborador insira um texto descrevendo o problema encontrado.",
                       required = true,
                       example = "true")
-    boolean textInputAnswerOption;
+    boolean alternativaTipoOutros;
     @ApiModelProperty(value = "Flag indicando se a alternativa deve abrir Orden de Serviço.",
                       required = true,
                       example = "true")
-    boolean shouldOpenWorkOrder;
+    boolean deveAbrirOrdemServico;
     @ApiModelProperty(value = "Opção de captura de mídia caso marcar a alternativa como NOK. Os valores podem ser " +
             "BLOQUEADO, caso não deve inserir midia, OBRIGATORIO caso for obrigatório ou OPCIONAL onde o colaborador " +
             "opta por inserir uma mídia ou não.",
                       required = true,
                       example = "BLOQUEADO")
     @NotNull
-    AnexoMidiaChecklistEnum attachMediaAnswerOptionNok;
+    AnexoMidiaChecklistEnum anexoMidiaAlternativaNok;
     @ApiModelProperty(value = "Código auxiliar. Código presente nas alternativas, utilizado em cenários de integração",
                       example = "Serviço=FREIO")
     @Nullable
-    String answerOptionAdditionalId;
+    String codAuxiliarAlternativa;
     @ApiModelProperty(value = "Flag indicando se a alternativa em questão foi marcada como NOK pelo colaborador.",
                       required = true,
                       example = "true")
-    boolean isAnswerOptionSelected;
+    boolean isAlternativaSelecionada;
     @ApiModelProperty(value = "Resposta textual inserida pelo colaborador para descrever o problema encontrado.",
                       example = "Problema no líquido de freio")
     @Nullable
-    String textResponse;
+    String respostaTipoOutros;
 }

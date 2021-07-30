@@ -18,6 +18,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
+import static br.com.zalf.prolog.webservice.v3.fleet.checklist.ChecklistResource.RESOURCE_PATH;
+
 /**
  * Created on 2021-04-07
  *
@@ -26,10 +28,12 @@ import java.util.List;
 
 @RestController
 @ConsoleDebugLog
-@Path("api/v3/checklists")
+@Path(RESOURCE_PATH)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ChecklistResource implements ChecklistApiDoc {
+    @NotNull
+    public static final String RESOURCE_PATH = "api/v3/checklists";
     @NotNull
     private final ChecklistService checklistService;
     @NotNull
@@ -49,13 +53,13 @@ public class ChecklistResource implements ChecklistApiDoc {
             Pilares.Frota.Checklist.REALIZAR})
     @Override
     public List<ChecklistDto> getAllChecklists(
-            @QueryParam("branchesId") @Required final List<Long> branchesId,
-            @QueryParam("initialDate") @Required final String initialDate,
-            @QueryParam("finalDate") @Required final String finalDate,
-            @QueryParam("userId") @Optional final Long userId,
-            @QueryParam("vehicleTypeId") @Optional final Long vehicleTypeId,
-            @QueryParam("vehicleId") @Optional final Long vehicleId,
-            @QueryParam("includeAnswers") @DefaultValue("true") final boolean includeAnswers,
+            @QueryParam("codUnidades") @Required final List<Long> branchesId,
+            @QueryParam("dataInicial") @Required final String initialDate,
+            @QueryParam("dataFinal") @Required final String finalDate,
+            @QueryParam("codColaborador") @Optional final Long userId,
+            @QueryParam("codTipoVeiculo") @Optional final Long vehicleTypeId,
+            @QueryParam("codVeiculo") @Optional final Long vehicleId,
+            @QueryParam("incluirRespostas") @DefaultValue("true") final boolean includeAnswers,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
         final ChecklistFilter filter = ChecklistFilter.of(branchesId,
