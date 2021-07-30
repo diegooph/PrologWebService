@@ -21,11 +21,13 @@ import java.util.List;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @ConsoleDebugLog
-@Path("/api/v3/inspections")
+@Path(InspectionResource.RESOURCE_PATH)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @RestController
 public class InspectionResource implements InspectionApiDoc {
+    @NotNull
+    public static final String RESOURCE_PATH = "/api/v3/afericoes";
     @NotNull
     private final InspectionService service;
     @NotNull
@@ -39,7 +41,7 @@ public class InspectionResource implements InspectionApiDoc {
     }
 
     @GET
-    @Path("/vehicles")
+    @Path("/veiculos")
     @ApiExposed
     @Secured(permissions = {
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
@@ -48,12 +50,12 @@ public class InspectionResource implements InspectionApiDoc {
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Override
     public List<VehicleInspectionDto> getVehicleInspections(
-            @QueryParam("branchesId") @NotNull final List<Long> branchesId,
-            @QueryParam("initialDate") @NotNull final String initialDate,
-            @QueryParam("finalDate") @NotNull final String finalDate,
-            @QueryParam("vehicleTypeId") @Optional final Long vehicleTypeId,
-            @QueryParam("vehicleId") @Optional final Long vehicleId,
-            @QueryParam("includeMeasures") @DefaultValue("true") final boolean includeMeasures,
+            @QueryParam("codUnidades") @NotNull final List<Long> branchesId,
+            @QueryParam("dataInicial") @NotNull final String initialDate,
+            @QueryParam("dataFinal") @NotNull final String finalDate,
+            @QueryParam("codTipoVeiculo") @Optional final Long vehicleTypeId,
+            @QueryParam("codVeiculo") @Optional final Long vehicleId,
+            @QueryParam("incluirMedidas") @DefaultValue("true") final boolean includeMeasures,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
         final VehicleInspectionFilter filter = VehicleInspectionFilter.of(branchesId,
@@ -69,7 +71,7 @@ public class InspectionResource implements InspectionApiDoc {
     }
 
     @GET
-    @Path("/tires")
+    @Path("/avulsas")
     @ApiExposed
     @Secured(permissions = {
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
@@ -78,10 +80,10 @@ public class InspectionResource implements InspectionApiDoc {
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Override
     public List<TireInspectionDto> getTireInspections(
-            @QueryParam("branchesId") @NotNull final List<Long> branchesId,
-            @QueryParam("initialDate") @NotNull final String initialDate,
-            @QueryParam("finalDate") @NotNull final String finalDate,
-            @QueryParam("includeMeasures") @DefaultValue("true") final boolean includeMeasures,
+            @QueryParam("codUnidades") @NotNull final List<Long> branchesId,
+            @QueryParam("dataInicial") @NotNull final String initialDate,
+            @QueryParam("dataFinal") @NotNull final String finalDate,
+            @QueryParam("incluirMedidas") @DefaultValue("true") final boolean includeMeasures,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
         final TireInspectionFilter filter = TireInspectionFilter.of(branchesId,
