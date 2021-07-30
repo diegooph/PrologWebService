@@ -18,8 +18,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.v3.fleet.checklist.ChecklistResource.RESOURCE_PATH;
-
 /**
  * Created on 2021-04-07
  *
@@ -28,7 +26,7 @@ import static br.com.zalf.prolog.webservice.v3.fleet.checklist.ChecklistResource
 
 @RestController
 @ConsoleDebugLog
-@Path(RESOURCE_PATH)
+@Path(ChecklistResource.RESOURCE_PATH)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ChecklistResource implements ChecklistApiDoc {

@@ -24,10 +24,12 @@ import java.util.List;
  */
 @RestController
 @ConsoleDebugLog
-@Path("api/v3/checklists/work-orders")
+@Path(ChecklistWorkOrderResource.RESOURCE_PATH)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ChecklistWorkOrderResource implements ChecklistWorkOrderApiDoc {
+    @NotNull
+    public static final String RESOURCE_PATH = "api/v3/checklists/ordens-servico";
     @NotNull
     private final ChecklistWorkOrderService service;
     @NotNull
@@ -45,11 +47,11 @@ public final class ChecklistWorkOrderResource implements ChecklistWorkOrderApiDo
     @ApiExposed
     @Override
     public List<ChecklistWorkOrderDto> getAllWorkOrders(
-            @QueryParam("branchesId") @Required final List<Long> branchesId,
-            @QueryParam("vehicleTypeId") @Optional final Long vehicleTypeId,
-            @QueryParam("vehicleId") @Optional final String vehicleId,
-            @QueryParam("workOrderStatus") @Optional final StatusOrdemServico workOrderStatus,
-            @QueryParam("includeWorkOrderItems") @DefaultValue("true") final boolean includeWorkOrderItems,
+            @QueryParam("codUnidades") @Required final List<Long> branchesId,
+            @QueryParam("codTipoVeiculo") @Optional final Long vehicleTypeId,
+            @QueryParam("codVeiculo") @Optional final String vehicleId,
+            @QueryParam("statusOrdemServico") @Optional final StatusOrdemServico workOrderStatus,
+            @QueryParam("incluirItensOrdemServico") @DefaultValue("true") final boolean includeWorkOrderItems,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
         final List<ChecklistWorkOrderProjection> workOrders =
