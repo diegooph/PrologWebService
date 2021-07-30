@@ -13,15 +13,15 @@ import javax.validation.constraints.PositiveOrZero;
  */
 @Value
 public class UpdateProcessKmDto {
-    @NotNull(message = "The company ID cannot be null.")
-    Long companyId;
-    @NotNull(message = "The vehicle ID cannot be null.")
-    Long vehicleId;
-    @NotNull(message = "The process ID cannot be null.")
-    Long processId;
-    @NotNull(message = "The process type cannot be null.")
-    VeiculoTipoProcesso processType;
-    @NotNull(message = "The new km cannot be null.")
-    @PositiveOrZero(message = "The new km cannot be a negative value.")
-    Long newKm;
+    @NotNull(message = "O código de empresa não pode ser nulo.")
+    Long codEmpresa;
+    @NotNull(message = "O código do veículo não pode ser nulo.")
+    Long codVeiculo;
+    @NotNull(message = "O código do processo não pode ser nulo.")
+    Long codProcesso;
+    @NotNull(message = "O tipo do processo não pode ser nulo.")
+    VeiculoTipoProcesso tipoProcesso;
+    @NotNull(message = "O novo km não pode ser nulo.")
+    @PositiveOrZero(message = "O novo km não pode ser um valor negativo.")
+    Long novoKm;
 }

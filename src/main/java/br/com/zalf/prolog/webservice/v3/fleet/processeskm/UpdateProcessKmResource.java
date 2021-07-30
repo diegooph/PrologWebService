@@ -27,10 +27,12 @@ import javax.ws.rs.core.SecurityContext;
  */
 @Controller
 @ConsoleDebugLog
-@Path("/api/v3/km-collected-processes")
+@Path(UpdateProcessKmResource.RESOURCE_PATH)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class UpdateProcessKmResource {
+    @NotNull
+    public static final String RESOURCE_PATH = "/api/v3/processos-coleta-km";
     @NotNull
     private final UpdateProcessKmService service;
     @NotNull

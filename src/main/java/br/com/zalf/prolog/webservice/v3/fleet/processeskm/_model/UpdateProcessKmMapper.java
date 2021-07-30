@@ -19,12 +19,12 @@ public final class UpdateProcessKmMapper {
                                              @Nullable final Long userIdUpdate) {
         return UpdateProcessKm
                 .builder()
-                .withCompanyId(dto.getCompanyId())
-                .withVehicleId(dto.getVehicleId())
-                .withProcessId(dto.getProcessId())
-                .withProcessType(dto.getProcessType())
+                .withCompanyId(dto.getCodEmpresa())
+                .withVehicleId(dto.getCodVeiculo())
+                .withProcessId(dto.getCodProcesso())
+                .withProcessType(dto.getTipoProcesso())
                 .withUserIdUpdate(userIdUpdate)
-                .withNewKm(dto.getNewKm())
+                .withNewKm(dto.getNovoKm())
                 .build();
     }
 
