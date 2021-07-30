@@ -38,11 +38,11 @@ public final class BranchMapper {
     @NotNull
     public BranchEntity toEntity(@NotNull final BranchUpdateDto dto) {
         return BranchEntity.builder()
-                .withId(dto.getBranchId())
-                .withName(dto.getBranchName())
-                .withAdditionalId(dto.getBranchAdditionalId())
-                .withBranchLatitude(dto.getBranchLatitude())
-                .withBranchLongitude(dto.getBranchLongitude())
+                .withId(dto.getCodUnidade())
+                .withName(dto.getNomeUnidade())
+                .withAdditionalId(dto.getCodAuxiliarUnidade())
+                .withBranchLatitude(dto.getLatitudeUnidade())
+                .withBranchLongitude(dto.getLongitudeUnidade())
                 .build();
     }
 }
