@@ -16,15 +16,15 @@ import org.jetbrains.annotations.Nullable;
 public class AttachedVehicleDto {
     @ApiModelProperty(value = "Código do veículo acoplado.", required = true, example = "1")
     @NotNull
-    Long vehicleId;
+    Long codVeiculoAcoplado;
     @ApiModelProperty(value = "Placa do veículo acoplado.", required = true, example = "PRO1111")
     @NotNull
-    String vehiclePlate;
+    String placaVeiculoAcoplado;
     @ApiModelProperty(value = "Identificador de frota do veículo acoplado.", example = "FROTA01")
     @Nullable
-    String fleetId;
+    String identificadorFrotaAcoplado;
     @ApiModelProperty(value = "Flag que indica se o veículo possuí motor.", required = true, example = "true")
-    boolean hasEngine;
+    boolean motorizado;
     @ApiModelProperty(value = "Posição em que o veículo está acoplado.", required = true, example = "1")
-    Short positionAttached;
+    Short posicaoAcoplado;
 }

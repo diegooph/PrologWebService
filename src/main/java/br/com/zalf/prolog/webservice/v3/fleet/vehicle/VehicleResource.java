@@ -20,11 +20,13 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @ConsoleDebugLog
-@Path("/api/v3/vehicles")
+@Path(VehicleResource.RESOURCE_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Controller
 public class VehicleResource implements VehicleApiDoc {
+    @NotNull
+    public static final String RESOURCE_PATH = "/api/v3/veiculos";
     @NotNull
     private final VehicleService vehicleService;
     @NotNull
@@ -56,8 +58,8 @@ public class VehicleResource implements VehicleApiDoc {
             Pilares.Frota.Checklist.VISUALIZAR_TODOS})
     @Override
     public List<VehicleDto> getAllVehicles(
-            @QueryParam("branchesId") @Required final List<Long> branchesId,
-            @QueryParam("includeInactive") @DefaultValue("true") final boolean includeInactive,
+            @QueryParam("codUnidades") @Required final List<Long> branchesId,
+            @QueryParam("incluirInativos") @DefaultValue("true") final boolean includeInactive,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
         return vehicleMapper.toDto(vehicleService.getAllVehicles(branchesId, includeInactive, limit, offset));

@@ -17,8 +17,8 @@ import java.util.List;
 public class AttachedVehiclesDto {
     @ApiModelProperty(value = "Código do processo de acoplamento.", required = true, example = "1")
     @NotNull
-    Long attachedProcessId;
+    Long codProcessoAcoplamento;
     @ApiModelProperty(value = "Informações de cada veículo presente no acoplamento.")
     @NotNull
-    List<AttachedVehicleDto> attachedVehicles;
+    List<AttachedVehicleDto> veiculosAcoplados;
 }
