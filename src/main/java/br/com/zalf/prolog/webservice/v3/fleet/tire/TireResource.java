@@ -27,10 +27,12 @@ import java.util.List;
  */
 @Controller
 @ConsoleDebugLog
-@Path("/api/v3/tires")
+@Path(TireResource.RESOURCE_PATH)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class TireResource implements TireApiDoc {
+    @NotNull
+    public static final String RESOURCE_PATH = "/api/v3/pneus";
     @NotNull
     private final TireService service;
 
@@ -62,8 +64,8 @@ public class TireResource implements TireApiDoc {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     public List<TireDto> getAllTires(
-            @QueryParam("branchesId") @Required final List<Long> branchesId,
-            @QueryParam("tireStatus") @Optional final StatusPneu tireStatus,
+            @QueryParam("codUnidades") @Required final List<Long> branchesId,
+            @QueryParam("statusPneu") @Optional final StatusPneu tireStatus,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
         return service.getAllTires(branchesId, tireStatus, limit, offset);
