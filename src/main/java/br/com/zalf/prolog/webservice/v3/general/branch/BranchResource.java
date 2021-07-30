@@ -24,11 +24,13 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @ConsoleDebugLog
-@Path("/api/v3/branches")
+@Path(BranchResource.RESOURCE_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Controller
 public final class BranchResource implements BranchResourceApiDoc {
+    @NotNull
+    public static final String RESOURCE_PATH = "/api/v3/unidades";
     @NotNull
     private final BranchService service;
     @NotNull
@@ -52,9 +54,9 @@ public final class BranchResource implements BranchResourceApiDoc {
     @ApiExposed
     @GET
     @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
-    @Path("/{branchId}")
+    @Path("/{codUnidade}")
     @Override
-    public BranchDto getBranchById(@PathParam("branchId") final Long branchId) {
+    public BranchDto getBranchById(@PathParam("codUnidade") final Long branchId) {
         return mapper.toDto(service.getBranchById(branchId));
     }
 
@@ -62,8 +64,8 @@ public final class BranchResource implements BranchResourceApiDoc {
     @GET
     @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Override
-    public List<BranchDto> getAllBranches(@QueryParam("companyId") final Long companyId,
-                                          @QueryParam("groupsId") final List<Long> groupsId) {
+    public List<BranchDto> getAllBranches(@QueryParam("codEmpresa") final Long companyId,
+                                          @QueryParam("codGrupos") final List<Long> groupsId) {
         return mapper.toDto(service.getAllBranches(companyId, groupsId));
     }
 }

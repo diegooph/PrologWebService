@@ -21,20 +21,20 @@ public final class BranchUpdateDto {
     @BranchId
     @ApiModelProperty(value = "Código da unidade.", required = true, example = "215")
     @NotNull(message = "O código da unidade é obrigatório.")
-    private final Long branchId;
+    private final Long codUnidade;
     @ApiModelProperty(value = "Nome da unidade.", required = true, example = "Unidade de testes")
     @NotBlank(message = "O nome da unidade não pode estar vazio.")
     @Size(max = 40, message = "O nome da unidade pode conter no máximo 40 caracteres.")
-    private final String branchName;
+    private final String nomeUnidade;
     @ApiModelProperty(value = "Um código auxiliar para a unidade.",
                       notes = "O código auxiliar é normalmente utilizado para integrações com sistemas externos.",
                       example = "01:01")
     @Nullable
-    private final String branchAdditionalId;
+    private final String codAuxiliarUnidade;
     @ApiModelProperty(value = "A latitude da localização da unidade.", example = "-27.641369")
     @Nullable
-    private final String branchLatitude;
+    private final String latitudeUnidade;
     @ApiModelProperty(value = "A latitude da localização da unidade.", example = "-48.679233")
     @Nullable
-    private final String branchLongitude;
+    private final String longitudeUnidade;
 }
