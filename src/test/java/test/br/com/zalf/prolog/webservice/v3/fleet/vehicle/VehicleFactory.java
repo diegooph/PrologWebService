@@ -1,9 +1,9 @@
-package test.br.com.zalf.prolog.webservice.v3.frota.veiculo;
+package test.br.com.zalf.prolog.webservice.v3.fleet.vehicle;
 
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
 import org.jetbrains.annotations.NotNull;
 
-public class VeiculoCadastroFactory {
+public class VehicleFactory {
     @NotNull
     public static VehicleCreateDto createVeiculoCadastroToInsert() {
         return new VehicleCreateDto(3L,

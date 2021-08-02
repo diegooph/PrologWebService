@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.v3.geral.unidade;
+package test.br.com.zalf.prolog.webservice.v3.general.branch;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchDto;
@@ -23,7 +23,7 @@ import java.util.List;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @TestComponent
-public class UnidadeApiClient {
+public class BranchApiClient {
 
     private static final String RESOURCE = "/api/v3/unidades";
     @Autowired

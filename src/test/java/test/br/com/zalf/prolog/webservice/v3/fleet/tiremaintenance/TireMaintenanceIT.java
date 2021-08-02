@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.v3.frota.servicopneu;
+package test.br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance;
 
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceStatus;
@@ -20,11 +20,11 @@ import static test.br.com.zalf.prolog.webservice.config.TestConstants.TEST_UNIDA
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-public class ServicoPneuIT extends IntegrationTest {
+public class TireMaintenanceIT extends IntegrationTest {
     private static final int LIMIT = 4;
     private static final int OFFSET = 0;
     @Autowired
-    private ServicoPneuApiClient client;
+    private TireMaintenanceApiClient client;
 
     private boolean containsTestCodUnidade(final TireMaintenanceDto dto) {
         return dto.getTireMaintenanceBranchId().equals(TEST_UNIDADE_ID);

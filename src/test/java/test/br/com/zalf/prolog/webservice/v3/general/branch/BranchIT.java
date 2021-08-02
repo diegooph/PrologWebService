@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.v3.geral.unidade;
+package test.br.com.zalf.prolog.webservice.v3.general.branch;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BadRequestException;
@@ -24,9 +24,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static test.br.com.zalf.prolog.webservice.config.TestConstants.TEST_UNIDADE_ID;
 
-public class UnidadeIT extends IntegrationTest {
+public class BranchIT extends IntegrationTest {
     @Autowired
-    private UnidadeApiClient client;
+    private BranchApiClient client;
     @Autowired
     private BranchDao dao;
 
@@ -69,7 +69,7 @@ public class UnidadeIT extends IntegrationTest {
         @DisplayName("Dado UnidadeEdicaoDto, retorne SuccessResponse")
         void givenUnidadeEdicaoDto_ThenReturnSuccessResponseAndStatusOk() {
             final BranchUpdateDto dtoToUpdate =
-                    UnidadeEdicaoDtoFactory.createValidUnidadeEdicaoDtoToUpdate(baseEntity);
+                    BranchFactory.createValidUnidadeEdicaoDtoToUpdate(baseEntity);
             final ResponseEntity<SuccessResponse> response = client.updateUnidade(dtoToUpdate);
             assertBaseValidations(response);
             assertThat(response.getBody().getUniqueItemId()).isEqualTo(dtoToUpdate.getCodUnidade());
@@ -79,7 +79,7 @@ public class UnidadeIT extends IntegrationTest {
         @DisplayName("Dado DTO com código de unidade inválido, retorne BadRequestException")
         void givenUnidadeEdicaoDtoWithInvalidCodUnidade_ThenReturnBadRequestException() {
             final BranchUpdateDto dtoWithInvalidCodUnidade =
-                    UnidadeEdicaoDtoFactory.createUnidadeEdicaoDtoWithInvalidCodUnidade(baseEntity);
+                    BranchFactory.createUnidadeEdicaoDtoWithInvalidCodUnidade(baseEntity);
             final ResponseEntity<BadRequestException> response =
                     client.updateUnidade(dtoWithInvalidCodUnidade, BadRequestException.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);

@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.v3.frota.veiculo;
+package test.br.com.zalf.prolog.webservice.v3.fleet.vehicle;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
@@ -16,14 +16,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class VeiculoIT extends IntegrationTest {
+public class VehicleIT extends IntegrationTest {
     @Autowired
-    private VeiculoApiClient client;
+    private VehicleApiClient client;
 
     @Test
     @DisplayName("given correct VeiculoCadastroDto to insert, then return status created")
     void givenCorrectVeiculoCadastroToInsert_ThenReturnStatusCreated() {
-        final VehicleCreateDto veiculoCadastroToInsert = VeiculoCadastroFactory.createVeiculoCadastroToInsert();
+        final VehicleCreateDto veiculoCadastroToInsert = VehicleFactory.createVeiculoCadastroToInsert();
         final ResponseEntity<SuccessResponse> response = client.insert(veiculoCadastroToInsert);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }

@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.v3.frota.pneu;
+package test.br.com.zalf.prolog.webservice.v3.fleet.tire;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
@@ -20,14 +20,14 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-public class PneuIT extends IntegrationTest {
+public class TireIT extends IntegrationTest {
     @Autowired
-    private PneuApiClient client;
+    private TireApiClient client;
 
     @Test
     @DisplayName("given correct PneuCadastro to insert, then return status created")
     void givenCorrectPneuCadastroToInsert_ThenReturnStatusCreated() {
-        final TireCreateDto pneuForCreation = PneuCadastroFactory.createCorrectPneuCadastro();
+        final TireCreateDto pneuForCreation = TireFactory.createCorrectPneuCadastro();
         final ResponseEntity<SuccessResponse> response = client.insert(pneuForCreation);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }

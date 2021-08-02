@@ -25,12 +25,14 @@ import java.util.List;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @ConsoleDebugLog
-@Path("/api/v3/tire-maintenances")
+@Path(TireMaintenanceResource.RESOURCE_PATH)
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @RestController
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class TireMaintenanceResource implements TireMaintenanceApiDoc {
+    @NotNull
+    public static final String RESOURCE_PATH = "/api/v3/tire-maintenances";
     @NotNull
     private final TireMaintenanceService service;
     @NotNull

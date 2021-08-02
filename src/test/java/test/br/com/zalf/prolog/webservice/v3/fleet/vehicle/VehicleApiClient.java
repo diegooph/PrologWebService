@@ -1,7 +1,9 @@
-package test.br.com.zalf.prolog.webservice.v3.frota.movimentacao;
+package test.br.com.zalf.prolog.webservice.v3.fleet.vehicle;
 
+import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
-import br.com.zalf.prolog.webservice.v3.fleet.tiremovement._model.TireMovimentProcessDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -13,26 +15,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created on 2021-04-27
- *
- * @author Gustavo Navarro (https://github.com/gustavocnp95)
- */
 @TestComponent
-public final class MovimentacaoProcessoApiClient {
-    private static final String RESOURCE = "/api/v3/movimentacoes";
+public class VehicleApiClient {
+    private static final String RESOURCE = "/api/v3/veiculos";
     @Autowired
-    @NotNull
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<List<TireMovimentProcessDto>> getMovimentacacaoProcessos(
+    public ResponseEntity<SuccessResponse> insert(@NotNull final VehicleCreateDto dto) {
+        return insert(dto, SuccessResponse.class);
+    }
+
+    @NotNull
+    public <T> ResponseEntity<T> insert(@NotNull final VehicleCreateDto dto,
+                                        @NotNull final Class<T> responseType) {
+        return restTemplate.postForEntity(URI.create(RESOURCE), dto, responseType);
+    }
+
+    public <T> ResponseEntity<List<VehicleDto>> getVeiculoListagem(
             @NotNull final List<Long> codUnidades,
-            @NotNull final String dataInicial,
-            @NotNull final String dataFinal,
+            final boolean statusAtivo,
             final int limit,
             final int offset) {
         final UriComponents components = UriComponentsBuilder
@@ -40,8 +46,7 @@ public final class MovimentacaoProcessoApiClient {
                 .queryParam("codUnidades", codUnidades.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
-                .queryParam("dataInicial", dataInicial)
-                .queryParam("dataFinal", dataFinal)
+                .queryParam("statusAtivo", statusAtivo)
                 .queryParam("limit", limit)
                 .queryParam("offset", offset)
                 .build();
@@ -50,16 +55,15 @@ public final class MovimentacaoProcessoApiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
         return restTemplate.exchange(requestEntity,
-                                     new ParameterizedTypeReference<List<TireMovimentProcessDto>>() {});
+                                     new ParameterizedTypeReference<List<VehicleDto>>() {});
     }
 
     @NotNull
-    public ResponseEntity<ClientSideErrorException> getMovimentacacaoProcessosBadRequest() {
+    public ResponseEntity<ClientSideErrorException> getVeiculoListagemBadRequest() {
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
                 .queryParam("codUnidades", "a")
-                .queryParam("dataInicial", "2021-01-01")
-                .queryParam("dataFinal", "2021-01-01")
+                .queryParam("statusAtivo", false)
                 .queryParam("limit", 1000)
                 .queryParam("offset", 0)
                 .build();

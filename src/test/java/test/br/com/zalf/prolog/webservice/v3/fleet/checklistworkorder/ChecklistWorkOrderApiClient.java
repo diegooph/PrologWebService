@@ -1,9 +1,7 @@
-package test.br.com.zalf.prolog.webservice.v3.frota.veiculo;
+package test.br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder;
 
-import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
-import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleDto;
+import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistWorkOrderDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -15,62 +13,64 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Created on 2021-04-13
+ *
+ * @author Gustavo Navarro (https://github.com/gustavocnp95)
+ */
 @TestComponent
-public class VeiculoApiClient {
-    private static final String RESOURCE = "/api/v3/veiculos";
+public final class ChecklistWorkOrderApiClient {
+    private static final String RESOURCE = "/api/v3/checklists/ordens-servico";
     @Autowired
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<SuccessResponse> insert(@NotNull final VehicleCreateDto dto) {
-        return insert(dto, SuccessResponse.class);
-    }
-
-    @NotNull
-    public <T> ResponseEntity<T> insert(@NotNull final VehicleCreateDto dto,
-                                        @NotNull final Class<T> responseType) {
-        return restTemplate.postForEntity(URI.create(RESOURCE), dto, responseType);
-    }
-
-    public <T> ResponseEntity<List<VehicleDto>> getVeiculoListagem(
+    public ResponseEntity<List<ChecklistWorkOrderDto>> getOrdensServico(
             @NotNull final List<Long> codUnidades,
-            final boolean statusAtivo,
             final int limit,
             final int offset) {
+
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
+                .path("/")
                 .queryParam("codUnidades", codUnidades.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
-                .queryParam("statusAtivo", statusAtivo)
+                .queryParam("incluirItensOrdemServico", true)
                 .queryParam("limit", limit)
                 .queryParam("offset", offset)
                 .build();
-        final RequestEntity<Void> requestEntity = RequestEntity
+        final RequestEntity<Void> reqEntity = RequestEntity
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(requestEntity,
-                                     new ParameterizedTypeReference<List<VehicleDto>>() {});
+
+        return restTemplate.exchange(reqEntity,
+                                     new ParameterizedTypeReference<List<ChecklistWorkOrderDto>>() {});
     }
 
     @NotNull
-    public ResponseEntity<ClientSideErrorException> getVeiculoListagemBadRequest() {
+    public ResponseEntity<ClientSideErrorException> getOrdensServicoWithWrongUnidades(
+            @NotNull final List<String> wrongTypeCodUnidades,
+            final int limit,
+            final int offset) {
+
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
-                .queryParam("codUnidades", "a")
-                .queryParam("statusAtivo", false)
-                .queryParam("limit", 1000)
-                .queryParam("offset", 0)
+                .path("/")
+                .queryParam("codUnidades", String.join(",", wrongTypeCodUnidades))
+                .queryParam("incluirItensOrdemServico", true)
+                .queryParam("limit", limit)
+                .queryParam("offset", offset)
                 .build();
-        final RequestEntity<Void> requestEntity = RequestEntity
+        final RequestEntity<Void> reqEntity = RequestEntity
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<ClientSideErrorException>() {});
+
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<ClientSideErrorException>() {});
     }
 }

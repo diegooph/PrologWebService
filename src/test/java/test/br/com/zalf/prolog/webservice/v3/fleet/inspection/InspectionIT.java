@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.v3.frota.afericao;
+package test.br.com.zalf.prolog.webservice.v3.fleet.inspection;
 
 import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.TireInspectionDto;
 import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.VehicleInspectionDto;
@@ -19,9 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-public class AfericaoIT extends IntegrationTest {
+public class InspectionIT extends IntegrationTest {
     @Autowired
-    private AfericaoApiClient client;
+    private InspectionApiClient client;
 
     @Test
     @DisplayName("Dado parâmetros corretos, retorne List<AfericaoPlacaDto> e status OK")

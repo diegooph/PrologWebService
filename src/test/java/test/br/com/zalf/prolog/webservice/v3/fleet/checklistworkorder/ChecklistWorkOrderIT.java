@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
+package test.br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder;
 
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistWorkOrderDto;
@@ -18,9 +18,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public final class ChecklistOrdemServicoIT extends IntegrationTest {
+public final class ChecklistWorkOrderIT extends IntegrationTest {
     @Autowired
-    private ChecklistOrdemServicoApiClient client;
+    private ChecklistWorkOrderApiClient client;
 
     @Test
     @DisplayName("Dado parâmetros corretos, retorne List<ChecklistOrdemServicoListagemDto> e status OK")

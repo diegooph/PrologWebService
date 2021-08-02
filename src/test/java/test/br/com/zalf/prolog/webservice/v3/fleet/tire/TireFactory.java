@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.v3.frota.pneu;
+package test.br.com.zalf.prolog.webservice.v3.fleet.tire;
 
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireCreateDto;
 
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-public class PneuCadastroFactory {
+public class TireFactory {
 
     public static TireCreateDto createCorrectPneuCadastro() {
         return TireCreateDto.of(3L,

@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.v3.frota.servicopneu;
+package test.br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance;
 
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceStatus;
@@ -19,7 +19,7 @@ import java.util.List;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @TestComponent
-public class ServicoPneuApiClient {
+public class TireMaintenanceApiClient {
     private static final String RESOURCE = "/api/v3/servicos-pneu";
     @Autowired
     private TestRestTemplate restTemplate;

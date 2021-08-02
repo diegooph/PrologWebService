@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.v3.geral.unidade;
+package test.br.com.zalf.prolog.webservice.v3.general.branch;
 
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchUpdateDto;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-public class UnidadeEdicaoDtoFactory {
+public class BranchFactory {
 
     @NotNull
     public static BranchUpdateDto createValidUnidadeEdicaoDtoToUpdate(@NotNull final BranchEntity entity) {

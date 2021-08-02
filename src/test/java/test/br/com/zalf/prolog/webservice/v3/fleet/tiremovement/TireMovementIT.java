@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.v3.frota.movimentacao;
+package test.br.com.zalf.prolog.webservice.v3.fleet.tiremovement;
 
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremovement._model.TireMovimentProcessDto;
@@ -18,9 +18,9 @@ import static com.google.common.truth.Truth.assertThat;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public final class MovimentacaoProcessoIT extends IntegrationTest {
+public final class TireMovementIT extends IntegrationTest {
     @Autowired
-    private MovimentacaoProcessoApiClient client;
+    private TireMovementApiClient client;
 
     @Test
     @DisplayName("Dado mínimos parâmetros corretos, retorne List<MovimentacaoProcessoListagemDto> e status OK")

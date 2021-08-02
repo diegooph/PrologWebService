@@ -1,8 +1,12 @@
-package test.br.com.zalf.prolog.webservice.v3.frota.afericao;
+package test.br.com.zalf.prolog.webservice.v3.fleet.tire;
 
-import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.TireInspectionDto;
-import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.VehicleInspectionDto;
+import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
+import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireCreateDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireDto;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -13,69 +17,67 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created on 2021-03-05
+ * Created on 2021-03-16
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @TestComponent
-public class AfericaoApiClient {
-    @NotNull
-    private static final String RESOURCE = "/api/v3/afericoes";
+public class TireApiClient {
+    private static final String RESOURCE = "/api/v3/pneus";
+
     @Autowired
     @NotNull
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<List<VehicleInspectionDto>> getAfericoesPlacas(@NotNull final List<Long> codUnidades,
-                                                                         @NotNull final String dataInicial,
-                                                                         @NotNull final String dataFinal,
-                                                                         final int limit,
-                                                                         final int offset) {
-        final UriComponents components = UriComponentsBuilder
-                .fromPath(RESOURCE)
-                .path("/veiculos")
-                .queryParam("codUnidades", codUnidades.stream()
-                        .map(Object::toString)
-                        .collect(Collectors.joining(",")))
-                .queryParam("dataInicial", dataInicial)
-                .queryParam("dataFinal", dataFinal)
-                .queryParam("limit", limit)
-                .queryParam("offset", offset)
-                .build();
-        final RequestEntity<Void> reqEntity = RequestEntity
-                .get(components.toUri())
-                .accept(MediaType.APPLICATION_JSON)
-                .build();
-
-        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<VehicleInspectionDto>>() {});
+    public ResponseEntity<SuccessResponse> insert(@NotNull final TireCreateDto dto) {
+        return restTemplate.postForEntity(URI.create(RESOURCE), dto, SuccessResponse.class);
     }
 
     @NotNull
-    public ResponseEntity<List<TireInspectionDto>> getAfericoesAvulsas(@NotNull final List<Long> codUnidades,
-                                                                       @NotNull final String dataInicial,
-                                                                       @NotNull final String dataFinal,
-                                                                       final int limit,
-                                                                       final int offset) {
+    public ResponseEntity<List<TireDto>> getPneusByStatus(@NotNull final List<Long> codUnidades,
+                                                          @Nullable final StatusPneu statusPneu,
+                                                          final int limit,
+                                                          final int offset) {
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
-                .path("/avulsas")
                 .queryParam("codUnidades", codUnidades.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
-                .queryParam("dataInicial", dataInicial)
-                .queryParam("dataFinal", dataFinal)
+                .queryParam("statusPneu", statusPneu)
                 .queryParam("limit", limit)
                 .queryParam("offset", offset)
                 .build();
-
         final RequestEntity<Void> reqEntity = RequestEntity
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<TireInspectionDto>>() {});
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<TireDto>>() {});
+    }
+
+    @NotNull
+    public ResponseEntity<ClientSideErrorException> getPneusByStatusWithError(@NotNull final List<Long> codUnidades,
+                                                                              @Nullable final StatusPneu statusPneu,
+                                                                              final int limit,
+                                                                              final int offset) {
+        final UriComponents components = UriComponentsBuilder
+                .fromPath(RESOURCE)
+                .queryParam("codUnidades", codUnidades.stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(",")))
+                .queryParam("statusPneu", statusPneu)
+                .queryParam("limit", limit)
+                .queryParam("offset", offset)
+                .build();
+        final RequestEntity<Void> reqEntity = RequestEntity
+                .get(components.toUri())
+                .accept(MediaType.APPLICATION_JSON)
+                .build();
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<ClientSideErrorException>() {});
     }
 }
