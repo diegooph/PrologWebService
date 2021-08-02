@@ -1,6 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.fleet.tire;
 
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireCreateDto;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 
@@ -10,8 +11,8 @@ import java.math.BigDecimal;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 public class TireFactory {
-
-    public static TireCreateDto createCorrectPneuCadastro() {
+    @NotNull
+    public static TireCreateDto createCorrectTireCreateDto() {
         return TireCreateDto.of(3L,
                                 215L,
                                 "teste04",

@@ -26,7 +26,7 @@ public class ChecklistIT extends IntegrationTest {
     @DisplayName("Dado os parâmetros corretos, retorne a Listagem de Checklist.")
     void givenCorrectParameters_ThenReturnChecksSize() {
         final ResponseEntity<List<ChecklistDto>> responseEntity =
-                client.getChecklistsByFitlro(List.of(215L),
+                client.getChecklistsByFilter(List.of(215L),
                                              "2019-01-01",
                                              "2021-03-30",
                                              null,
@@ -42,9 +42,9 @@ public class ChecklistIT extends IntegrationTest {
 
     @Test
     @DisplayName("Dado os parâmetros corretos que não incluem resposta, retorne a Listagem de Checklist sem respostas.")
-    void givenCorrectParametersWithoutIncluirRespostas_ThenReturnListChecklistDtoAndStatusOk() {
+    void givenCorrectParametersWithoutIncludeAnswer_ThenReturnListChecklistAndStatusOk() {
         final ResponseEntity<List<ChecklistDto>> responseEntity =
-                client.getChecklistsByFitlro(List.of(215L),
+                client.getChecklistsByFilter(List.of(215L),
                                              "2019-01-01",
                                              "2021-03-30",
                                              null,
@@ -60,9 +60,9 @@ public class ChecklistIT extends IntegrationTest {
 
     @Test
     @DisplayName("Dado os parâmetros corretos que incluem resposta, retorne a Listagem de Checklist com respostas.")
-    void givenCorrectParametersWithIncluirRespostas_ThenReturnListChecklistDtoAndStatusOk() {
+    void givenCorrectParametersWithIncludeAnswer_ThenReturnListChecklistAndStatusOk() {
         final ResponseEntity<List<ChecklistDto>> responseEntity =
-                client.getChecklistsByFitlro(List.of(215L),
+                client.getChecklistsByFilter(List.of(215L),
                                              "2019-01-01",
                                              "2021-03-30",
                                              null,
@@ -80,7 +80,7 @@ public class ChecklistIT extends IntegrationTest {
     @DisplayName("Dado parâmetros que n possuem Data, retorne a Listagem de Checklist vazia.")
     void givenParametersWithoutData_ThenReturnEmptyListChecklistDto() {
         final ResponseEntity<List<ChecklistDto>> responseEntity =
-                client.getChecklistsByFitlro(List.of(5L),
+                client.getChecklistsByFilter(List.of(5L),
                                              "2021-02-01",
                                              "2021-02-27",
                                              2145L,
@@ -97,7 +97,7 @@ public class ChecklistIT extends IntegrationTest {
     @Test
     @DisplayName("Dado o tipo de dado codUnidades incorreto, retorne ClientSideErrorException.")
     void givenWrongTypeParameter_ThenReturnClientSideErrorExceptionBadRequest() {
-        final ResponseEntity<ClientSideErrorException> response = client.getChecklistsWithWrongTypeUnidades(
+        final ResponseEntity<ClientSideErrorException> response = client.getChecklistsWithWrongBranchesId(
                 List.of("a"),
                 "2021-03-01",
                 "2021-03-30",

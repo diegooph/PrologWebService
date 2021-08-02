@@ -1,6 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder;
 
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
+import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder.ChecklistWorkOrderResource;
 import br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder._model.ChecklistWorkOrderDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,20 +24,17 @@ import java.util.stream.Collectors;
  */
 @TestComponent
 public final class ChecklistWorkOrderApiClient {
-    private static final String RESOURCE = "/api/v3/checklists/ordens-servico";
     @Autowired
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<List<ChecklistWorkOrderDto>> getOrdensServico(
-            @NotNull final List<Long> codUnidades,
-            final int limit,
-            final int offset) {
-
+    public ResponseEntity<List<ChecklistWorkOrderDto>> getChecklistWorkOrder(@NotNull final List<Long> branchesId,
+                                                                             final int limit,
+                                                                             final int offset) {
         final UriComponents components = UriComponentsBuilder
-                .fromPath(RESOURCE)
+                .fromPath(ChecklistWorkOrderResource.RESOURCE_PATH)
                 .path("/")
-                .queryParam("codUnidades", codUnidades.stream()
+                .queryParam("codUnidades", branchesId.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
                 .queryParam("incluirItensOrdemServico", true)
@@ -48,20 +46,18 @@ public final class ChecklistWorkOrderApiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
 
-        return restTemplate.exchange(reqEntity,
-                                     new ParameterizedTypeReference<List<ChecklistWorkOrderDto>>() {});
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<ChecklistWorkOrderDto>>() {});
     }
 
     @NotNull
-    public ResponseEntity<ClientSideErrorException> getOrdensServicoWithWrongUnidades(
-            @NotNull final List<String> wrongTypeCodUnidades,
+    public ResponseEntity<ClientSideErrorException> getChecklistWorkOrderWithWrongBranchesId(
+            @NotNull final List<String> wrongBranchesId,
             final int limit,
             final int offset) {
-
         final UriComponents components = UriComponentsBuilder
-                .fromPath(RESOURCE)
+                .fromPath(ChecklistWorkOrderResource.RESOURCE_PATH)
                 .path("/")
-                .queryParam("codUnidades", String.join(",", wrongTypeCodUnidades))
+                .queryParam("codUnidades", String.join(",", wrongBranchesId))
                 .queryParam("incluirItensOrdemServico", true)
                 .queryParam("limit", limit)
                 .queryParam("offset", offset)

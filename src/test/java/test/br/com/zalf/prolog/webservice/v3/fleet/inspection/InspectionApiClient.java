@@ -1,5 +1,6 @@
 package test.br.com.zalf.prolog.webservice.v3.fleet.inspection;
 
+import br.com.zalf.prolog.webservice.v3.fleet.inspection.InspectionResource;
 import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.TireInspectionDto;
 import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.VehicleInspectionDto;
 import org.jetbrains.annotations.NotNull;
@@ -23,26 +24,24 @@ import java.util.stream.Collectors;
  */
 @TestComponent
 public class InspectionApiClient {
-    @NotNull
-    private static final String RESOURCE = "/api/v3/afericoes";
     @Autowired
     @NotNull
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<List<VehicleInspectionDto>> getAfericoesPlacas(@NotNull final List<Long> codUnidades,
-                                                                         @NotNull final String dataInicial,
-                                                                         @NotNull final String dataFinal,
-                                                                         final int limit,
-                                                                         final int offset) {
+    public ResponseEntity<List<VehicleInspectionDto>> getVehicleInspection(@NotNull final List<Long> branchesId,
+                                                                           @NotNull final String startDate,
+                                                                           @NotNull final String endDate,
+                                                                           final int limit,
+                                                                           final int offset) {
         final UriComponents components = UriComponentsBuilder
-                .fromPath(RESOURCE)
+                .fromPath(InspectionResource.RESOURCE_PATH)
                 .path("/veiculos")
-                .queryParam("codUnidades", codUnidades.stream()
+                .queryParam("codUnidades", branchesId.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
-                .queryParam("dataInicial", dataInicial)
-                .queryParam("dataFinal", dataFinal)
+                .queryParam("dataInicial", startDate)
+                .queryParam("dataFinal", endDate)
                 .queryParam("limit", limit)
                 .queryParam("offset", offset)
                 .build();
@@ -55,19 +54,19 @@ public class InspectionApiClient {
     }
 
     @NotNull
-    public ResponseEntity<List<TireInspectionDto>> getAfericoesAvulsas(@NotNull final List<Long> codUnidades,
-                                                                       @NotNull final String dataInicial,
-                                                                       @NotNull final String dataFinal,
-                                                                       final int limit,
-                                                                       final int offset) {
+    public ResponseEntity<List<TireInspectionDto>> getTireInspection(@NotNull final List<Long> branchesId,
+                                                                     @NotNull final String startDate,
+                                                                     @NotNull final String endDate,
+                                                                     final int limit,
+                                                                     final int offset) {
         final UriComponents components = UriComponentsBuilder
-                .fromPath(RESOURCE)
+                .fromPath(InspectionResource.RESOURCE_PATH)
                 .path("/avulsas")
-                .queryParam("codUnidades", codUnidades.stream()
+                .queryParam("codUnidades", branchesId.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
-                .queryParam("dataInicial", dataInicial)
-                .queryParam("dataFinal", dataFinal)
+                .queryParam("dataInicial", startDate)
+                .queryParam("dataFinal", endDate)
                 .queryParam("limit", limit)
                 .queryParam("offset", offset)
                 .build();

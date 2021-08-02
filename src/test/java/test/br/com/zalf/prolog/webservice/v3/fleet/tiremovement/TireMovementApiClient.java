@@ -1,6 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.fleet.tiremovement;
 
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
+import br.com.zalf.prolog.webservice.v3.fleet.tiremovement.TireMovementProcessResource;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremovement._model.TireMovimentProcessDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,25 +24,23 @@ import java.util.stream.Collectors;
  */
 @TestComponent
 public final class TireMovementApiClient {
-    private static final String RESOURCE = "/api/v3/movimentacoes";
     @Autowired
     @NotNull
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<List<TireMovimentProcessDto>> getMovimentacacaoProcessos(
-            @NotNull final List<Long> codUnidades,
-            @NotNull final String dataInicial,
-            @NotNull final String dataFinal,
-            final int limit,
-            final int offset) {
+    public ResponseEntity<List<TireMovimentProcessDto>> getTireMovementByFilter(@NotNull final List<Long> branchesId,
+                                                                                @NotNull final String startDate,
+                                                                                @NotNull final String endDate,
+                                                                                final int limit,
+                                                                                final int offset) {
         final UriComponents components = UriComponentsBuilder
-                .fromPath(RESOURCE)
-                .queryParam("codUnidades", codUnidades.stream()
+                .fromPath(TireMovementProcessResource.RESOURCE_PATH)
+                .queryParam("codUnidades", branchesId.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
-                .queryParam("dataInicial", dataInicial)
-                .queryParam("dataFinal", dataFinal)
+                .queryParam("dataInicial", startDate)
+                .queryParam("dataFinal", endDate)
                 .queryParam("limit", limit)
                 .queryParam("offset", offset)
                 .build();
@@ -49,14 +48,13 @@ public final class TireMovementApiClient {
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(requestEntity,
-                                     new ParameterizedTypeReference<List<TireMovimentProcessDto>>() {});
+        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<TireMovimentProcessDto>>() {});
     }
 
     @NotNull
-    public ResponseEntity<ClientSideErrorException> getMovimentacacaoProcessosBadRequest() {
+    public ResponseEntity<ClientSideErrorException> getTireMovementBadRequest() {
         final UriComponents components = UriComponentsBuilder
-                .fromPath(RESOURCE)
+                .fromPath(TireMovementProcessResource.RESOURCE_PATH)
                 .queryParam("codUnidades", "a")
                 .queryParam("dataInicial", "2021-01-01")
                 .queryParam("dataFinal", "2021-01-01")

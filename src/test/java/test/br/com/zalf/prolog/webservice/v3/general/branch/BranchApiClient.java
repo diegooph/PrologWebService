@@ -1,6 +1,7 @@
 package test.br.com.zalf.prolog.webservice.v3.general.branch;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
+import br.com.zalf.prolog.webservice.v3.general.branch.BranchResource;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchDto;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchUpdateDto;
 import org.jetbrains.annotations.NotNull;
@@ -24,49 +25,44 @@ import java.util.List;
  */
 @TestComponent
 public class BranchApiClient {
-
-    private static final String RESOURCE = "/api/v3/unidades";
     @Autowired
     @NotNull
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<BranchDto> getUnidadeByCodigo(@NotNull final Long codUnidade) {
+    public ResponseEntity<BranchDto> getBranchById(@NotNull final Long branchId) {
         final RequestEntity<Void> requestEntity = RequestEntity
-                .get(URI.create(RESOURCE + "/" + codUnidade))
+                .get(URI.create(BranchResource.RESOURCE_PATH + "/" + branchId))
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(requestEntity,
-                                     ParameterizedTypeReference.forType(BranchDto.class));
+        return restTemplate.exchange(requestEntity, ParameterizedTypeReference.forType(BranchDto.class));
     }
 
     @NotNull
-    public ResponseEntity<List<BranchDto>> getUnidadesListagem(
-            @NotNull final Long codEmpresa,
-            @NotNull final List<Long> codRegionais) {
+    public ResponseEntity<List<BranchDto>> getBranches(@NotNull final Long companyId,
+                                                       @NotNull final List<Long> groupsId) {
         final UriComponents components = UriComponentsBuilder
-                .fromPath(RESOURCE)
-                .queryParam("codEmpresa", codEmpresa)
-                .queryParam("codsRegionais", codRegionais)
+                .fromPath(BranchResource.RESOURCE_PATH)
+                .queryParam("codEmpresa", companyId)
+                .queryParam("codsRegionais", groupsId)
                 .build();
         final RequestEntity<Void> requestEntity = RequestEntity
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(requestEntity,
-                                     new ParameterizedTypeReference<List<BranchDto>>() {});
+        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<BranchDto>>() {});
     }
 
     @NotNull
-    public ResponseEntity<SuccessResponse> updateUnidade(@NotNull final BranchUpdateDto dto) {
-        return updateUnidade(dto, SuccessResponse.class);
+    public ResponseEntity<SuccessResponse> updateBranch(@NotNull final BranchUpdateDto dto) {
+        return updateBranch(dto, SuccessResponse.class);
     }
 
     @NotNull
-    public <T> ResponseEntity<T> updateUnidade(@NotNull final BranchUpdateDto dto,
-                                               @NotNull final Class<T> responseType) {
+    public <T> ResponseEntity<T> updateBranch(@NotNull final BranchUpdateDto dto,
+                                              @NotNull final Class<T> responseType) {
         final RequestEntity<BranchUpdateDto> requestEntity = RequestEntity
-                .put(URI.create(RESOURCE))
+                .put(URI.create(BranchResource.RESOURCE_PATH))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(dto);
         return restTemplate.exchange(requestEntity, responseType);

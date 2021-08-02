@@ -10,9 +10,8 @@ import org.jetbrains.annotations.NotNull;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 public class BranchFactory {
-
     @NotNull
-    public static BranchUpdateDto createValidUnidadeEdicaoDtoToUpdate(@NotNull final BranchEntity entity) {
+    public static BranchUpdateDto createValidBranchToUpdate(@NotNull final BranchEntity entity) {
         return BranchUpdateDto.builder()
                 .codUnidade(entity.getId())
                 .nomeUnidade(entity.getName())
@@ -23,7 +22,7 @@ public class BranchFactory {
     }
 
     @NotNull
-    public static BranchUpdateDto createUnidadeEdicaoDtoWithInvalidCodUnidade(@NotNull final BranchEntity entity) {
+    public static BranchUpdateDto createBranchWithInvalidId(@NotNull final BranchEntity entity) {
         return BranchUpdateDto.builder()
                 .codUnidade(-1L)
                 .nomeUnidade(entity.getName())

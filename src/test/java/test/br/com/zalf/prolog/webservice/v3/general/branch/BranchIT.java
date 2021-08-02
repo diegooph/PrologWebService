@@ -30,27 +30,23 @@ public class BranchIT extends IntegrationTest {
     @Autowired
     private BranchDao dao;
 
-    private <T> void assertBaseValidations(final ResponseEntity<T> responseEntity) {
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isNotNull();
-    }
-
     @Test
     @DisplayName("Dado código da unidade, retorne a UnidadeVisualizacaoListagem correspondente.")
-    void givenCodUnidadeToRequest_ThenReturnUnidadeVisualizacaoListagemAndStatusOK() {
-        final ResponseEntity<BranchDto> response = client.getUnidadeByCodigo(TEST_UNIDADE_ID);
-        assertBaseValidations(response);
+    void givenBranchIdToRequest_ThenReturnBranchesAndStatusOK() {
+        final ResponseEntity<BranchDto> response = client.getBranchById(TEST_UNIDADE_ID);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getCodUnidade()).isEqualTo(TEST_UNIDADE_ID);
     }
 
     @Test
     @DisplayName("Dado código da empresa e códigos de regionais, retorne uma lista de UnidadeVisualizacaoListagem.")
-    void givenCodUnidadeAndCodRegionais_ThenReturnListUnidadeVisualizacaoListagemAndStatusOk() {
-        final Long codEmpresa = 3L;
-        final List<Long> codsRegionais = Collections.singletonList(1L);
-        final ResponseEntity<List<BranchDto>> response =
-                client.getUnidadesListagem(codEmpresa, codsRegionais);
-        assertBaseValidations(response);
+    void givenBranchIdAndGroupId_ThenReturnBranchesAndStatusOk() {
+        final Long companyId = 3L;
+        final List<Long> groupsId = Collections.singletonList(1L);
+        final ResponseEntity<List<BranchDto>> response = client.getBranches(companyId, groupsId);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
         response.getBody().stream()
                 .map(Assertions::assertThat)
                 .forEach(AbstractAssert::isNotNull);
@@ -67,21 +63,20 @@ public class BranchIT extends IntegrationTest {
 
         @Test
         @DisplayName("Dado UnidadeEdicaoDto, retorne SuccessResponse")
-        void givenUnidadeEdicaoDto_ThenReturnSuccessResponseAndStatusOk() {
-            final BranchUpdateDto dtoToUpdate =
-                    BranchFactory.createValidUnidadeEdicaoDtoToUpdate(baseEntity);
-            final ResponseEntity<SuccessResponse> response = client.updateUnidade(dtoToUpdate);
-            assertBaseValidations(response);
+        void givenBranchUpdate_ThenReturnSuccessResponseAndStatusOk() {
+            final BranchUpdateDto dtoToUpdate = BranchFactory.createValidBranchToUpdate(baseEntity);
+            final ResponseEntity<SuccessResponse> response = client.updateBranch(dtoToUpdate);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isNotNull();
             assertThat(response.getBody().getUniqueItemId()).isEqualTo(dtoToUpdate.getCodUnidade());
         }
 
         @Test
         @DisplayName("Dado DTO com código de unidade inválido, retorne BadRequestException")
-        void givenUnidadeEdicaoDtoWithInvalidCodUnidade_ThenReturnBadRequestException() {
-            final BranchUpdateDto dtoWithInvalidCodUnidade =
-                    BranchFactory.createUnidadeEdicaoDtoWithInvalidCodUnidade(baseEntity);
+        void givenBranchWithInvalidId_ThenReturnBadRequestException() {
+            final BranchUpdateDto dtoWithInvalidCodUnidade = BranchFactory.createBranchWithInvalidId(baseEntity);
             final ResponseEntity<BadRequestException> response =
-                    client.updateUnidade(dtoWithInvalidCodUnidade, BadRequestException.class);
+                    client.updateBranch(dtoWithInvalidCodUnidade, BadRequestException.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertThat(response.getBody().getHttpStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
         }

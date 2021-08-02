@@ -3,6 +3,7 @@ package test.br.com.zalf.prolog.webservice.v3.fleet.tire;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.TireResource;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireDto;
 import org.jetbrains.annotations.NotNull;
@@ -28,28 +29,26 @@ import java.util.stream.Collectors;
  */
 @TestComponent
 public class TireApiClient {
-    private static final String RESOURCE = "/api/v3/pneus";
-
     @Autowired
     @NotNull
     private TestRestTemplate restTemplate;
 
     @NotNull
     public ResponseEntity<SuccessResponse> insert(@NotNull final TireCreateDto dto) {
-        return restTemplate.postForEntity(URI.create(RESOURCE), dto, SuccessResponse.class);
+        return restTemplate.postForEntity(URI.create(TireResource.RESOURCE_PATH), dto, SuccessResponse.class);
     }
 
     @NotNull
-    public ResponseEntity<List<TireDto>> getPneusByStatus(@NotNull final List<Long> codUnidades,
-                                                          @Nullable final StatusPneu statusPneu,
-                                                          final int limit,
-                                                          final int offset) {
+    public ResponseEntity<List<TireDto>> getTireByStatus(@NotNull final List<Long> branchesId,
+                                                         @Nullable final StatusPneu tireStatus,
+                                                         final int limit,
+                                                         final int offset) {
         final UriComponents components = UriComponentsBuilder
-                .fromPath(RESOURCE)
-                .queryParam("codUnidades", codUnidades.stream()
+                .fromPath(TireResource.RESOURCE_PATH)
+                .queryParam("codUnidades", branchesId.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
-                .queryParam("statusPneu", statusPneu)
+                .queryParam("statusPneu", tireStatus)
                 .queryParam("limit", limit)
                 .queryParam("offset", offset)
                 .build();
@@ -61,16 +60,16 @@ public class TireApiClient {
     }
 
     @NotNull
-    public ResponseEntity<ClientSideErrorException> getPneusByStatusWithError(@NotNull final List<Long> codUnidades,
-                                                                              @Nullable final StatusPneu statusPneu,
-                                                                              final int limit,
-                                                                              final int offset) {
+    public ResponseEntity<ClientSideErrorException> getTireByStatusWithError(@NotNull final List<Long> branchesId,
+                                                                             @Nullable final StatusPneu tireStatus,
+                                                                             final int limit,
+                                                                             final int offset) {
         final UriComponents components = UriComponentsBuilder
-                .fromPath(RESOURCE)
-                .queryParam("codUnidades", codUnidades.stream()
+                .fromPath(TireResource.RESOURCE_PATH)
+                .queryParam("codUnidades", branchesId.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
-                .queryParam("statusPneu", statusPneu)
+                .queryParam("statusPneu", tireStatus)
                 .queryParam("limit", limit)
                 .queryParam("offset", offset)
                 .build();

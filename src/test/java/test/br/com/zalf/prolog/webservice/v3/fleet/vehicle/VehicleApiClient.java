@@ -2,6 +2,7 @@ package test.br.com.zalf.prolog.webservice.v3.fleet.vehicle;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.TireResource;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleDto;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +22,6 @@ import java.util.stream.Collectors;
 
 @TestComponent
 public class VehicleApiClient {
-    private static final String RESOURCE = "/api/v3/veiculos";
     @Autowired
     private TestRestTemplate restTemplate;
 
@@ -33,20 +33,19 @@ public class VehicleApiClient {
     @NotNull
     public <T> ResponseEntity<T> insert(@NotNull final VehicleCreateDto dto,
                                         @NotNull final Class<T> responseType) {
-        return restTemplate.postForEntity(URI.create(RESOURCE), dto, responseType);
+        return restTemplate.postForEntity(URI.create(TireResource.RESOURCE_PATH), dto, responseType);
     }
 
-    public <T> ResponseEntity<List<VehicleDto>> getVeiculoListagem(
-            @NotNull final List<Long> codUnidades,
-            final boolean statusAtivo,
-            final int limit,
-            final int offset) {
+    public <T> ResponseEntity<List<VehicleDto>> getVehicles(@NotNull final List<Long> branchesId,
+                                                            final boolean statusActive,
+                                                            final int limit,
+                                                            final int offset) {
         final UriComponents components = UriComponentsBuilder
-                .fromPath(RESOURCE)
-                .queryParam("codUnidades", codUnidades.stream()
+                .fromPath(TireResource.RESOURCE_PATH)
+                .queryParam("codUnidades", branchesId.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
-                .queryParam("statusAtivo", statusAtivo)
+                .queryParam("statusAtivo", statusActive)
                 .queryParam("limit", limit)
                 .queryParam("offset", offset)
                 .build();
@@ -54,14 +53,13 @@ public class VehicleApiClient {
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(requestEntity,
-                                     new ParameterizedTypeReference<List<VehicleDto>>() {});
+        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<VehicleDto>>() {});
     }
 
     @NotNull
-    public ResponseEntity<ClientSideErrorException> getVeiculoListagemBadRequest() {
+    public ResponseEntity<ClientSideErrorException> getVehiclesBadRequest() {
         final UriComponents components = UriComponentsBuilder
-                .fromPath(RESOURCE)
+                .fromPath(TireResource.RESOURCE_PATH)
                 .queryParam("codUnidades", "a")
                 .queryParam("statusAtivo", false)
                 .queryParam("limit", 1000)

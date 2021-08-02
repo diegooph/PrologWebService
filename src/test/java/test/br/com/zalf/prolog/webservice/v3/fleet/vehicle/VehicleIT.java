@@ -23,7 +23,7 @@ public class VehicleIT extends IntegrationTest {
     @Test
     @DisplayName("given correct VeiculoCadastroDto to insert, then return status created")
     void givenCorrectVeiculoCadastroToInsert_ThenReturnStatusCreated() {
-        final VehicleCreateDto veiculoCadastroToInsert = VehicleFactory.createVeiculoCadastroToInsert();
+        final VehicleCreateDto veiculoCadastroToInsert = VehicleFactory.createVehicleToInsert();
         final ResponseEntity<SuccessResponse> response = client.insert(veiculoCadastroToInsert);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -32,10 +32,10 @@ public class VehicleIT extends IntegrationTest {
     @DisplayName("given correct VeiculoCadastroDto to insert, then return status created")
     void givenCorrectParameters_ThenReturnListVeiculosOk() {
         final ResponseEntity<List<VehicleDto>> response =
-                client.getVeiculoListagem(List.of(215L),
-                                          true,
-                                          2,
-                                          0);
+                client.getVehicles(List.of(215L),
+                                   true,
+                                   2,
+                                   0);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotEmpty();
     }
@@ -43,7 +43,7 @@ public class VehicleIT extends IntegrationTest {
     @Test
     @DisplayName("Tipo do dado do parâmetro codUnidades incorreto, retornando ClientSideErrorException.")
     void givenWrongTypeParameter_ThenReturnClientSideErrorExceptionBadRequest() {
-        final ResponseEntity<ClientSideErrorException> response = client.getVeiculoListagemBadRequest();
+        final ResponseEntity<ClientSideErrorException> response = client.getVehiclesBadRequest();
         Truth.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }

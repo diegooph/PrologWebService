@@ -26,17 +26,17 @@ public class TireIT extends IntegrationTest {
 
     @Test
     @DisplayName("given correct PneuCadastro to insert, then return status created")
-    void givenCorrectPneuCadastroToInsert_ThenReturnStatusCreated() {
-        final TireCreateDto pneuForCreation = TireFactory.createCorrectPneuCadastro();
-        final ResponseEntity<SuccessResponse> response = client.insert(pneuForCreation);
+    void givenCorrectTireToInsert_ThenReturnStatusCreated() {
+        final TireCreateDto tireForCreation = TireFactory.createCorrectTireCreateDto();
+        final ResponseEntity<SuccessResponse> response = client.insert(tireForCreation);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
     @DisplayName("given parameters to search, then return a list of pneus")
-    void givenParametersToSearch_ThenReturnListOfPneus() {
+    void givenParametersToSearch_ThenReturnListOfTires() {
         final ResponseEntity<List<TireDto>> response =
-                client.getPneusByStatus(List.of(215L), null, 1000, 0);
+                client.getTireByStatus(List.of(215L), null, 1000, 0);
         final List<TireDto> pneus = response.getBody();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(pneus).isNotNull();
@@ -47,7 +47,7 @@ public class TireIT extends IntegrationTest {
     @DisplayName("given wrong parameters to search, then return error")
     void givenWrongParametersToSearch_ThenReturnError() {
         final ResponseEntity<ClientSideErrorException> error =
-                client.getPneusByStatusWithError(List.of(215212L), null, 1000, 0);
+                client.getTireByStatusWithError(List.of(215212L), null, 1000, 0);
         assertThat(error.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }

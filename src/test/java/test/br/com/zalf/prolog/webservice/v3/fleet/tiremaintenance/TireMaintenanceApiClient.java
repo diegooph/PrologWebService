@@ -1,7 +1,9 @@
 package test.br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance;
 
+import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance.TireMaintenanceResource;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceStatus;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -20,35 +22,37 @@ import java.util.List;
  */
 @TestComponent
 public class TireMaintenanceApiClient {
-    private static final String RESOURCE = "/api/v3/servicos-pneu";
     @Autowired
     private TestRestTemplate restTemplate;
 
-    public ResponseEntity<List<TireMaintenanceDto>> getServicosByFiltros(final List<Long> codUnidades,
-                                                                         final TireMaintenanceStatus status,
-                                                                         final int limit,
-                                                                         final int offset) {
-        return getServicosByFiltros(codUnidades, status, null, null, limit, offset);
+    @NotNull
+    public ResponseEntity<List<TireMaintenanceDto>> getTireMaintenanceByFilter(final List<Long> branchesId,
+                                                                               final int limit,
+                                                                               final int offset) {
+        return getTireMaintenanceByFilter(branchesId, null, limit, offset);
     }
 
-    public ResponseEntity<List<TireMaintenanceDto>> getServicosByFiltros(final List<Long> codUnidades,
-                                                                         final int limit,
-                                                                         final int offset) {
-        return getServicosByFiltros(codUnidades, null, limit, offset);
+    @NotNull
+    public ResponseEntity<List<TireMaintenanceDto>> getTireMaintenanceByFilter(final List<Long> branchesId,
+                                                                               final TireMaintenanceStatus status,
+                                                                               final int limit,
+                                                                               final int offset) {
+        return getTireMaintenanceByFilter(branchesId, status, null, null, limit, offset);
     }
 
-    public ResponseEntity<List<TireMaintenanceDto>> getServicosByFiltros(final List<Long> codUnidades,
-                                                                         final TireMaintenanceStatus status,
-                                                                         final Long codVeiculo,
-                                                                         final Long codPneu,
-                                                                         final int limit,
-                                                                         final int offset) {
+    @NotNull
+    public ResponseEntity<List<TireMaintenanceDto>> getTireMaintenanceByFilter(final List<Long> branchesId,
+                                                                               final TireMaintenanceStatus status,
+                                                                               final Long vehicleId,
+                                                                               final Long tireId,
+                                                                               final int limit,
+                                                                               final int offset) {
         final UriComponents components = UriComponentsBuilder
-                .fromPath(RESOURCE)
-                .queryParam("codUnidades", codUnidades)
+                .fromPath(TireMaintenanceResource.RESOURCE_PATH)
+                .queryParam("codUnidades", branchesId)
                 .queryParam("statusServicoPneu", status)
-                .queryParam("codVeiculo", codVeiculo)
-                .queryParam("codPneu", codPneu)
+                .queryParam("codVeiculo", vehicleId)
+                .queryParam("codPneu", tireId)
                 .queryParam("limit", limit)
                 .queryParam("offset", offset)
                 .build();

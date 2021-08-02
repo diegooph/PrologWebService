@@ -24,13 +24,13 @@ public final class TireMovementIT extends IntegrationTest {
 
     @Test
     @DisplayName("Dado mínimos parâmetros corretos, retorne List<MovimentacaoProcessoListagemDto> e status OK")
-    void givenMinimumCorrectParameters_ThenReturnListMovimentacaoProcessoStatusOk() {
+    void givenMinimumCorrectParameters_ThenReturnTireMovementStatusOk() {
         final ResponseEntity<List<TireMovimentProcessDto>> response =
-                client.getMovimentacacaoProcessos(List.of(215L),
-                                                  "2018-01-01",
-                                                  "2021-12-12",
-                                                  2,
-                                                  0);
+                client.getTireMovementByFilter(List.of(215L),
+                                               "2018-01-01",
+                                               "2021-12-12",
+                                               2,
+                                               0);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotEmpty();
     }
@@ -38,7 +38,7 @@ public final class TireMovementIT extends IntegrationTest {
     @Test
     @DisplayName("Tipo do dado do parâmetro codUnidades incorreto, retornando ClientSideErrorException.")
     void givenWrongTypeParameter_ThenReturnClientSideErrorExceptionBadRequest() {
-        final ResponseEntity<ClientSideErrorException> response = client.getMovimentacacaoProcessosBadRequest();
+        final ResponseEntity<ClientSideErrorException> response = client.getTireMovementBadRequest();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }

@@ -24,10 +24,9 @@ public final class ChecklistWorkOrderIT extends IntegrationTest {
 
     @Test
     @DisplayName("Dado parâmetros corretos, retorne List<ChecklistOrdemServicoListagemDto> e status OK")
-    void givenMinimumCorrectParameters_ThenReturnListChecklistOrdemServicoStatusOk() {
-
+    void givenMinimumCorrectParameters_ThenReturnChecklistWorkOrderStatusOk() {
         final ResponseEntity<List<ChecklistWorkOrderDto>> response =
-                client.getOrdensServico(List.of(215L), 2, 0);
+                client.getChecklistWorkOrder(List.of(215L), 2, 0);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotEmpty();
     }
@@ -36,7 +35,7 @@ public final class ChecklistWorkOrderIT extends IntegrationTest {
     @DisplayName("Tipo do dado do parâmetro codUnidades incorreto, retornando ClientSideErrorException.")
     void givenWrongTypeParameter_ThenReturnClientSideErrorExceptionBadRequest() {
         final ResponseEntity<ClientSideErrorException> response =
-                client.getOrdensServicoWithWrongUnidades(List.of("a"), 2, 0);
+                client.getChecklistWorkOrderWithWrongBranchesId(List.of("a"), 2, 0);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }

@@ -27,11 +27,11 @@ public class InspectionIT extends IntegrationTest {
     @DisplayName("Dado parâmetros corretos, retorne List<AfericaoPlacaDto> e status OK")
     void givenCorrectParameters_ThenReturnListAfericaoPlacaDtoAndStatusOk() {
         final ResponseEntity<List<VehicleInspectionDto>> response =
-                client.getAfericoesPlacas(List.of(215L),
-                                          "2019-01-01",
-                                          LocalDate.now().toString(),
-                                          100,
-                                          0);
+                client.getVehicleInspection(List.of(215L),
+                                            "2019-01-01",
+                                            LocalDate.now().toString(),
+                                            100,
+                                            0);
         final HttpStatus status = response.getStatusCode();
         final List<VehicleInspectionDto> body = response.getBody();
         assertThat(status).isEqualTo(HttpStatus.OK);
@@ -43,11 +43,11 @@ public class InspectionIT extends IntegrationTest {
     @DisplayName("Dado parâmetros corretos, retorne List<AfericaoAvulsaDto> e status OK")
     void givenCorrectParameters_ThenReturnListAfericaoAvulsaDtoAndStatusOk() {
         final ResponseEntity<List<TireInspectionDto>> response =
-                client.getAfericoesAvulsas(List.of(215L),
-                                           "2019-01-01",
-                                           LocalDate.now().toString(),
-                                           100,
-                                           0);
+                client.getTireInspection(List.of(215L),
+                                         "2019-01-01",
+                                         LocalDate.now().toString(),
+                                         100,
+                                         0);
 
         final HttpStatus status = response.getStatusCode();
         final List<TireInspectionDto> body = response.getBody();
