@@ -25,16 +25,13 @@ public final class VehicleTransferInfosEntity implements KmCollectedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "cod_veiculo", nullable = false)
-    @NotNull
     private Long vehicleId;
     @Column(name = "km_veiculo_momento_transferencia", nullable = false)
     private long vehicleKm;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_processo_transferencia", nullable = false)
-    @NotNull
     private VehicleTransferProcessEntity transferProcessEntity;
 
     @NotNull

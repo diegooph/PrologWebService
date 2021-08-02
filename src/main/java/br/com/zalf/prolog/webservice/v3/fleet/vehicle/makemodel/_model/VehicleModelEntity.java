@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -22,16 +21,12 @@ import javax.persistence.*;
 public class VehicleModelEntity {
     @Id
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "nome", nullable = false)
-    @NotNull
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_marca", referencedColumnName = "codigo")
-    @NotNull
     private VehicleMakeEntity vehicleMakeEntity;
     @Column(name = "cod_empresa", nullable = false)
-    @NotNull
     private Long companyId;
 }

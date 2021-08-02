@@ -25,13 +25,10 @@ public final class ChecklistEntity implements KmCollectedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "cod_unidade", nullable = false)
-    @NotNull
     private Long branchId;
     @Column(name = "cod_veiculo", nullable = false)
-    @NotNull
     private Long vehicleId;
     @Column(name = "km_veiculo", nullable = false)
     private long vehicleKm;

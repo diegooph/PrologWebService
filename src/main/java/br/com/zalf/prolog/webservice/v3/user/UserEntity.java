@@ -22,24 +22,24 @@ import java.time.ZoneId;
 @Getter
 @Entity
 @Table(schema = "public", name = "colaborador")
-public final class ColaboradorEntity {
+public final class UserEntity {
+    @Column(name = "codigo", unique = true)
+    private Long id;
     @Id
     @Column(name = "cpf")
     private Long cpf;
-    @Column(name = "codigo", unique = true)
-    private Long codigo;
     @Column(name = "nome")
-    private String nome;
+    private String name;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_unidade")
-    private BranchEntity unidade;
+    private BranchEntity branchEntity;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_empresa")
-    private CompanyEntity empresa;
+    private CompanyEntity companyEntity;
 
     @NotNull
     public ZoneId getColaboradorZoneId() {
-        return ZoneId.of(this.unidade.getTimezone());
+        return ZoneId.of(this.branchEntity.getTimezone());
     }
 
     @NotNull

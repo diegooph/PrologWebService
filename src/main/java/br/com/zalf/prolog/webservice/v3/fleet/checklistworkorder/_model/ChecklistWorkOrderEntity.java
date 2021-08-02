@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -25,17 +24,13 @@ import java.util.Set;
 public final class ChecklistWorkOrderEntity {
     @Id
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Id
     @Column(name = "cod_unidade", nullable = false)
-    @NotNull
     private Long branchId;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_checklist", nullable = false)
-    @NotNull
     private ChecklistEntity checklist;
     @OneToMany(mappedBy = "workOrderEntity", fetch = FetchType.LAZY)
-    @NotNull
     private Set<ChecklistWorkOrderItemEntity> workOrderItems;
 }

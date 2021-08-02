@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -23,15 +22,11 @@ public class TireServiceRegisterEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "cod_pneu", nullable = false)
-    @NotNull
     private Long tireId;
     @Column(name = "cod_servico_realizado", nullable = false)
-    @NotNull
     private Long tireServiceId;
     @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
-    @NotNull
     private String tireServiceOrigin;
 }

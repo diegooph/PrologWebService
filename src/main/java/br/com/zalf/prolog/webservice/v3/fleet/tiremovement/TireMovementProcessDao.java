@@ -21,7 +21,7 @@ public interface TireMovementProcessDao extends JpaRepository<TireMovementProces
     @NotNull
     @Query("select distinct mpe from TireMovementProcessEntity mpe "
                    + "join fetch mpe.movementProcessBy crp "
-                   + "join fetch crp.unidade u "
+                   + "join fetch crp.branchEntity u "
                    + "join fetch mpe.tireMovementEntities m "
                    + "join fetch m.tireMovementSourceEntity mo "
                    + "join fetch m.tireMovementDestinationEntity md "
@@ -33,7 +33,7 @@ public interface TireMovementProcessDao extends JpaRepository<TireMovementProces
                    + "left join fetch md.retreaderEntity r "
                    + "where mpe.branchId in :branchesId "
                    + "and tz_date(mpe.movementProcessAt, u.timezone) between :startDate and :endDate "
-                   + "and (:userId is null or crp.codigo = :userId) "
+                   + "and (:userId is null or crp.id = :userId) "
                    + "and (:vehicleId is null or mo.vehicleEntity.id = :vehicleId or md.vehicleEntity.id = :vehicleId) "
                    + "and (:tireId is null or m.tireEntity.id = :tireId) "
                    + "order by mpe.id, m.id")

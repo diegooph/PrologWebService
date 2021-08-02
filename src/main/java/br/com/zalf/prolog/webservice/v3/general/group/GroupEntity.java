@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -18,9 +17,7 @@ public class GroupEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "regiao", nullable = false)
-    @NotNull
     private String name;
 }

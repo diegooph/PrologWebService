@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,24 +24,18 @@ import java.util.Set;
 public class AttachProcessEntity {
     @Id
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "cod_unidade", nullable = false)
-    @NotNull
     private Long branchId;
     @Column(name = "cod_colaborador", nullable = false)
-    @NotNull
     private Long userId;
     @Convert(converter = LocalDateTimeUtcAttributeConverter.class)
     @Column(name = "data_hora")
-    @NotNull
     private LocalDateTime createdAt;
     @Column(name = "observacao")
-    @Nullable
     private String notes;
     @OneToMany(mappedBy = "attachProcessEntity",
                fetch = FetchType.LAZY,
                targetEntity = CurrentAttachEntity.class)
-    @NotNull
     private Set<CurrentAttachEntity> currentAttachEntities;
 }

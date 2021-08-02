@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -23,22 +22,16 @@ public final class TreadModelEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "nome", nullable = false)
-    @NotNull
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_marca", referencedColumnName = "codigo")
-    @NotNull
     private TreadBrandEntity treadBrandEntity;
     @Column(name = "cod_empresa", nullable = false)
-    @NotNull
     private Long companyId;
     @Column(name = "qt_sulcos", nullable = false, columnDefinition = "default 4")
-    @NotNull
     private Short groovesQuantity;
     @Column(name = "altura_sulcos", nullable = false)
-    @NotNull
     private Double groovesWidth;
 }

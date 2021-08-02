@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -31,27 +30,20 @@ public final class InspectionEntity implements KmCollectedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "cod_unidade", nullable = false)
-    @NotNull
     private Long branchId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo", nullable = false)
-    @Nullable
     private VehicleEntity vehicleEntity;
     @Column(name = "km_veiculo", nullable = false)
-    @Nullable
     private Long vehicleKm;
     @OneToMany(mappedBy = "inspectionEntity", fetch = FetchType.LAZY)
-    @Nullable
     private Set<TireMaintenanceEntity> tireMaintenanceEntities;
     @Convert(converter = LocalDateTimeUtcAttributeConverter.class)
     @Column(name = "data_hora")
-    @NotNull
     private LocalDateTime inspectedAt;
     @OneToMany(mappedBy = "inspectionEntity", fetch = FetchType.LAZY, targetEntity = InspectionMeasureEntity.class)
-    @NotNull
     private Set<InspectionMeasureEntity> inspectionMeasureEntities;
 
     @NotNull

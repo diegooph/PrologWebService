@@ -8,14 +8,13 @@ import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.InspectionMeasur
 import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedVehicle;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireEntity;
-import br.com.zalf.prolog.webservice.v3.user.ColaboradorEntity;
+import br.com.zalf.prolog.webservice.v3.user.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Formula;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -37,61 +36,45 @@ public final class TireMaintenanceEntity implements KmCollectedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "cod_unidade", nullable = false)
-    @NotNull
     private Long branchId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_afericao", nullable = false)
-    @NotNull
     private InspectionEntity inspectionEntity;
     @Column(name = "km_momento_conserto")
-    @Nullable
     private Long vehicleKmAtResolution;
     @Column(name = "tipo_servico", nullable = false)
-    @NotNull
     private TipoServico maintenanceType;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo")
-    @NotNull
     private TireEntity tire;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cpf_mecanico", referencedColumnName = "cpf")
-    @Nullable
-    private ColaboradorEntity resolverUser;
+    private UserEntity resolverUser;
     @Convert(converter = LocalDateTimeUtcAttributeConverter.class)
     @Column(name = "data_hora_resolucao")
-    @Nullable
     private LocalDateTime resolvedAt;
     @Column(name = "qt_apontamentos", nullable = false, columnDefinition = "default 1")
-    @NotNull
     private Integer amountTimesPointed;
     @Column(name = "psi_apos_conserto")
-    @Nullable
     private Double tirePressureAfterMaintenance;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_alternativa", referencedColumnName = "codigo")
-    @Nullable
     private TireMaintenanceProblemEntity tireMaintenanceProblemEntity;
     @Column(name = "tempo_realizacao_millis")
-    @Nullable
     private Long resolutionAmountTimeInMilliseconds;
     @Column(name = "fechado_automaticamente_movimentacao", nullable = false, columnDefinition = "default false")
-    @NotNull
     private Boolean resolvedAutomaticallyByTireMove;
     @Column(name = "fechado_automaticamente_integracao", nullable = false, columnDefinition = "default false")
-    @NotNull
     private Boolean resolvedAutomaticallyByIntegration;
     @Column(name = "fechado_automaticamente_afericao", nullable = false, columnDefinition = "default false")
-    @NotNull
     private Boolean resolvedAutomaticallyByTireInspection;
     @Formula("resolvedAutomaticallyByTireMove " +
                      "or resolvedAutomaticallyByIntegration " +
                      "or resolvedAutomaticallyByTireInspection")
     private boolean isResolvedAutomatically;
     @Column(name = "forma_coleta_dados_fechamento")
-    @Nullable
     private FormaColetaDadosAfericaoEnum dataInspectionType;
 
     @NotNull
@@ -109,7 +92,7 @@ public final class TireMaintenanceEntity implements KmCollectedEntity {
     }
 
     @NotNull
-    public Optional<ColaboradorEntity> getResolverUser() {
+    public Optional<UserEntity> getResolverUser() {
         return Optional.ofNullable(resolverUser);
     }
 

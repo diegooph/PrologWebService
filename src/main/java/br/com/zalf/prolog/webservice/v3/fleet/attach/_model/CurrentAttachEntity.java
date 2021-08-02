@@ -24,28 +24,22 @@ import javax.persistence.*;
 public class CurrentAttachEntity {
     @Id
     @Column(name = "cod_processo")
-    @NotNull
     private Long attachProcessId;
     @MapsId
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_processo", referencedColumnName = "codigo")
-    @NotNull
     private AttachProcessEntity attachProcessEntity;
     @Column(name = "cod_unidade", nullable = false)
-    @NotNull
     private Long branchId;
     @Id
     @Column(name = "cod_posicao", nullable = false)
-    @NotNull
     private Short positionId;
     @Column(name = "cod_diagrama", nullable = false)
-    @NotNull
     private Long vehicleLayoutId;
     @Column(name = "motorizado", nullable = false)
     private boolean hasEngine;
     @OneToOne
     @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo")
-    @NotNull
     private VehicleEntity vehicleEntity;
     @Column(name = "acoplado", nullable = false)
     private boolean isAttached;

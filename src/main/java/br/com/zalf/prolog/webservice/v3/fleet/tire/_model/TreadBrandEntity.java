@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -23,12 +22,9 @@ public final class TreadBrandEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "nome", nullable = false)
-    @NotNull
     private String name;
     @Column(name = "cod_empresa", nullable = false)
-    @NotNull
     private Long companyId;
 }

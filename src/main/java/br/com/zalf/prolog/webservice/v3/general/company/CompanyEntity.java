@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,23 +25,17 @@ public class CompanyEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "nome", nullable = false)
-    @NotNull
     private String name;
     @Column(name = "logo_thumbnail_url")
-    @Nullable
     private String thumbnailLogoUrl;
     @Column(name = "data_hora_cadastro", nullable = false, columnDefinition = "default now()")
-    @Nullable
     private LocalDateTime createdAt;
     @Column(name = "cod_auxiliar")
-    @Nullable
     private String codAuxiliar;
     @Column(name = "status_ativo", nullable = false, columnDefinition = "default true")
     private boolean isActive;
     @OneToMany(mappedBy = "companyEntity", fetch = FetchType.LAZY, targetEntity = BranchEntity.class)
-    @NotNull
     private Set<BranchEntity> branches;
 }

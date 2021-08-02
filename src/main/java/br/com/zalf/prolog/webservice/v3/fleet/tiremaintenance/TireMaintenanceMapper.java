@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.inspection._model.InspectionMeasur
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance._model.TireMaintenanceProblemEntity;
-import br.com.zalf.prolog.webservice.v3.user.ColaboradorEntity;
+import br.com.zalf.prolog.webservice.v3.user.UserEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +29,7 @@ public class TireMaintenanceMapper {
     @NotNull
     private TireMaintenanceDto toDto(@NotNull final TireMaintenanceEntity tireMaintenance) {
         final Optional<InspectionMeasureEntity> valor = tireMaintenance.getValorAfericaoRelatedToPneu();
-        final Optional<ColaboradorEntity> resolverUser = tireMaintenance.getResolverUser();
+        final Optional<UserEntity> resolverUser = tireMaintenance.getResolverUser();
         final Optional<TireMaintenanceProblemEntity> tireMaintenanceProblem =
                 tireMaintenance.getTireMaintenanceProblemEntity();
         return new TireMaintenanceDto(
@@ -58,9 +58,9 @@ public class TireMaintenanceMapper {
                 tireMaintenance.getTireMaintenanceStatus(),
                 tireMaintenance.isResolvedAutomatically(),
                 tireMaintenance.getResolvedAt(),
-                resolverUser.map(ColaboradorEntity::getCodigo).orElse(null),
-                resolverUser.map(ColaboradorEntity::getCpfFormatado).orElse(null),
-                resolverUser.map(ColaboradorEntity::getNome).orElse(null),
+                resolverUser.map(UserEntity::getId).orElse(null),
+                resolverUser.map(UserEntity::getCpfFormatado).orElse(null),
+                resolverUser.map(UserEntity::getName).orElse(null),
                 tireMaintenance.getVehicleKmAtResolution(),
                 tireMaintenanceProblem.map(TireMaintenanceProblemEntity::getId).orElse(null),
                 tireMaintenanceProblem.map(TireMaintenanceProblemEntity::getName).orElse(null),

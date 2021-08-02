@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -29,7 +28,6 @@ public class AxleLayoutEntity {
     @MapsId
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_diagrama", referencedColumnName = "codigo")
-    @NotNull
     private VehicleLayoutEntity vehicleLayoutEntity;
     @Column(name = "tipo_eixo", nullable = false)
     private char axleType;

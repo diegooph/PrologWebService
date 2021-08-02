@@ -4,13 +4,12 @@ import br.com.zalf.prolog.webservice.commons.util.datetime.TimezoneUtils;
 import br.com.zalf.prolog.webservice.v3.LocalDateTimeUtcAttributeConverter;
 import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.processeskm._model.KmCollectedVehicle;
-import br.com.zalf.prolog.webservice.v3.user.ColaboradorEntity;
+import br.com.zalf.prolog.webservice.v3.user.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,24 +31,18 @@ public final class TireMovementProcessEntity implements KmCollectedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "cod_unidade", nullable = false)
-    @NotNull
     private Long branchId;
     @Convert(converter = LocalDateTimeUtcAttributeConverter.class)
     @Column(name = "data_hora")
-    @NotNull
     private LocalDateTime movementProcessAt;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cpf_responsavel", referencedColumnName = "cpf")
-    @NotNull
-    private ColaboradorEntity movementProcessBy;
+    private UserEntity movementProcessBy;
     @Column(name = "observacao")
-    @Nullable
     private String notes;
     @OneToMany(mappedBy = "tireMovementProcessEntity", fetch = FetchType.LAZY)
-    @NotNull
     private Set<TireMovementEntity> tireMovementEntities;
 
     @NotNull

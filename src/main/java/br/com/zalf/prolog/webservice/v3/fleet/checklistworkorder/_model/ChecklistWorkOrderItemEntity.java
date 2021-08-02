@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 
@@ -26,15 +25,12 @@ public final class ChecklistWorkOrderItemEntity implements KmCollectedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "km")
-    @Nullable
     private Long vehicleKmAtResolution;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({@JoinColumn(name = "cod_unidade", referencedColumnName = "cod_unidade"),
                          @JoinColumn(name = "cod_os", referencedColumnName = "codigo")})
-    @NotNull
     private ChecklistWorkOrderEntity workOrderEntity;
 
     @NotNull

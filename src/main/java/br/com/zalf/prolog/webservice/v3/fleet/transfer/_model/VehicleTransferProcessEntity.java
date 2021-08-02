@@ -25,19 +25,14 @@ public final class VehicleTransferProcessEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "cod_unidade_origem", nullable = false)
-    @NotNull
     private Long fromBranchId;
     @Column(name = "cod_unidade_destino", nullable = false)
-    @NotNull
     private Long toBranchId;
     @Column(name = "cod_unidade_colaborador", nullable = false)
-    @NotNull
     private Long userBranchId;
     @OneToMany(mappedBy = "transferProcessEntity", fetch = FetchType.LAZY)
-    @NotNull
     private Set<VehicleTransferInfosEntity> vehicleTransferInfosEntities;
 
     @NotNull

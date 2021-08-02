@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.v3.fleet.tireservice._model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -21,18 +20,13 @@ public class TireServiceIncreaseLifeCycleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "cod_servico_realizado", nullable = false)
-    @NotNull
     private Long tireServiceId;
     @Column(name = "cod_modelo_banda", nullable = false)
-    @NotNull
     private Long treadModelId;
     @Column(name = "vida_nova_pneu", nullable = false)
-    @NotNull
     private Integer newTireLifeCycle;
     @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
-    @NotNull
     private String tireServiceOrigin;
 }

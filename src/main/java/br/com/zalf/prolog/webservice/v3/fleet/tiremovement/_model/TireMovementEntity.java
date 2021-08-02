@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.util.Optional;
@@ -30,52 +29,39 @@ public final class TireMovementEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "cod_unidade", nullable = false)
-    @NotNull
     private Long branchId;
     @OneToOne(mappedBy = "tireMovementEntity", fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
-    @NotNull
     private TireMovementSourceEntity tireMovementSourceEntity;
     @OneToOne(mappedBy = "tireMovementEntity", fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
-    @NotNull
     private TireMovementDestinationEntity tireMovementDestinationEntity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_movimentacao_processo", nullable = false)
-    @NotNull
     private TireMovementProcessEntity tireMovementProcessEntity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo", nullable = false)
-    @NotNull
     private TireEntity tireEntity;
     @Column(name = "sulco_interno")
-    @Nullable
     private Double internalGroove;
     @Column(name = "sulco_central_interno")
-    @Nullable
     private Double middleInternalGroove;
     @Column(name = "sulco_central_externo")
-    @Nullable
     private Double middleExternalGroove;
     @Column(name = "sulco_externo")
-    @Nullable
     private Double externalGroove;
     @Column(name = "pressao_atual")
-    @Nullable
     private Double currentPressure;
     @Column(name = "vida")
     private int tireLifeCycle;
     @Column(name = "observacao")
-    @Nullable
     private String notes;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "movimentacao_pneu_servico_realizado",
                joinColumns = @JoinColumn(name = "cod_movimentacao"),
                inverseJoinColumns = @JoinColumn(name = "cod_servico_realizado"))
-    @Nullable
     private Set<TireServiceEntity> tireServiceEntities;
 
     public boolean isTireMovementOnVehicle() {

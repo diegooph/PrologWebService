@@ -23,16 +23,12 @@ public final class TireSizeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @Column(name = "altura", nullable = false)
-    @NotNull
     private Integer width;
     @Column(name = "largura", nullable = false)
-    @NotNull
     private Integer aspectRation;
     @Column(name = "aro", nullable = false)
-    @NotNull
     private Double diameter;
 
     @NotNull

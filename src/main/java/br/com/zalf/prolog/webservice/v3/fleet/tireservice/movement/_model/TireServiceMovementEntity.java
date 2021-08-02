@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -25,23 +24,18 @@ import javax.persistence.*;
 public class TireServiceMovementEntity {
     @Id
     @Column(name = "cod_movimentacao", nullable = false)
-    @NotNull
     private Long tireMovementId;
     @Id
     @Column(name = "cod_servico_realizado", nullable = false)
-    @NotNull
     private Long tireServiceId;
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_movimentacao", referencedColumnName = "codigo", nullable = false)
-    @NotNull
     private TireMovementEntity tireMovementEntity;
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_servico_realizado", referencedColumnName = "codigo", nullable = false)
-    @NotNull
     private TireServiceEntity tireServiceEntity;
     @Column(name = "fonte_servico_realizado", columnDefinition = "FONTE_MOVIMENTACAO", nullable = false)
-    @NotNull
     private String tireServiceOrigin;
 }

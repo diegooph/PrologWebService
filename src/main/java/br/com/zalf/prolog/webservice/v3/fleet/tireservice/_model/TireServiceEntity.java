@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -26,27 +25,20 @@ public class TireServiceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
-    @NotNull
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_tipo_servico", nullable = false)
-    @NotNull
     private TireServiceTypeEntity tireServiceTypeEntity;
     @Column(name = "cod_unidade", nullable = false)
-    @NotNull
     private Long branchId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo")
-    @NotNull
     private TireEntity tireEntity;
     @Column(name = "custo", nullable = false)
-    @NotNull
     private BigDecimal serviceCost;
     @Column(name = "vida", nullable = false)
-    @NotNull
     private Integer tireLifeCycle;
     @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
-    @NotNull
     private String tireServiceOrigin;
 
     public boolean isIncreaseLifeCycle() {
