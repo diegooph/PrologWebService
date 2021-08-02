@@ -30,7 +30,12 @@ public class BranchService {
     @Transactional
     public SuccessResponse updateBranch(@NotNull final BranchEntity branch) {
         final BranchEntity savedBranch = dao.findById(branch.getId()).orElseThrow(NotFoundException::new);
-        final BranchEntity branchUpdate = branch.toBuilder().withId(savedBranch.getId()).build();
+        final BranchEntity branchUpdate = savedBranch.toBuilder()
+                .withName(branch.getName())
+                .withAdditionalId(branch.getAdditionalId())
+                .withBranchLatitude(branch.getBranchLatitude())
+                .withBranchLongitude(branch.getBranchLongitude())
+                .build();
         final Long updatedBranchId = Optional.of(dao.save(branchUpdate))
                 .orElseThrow(ServerSideErrorException::defaultNotLoggableException)
                 .getId();

@@ -31,7 +31,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ChecklistResource implements ChecklistApiDoc {
     @NotNull
-    public static final String RESOURCE_PATH = "api/v3/checklists";
+    public static final String RESOURCE_PATH = "/api/v3/checklists";
     @NotNull
     private final ChecklistService checklistService;
     @NotNull

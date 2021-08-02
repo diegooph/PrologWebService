@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.fleet.inspection._model;
 
-import lombok.Data;
+import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -10,7 +10,11 @@ import java.io.Serializable;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 public final class InspectionMeasurePk implements Serializable {
     @NotNull
     private Long inspectionId;

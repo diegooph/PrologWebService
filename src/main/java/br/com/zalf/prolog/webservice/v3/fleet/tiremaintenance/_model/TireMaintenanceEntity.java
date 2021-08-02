@@ -70,9 +70,9 @@ public final class TireMaintenanceEntity implements KmCollectedEntity {
     private Boolean resolvedAutomaticallyByIntegration;
     @Column(name = "fechado_automaticamente_afericao", nullable = false, columnDefinition = "default false")
     private Boolean resolvedAutomaticallyByTireInspection;
-    @Formula("resolvedAutomaticallyByTireMove " +
-                     "or resolvedAutomaticallyByIntegration " +
-                     "or resolvedAutomaticallyByTireInspection")
+    @Formula("fechado_automaticamente_movimentacao " +
+                     "or fechado_automaticamente_integracao " +
+                     "or fechado_automaticamente_afericao")
     private boolean isResolvedAutomatically;
     @Column(name = "forma_coleta_dados_fechamento")
     private FormaColetaDadosAfericaoEnum dataInspectionType;

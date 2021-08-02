@@ -3,6 +3,7 @@ package test.br.com.zalf.prolog.webservice.v3.fleet.vehicle;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.TireResource;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle.VehicleResource;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleDto;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +34,7 @@ public class VehicleApiClient {
     @NotNull
     public <T> ResponseEntity<T> insert(@NotNull final VehicleCreateDto dto,
                                         @NotNull final Class<T> responseType) {
-        return restTemplate.postForEntity(URI.create(TireResource.RESOURCE_PATH), dto, responseType);
+        return restTemplate.postForEntity(URI.create(VehicleResource.RESOURCE_PATH), dto, responseType);
     }
 
     public <T> ResponseEntity<List<VehicleDto>> getVehicles(@NotNull final List<Long> branchesId,

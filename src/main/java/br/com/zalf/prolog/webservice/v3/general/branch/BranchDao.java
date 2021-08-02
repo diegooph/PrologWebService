@@ -34,10 +34,10 @@ public interface BranchDao extends JpaRepository<BranchEntity, Long> {
                                       @Nullable final List<Long> groupsId);
 
     @NotNull
-    @Query("select u from AuthenticationTokenEntity at " +
+    @Query("select b from AuthenticationTokenEntity at " +
                    "join at.user u " +
-                   "join u.companyEntity e " +
-                   "join e.branches " +
+                   "join u.companyEntity c " +
+                   "join c.branches b " +
                    "where at.token = :tokenUser")
     List<BranchEntity> findAllByTokenUser(@NotNull final String tokenUser);
 

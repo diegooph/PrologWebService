@@ -29,7 +29,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ChecklistWorkOrderResource implements ChecklistWorkOrderApiDoc {
     @NotNull
-    public static final String RESOURCE_PATH = "api/v3/checklists/ordens-servico";
+    public static final String RESOURCE_PATH = "/api/v3/checklists/ordens-servico";
     @NotNull
     private final ChecklistWorkOrderService service;
     @NotNull

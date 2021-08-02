@@ -49,10 +49,10 @@ public class TireMaintenanceApiClient {
                                                                                final int offset) {
         final UriComponents components = UriComponentsBuilder
                 .fromPath(TireMaintenanceResource.RESOURCE_PATH)
-                .queryParam("codUnidades", branchesId)
-                .queryParam("statusServicoPneu", status)
-                .queryParam("codVeiculo", vehicleId)
-                .queryParam("codPneu", tireId)
+                .queryParam("branchesId", branchesId)
+                .queryParam("maintenanceStatus", status)
+                .queryParam("vehicleId", vehicleId)
+                .queryParam("tireId", tireId)
                 .queryParam("limit", limit)
                 .queryParam("offset", offset)
                 .build();
