@@ -17,10 +17,10 @@ public interface ChecklistWorkOrderProjection {
     @Value("#{target.checklist_id}")
     long getChecklistId();
 
-    @Value("#{@localDateTimeConverter.fromInstantUtc(target.opned_at_utc)}")
+    @Value("#{@localDateTimeConverter.fromInstantUtc(target.opened_at_utc)}")
     LocalDateTime getOpenedAtUtc();
 
-    @Value("#{target.opned_at_with_tz}")
+    @Value("#{target.opened_at_with_tz}")
     LocalDateTime getOpenedAtWithTimeZone();
 
     @Value("#{target.work_order_status}")
@@ -32,13 +32,13 @@ public interface ChecklistWorkOrderProjection {
     @Value("#{target.closed_at_with_tz}")
     LocalDateTime getClosedAtWithTimeZone();
 
-    @Value("#{target.opned_by_user_id}")
+    @Value("#{target.opened_by_user_id}")
     long getChecklistUserId();
 
-    @Value("#{target.opned_by_user_cpf}")
+    @Value("#{target.opened_by_user_cpf}")
     String getChecklistUserCpf();
 
-    @Value("#{target.opned_by_user_name}")
+    @Value("#{target.opened_by_user_name}")
     String getChecklistUserName();
 
     @Value("#{target.vehicle_id}")

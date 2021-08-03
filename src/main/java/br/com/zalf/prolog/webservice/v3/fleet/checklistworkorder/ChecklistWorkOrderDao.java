@@ -17,7 +17,7 @@ import java.util.List;
  */
 public interface ChecklistWorkOrderDao extends JpaRepository<ChecklistWorkOrderEntity, ChecklistWorkOrderPk> {
     @NotNull
-    @Query(value = "select * from func_get_checklist_work_order(" +
+    @Query(value = "select * from func_checklist_get_checklist_work_order(" +
             "f_branches_id => to_bigint_array(:branchesId)," +
             "f_vehicle_type_id => to_bigint(:vehicleTypeId)," +
             "f_vehicle_id => to_bigint(:vehicleId)," +
