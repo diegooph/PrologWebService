@@ -1,9 +1,6 @@
 package br.com.zalf.prolog.webservice.interno.suporte;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
-import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
-import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import lombok.RequiredArgsConstructor;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -26,13 +23,26 @@ public final class SuporteResource {
     private final SuporteService service;
 
     @POST
-    @UsedBy(platforms = Platform.WEBSITE)
+    @Path("/cadastrar-empresa")
+    public Response insertEmpresa(
+            @HeaderParam("Authorization") final String authorization,
+            @QueryParam("nomeEmpresa") final String nomeEmpresa,
+            @FormDataParam("file") final InputStream fileInputStream,
+            @FormDataParam("file") final FormDataContentDisposition fileDetail) throws ProLogException {
+        return service.insertEmpresa(
+                authorization,
+                nomeEmpresa,
+                fileInputStream,
+                fileDetail);
+    }
+
+    @POST
     @Path("/alterar-imagem-logo-empresa")
     public Response alterarImagemLogoEmpresa(
-            @HeaderParam("Authorization") @Required final String authorization,
-            @QueryParam("codEmpresa") @Required final Long codEmpresa,
-            @FormDataParam("file") @Required final InputStream fileInputStream,
-            @FormDataParam("file") @Required final FormDataContentDisposition fileDetail) throws ProLogException {
+            @HeaderParam("Authorization") final String authorization,
+            @QueryParam("codEmpresa") final Long codEmpresa,
+            @FormDataParam("file") final InputStream fileInputStream,
+            @FormDataParam("file") final FormDataContentDisposition fileDetail) throws ProLogException {
         return service.alterarImagemLogoEmpresa(
                 authorization,
                 codEmpresa,
