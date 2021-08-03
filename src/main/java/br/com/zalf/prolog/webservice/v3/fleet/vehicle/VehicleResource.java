@@ -33,8 +33,7 @@ public class VehicleResource implements VehicleApiDoc {
     private final VehicleMapper vehicleMapper;
 
     @Autowired
-    public VehicleResource(@NotNull final VehicleService vehicleService,
-                           @NotNull final VehicleMapper vehicleMapper) {
+    public VehicleResource(@NotNull final VehicleService vehicleService, @NotNull final VehicleMapper vehicleMapper) {
         this.vehicleService = vehicleService;
         this.vehicleMapper = vehicleMapper;
     }

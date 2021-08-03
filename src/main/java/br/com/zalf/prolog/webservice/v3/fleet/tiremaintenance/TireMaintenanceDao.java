@@ -33,8 +33,8 @@ public interface TireMaintenanceDao extends JpaRepository<TireMaintenanceEntity,
                    "and (:vehicleId is null or :vehicleId = v.id) " +
                    "and (:tireId is null or :tireId = t.id)")
     List<TireMaintenanceEntity> getAllTireMaintenance(@NotNull final List<Long> branchesId,
+                                                      @Nullable final Boolean maintenanceStatus,
                                                       @Nullable final Long vehicleId,
                                                       @Nullable final Long tireId,
-                                                      @Nullable final Boolean maintenanceStatus,
                                                       @NotNull final Pageable pageable);
 }

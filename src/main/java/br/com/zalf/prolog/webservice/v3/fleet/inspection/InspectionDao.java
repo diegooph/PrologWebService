@@ -22,32 +22,32 @@ public interface InspectionDao extends JpaRepository<InspectionEntity, Long> {
             "f_cod_unidades => to_bigint_array(:branchesId), " +
             "f_cod_tipo_veiculo => to_bigint(:vehicleTypeId), " +
             "f_cod_veiculo => to_bigint(:vehicleId), " +
-            "f_data_inicial => date(:initialDate), " +
-            "f_data_final => date(:finalDate), " +
+            "f_data_inicial => date(:startDate), " +
+            "f_data_final => date(:endDate), " +
             "f_limit => :limit, " +
             "f_offset => :offset, " +
             "f_incluir_medidas => :includeMeasures);", nativeQuery = true)
     List<VehicleInspectionProjection> getVehicleInspections(@NotNull final List<Long> branchesId,
+                                                            @NotNull final LocalDate startDate,
+                                                            @NotNull final LocalDate endDate,
                                                             @Nullable final Long vehicleTypeId,
                                                             @Nullable final Long vehicleId,
-                                                            @NotNull final LocalDate initialDate,
-                                                            @NotNull final LocalDate finalDate,
+                                                            final boolean includeMeasures,
                                                             final int limit,
-                                                            final int offset,
-                                                            final boolean includeMeasures);
+                                                            final int offset);
 
     @NotNull
     @Query(value = "select * from func_afericao_get_afericoes_avulsas_paginada( " +
             "f_cod_unidades => to_bigint_array(:branchesId), " +
-            "f_data_inicial => date(:initialDate), " +
-            "f_data_final => date(:finalDate), " +
+            "f_data_inicial => date(:startDate), " +
+            "f_data_final => date(:endDate), " +
             "f_limit => :limit, " +
             "f_offset => :offset, " +
             "f_incluir_medidas => :includeMeasures);", nativeQuery = true)
     List<TireInspectionProjection> getTireInspections(@NotNull final List<Long> branchesId,
-                                                      @NotNull final LocalDate initialDate,
-                                                      @NotNull final LocalDate finalDate,
+                                                      @NotNull final LocalDate startDate,
+                                                      @NotNull final LocalDate endDate,
+                                                      final boolean includeMeasures,
                                                       final int limit,
-                                                      final int offset,
-                                                      final boolean includeMeasures);
+                                                      final int offset);
 }

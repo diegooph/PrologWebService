@@ -63,11 +63,10 @@ public class TireResource implements TireApiDoc {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
-    public List<TireDto> getAllTires(
-            @QueryParam("codUnidades") @Required final List<Long> branchesId,
-            @QueryParam("statusPneu") @Optional final StatusPneu tireStatus,
-            @QueryParam("limit") final int limit,
-            @QueryParam("offset") final int offset) {
+    public List<TireDto> getAllTires(@QueryParam("codUnidades") @Required final List<Long> branchesId,
+                                     @QueryParam("statusPneu") @Optional final StatusPneu tireStatus,
+                                     @QueryParam("limit") final int limit,
+                                     @QueryParam("offset") final int offset) {
         return service.getAllTires(branchesId, tireStatus, limit, offset);
     }
 }

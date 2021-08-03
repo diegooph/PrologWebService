@@ -21,8 +21,7 @@ public class HelpOnRoadService implements ProcessKmUpdatable {
 
     @NotNull
     @Override
-    public KmCollectedEntity getEntityKmCollected(@NotNull final Long entityId,
-                                                  @NotNull final Long vehicleId) {
+    public KmCollectedEntity getEntityKmCollected(@NotNull final Long entityId, @NotNull final Long vehicleId) {
         return getOpeningHelpOnRoadEntityByHelpOnRoadId(entityId);
     }
 
@@ -38,8 +37,7 @@ public class HelpOnRoadService implements ProcessKmUpdatable {
         return helpOnRoadOpeningDao.getOpeningHelpOnRoadEntityByHelpOnRoadId(helpOnRoadId);
     }
 
-    public void updateKmCollectedOpeningHelpOnRoad(@NotNull final Long helpOnRoadId,
-                                                   final long newKm) {
+    public void updateKmCollectedOpeningHelpOnRoad(@NotNull final Long helpOnRoadId, final long newKm) {
         final OpeningHelpOnRoadEntity entity = getOpeningHelpOnRoadEntityByHelpOnRoadId(helpOnRoadId)
                 .toBuilder()
                 .withKmCollectedOpening(newKm)

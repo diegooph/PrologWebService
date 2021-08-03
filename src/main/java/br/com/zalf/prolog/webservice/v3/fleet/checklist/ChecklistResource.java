@@ -52,8 +52,8 @@ public class ChecklistResource implements ChecklistApiDoc {
     @Override
     public List<ChecklistDto> getAllChecklists(
             @QueryParam("codUnidades") @Required final List<Long> branchesId,
-            @QueryParam("dataInicial") @Required final String initialDate,
-            @QueryParam("dataFinal") @Required final String finalDate,
+            @QueryParam("dataInicial") @Required final String startDate,
+            @QueryParam("dataFinal") @Required final String endDate,
             @QueryParam("codColaborador") @Optional final Long userId,
             @QueryParam("codTipoVeiculo") @Optional final Long vehicleTypeId,
             @QueryParam("codVeiculo") @Optional final Long vehicleId,
@@ -61,8 +61,8 @@ public class ChecklistResource implements ChecklistApiDoc {
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
         final ChecklistFilter filter = ChecklistFilter.of(branchesId,
-                                                          DateUtils.parseDate(initialDate),
-                                                          DateUtils.parseDate(finalDate),
+                                                          DateUtils.parseDate(startDate),
+                                                          DateUtils.parseDate(endDate),
                                                           userId,
                                                           vehicleId,
                                                           vehicleTypeId,

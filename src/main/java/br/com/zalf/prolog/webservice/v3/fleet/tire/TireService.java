@@ -77,8 +77,7 @@ public class TireService {
 
     @NotNull
     @Transactional
-    public SuccessResponse updateTireStatus(@NotNull final Long tireId,
-                                            @NotNull final StatusPneu tireStatus) {
+    public SuccessResponse updateTireStatus(@NotNull final Long tireId, @NotNull final StatusPneu tireStatus) {
         tireDao.updateTireStatus(tireId, tireStatus);
         return new SuccessResponse(tireId, "Alterado o status do pneu com sucesso.");
     }

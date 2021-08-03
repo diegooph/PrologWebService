@@ -51,21 +51,21 @@ public class InspectionResource implements InspectionApiDoc {
     @Override
     public List<VehicleInspectionDto> getVehicleInspections(
             @QueryParam("codUnidades") @NotNull final List<Long> branchesId,
-            @QueryParam("dataInicial") @NotNull final String initialDate,
-            @QueryParam("dataFinal") @NotNull final String finalDate,
+            @QueryParam("dataInicial") @NotNull final String startDate,
+            @QueryParam("dataFinal") @NotNull final String endDate,
             @QueryParam("codTipoVeiculo") @Optional final Long vehicleTypeId,
             @QueryParam("codVeiculo") @Optional final Long vehicleId,
             @QueryParam("incluirMedidas") @DefaultValue("true") final boolean includeMeasures,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
         final VehicleInspectionFilter filter = VehicleInspectionFilter.of(branchesId,
+                                                                          DateUtils.parseDate(startDate),
+                                                                          DateUtils.parseDate(endDate),
                                                                           vehicleId,
                                                                           vehicleTypeId,
-                                                                          DateUtils.parseDate(initialDate),
-                                                                          DateUtils.parseDate(finalDate),
+                                                                          includeMeasures,
                                                                           limit,
-                                                                          offset,
-                                                                          includeMeasures);
+                                                                          offset);
         final List<VehicleInspectionProjection> vehicleInspections = service.getVehicleInspections(filter);
         return inspectionMapper.toVehicleInspectionDto(vehicleInspections);
     }
@@ -81,17 +81,17 @@ public class InspectionResource implements InspectionApiDoc {
     @Override
     public List<TireInspectionDto> getTireInspections(
             @QueryParam("codUnidades") @NotNull final List<Long> branchesId,
-            @QueryParam("dataInicial") @NotNull final String initialDate,
-            @QueryParam("dataFinal") @NotNull final String finalDate,
+            @QueryParam("dataInicial") @NotNull final String startDate,
+            @QueryParam("dataFinal") @NotNull final String endDate,
             @QueryParam("incluirMedidas") @DefaultValue("true") final boolean includeMeasures,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
         final TireInspectionFilter filter = TireInspectionFilter.of(branchesId,
-                                                                    DateUtils.parseDate(initialDate),
-                                                                    DateUtils.parseDate(finalDate),
+                                                                    DateUtils.parseDate(startDate),
+                                                                    DateUtils.parseDate(endDate),
+                                                                    includeMeasures,
                                                                     limit,
-                                                                    offset,
-                                                                    includeMeasures);
+                                                                    offset);
         final List<TireInspectionProjection> tireInspections = service.getTireInspections(filter);
         return inspectionMapper.toTireInspectionDto(tireInspections);
     }

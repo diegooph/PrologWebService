@@ -27,8 +27,7 @@ public class TireMaintenanceService implements ProcessKmUpdatable {
 
     @NotNull
     @Override
-    public KmCollectedEntity getEntityKmCollected(@NotNull final Long entityId,
-                                                  @NotNull final Long vehicleId) {
+    public KmCollectedEntity getEntityKmCollected(@NotNull final Long entityId, @NotNull final Long vehicleId) {
         return getById(entityId);
     }
 
@@ -43,9 +42,9 @@ public class TireMaintenanceService implements ProcessKmUpdatable {
     @Transactional
     public List<TireMaintenanceEntity> getAllTireMaintenance(@NotNull final TireMaintenanceFilter filter) {
         return tireMaintenanceDao.getAllTireMaintenance(filter.getBranchesId(),
+                                                        filter.getMaintenanceStatusAsBoolean(),
                                                         filter.getVehicleId(),
                                                         filter.getTireId(),
-                                                        filter.getMaintenanceStatusAsBoolean(),
                                                         OffsetBasedPageRequest.of(filter.getLimit(),
                                                                                   filter.getOffset(),
                                                                                   Sort.unsorted()));
@@ -57,8 +56,7 @@ public class TireMaintenanceService implements ProcessKmUpdatable {
     }
 
     @Transactional
-    public void updateVehicleKmAtResolution(@NotNull final Long tireMaintenanceId,
-                                            final long newKm) {
+    public void updateVehicleKmAtResolution(@NotNull final Long tireMaintenanceId, final long newKm) {
         final TireMaintenanceEntity entity = getById(tireMaintenanceId)
                 .toBuilder()
                 .withVehicleKmAtResolution(newKm)

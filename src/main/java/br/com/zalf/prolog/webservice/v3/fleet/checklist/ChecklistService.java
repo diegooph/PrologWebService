@@ -26,8 +26,7 @@ public class ChecklistService implements ProcessKmUpdatable {
 
     @NotNull
     @Override
-    public KmCollectedEntity getEntityKmCollected(@NotNull final Long entityId,
-                                                  @NotNull final Long vehicleId) {
+    public KmCollectedEntity getEntityKmCollected(@NotNull final Long entityId, @NotNull final Long vehicleId) {
         return getById(entityId);
     }
 
@@ -59,14 +58,14 @@ public class ChecklistService implements ProcessKmUpdatable {
 
     @NotNull
     public List<ChecklistProjection> getAllChecklists(@NotNull final ChecklistFilter checklistFilter) {
-        return checklistDao.getChecklistsListagem(checklistFilter.getBranchesId(),
-                                                  checklistFilter.getInitialDate(),
-                                                  checklistFilter.getFinalDate(),
-                                                  checklistFilter.getUserId(),
-                                                  checklistFilter.getVehicleId(),
-                                                  checklistFilter.getVehicleTypeId(),
-                                                  checklistFilter.isIncludeAnswers(),
-                                                  checklistFilter.getLimit(),
-                                                  checklistFilter.getOffset());
+        return checklistDao.getAllChecklists(checklistFilter.getBranchesId(),
+                                             checklistFilter.getStartDate(),
+                                             checklistFilter.getEndDate(),
+                                             checklistFilter.getUserId(),
+                                             checklistFilter.getVehicleId(),
+                                             checklistFilter.getVehicleTypeId(),
+                                             checklistFilter.isIncludeAnswers(),
+                                             checklistFilter.getLimit(),
+                                             checklistFilter.getOffset());
     }
 }

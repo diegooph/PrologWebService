@@ -47,6 +47,5 @@ public interface TireDao extends JpaRepository<TireEntity, Long> {
 
     @Modifying
     @Query("update TireEntity t set t.tireStatus = :tireStatus where t.id = :tireId")
-    void updateTireStatus(@NotNull final Long tireId,
-                          @NotNull final StatusPneu tireStatus);
+    void updateTireStatus(@NotNull final Long tireId, @NotNull final StatusPneu tireStatus);
 }

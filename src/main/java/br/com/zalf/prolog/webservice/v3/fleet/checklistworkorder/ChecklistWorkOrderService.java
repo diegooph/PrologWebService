@@ -29,8 +29,7 @@ public class ChecklistWorkOrderService implements ProcessKmUpdatable {
 
     @NotNull
     @Override
-    public KmCollectedEntity getEntityKmCollected(@NotNull final Long entityId,
-                                                  @NotNull final Long vehicleId) {
+    public KmCollectedEntity getEntityKmCollected(@NotNull final Long entityId, @NotNull final Long vehicleId) {
         return getWorkOrderItemById(entityId);
     }
 
@@ -69,8 +68,7 @@ public class ChecklistWorkOrderService implements ProcessKmUpdatable {
     }
 
     @Transactional
-    public void updateVehicleKmAtResolution(@NotNull final Long workOrderItemId,
-                                            final long newKm) {
+    public void updateVehicleKmAtResolution(@NotNull final Long workOrderItemId, final long newKm) {
         final ChecklistWorkOrderItemEntity entity = getWorkOrderItemById(workOrderItemId)
                 .toBuilder()
                 .withVehicleKmAtResolution(newKm)

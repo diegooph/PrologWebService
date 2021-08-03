@@ -16,10 +16,10 @@ public class TireInspectionFilter {
     @NotNull
     List<Long> branchesId;
     @NotNull
-    LocalDate initialDate;
+    LocalDate startDate;
     @NotNull
-    LocalDate finalDate;
+    LocalDate endDate;
+    boolean includeMeasures;
     int limit;
     int offset;
-    boolean includeMeasures;
 }

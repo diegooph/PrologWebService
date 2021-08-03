@@ -17,9 +17,9 @@ public class ChecklistFilter {
     @NotNull
     List<Long> branchesId;
     @NotNull
-    LocalDate initialDate;
+    LocalDate startDate;
     @NotNull
-    LocalDate finalDate;
+    LocalDate endDate;
     @Nullable
     Long userId;
     @Nullable

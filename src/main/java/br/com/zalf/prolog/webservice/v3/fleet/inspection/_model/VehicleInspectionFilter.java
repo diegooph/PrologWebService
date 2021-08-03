@@ -16,15 +16,15 @@ import java.util.List;
 public class VehicleInspectionFilter {
     @NotNull
     List<Long> branchesId;
+    @NotNull
+    LocalDate startDate;
+    @NotNull
+    LocalDate endDate;
     @Nullable
     Long vehicleId;
     @Nullable
     Long vehicleTypeId;
-    @NotNull
-    LocalDate initialDate;
-    @NotNull
-    LocalDate finalDate;
+    boolean includeMeasures;
     int limit;
     int offset;
-    boolean includeMeasures;
 }

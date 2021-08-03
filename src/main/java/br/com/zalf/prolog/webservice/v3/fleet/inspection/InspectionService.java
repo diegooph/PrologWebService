@@ -24,8 +24,7 @@ public class InspectionService implements ProcessKmUpdatable {
 
     @NotNull
     @Override
-    public KmCollectedEntity getEntityKmCollected(@NotNull final Long entityId,
-                                                  @NotNull final Long vehicleId) {
+    public KmCollectedEntity getEntityKmCollected(@NotNull final Long entityId, @NotNull final Long vehicleId) {
         return getById(entityId);
     }
 
@@ -39,28 +38,27 @@ public class InspectionService implements ProcessKmUpdatable {
     @NotNull
     public List<VehicleInspectionProjection> getVehicleInspections(@NotNull final VehicleInspectionFilter filter) {
         return inspectionDao.getVehicleInspections(filter.getBranchesId(),
+                                                   filter.getStartDate(),
+                                                   filter.getEndDate(),
                                                    filter.getVehicleTypeId(),
                                                    filter.getVehicleId(),
-                                                   filter.getInitialDate(),
-                                                   filter.getFinalDate(),
+                                                   filter.isIncludeMeasures(),
                                                    filter.getLimit(),
-                                                   filter.getOffset(),
-                                                   filter.isIncludeMeasures());
+                                                   filter.getOffset());
     }
 
     @NotNull
     public List<TireInspectionProjection> getTireInspections(@NotNull final TireInspectionFilter filter) {
         return inspectionDao.getTireInspections(filter.getBranchesId(),
-                                                filter.getInitialDate(),
-                                                filter.getFinalDate(),
+                                                filter.getStartDate(),
+                                                filter.getEndDate(),
+                                                filter.isIncludeMeasures(),
                                                 filter.getLimit(),
-                                                filter.getOffset(),
-                                                filter.isIncludeMeasures());
+                                                filter.getOffset());
     }
 
     @Transactional
-    public void updateVehicleKmAtInspection(@NotNull final Long inspectionId,
-                                            final long newKm) {
+    public void updateVehicleKmAtInspection(@NotNull final Long inspectionId, final long newKm) {
         final InspectionEntity entity = getById(inspectionId)
                 .toBuilder()
                 .withVehicleKm(newKm)
