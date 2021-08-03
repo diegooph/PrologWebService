@@ -13,8 +13,13 @@ public class AmazonConstants {
     private static final String BUCKET_TEST_TREINAMENTO = "prolog-teste/treinamento";
     private static final String BUCKET_TEST_CHECKLIST = "prolog-teste/checklist";
     private static final String BUCKET_TEST_SOCORRO_ROTA = "prolog-teste/socorro-rota";
+    private static final String BUCKET_TEST_LOGOS_EMPRESAS = "prolog-teste/empresas-logos";
 
     // Buckets oficiais.
+    public static final String BUCKET_NAME_LOGOS_EMPRESAS = BuildConfig.DEBUG
+            ? BUCKET_TEST_LOGOS_EMPRESAS
+            : "empresas/logos";
+
     public static final String BUCKET_NAME_PDF_TREINAMENTOS = BuildConfig.DEBUG
             ? BUCKET_TEST_TREINAMENTO
             : "treinamentos-prolog/pdf";
