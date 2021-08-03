@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoInternaService;
+import br.com.zalf.prolog.webservice.interno.suporte._model.InternalEmpresa;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -56,6 +58,12 @@ public final class SuporteService {
             Log.e(TAG, String.format("Erro ao alterar imagem da empresa %d", codEmpresa), throwable);
             throw new RuntimeException(throwable);
         }
+    }
+
+    @NotNull
+    public List<InternalEmpresa> getTodasEmpresas(@NotNull final String authorization) {
+        validate(authorization);
+        return dao.getTodasEmpresas();
     }
 
     @NotNull

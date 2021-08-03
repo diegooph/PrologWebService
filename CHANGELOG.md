@@ -8,6 +8,7 @@ Change Log
 
 # Features
 * Cria método de cadastro de empresa para uso no intralog
+* Cria método para buscar empresas para uso no intralog
 * Cria método para editar logo da empresa para uso no intralog
 
 ### Refactors

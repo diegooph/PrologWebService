@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.interno.suporte;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.interno.suporte._model.InternalEmpresa;
 import lombok.RequiredArgsConstructor;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
+import java.util.List;
 
 @RestController
 @Path("/v2/interno/suporte")
@@ -28,12 +29,18 @@ public final class SuporteResource {
             @HeaderParam("Authorization") final String authorization,
             @QueryParam("nomeEmpresa") final String nomeEmpresa,
             @FormDataParam("file") final InputStream fileInputStream,
-            @FormDataParam("file") final FormDataContentDisposition fileDetail) throws ProLogException {
+            @FormDataParam("file") final FormDataContentDisposition fileDetail) {
         return service.insertEmpresa(
                 authorization,
                 nomeEmpresa,
                 fileInputStream,
                 fileDetail);
+    }
+
+    @GET
+    @Path("/listar-empresas")
+    public List<InternalEmpresa> getTodasEmpresas(@HeaderParam("Authorization") final String authorization) {
+        return service.getTodasEmpresas(authorization);
     }
 
     @POST
@@ -42,7 +49,7 @@ public final class SuporteResource {
             @HeaderParam("Authorization") final String authorization,
             @QueryParam("codEmpresa") final Long codEmpresa,
             @FormDataParam("file") final InputStream fileInputStream,
-            @FormDataParam("file") final FormDataContentDisposition fileDetail) throws ProLogException {
+            @FormDataParam("file") final FormDataContentDisposition fileDetail) {
         return service.alterarImagemLogoEmpresa(
                 authorization,
                 codEmpresa,
