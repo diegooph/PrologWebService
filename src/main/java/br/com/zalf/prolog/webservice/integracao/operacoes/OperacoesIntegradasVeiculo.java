@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
-import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +17,7 @@ import java.util.List;
  * Operações integrados dos veículos.
  */
 interface OperacoesIntegradasVeiculo {
-    void insert(@NotNull final VeiculoCadastroDto veiculo,
+    void insert(@NotNull final VehicleCreateDto veiculo,
                 @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     @NotNull

@@ -59,7 +59,7 @@ import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleCreateDto;
 import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -259,7 +259,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @Override
     public void insert(
-            @NotNull final VeiculoCadastroDto veiculo,
+            @NotNull final VehicleCreateDto veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
