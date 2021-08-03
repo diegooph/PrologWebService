@@ -1,4 +1,5 @@
 alter table dimensao_pneu add column cod_empresa bigint;
+alter table dimensao_pneu add constraint fk_cod_empresa foreign key (cod_empresa) references empresa (codigo);
 alter table dimensao_pneu add column cod_auxiliar bigint;
 alter table dimensao_pneu add constraint unique_dimensao_cod_empresa unique (codigo, cod_empresa);
 alter table dimensao_pneu add column status_ativo boolean;
@@ -287,6 +288,19 @@ alter table dimensao_pneu add constraint  unique_dimensao_pneu unique (altura, l
 
 insert into dimensao_pneu (altura, largura, aro, cod_empresa, status_ativo,
                            cod_colaborador_cadastro, data_hora_ultima_atualizacao, cod_colaborador_ultima_atualizacao)
-select distinct d.altura, d.largura, d.aro, e.codigo, true, 2316, now(), 2316 from dimensao_pneu d join pneu_data pd on d.codigo = pd.cod_dimensao
-                                            join empresa e on pd.cod_empresa = e.codigo;
+select distinct d.altura, d.largura, d.aro, e.codigo, true, 2316, now(), 2316 from dimensao_pneu d join pneu_data pd on
+        d.codigo = pd.cod_dimensao join empresa e on pd.cod_empresa = e.codigo;
+
+update pneu_data pd
+set cod_dimensao = (
+    select d2.codigo
+    from dimensao_pneu d
+             join pneu_data p on d.codigo = p.cod_dimensao
+             left join dimensao_pneu d2 on d.aro = d2.aro and d.altura = d2.altura and d.largura = d2.largura and
+                                           d2.cod_empresa = p.cod_empresa
+    where d.cod_empresa is null
+      and d2.cod_empresa is not null
+      and pd.codigo = p.codigo);
+
+delete from dimensao_pneu where cod_empresa is null;
 
