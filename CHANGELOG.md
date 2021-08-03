@@ -6,6 +6,10 @@ Change Log
 ## UNRELEASED
 ##
 
+# Features
+* Cria método de cadastro de empresa para uso no intralog
+* Cria método para editar logo da empresa para uso no intralog
+
 ### Bug Fixes
 * Corrige erro no mapeamento de PSI em serviços fechados (PL-3866)
 * Corrige o relatório 'Placas com pneus abaixo do limite' para não exibir placas inativas (PS-3610)
