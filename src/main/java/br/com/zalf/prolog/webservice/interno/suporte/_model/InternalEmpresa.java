@@ -16,7 +16,7 @@ public final class InternalEmpresa {
     private final String nome;
     @Nullable
     private final String logoThumbnailUrl;
-    @Nullable
+    @NotNull
     private final LocalDateTime dataHoraCadastro;
     @Nullable
     private final String codAuxiliar;
