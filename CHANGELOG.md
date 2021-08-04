@@ -2,6 +2,13 @@
 Change Log
 ==========
 
+##
+## UNRELEASED
+##
+
+### Bug Fixes
+* Corrige nome do bucket para upload de logo de empresas
+
 <a name="v3.6.0"></a>
 ## Version [v3.6.0](https://github.com/luizfp/PrologWebService/compare/v3.5.5...v3.6.0) (2021-08-03)
 

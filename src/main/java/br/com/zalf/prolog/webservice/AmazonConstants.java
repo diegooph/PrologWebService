@@ -18,7 +18,7 @@ public class AmazonConstants {
     // Buckets oficiais.
     public static final String BUCKET_NAME_LOGOS_EMPRESAS = BuildConfig.DEBUG
             ? BUCKET_TEST_LOGOS_EMPRESAS
-            : "empresas/logos";
+            : "empresas-logos";
 
     public static final String BUCKET_NAME_PDF_TREINAMENTOS = BuildConfig.DEBUG
             ? BUCKET_TEST_TREINAMENTO
