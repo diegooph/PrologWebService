@@ -2,9 +2,8 @@
 Change Log
 ==========
 
-##
-## UNRELEASED
-##
+<a name="v3.6.0"></a>
+## Version [v3.6.0](https://github.com/luizfp/PrologWebService/compare/v3.5.5...v3.6.0) (2021-08-03)
 
 # Features
 * Cria método de cadastro de empresa para uso no intralog
