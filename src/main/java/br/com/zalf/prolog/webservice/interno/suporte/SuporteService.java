@@ -45,6 +45,19 @@ public final class SuporteService {
     }
 
     @NotNull
+    public List<InternalEmpresa> getTodasEmpresas(@NotNull final String authorization) {
+        validate(authorization);
+        return dao.getTodasEmpresas();
+    }
+
+    @NotNull
+    public InternalEmpresa getEmpresa(@NotNull final String authorization,
+                                      @NotNull final Long codEmpresa) {
+        validate(authorization);
+        return dao.getEmpresa(codEmpresa);
+    }
+
+    @NotNull
     public Response alterarImagemLogoEmpresa(@NotNull final String authorization,
                                              @NotNull final Long codEmpresa,
                                              @NotNull final InputStream fileInputStream,
@@ -58,12 +71,6 @@ public final class SuporteService {
             Log.e(TAG, String.format("Erro ao alterar imagem da empresa %d", codEmpresa), throwable);
             throw new RuntimeException(throwable);
         }
-    }
-
-    @NotNull
-    public List<InternalEmpresa> getTodasEmpresas(@NotNull final String authorization) {
-        validate(authorization);
-        return dao.getTodasEmpresas();
     }
 
     @NotNull

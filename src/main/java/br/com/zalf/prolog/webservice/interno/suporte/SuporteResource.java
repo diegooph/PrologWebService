@@ -43,6 +43,13 @@ public final class SuporteResource {
         return service.getTodasEmpresas(authorization);
     }
 
+    @GET
+    @Path("/buscar-empresa/{codEmpresa}")
+    public InternalEmpresa getEmpresa(@HeaderParam("Authorization") final String authorization,
+                                      @PathParam("codEmpresa") final Long codEmpresa) {
+        return service.getEmpresa(authorization, codEmpresa);
+    }
+
     @POST
     @Path("/alterar-imagem-logo-empresa")
     public Response alterarImagemLogoEmpresa(

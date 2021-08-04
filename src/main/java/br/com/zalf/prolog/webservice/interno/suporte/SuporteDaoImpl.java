@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -42,6 +43,27 @@ public final class SuporteDaoImpl {
                         "from empresa e " +
                         "order by e.nome",
                 new InternalEmpresaMapper());
+    }
+
+    @NotNull
+    public InternalEmpresa getEmpresa(@NotNull final Long codEmpresa) {
+        final InternalEmpresa empresa = DataAccessUtils.singleResult(jdbcTemplate.query(
+                "select " +
+                        "e.codigo as codigo," +
+                        "e.nome as nome," +
+                        "e.logo_thumbnail_url as logo_thumbnail_url," +
+                        "e.data_hora_cadastro as data_hora_cadastro," +
+                        "e.cod_auxiliar as cod_auxiliar," +
+                        "e.status_ativo as status_ativo," +
+                        "e.logo_consta_site_comercial as logo_consta_site_comercial " +
+                        "from empresa e " +
+                        "where e.codigo = ?",
+                new InternalEmpresaMapper(),
+                codEmpresa));
+        if (empresa == null) {
+            throw new IllegalStateException("Erro ao buscar empresa com código: " + codEmpresa);
+        }
+        return empresa;
     }
 
     public void alteraImagemLogoEmpresa(@NotNull final Long codEmpresa,

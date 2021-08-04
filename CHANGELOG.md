@@ -6,6 +6,9 @@ Change Log
 ## UNRELEASED
 ##
 
+# Features
+* Cria método de busca de empresa para uso no intralog
+
 ### Bug Fixes
 * Corrige nome do bucket para upload de logo de empresas
 
