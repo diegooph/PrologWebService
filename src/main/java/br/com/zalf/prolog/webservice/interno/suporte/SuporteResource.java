@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @Path("/v2/interno/suporte")
-@Consumes({MediaType.MULTIPART_FORM_DATA})
+@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public final class SuporteResource {
@@ -50,14 +50,23 @@ public final class SuporteResource {
         return service.getEmpresa(authorization, codEmpresa);
     }
 
-    @POST
+    @PUT
+    @Path("/alterar-empresa")
+    public Response updateEmpresa(
+            @HeaderParam("Authorization") final String authorization,
+            final InternalEmpresa empresa) {
+        return service.updateEmpresa(authorization, empresa);
+    }
+
+    @PUT
+    @Consumes({MediaType.MULTIPART_FORM_DATA})
     @Path("/alterar-imagem-logo-empresa")
-    public Response alterarImagemLogoEmpresa(
+    public Response updateImagemLogoEmpresa(
             @HeaderParam("Authorization") final String authorization,
             @QueryParam("codEmpresa") final Long codEmpresa,
             @FormDataParam("file") final InputStream fileInputStream,
             @FormDataParam("file") final FormDataContentDisposition fileDetail) {
-        return service.alterarImagemLogoEmpresa(
+        return service.updateImagemLogoEmpresa(
                 authorization,
                 codEmpresa,
                 fileInputStream,

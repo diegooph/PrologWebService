@@ -66,7 +66,25 @@ public final class SuporteDaoImpl {
         return empresa;
     }
 
-    public void alteraImagemLogoEmpresa(@NotNull final Long codEmpresa,
+    public void updateEmpresa(@NotNull final InternalEmpresa empresa) {
+        final int updateCount = jdbcTemplate.update(
+                "update empresa set " +
+                        "nome = ?," +
+                        "cod_auxiliar = ?," +
+                        "status_ativo = ?," +
+                        "logo_consta_site_comercial = ? " +
+                        "where codigo = ?",
+                empresa.getNome(),
+                empresa.getCodAuxiliar(),
+                empresa.isStatusAtivo(),
+                empresa.isLogoConstaSiteComercial(),
+                empresa.getCodigo());
+        if (updateCount != 1) {
+            throw new IllegalStateException();
+        }
+    }
+
+    public void updateImagemLogoEmpresa(@NotNull final Long codEmpresa,
                                         @NotNull final String urlImagem) {
         final int updateCount = jdbcTemplate.update(
                 "update empresa set logo_thumbnail_url = ? where codigo = ?",

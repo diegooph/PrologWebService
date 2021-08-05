@@ -8,6 +8,7 @@ Change Log
 
 # Features
 * Cria método de busca de empresa para uso no intralog
+* Cria método de alteração de empresa para uso no intralog
 
 ### Bug Fixes
 * Corrige nome do bucket para upload de logo de empresas

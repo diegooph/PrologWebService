@@ -58,14 +58,22 @@ public final class SuporteService {
     }
 
     @NotNull
-    public Response alterarImagemLogoEmpresa(@NotNull final String authorization,
-                                             @NotNull final Long codEmpresa,
-                                             @NotNull final InputStream fileInputStream,
-                                             @NotNull final FormDataContentDisposition fileDetail) {
+    public Response updateEmpresa(@NotNull final String authorization,
+                                  @NotNull final InternalEmpresa empresa) {
+        validate(authorization);
+        dao.updateEmpresa(empresa);
+        return Response.ok("Empresa alterada com sucesso!");
+    }
+
+    @NotNull
+    public Response updateImagemLogoEmpresa(@NotNull final String authorization,
+                                            @NotNull final Long codEmpresa,
+                                            @NotNull final InputStream fileInputStream,
+                                            @NotNull final FormDataContentDisposition fileDetail) {
         validate(authorization);
         try {
             final ImagemProlog imagemProlog = uploadLogoEmpresa(fileInputStream, fileDetail);
-            dao.alteraImagemLogoEmpresa(codEmpresa, imagemProlog.getUrlImagem());
+            dao.updateImagemLogoEmpresa(codEmpresa, imagemProlog.getUrlImagem());
             return Response.ok(imagemProlog.getUrlImagem());
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao alterar imagem da empresa %d", codEmpresa), throwable);
