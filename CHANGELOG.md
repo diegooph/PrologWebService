@@ -16,6 +16,8 @@ Change Log
 
 ### Refactors
 * Salva metadados sobre alteração de empresa e retorna isso nas buscas
+* Deleta resources/services/daos/testes depreciados do controle de jornada
+* Deleta métodos antigos da estrutura de autenticação
 
 ### Bug Fixes
 * Corrige nome do bucket para upload de logo de empresas
