@@ -178,12 +178,4 @@ public class EmpresaResource {
     public AbstractResponse insertFuncao(final Cargo cargo, @PathParam("codUnidade") final Long codUnidade) {
         return service.insertFuncao(cargo, codUnidade);
     }
-
-    @GET
-    @UsedBy(platforms = Platform.ANDROID)
-    @Secured(authTypes = {AuthType.BASIC, AuthType.BEARER})
-    @Path("/unidades/{codUnidade}/current-time")
-    public LocalDateTime getCurrentTimeUnidade(@PathParam("codUnidade") final Long codUnidade) throws Exception {
-        return LocalDateTime.now(TimeZoneManager.getZoneIdForCodUnidade(codUnidade));
-    }
 }
