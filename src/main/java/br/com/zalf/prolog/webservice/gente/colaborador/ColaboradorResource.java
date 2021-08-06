@@ -1,13 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.colaborador;
 
-import br.com.zalf.prolog.webservice.autenticacao.Autenticacao;
-import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoResource;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.*;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -140,30 +138,5 @@ public class ColaboradorResource {
         } else {
             return Response.error("Falha ao deletar colaborador");
         }
-    }
-
-    /**
-     * @deprecated in v0.0.29. Use {@link #getLoginHolder(LoginRequest)} instead.
-     */
-    @GET
-    @Secured
-    @Path("/loginHolder/{cpf}")
-    @Deprecated
-    public LoginHolder DEPRECATE_GET_LOGIN_HOLDER(@PathParam("cpf") final Long cpf) {
-        return service.getLoginHolder(cpf);
-    }
-
-    /**
-     * @deprecated in v0.0.10. Use {@link AutenticacaoResource#verifyLogin(Long, long)} instead
-     */
-    @POST
-    @Path("/verifyLogin")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Deprecated
-    public Autenticacao DEPRECATED_VERIFY_LOGIN(@FormParam("cpf") final Long cpf,
-                                                @FormParam("dataNascimento") final long dataNascimento) {
-
-        Log.d(TAG, String.valueOf(cpf) + "data: " + String.valueOf(dataNascimento));
-        return new AutenticacaoResource().verifyLogin(cpf, dataNascimento);
     }
 }
