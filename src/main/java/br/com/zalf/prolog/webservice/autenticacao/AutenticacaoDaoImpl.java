@@ -39,8 +39,8 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * from func_geral_get_or_insert_token_autenticacao(" +
-                    "f_cod_colaborador => ?, " +
-                    "f_token_autenticacao => ?);");
+                                                 "f_cod_colaborador => ?, " +
+                                                 "f_token_autenticacao => ?);");
             stmt.setLong(1, codColaborador);
             stmt.setString(2, new TokenGenerator().getNextToken());
             rSet = stmt.executeQuery();
@@ -49,11 +49,10 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
                 autenticacao.setCpf(rSet.getLong("CPF_COLABORADOR"));
                 autenticacao.setToken(rSet.getString("TOKEN_AUTENTICACAO"));
                 autenticacao.setStatus(Autenticacao.OK);
-                return autenticacao;
             } else {
                 autenticacao.setStatus(Autenticacao.ERROR);
-                return autenticacao;
             }
+            return autenticacao;
         } finally {
             close(conn, stmt, rSet);
         }
@@ -65,7 +64,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("DELETE FROM TOKEN_AUTENTICACAO TA WHERE TA.TOKEN = ?");
+            stmt = conn.prepareStatement("delete from token_autenticacao ta where ta.token = ?");
             stmt.setString(1, token);
             if (stmt.executeUpdate() == 0) {
                 throw new ResourceAlreadyDeletedException();
@@ -85,12 +84,13 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE TOKEN_AUTENTICACAO SET " +
-                    "DATA_HORA = ? WHERE TOKEN = ? " +
-                    "AND (SELECT C.STATUS_ATIVO " +
-                    "FROM COLABORADOR C " +
-                    "JOIN TOKEN_AUTENTICACAO TA ON C.CPF = TA.CPF_COLABORADOR AND TA.TOKEN = ?)::TEXT = ?" +
-                    "RETURNING COD_COLABORADOR, CPF_COLABORADOR");
+            stmt = conn.prepareStatement("update token_autenticacao set " +
+                                                 "data_hora = ? where token = ? " +
+                                                 "and (select c.status_ativo " +
+                                                 "from colaborador c " +
+                                                 "join token_autenticacao ta on c.cpf = ta.cpf_colaborador and ta" +
+                                                 ".token = ?)::text = ?" +
+                                                 "returning cod_colaborador, cpf_colaborador");
             stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
             stmt.setString(2, token);
             stmt.setString(3, token);
@@ -119,8 +119,11 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT C.CODIGO AS COD_COLABORADOR FROM COLABORADOR C WHERE C.CPF = ? " +
-                    "AND C.DATA_NASCIMENTO = ? AND C.STATUS_ATIVO::TEXT LIKE ?;");
+            stmt = conn.prepareStatement("select c.codigo as cod_colaborador " +
+                                                 "from colaborador c " +
+                                                 "where c.cpf = ? " +
+                                                 "and c.data_nascimento = ? " +
+                                                 "and c.status_ativo::text like ?;");
             stmt.setLong(1, cpf);
             stmt.setObject(2, dataNascimento);
             stmt.setString(3, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
@@ -149,11 +152,11 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_COLABORADOR_VERIFICA_PERMISSOES_TOKEN(" +
-                    "F_TOKEN                           := ?," +
-                    "F_PERMISSSOES_NECESSARIAS         := ?," +
-                    "F_PRECISA_TER_TODAS_AS_PERMISSOES := ?," +
-                    "F_APENAS_USUARIOS_ATIVOS          := ?);");
+            stmt = conn.prepareStatement("select * from func_colaborador_verifica_permissoes_token(" +
+                                                 "f_token                           := ?," +
+                                                 "f_permisssoes_necessarias         := ?," +
+                                                 "f_precisa_ter_todas_as_permissoes := ?," +
+                                                 "f_apenas_usuarios_ativos          := ?);");
             stmt.setString(1, token);
             stmt.setObject(2, permissions);
             stmt.setBoolean(3, needsToHaveAllPermissions);
@@ -181,12 +184,12 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_COLABORADOR_VERIFICA_PERMISSOES_CPF_DATA_NASCIMENTO(" +
-                    "F_CPF                             := ?," +
-                    "F_DATA_NASCIMENTO                 := ?," +
-                    "F_PERMISSSOES_NECESSARIAS         := ?," +
-                    "F_PRECISA_TER_TODAS_AS_PERMISSOES := ?," +
-                    "F_APENAS_USUARIOS_ATIVOS          := ?);");
+            stmt = conn.prepareStatement("select * from func_colaborador_verifica_permissoes_cpf_data_nascimento(" +
+                                                 "f_cpf                             := ?," +
+                                                 "f_data_nascimento                 := ?," +
+                                                 "f_permisssoes_necessarias         := ?," +
+                                                 "f_precisa_ter_todas_as_permissoes := ?," +
+                                                 "f_apenas_usuarios_ativos          := ?);");
             stmt.setLong(1, cpf);
             stmt.setObject(2, dataNascimento);
             stmt.setObject(3, permissions);
@@ -212,8 +215,9 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         autenticacao.setToken(token);
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO TOKEN_AUTENTICACAO"
-                    + "(CPF_COLABORADOR, COD_COLABORADOR, TOKEN) VALUES (?, (SELECT CODIGO FROM COLABORADOR WHERE CPF = ?), ?);");
+            stmt = conn.prepareStatement("insert into token_autenticacao"
+                                                 + "(cpf_colaborador, cod_colaborador, token) values (?, (select " +
+                                                 "codigo from colaborador where cpf = ?), ?);");
             stmt.setLong(1, cpf);
             stmt.setLong(2, cpf);
             stmt.setString(3, token);
