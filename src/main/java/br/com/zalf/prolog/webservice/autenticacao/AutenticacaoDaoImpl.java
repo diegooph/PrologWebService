@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
+@SuppressWarnings("NullableProblems")
 public class AutenticacaoDaoImpl extends DatabaseConnection implements AutenticacaoDao {
 
     public AutenticacaoDaoImpl() {
