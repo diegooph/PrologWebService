@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.interno.suporte;
 
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
+import br.com.zalf.prolog.webservice.interno.PrologInternalUser;
 import br.com.zalf.prolog.webservice.interno.suporte._model.InternalEmpresa;
 import br.com.zalf.prolog.webservice.interno.suporte._model.InternalEmpresaMapper;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +41,9 @@ public final class SuporteDaoImpl {
                         "e.data_hora_cadastro as data_hora_cadastro," +
                         "e.cod_auxiliar as cod_auxiliar," +
                         "e.status_ativo as status_ativo," +
-                        "e.logo_consta_site_comercial as logo_consta_site_comercial " +
+                        "e.logo_consta_site_comercial as logo_consta_site_comercial, " +
+                        "e.data_hora_ultima_atualizacao as data_hora_ultima_atualizacao, " +
+                        "e.responsavel_ultima_atualizacao as responsavel_ultima_atualizacao " +
                         "from empresa e " +
                         "order by e.nome",
                 new InternalEmpresaMapper());
@@ -55,7 +59,9 @@ public final class SuporteDaoImpl {
                         "e.data_hora_cadastro as data_hora_cadastro," +
                         "e.cod_auxiliar as cod_auxiliar," +
                         "e.status_ativo as status_ativo," +
-                        "e.logo_consta_site_comercial as logo_consta_site_comercial " +
+                        "e.logo_consta_site_comercial as logo_consta_site_comercial, " +
+                        "e.data_hora_ultima_atualizacao as data_hora_ultima_atualizacao, " +
+                        "e.responsavel_ultima_atualizacao as responsavel_ultima_atualizacao " +
                         "from empresa e " +
                         "where e.codigo = ?",
                 new InternalEmpresaMapper(),
@@ -66,18 +72,23 @@ public final class SuporteDaoImpl {
         return empresa;
     }
 
-    public void updateEmpresa(@NotNull final InternalEmpresa empresa) {
+    public void updateEmpresa(@NotNull final InternalEmpresa empresa,
+                              @NotNull final PrologInternalUser user) {
         final int updateCount = jdbcTemplate.update(
                 "update empresa set " +
                         "nome = ?," +
                         "cod_auxiliar = ?," +
                         "status_ativo = ?," +
-                        "logo_consta_site_comercial = ? " +
+                        "logo_consta_site_comercial = ?, " +
+                        "data_hora_ultima_atualizacao = ?, " +
+                        "responsavel_ultima_atualizacao = ? " +
                         "where codigo = ?",
                 empresa.getNome(),
                 empresa.getCodAuxiliar(),
                 empresa.isStatusAtivo(),
                 empresa.isLogoConstaSiteComercial(),
+                Now.getOffsetDateTimeUtc(),
+                user.getUsername(),
                 empresa.getCodigo());
         if (updateCount != 1) {
             throw new IllegalStateException();
@@ -85,10 +96,17 @@ public final class SuporteDaoImpl {
     }
 
     public void updateImagemLogoEmpresa(@NotNull final Long codEmpresa,
-                                        @NotNull final String urlImagem) {
+                                        @NotNull final String urlImagem,
+                                        @NotNull final PrologInternalUser user) {
         final int updateCount = jdbcTemplate.update(
-                "update empresa set logo_thumbnail_url = ? where codigo = ?",
+                "update empresa set " +
+                        "logo_thumbnail_url = ?, " +
+                        "data_hora_ultima_atualizacao = ?, " +
+                        "responsavel_ultima_atualizacao = ? " +
+                        "where codigo = ?",
                 urlImagem,
+                Now.getOffsetDateTimeUtc(),
+                user.getUsername(),
                 codEmpresa);
         if (updateCount != 1) {
             throw new IllegalStateException();

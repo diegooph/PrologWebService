@@ -22,4 +22,8 @@ public final class InternalEmpresa {
     private final String codAuxiliar;
     private final boolean statusAtivo;
     private final boolean logoConstaSiteComercial;
+    @Nullable
+    private final LocalDateTime dataHoraUltimaAtualizacao;
+    @Nullable
+    private final String responsavelUltimaAtualizacao;
 }

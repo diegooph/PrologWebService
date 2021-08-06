@@ -12,6 +12,8 @@ public final class InternalEmpresaMapper implements RowMapper<InternalEmpresa> {
     @NotNull
     @Override
     public InternalEmpresa mapRow(@NotNull final ResultSet rs, final int rowNum) throws SQLException {
+        final OffsetDateTime dataHoraUltimaAtualizacao = rs.getObject("data_hora_ultima_atualizacao",
+                                                                      OffsetDateTime.class);
         return InternalEmpresa
                 .builder()
                 .withCodigo(rs.getLong("codigo"))
@@ -21,6 +23,10 @@ public final class InternalEmpresaMapper implements RowMapper<InternalEmpresa> {
                 .withCodAuxiliar(rs.getString("cod_auxiliar"))
                 .withStatusAtivo(rs.getBoolean("status_ativo"))
                 .withLogoConstaSiteComercial(rs.getBoolean("logo_consta_site_comercial"))
+                .withDataHoraUltimaAtualizacao(dataHoraUltimaAtualizacao != null
+                                                       ? dataHoraUltimaAtualizacao.toLocalDateTime()
+                                                       : null)
+                .withResponsavelUltimaAtualizacao(rs.getString("responsavel_ultima_atualizacao"))
                 .build();
     }
 }
