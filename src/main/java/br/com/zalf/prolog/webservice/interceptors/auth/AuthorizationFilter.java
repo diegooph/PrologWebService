@@ -25,9 +25,9 @@ import java.util.Optional;
 @Secured
 @Provider
 @Priority(Priorities.AUTHENTICATION)
-public final class AuthenticationFilter implements ContainerRequestFilter {
+public final class AuthorizationFilter implements ContainerRequestFilter {
     @NotNull
-    private static final String TAG = AuthenticationFilter.class.getSimpleName();
+    private static final String TAG = AuthorizationFilter.class.getSimpleName();
     @Context
     private ResourceInfo resourceInfo;
 
