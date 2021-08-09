@@ -12,9 +12,9 @@ public final class AuthorizatorFactory {
     }
 
     @NotNull
-    public static PrologAuthorizator createAuthenticator(@NotNull final ContainerRequestContext requestContext,
-                                                         @NotNull final Secured secured,
-                                                         @NotNull final AuthMethod authMethod) {
+    public static PrologAuthorizator createAuthorizator(@NotNull final ContainerRequestContext requestContext,
+                                                        @NotNull final Secured secured,
+                                                        @NotNull final AuthMethod authMethod) {
         switch (authMethod.getAuthType()) {
             case BEARER:
                 return new BearerAuthorizator(requestContext, secured, authMethod);
