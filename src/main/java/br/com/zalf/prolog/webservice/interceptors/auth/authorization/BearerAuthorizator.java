@@ -23,7 +23,7 @@ public final class BearerAuthorizator extends PrologAuthorizator {
     @Override
     public Optional<ColaboradorAutenticado> validate() {
         return Optional.of(internalValidate(
-                authMethod.getAuthorizationHeaderValue(),
+                authMethod.getOnlyTokenPart(),
                 secured.permissions(),
                 secured.needsToHaveAllPermissions(),
                 secured.considerOnlyActiveUsers()));
