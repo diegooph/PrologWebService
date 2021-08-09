@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.integracao;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.NotAuthorizedException;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.RequestAuthenticator;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -12,10 +12,15 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class BaseIntegracaoService {
+public class BaseIntegracaoService implements RequestAuthenticator {
+    private static final String TAG = BaseIntegracaoService.class.getSimpleName();
+
+    public void ensureValidToken(@NotNull final String tokenIntegracao) {
+        ensureValidToken(tokenIntegracao, TAG);
+    }
 
     public void ensureValidToken(@NotNull final String tokenIntegracao,
-                                 @NotNull final String tag) throws ProLogException {
+                                 @NotNull final String tag) {
         try {
             if (!Injection.provideAutenticacaoIntegracaoDao().verifyIfTokenIntegracaoExists(tokenIntegracao)) {
                 throw new NotAuthorizedException("Token Integração não existe no banco de dados: " + tokenIntegracao);
