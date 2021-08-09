@@ -44,7 +44,7 @@ public final class AuthorizationFilter implements ContainerRequestFilter {
 
         getSecuredAnnotation().ifPresent(secured -> {
             ensureCorrectAuthType(secured.authTypes(), authType);
-            final PrologAuthenticator authenticator = AuthenticatorFactory.createAuthenticator(
+            final PrologAuthorizator authenticator = AuthorizatorFactory.createAuthenticator(
                     requestContext,
                     secured,
                     authType == AuthType.BEARER ? bearerAuthHeader : apiAuthHeader,

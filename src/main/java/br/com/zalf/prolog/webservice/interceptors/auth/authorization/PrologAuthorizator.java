@@ -9,7 +9,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import java.util.Optional;
 
 @AllArgsConstructor
-public abstract class PrologAuthenticator {
+public abstract class PrologAuthorizator {
     @NotNull
     protected final ContainerRequestContext requestContext;
     @NotNull

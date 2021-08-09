@@ -12,11 +12,11 @@ import javax.ws.rs.container.ContainerRequestContext;
 import java.util.Optional;
 
 @SuppressWarnings("NullableProblems")
-public final class BearerAuthenticator extends PrologAuthenticator {
+public final class BearerAuthorizator extends PrologAuthorizator {
 
-    public BearerAuthenticator(@NotNull final ContainerRequestContext requestContext,
-                               @NotNull final Secured secured,
-                               @NotNull final String authorizationHeader) {
+    public BearerAuthorizator(@NotNull final ContainerRequestContext requestContext,
+                              @NotNull final Secured secured,
+                              @NotNull final String authorizationHeader) {
         super(requestContext, secured, authorizationHeader);
     }
 

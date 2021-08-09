@@ -13,11 +13,11 @@ import java.util.Optional;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public final class ApiAuthenticator extends PrologAuthenticator {
+public final class ApiAuthorizator extends PrologAuthorizator {
 
-    public ApiAuthenticator(@NotNull final ContainerRequestContext requestContext,
-                            @NotNull final Secured secured,
-                            @NotNull final String authorizationHeader) {
+    public ApiAuthorizator(@NotNull final ContainerRequestContext requestContext,
+                           @NotNull final Secured secured,
+                           @NotNull final String authorizationHeader) {
         super(requestContext, secured, authorizationHeader);
     }
 
