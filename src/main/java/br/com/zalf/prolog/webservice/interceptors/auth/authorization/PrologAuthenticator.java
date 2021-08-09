@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.interceptors.auth.authenticator;
+package br.com.zalf.prolog.webservice.interceptors.auth.authorization;
 
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;

@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.autenticacao.token.TokenGenerator;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDeletedException;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
-import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.StatusSecured;
+import br.com.zalf.prolog.webservice.interceptors.auth.authorization.StatusSecured;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;

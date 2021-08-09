@@ -5,8 +5,8 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.errorhandling.exception.MultiAuthorizationHeadersException;
-import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.AuthenticatorFactory;
-import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.PrologAuthenticator;
+import br.com.zalf.prolog.webservice.interceptors.auth.authorization.AuthenticatorFactory;
+import br.com.zalf.prolog.webservice.interceptors.auth.authorization.PrologAuthenticator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
