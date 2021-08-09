@@ -136,6 +136,6 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
 
     @Nullable
     private <T extends Annotation> T getAnnotationMethod(@NotNull final Class<T> annotationClass) {
-        return resourceInfo.getResourceClass().getAnnotation(annotationClass);
+        return resourceInfo.getResourceMethod().getAnnotation(annotationClass);
     }
 }
