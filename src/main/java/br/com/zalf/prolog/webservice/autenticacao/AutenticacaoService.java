@@ -4,13 +4,12 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
-import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.RequestAuthenticator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Optional;
 
-public class AutenticacaoService implements RequestAuthenticator {
+public class AutenticacaoService {
     private static final String TAG = AutenticacaoService.class.getSimpleName();
     private final AutenticacaoDao dao = Injection.provideAutenticacaoDao();
 
