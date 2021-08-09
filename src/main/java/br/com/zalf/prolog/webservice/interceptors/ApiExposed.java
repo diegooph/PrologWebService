@@ -1,7 +1,5 @@
 package br.com.zalf.prolog.webservice.interceptors;
 
-import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
-
 import javax.ws.rs.NameBinding;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -17,5 +15,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface ApiExposed {
-    AuthType[] authTypes() default AuthType.API;
 }
