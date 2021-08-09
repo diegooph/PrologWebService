@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
-import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
+import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -39,8 +39,8 @@ public class VehicleResource implements VehicleApiDoc {
     }
 
     @POST
-    @ApiExposed
-    @Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API},
+             permissions = Pilares.Frota.Veiculo.CADASTRAR)
     @Override
     public SuccessResponse insert(
             @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Optional final String integrationToken,
@@ -49,12 +49,12 @@ public class VehicleResource implements VehicleApiDoc {
     }
 
     @GET
-    @ApiExposed
-    @Secured(permissions = {
-            Pilares.Frota.Veiculo.VISUALIZAR,
-            Pilares.Frota.Veiculo.ALTERAR,
-            Pilares.Frota.Veiculo.CADASTRAR,
-            Pilares.Frota.Checklist.VISUALIZAR_TODOS})
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API},
+             permissions = {
+                     Pilares.Frota.Veiculo.VISUALIZAR,
+                     Pilares.Frota.Veiculo.ALTERAR,
+                     Pilares.Frota.Veiculo.CADASTRAR,
+                     Pilares.Frota.Checklist.VISUALIZAR_TODOS})
     @Override
     public List<VehicleDto> getAllVehicles(
             @QueryParam("codUnidades") @Required final List<Long> branchesId,

@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
-import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
+import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -42,8 +42,8 @@ public class TireResource implements TireApiDoc {
     }
 
     @POST
-    @ApiExposed
-    @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API},
+             permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Override
     public SuccessResponse insert(
             @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Optional final String integrationToken,
@@ -54,15 +54,15 @@ public class TireResource implements TireApiDoc {
 
     @Override
     @GET
-    @ApiExposed
-    @Secured(permissions = {
-            Pilares.Frota.Pneu.VISUALIZAR,
-            Pilares.Frota.Pneu.CADASTRAR,
-            Pilares.Frota.Pneu.ALTERAR,
-            Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API},
+             permissions = {
+                     Pilares.Frota.Pneu.VISUALIZAR,
+                     Pilares.Frota.Pneu.CADASTRAR,
+                     Pilares.Frota.Pneu.ALTERAR,
+                     Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM,
+                     Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+                     Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+                     Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     public List<TireDto> getAllTires(@QueryParam("codUnidades") @Required final List<Long> branchesId,
                                      @QueryParam("statusPneu") @Optional final StatusPneu tireStatus,
                                      @QueryParam("limit") final int limit,

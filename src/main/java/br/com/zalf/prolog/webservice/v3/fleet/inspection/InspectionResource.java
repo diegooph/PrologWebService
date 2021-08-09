@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.v3.fleet.inspection;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
-import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
+import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -42,12 +42,12 @@ public class InspectionResource implements InspectionApiDoc {
 
     @GET
     @Path("/veiculos")
-    @ApiExposed
-    @Secured(permissions = {
-            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
-            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
-            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API},
+             permissions = {
+                     Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
+                     Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+                     Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
+                     Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Override
     public List<VehicleInspectionDto> getVehicleInspections(
             @QueryParam("codUnidades") @NotNull final List<Long> branchesId,
@@ -72,12 +72,12 @@ public class InspectionResource implements InspectionApiDoc {
 
     @GET
     @Path("/avulsas")
-    @ApiExposed
-    @Secured(permissions = {
-            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
-            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO,
-            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
-            Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API},
+             permissions = {
+                     Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
+                     Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO,
+                     Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
+                     Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Override
     public List<TireInspectionDto> getTireInspections(
             @QueryParam("codUnidades") @NotNull final List<Long> branchesId,

@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Secured {
+    AuthType[] authTypes() default AuthType.BEARER;
     int[] permissions() default {};
     boolean needsToHaveAllPermissions() default false;
     boolean considerOnlyActiveUsers() default true;

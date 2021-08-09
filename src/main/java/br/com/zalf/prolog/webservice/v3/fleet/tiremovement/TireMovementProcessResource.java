@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.v3.fleet.tiremovement;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
-import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
+import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -42,11 +42,11 @@ public final class TireMovementProcessResource implements TireMovementProcessApi
     }
 
     @GET
-    @ApiExposed
-    @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API},
+             permissions = {
+                     Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+                     Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+                     Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @Override
     public List<TireMovimentProcessDto> getAllTireMovements(
             @QueryParam("codUnidades") @Required final List<Long> branchesId,

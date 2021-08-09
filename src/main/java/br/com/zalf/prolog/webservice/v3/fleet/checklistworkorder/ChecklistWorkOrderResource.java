@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.v3.fleet.checklistworkorder;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
-import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
+import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -43,8 +43,8 @@ public final class ChecklistWorkOrderResource implements ChecklistWorkOrderApiDo
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR})
-    @ApiExposed
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API},
+             permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR})
     @Override
     public List<ChecklistWorkOrderDto> getAllWorkOrders(
             @QueryParam("codUnidades") @Required final List<Long> branchesId,

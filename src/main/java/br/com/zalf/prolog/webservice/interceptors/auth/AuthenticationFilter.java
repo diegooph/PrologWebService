@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.errorhandling.exception.MultiAuthorizationHeadersException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
-import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.AuthenticatorFactory;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.PrologAuthenticator;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +37,8 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
     @Override
     public void filter(final ContainerRequestContext requestContext) {
         final String bearerAuthorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-        final String apiAuthorizationHeader = requestContext.getHeaderString(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO);
+        final String apiAuthorizationHeader =
+                requestContext.getHeaderString(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO);
         Log.d(TAG, "AuthorizationHeader: " + bearerAuthorizationHeader);
         Log.d(TAG, "ApiAuthorizationHeader: " + apiAuthorizationHeader);
 
@@ -73,13 +73,9 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
     }
 
     private void validateApiRequest(@NotNull final String authorizationHeader) {
-        if (canAccessEndpointThroughApi()) {
-            final PrologAuthenticator authenticator =
-                    AuthenticatorFactory.createAuthenticator(AuthType.API, new BaseIntegracaoService());
-            authenticator.validate(authorizationHeader, null);
-        } else {
-            throw new NotAuthorizedException("The requested endpoint is not available for API consumption.");
-        }
+        final PrologAuthenticator authenticator =
+                AuthenticatorFactory.createAuthenticator(AuthType.API, new BaseIntegracaoService());
+        authenticator.validate(authorizationHeader, null);
     }
 
     private void validateBearerRequest(@NotNull final ContainerRequestContext requestContext,
@@ -106,11 +102,6 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
                 AuthenticatorFactory.createAuthenticator(AuthType.BEARER, new AutenticacaoService());
         final Optional<ColaboradorAutenticado> colaboradorAutenticado = authenticator.validate(token, secured);
         colaboradorAutenticado.ifPresent(colaborador -> injectColaboradorAutenticado(requestContext, colaborador));
-    }
-
-    private boolean canAccessEndpointThroughApi() {
-        return getAnnotationClass(ApiExposed.class) != null
-                || getAnnotationMethod(ApiExposed.class) != null;
     }
 
     private void injectColaboradorAutenticado(@NotNull final ContainerRequestContext requestContext,

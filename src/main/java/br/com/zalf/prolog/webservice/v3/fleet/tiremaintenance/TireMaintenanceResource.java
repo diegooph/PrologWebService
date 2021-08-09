@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.v3.fleet.tiremaintenance;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
-import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
+import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -39,8 +39,8 @@ public class TireMaintenanceResource implements TireMaintenanceApiDoc {
     private final TireMaintenanceMapper mapper;
 
     @GET
-    @ApiExposed
-    @Secured(permissions = Pilares.Frota.OrdemServico.Pneu.VISUALIZAR)
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API},
+             permissions = Pilares.Frota.OrdemServico.Pneu.VISUALIZAR)
     @Override
     public List<TireMaintenanceDto> getAllTireMaintenance(
             @QueryParam("branchesId") @Required final List<Long> branchesId,
