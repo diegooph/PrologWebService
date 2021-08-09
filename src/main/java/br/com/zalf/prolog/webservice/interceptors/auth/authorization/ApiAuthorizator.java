@@ -17,14 +17,14 @@ public final class ApiAuthorizator extends PrologAuthorizator {
 
     public ApiAuthorizator(@NotNull final ContainerRequestContext requestContext,
                            @NotNull final Secured secured,
-                           @NotNull final String authorizationHeader) {
-        super(requestContext, secured, authorizationHeader);
+                           @NotNull final AuthMethod authMethod) {
+        super(requestContext, secured, authMethod);
     }
 
     @NotNull
     @Override
     public Optional<ColaboradorAutenticado> validate() {
-        internalValidade(authorizationHeader);
+        internalValidade(authMethod.getOnlyTokenPart());
         return Optional.empty();
     }
 

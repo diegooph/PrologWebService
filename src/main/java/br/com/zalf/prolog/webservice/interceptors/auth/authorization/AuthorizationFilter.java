@@ -34,24 +34,29 @@ public final class AuthorizationFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(final ContainerRequestContext requestContext) {
+        final AuthMethod authMethod = getAuthMethod(requestContext);
+        getSecuredAnnotation().ifPresent(secured -> {
+            ensureCorrectAuthType(secured.authTypes(), authMethod.getAuthType());
+            final PrologAuthorizator authenticator = AuthorizatorFactory.createAuthenticator(
+                    requestContext,
+                    secured,
+                    authMethod);
+            final Optional<ColaboradorAutenticado> colaboradorAutenticado = authenticator.validate();
+            colaboradorAutenticado.ifPresent(colaborador -> injectColaboradorAutenticado(requestContext, colaborador));
+        });
+    }
+
+    @NotNull
+    private AuthMethod getAuthMethod(@NotNull final ContainerRequestContext requestContext) {
         final String bearerAuthHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         final String apiAuthHeader = requestContext.getHeaderString(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO);
-        Log.d(TAG, "AuthorizationHeader: " + bearerAuthHeader);
+        Log.d(TAG, "BearerAuthorizationHeader: " + bearerAuthHeader);
         Log.d(TAG, "ApiAuthorizationHeader: " + apiAuthHeader);
 
         ensureRightAuthorizationHeader(bearerAuthHeader, apiAuthHeader);
         final AuthType authType = getAuthTypeFromHeaders(bearerAuthHeader, apiAuthHeader);
 
-        getSecuredAnnotation().ifPresent(secured -> {
-            ensureCorrectAuthType(secured.authTypes(), authType);
-            final PrologAuthorizator authenticator = AuthorizatorFactory.createAuthenticator(
-                    requestContext,
-                    secured,
-                    authType == AuthType.BEARER ? bearerAuthHeader : apiAuthHeader,
-                    authType);
-            final Optional<ColaboradorAutenticado> colaboradorAutenticado = authenticator.validate();
-            colaboradorAutenticado.ifPresent(colaborador -> injectColaboradorAutenticado(requestContext, colaborador));
-        });
+        return new AuthMethod(authType, authType == AuthType.BEARER ? bearerAuthHeader : apiAuthHeader);
     }
 
     private void ensureRightAuthorizationHeader(@Nullable final String authorizationHeader,

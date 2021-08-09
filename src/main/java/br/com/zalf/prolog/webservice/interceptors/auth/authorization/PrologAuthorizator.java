@@ -15,7 +15,7 @@ public abstract class PrologAuthorizator {
     @NotNull
     protected final Secured secured;
     @NotNull
-    protected final String authorizationHeader;
+    protected final AuthMethod authMethod;
 
     @NotNull
     public abstract Optional<ColaboradorAutenticado> validate();

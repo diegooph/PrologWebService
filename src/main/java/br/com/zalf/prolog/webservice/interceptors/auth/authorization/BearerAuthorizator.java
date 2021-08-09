@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.interceptors.auth.authorization;
 
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
-import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import org.jetbrains.annotations.NotNull;
@@ -16,16 +15,15 @@ public final class BearerAuthorizator extends PrologAuthorizator {
 
     public BearerAuthorizator(@NotNull final ContainerRequestContext requestContext,
                               @NotNull final Secured secured,
-                              @NotNull final String authorizationHeader) {
-        super(requestContext, secured, authorizationHeader);
+                              @NotNull final AuthMethod authMethod) {
+        super(requestContext, secured, authMethod);
     }
 
     @NotNull
     @Override
     public Optional<ColaboradorAutenticado> validate() {
-        final String token = TokenCleaner.getOnlyToken(authorizationHeader);
         return Optional.of(internalValidate(
-                token,
+                authMethod.getAuthorizationHeaderValue(),
                 secured.permissions(),
                 secured.needsToHaveAllPermissions(),
                 secured.considerOnlyActiveUsers()));
