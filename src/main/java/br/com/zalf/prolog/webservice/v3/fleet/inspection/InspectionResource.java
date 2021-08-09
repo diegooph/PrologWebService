@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.v3.fleet.inspection;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
-import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
+import br.com.zalf.prolog.webservice.interceptors.auth.authorization.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;

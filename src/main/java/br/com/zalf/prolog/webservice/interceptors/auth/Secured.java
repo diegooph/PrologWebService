@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.interceptors.auth;
 
+import br.com.zalf.prolog.webservice.interceptors.auth.authorization.AuthType;
+
 import javax.ws.rs.NameBinding;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

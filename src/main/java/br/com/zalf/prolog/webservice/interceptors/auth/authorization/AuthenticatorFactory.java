@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.interceptors.auth.authorization;
 
-import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import org.jetbrains.annotations.NotNull;
 

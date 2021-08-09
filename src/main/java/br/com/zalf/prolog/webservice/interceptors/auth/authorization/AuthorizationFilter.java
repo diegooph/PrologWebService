@@ -1,12 +1,13 @@
-package br.com.zalf.prolog.webservice.interceptors.auth;
+package br.com.zalf.prolog.webservice.interceptors.auth.authorization;
 
 import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.errorhandling.exception.MultiAuthorizationHeadersException;
-import br.com.zalf.prolog.webservice.interceptors.auth.authorization.AuthenticatorFactory;
-import br.com.zalf.prolog.webservice.interceptors.auth.authorization.PrologAuthenticator;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
+import br.com.zalf.prolog.webservice.interceptors.auth.PrologSecurityContext;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
