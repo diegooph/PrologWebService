@@ -4,8 +4,8 @@ import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import javax.ws.rs.container.ContainerRequestContext;
 import java.util.Optional;
 
 /**
@@ -14,22 +14,21 @@ import java.util.Optional;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class ApiAuthenticator extends PrologAuthenticator {
-    @NotNull
-    private final BaseIntegracaoService service;
 
-    ApiAuthenticator(@NotNull final RequestAuthenticator authenticator) {
-        this.service = (BaseIntegracaoService) authenticator;
+    public ApiAuthenticator(@NotNull final ContainerRequestContext requestContext,
+                            @NotNull final Secured secured,
+                            @NotNull final String authorizationHeader) {
+        super(requestContext, secured, authorizationHeader);
     }
 
     @NotNull
     @Override
-    public Optional<ColaboradorAutenticado> validate(@NotNull final String token,
-                                                     @Nullable final Secured secured) {
-        internalValidade(token);
+    public Optional<ColaboradorAutenticado> validate() {
+        internalValidade(authorizationHeader);
         return Optional.empty();
     }
 
     private void internalValidade(@NotNull final String apiToken) {
-        service.ensureValidToken(apiToken);
+        new BaseIntegracaoService().ensureValidToken(apiToken);
     }
 }

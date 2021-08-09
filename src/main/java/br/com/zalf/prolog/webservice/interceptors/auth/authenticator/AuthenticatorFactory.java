@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.interceptors.auth.authenticator;
 
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import org.jetbrains.annotations.NotNull;
+
+import javax.ws.rs.container.ContainerRequestContext;
 
 public final class AuthenticatorFactory {
 
@@ -10,15 +13,17 @@ public final class AuthenticatorFactory {
     }
 
     @NotNull
-    public static PrologAuthenticator createAuthenticator(@NotNull final AuthType authType,
-                                                          @NotNull final RequestAuthenticator service) {
+    public static PrologAuthenticator createAuthenticator(@NotNull final ContainerRequestContext requestContext,
+                                                          @NotNull final Secured secured,
+                                                          @NotNull final String authorizationHeader,
+                                                          @NotNull final AuthType authType) {
         switch (authType) {
             case BEARER:
-                return new BearerAuthenticator(service);
+                return new BearerAuthenticator(requestContext, secured, authorizationHeader);
             case API:
-                return new ApiAuthenticator(service);
+                return new ApiAuthenticator(requestContext, secured, authorizationHeader);
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("No implementation available for authType: " + authType);
         }
     }
 }

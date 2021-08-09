@@ -1,13 +1,10 @@
 package br.com.zalf.prolog.webservice.interceptors.auth;
 
-import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
-import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.errorhandling.exception.MultiAuthorizationHeadersException;
-import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.AuthenticatorFactory;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.PrologAuthenticator;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +19,7 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
-import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Secured
@@ -36,26 +33,29 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(final ContainerRequestContext requestContext) {
-        final String bearerAuthorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-        final String apiAuthorizationHeader =
-                requestContext.getHeaderString(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO);
-        Log.d(TAG, "AuthorizationHeader: " + bearerAuthorizationHeader);
-        Log.d(TAG, "ApiAuthorizationHeader: " + apiAuthorizationHeader);
+        final String bearerAuthHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+        final String apiAuthHeader = requestContext.getHeaderString(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO);
+        Log.d(TAG, "AuthorizationHeader: " + bearerAuthHeader);
+        Log.d(TAG, "ApiAuthorizationHeader: " + apiAuthHeader);
 
-        ensureRightAuthorizationHeader(bearerAuthorizationHeader, apiAuthorizationHeader);
+        ensureRightAuthorizationHeader(bearerAuthHeader, apiAuthHeader);
+        final AuthType authType = getAuthTypeFromHeaders(bearerAuthHeader, apiAuthHeader);
 
-        if (isBearerAuthorization(bearerAuthorizationHeader)) {
-            validateBearerRequest(requestContext, bearerAuthorizationHeader);
-        } else if (isApiAuthorizationHeader(apiAuthorizationHeader)) {
-            validateApiRequest(apiAuthorizationHeader);
-        } else {
-            throw new NotAuthorizedException("Unknown authorization method: " + bearerAuthorizationHeader);
-        }
+        getSecuredAnnotation().ifPresent(secured -> {
+            ensureCorrectAuthType(secured.authTypes(), authType);
+            final PrologAuthenticator authenticator = AuthenticatorFactory.createAuthenticator(
+                    requestContext,
+                    secured,
+                    authType == AuthType.BEARER ? bearerAuthHeader : apiAuthHeader,
+                    authType);
+            final Optional<ColaboradorAutenticado> colaboradorAutenticado = authenticator.validate();
+            colaboradorAutenticado.ifPresent(colaborador -> injectColaboradorAutenticado(requestContext, colaborador));
+        });
     }
 
     private void ensureRightAuthorizationHeader(@Nullable final String authorizationHeader,
                                                 @Nullable final String prologAuthorizationHeader) {
-        // Check if the HTTP Authorization header is present and formatted correctly.
+        // Check if any HTTP Authorization header is present and formatted correctly.
         if (StringUtils.isNullOrEmpty(authorizationHeader)
                 && StringUtils.isNullOrEmpty(prologAuthorizationHeader)) {
             throw new NotAuthorizedException("Authorization header must be provided!");
@@ -64,44 +64,28 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
         }
     }
 
-    private boolean isBearerAuthorization(@NotNull final String authorizationHeader) {
-        return !StringUtils.isNullOrEmpty(authorizationHeader) && authorizationHeader.startsWith("Bearer ");
-    }
-
-    private boolean isApiAuthorizationHeader(@Nullable final String apiAuthorizationHeader) {
-        return !StringUtils.isNullOrEmpty(apiAuthorizationHeader);
-    }
-
-    private void validateApiRequest(@NotNull final String authorizationHeader) {
-        final PrologAuthenticator authenticator =
-                AuthenticatorFactory.createAuthenticator(AuthType.API, new BaseIntegracaoService());
-        authenticator.validate(authorizationHeader, null);
-    }
-
-    private void validateBearerRequest(@NotNull final ContainerRequestContext requestContext,
-                                       @NotNull final String authorizationHeader) {
-
-        final Secured methodAnnot = getAnnotationMethod(Secured.class);
-        if (methodAnnot != null) {
-            applySecuredAnnotationValidation(requestContext, authorizationHeader, methodAnnot);
-            // Retornamos agora para impedir a verificação por classe. A por método tem prioridade, e, se existir,
-            // apenas ela deve ser considerada.
-            return;
+    @NotNull
+    private AuthType getAuthTypeFromHeaders(@Nullable final String bearerAuthorizationHeader,
+                                            @Nullable final String apiAuthorizationHeader) {
+        final AuthType authType;
+        if (isBearerAuthorization(bearerAuthorizationHeader)) {
+            authType = AuthType.BEARER;
+        } else if (isApiAuthorizationHeader(apiAuthorizationHeader)) {
+            authType = AuthType.API;
+        } else {
+            throw new NotAuthorizedException("Unknown authorization method: " + bearerAuthorizationHeader);
         }
-        final Secured classAnnot = getAnnotationClass(Secured.class);
-        if (classAnnot != null) {
-            applySecuredAnnotationValidation(requestContext, authorizationHeader, classAnnot);
-        }
+        return authType;
     }
 
-    private void applySecuredAnnotationValidation(@NotNull final ContainerRequestContext requestContext,
-                                                  @NotNull final String authorizationHeader,
-                                                  @Nullable final Secured secured) {
-        final String token = TokenCleaner.getOnlyToken(authorizationHeader);
-        final PrologAuthenticator authenticator =
-                AuthenticatorFactory.createAuthenticator(AuthType.BEARER, new AutenticacaoService());
-        final Optional<ColaboradorAutenticado> colaboradorAutenticado = authenticator.validate(token, secured);
-        colaboradorAutenticado.ifPresent(colaborador -> injectColaboradorAutenticado(requestContext, colaborador));
+    private boolean isBearerAuthorization(@Nullable final String authorizationHeader) {
+        return !StringUtils.isNullOrEmpty(authorizationHeader)
+                && authorizationHeader.startsWith("Bearer ");
+    }
+
+    private boolean isApiAuthorizationHeader(@Nullable final String authorizationHeader) {
+        return !StringUtils.isNullOrEmpty(authorizationHeader)
+                && authorizationHeader.startsWith(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO);
     }
 
     private void injectColaboradorAutenticado(@NotNull final ContainerRequestContext requestContext,
@@ -120,13 +104,21 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
         requestContext.setSecurityContext(new PrologSecurityContext(colaboradorAutenticado));
     }
 
-    @Nullable
-    private <T extends Annotation> T getAnnotationClass(@NotNull final Class<T> annotationClass) {
-        return resourceInfo.getResourceClass().getAnnotation(annotationClass);
+    @NotNull
+    private Optional<Secured> getSecuredAnnotation() {
+        final Secured methodAnnotation = resourceInfo.getResourceMethod().getAnnotation(Secured.class);
+        if (methodAnnotation != null) {
+            // Priorizamos as permissões aplicadas aos métodos do que as aplicadas a nível de classe.
+            return Optional.of(methodAnnotation);
+        }
+        return Optional.ofNullable(resourceInfo.getResourceClass().getAnnotation(Secured.class));
     }
 
-    @Nullable
-    private <T extends Annotation> T getAnnotationMethod(@NotNull final Class<T> annotationClass) {
-        return resourceInfo.getResourceMethod().getAnnotation(annotationClass);
+    private void ensureCorrectAuthType(@NotNull final AuthType[] permitedAuthTypes,
+                                       @NotNull final AuthType headerAuthType) {
+        if (Arrays.stream(permitedAuthTypes).anyMatch(authType -> authType == headerAuthType)) {
+            return;
+        }
+        throw new NotAuthorizedException("Authorization method not allowed for this resource: " + headerAuthType);
     }
 }
