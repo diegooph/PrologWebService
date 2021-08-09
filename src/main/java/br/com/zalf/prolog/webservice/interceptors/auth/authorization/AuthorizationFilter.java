@@ -90,8 +90,7 @@ public final class AuthorizationFilter implements ContainerRequestFilter {
     }
 
     private boolean isApiAuthorizationHeader(@Nullable final String authorizationHeader) {
-        return !StringUtils.isNullOrEmpty(authorizationHeader)
-                && authorizationHeader.startsWith(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO);
+        return !StringUtils.isNullOrEmpty(authorizationHeader);
     }
 
     private void injectColaboradorAutenticado(@NotNull final ContainerRequestContext requestContext,
