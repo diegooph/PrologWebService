@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.interno.suporte;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.interno.suporte._model.InternalEmpresa;
+import br.com.zalf.prolog.webservice.interno.suporte._model.InternalUnidade;
 import lombok.RequiredArgsConstructor;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -71,5 +72,33 @@ public final class SuporteResource {
                 codEmpresa,
                 fileInputStream,
                 fileDetail);
+    }
+
+    @POST
+    @Path("/cadastrar-unidade")
+    public Response insertUnidade(@HeaderParam("Authorization") final String authorization,
+                                  final InternalUnidade unidade) {
+        return service.insertUnidade(authorization, unidade);
+    }
+
+    @GET
+    @Path("/listar-unidade")
+    public List<InternalUnidade> getTodasUnidades(@HeaderParam("Authorization") final String authorization) {
+        return service.getTodasUnidades(authorization);
+    }
+
+    @GET
+    @Path("/buscar-unidade/{codUnidade}")
+    public InternalUnidade getUnidade(@HeaderParam("Authorization") final String authorization,
+                                      @PathParam("codUnidade") final Long codUnidade) {
+        return service.getUnidade(authorization, codUnidade);
+    }
+
+    @PUT
+    @Path("/alterar-unidade")
+    public Response updateUnidade(
+            @HeaderParam("Authorization") final String authorization,
+            final InternalUnidade unidade) {
+        return service.updateUnidade(authorization, unidade);
     }
 }
