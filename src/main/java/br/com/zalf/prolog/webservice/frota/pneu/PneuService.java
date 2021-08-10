@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
-import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.pneu.importar.PneuImportReader;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
@@ -127,15 +126,6 @@ public final class PneuService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao buscar o pneu, tente novamente");
-        }
-    }
-
-    public List<Dimensao> getDimensoes() {
-        try {
-            return dao.getDimensoes();
-        } catch (final SQLException e) {
-            Log.e(TAG, "Erro ao buscar dimensões de pneus", e);
-            return null;
         }
     }
 

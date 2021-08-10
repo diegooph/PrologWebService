@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarteResponse;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
@@ -128,13 +127,6 @@ public final class PneuResource {
                                                    @QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                                    @QueryParam("status") @Required final String status) {
         return service.getPneusByCodUnidadesByStatus(userToken, codUnidades, status);
-    }
-
-    @GET
-    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
-    @Path("/dimensao")
-    public List<PneuComum.Dimensao> getDimensoes() {
-        return service.getDimensoes();
     }
 
     @GET

@@ -9,7 +9,6 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
-import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizadoIncrementaVida;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
@@ -323,31 +322,6 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             close(conn, stmt, rSet);
         }
         return marcas;
-    }
-
-    @NotNull
-    @Override
-    public List<Dimensao> getDimensoes() throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<Dimensao> dimensoes = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM DIMENSAO_PNEU;");
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                final Dimensao dimensao = new Dimensao();
-                dimensao.setCodigo(rSet.getLong("CODIGO"));
-                dimensao.setAltura(rSet.getInt("ALTURA"));
-                dimensao.setLargura(rSet.getInt("LARGURA"));
-                dimensao.setAro(rSet.getDouble("ARO"));
-                dimensoes.add(dimensao);
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return dimensoes;
     }
 
     @NotNull
