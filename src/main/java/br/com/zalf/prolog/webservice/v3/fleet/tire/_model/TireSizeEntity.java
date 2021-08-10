@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.frota.pneu._model;
+package br.com.zalf.prolog.webservice.v3.fleet.tire._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,19 +32,19 @@ public final class TireSizeEntity {
     @Column(name = "aro", nullable = false)
     private Double diameter;
     @Column(name = "cod_empresa", nullable = false)
-    private Long codEmpresa;
+    private Long companyId;
     @Column(name = "cod_auxiliar", nullable = false)
-    private Long codAuxiliar;
+    private Long additionalId;
     @Column(name = "status_ativo", nullable = false)
-    private boolean statusAtivo;
+    private boolean isActive;
     @Column(name = "data_hora_cadastro", nullable = false)
-    private LocalDateTime dataHoraCadastro;
+    private LocalDateTime createdAt;
     @Column(name = "cod_colaborador_cadastro", nullable = false)
-    private Long codColaboradorCadastro;
+    private Long createdByUserId;
     @Column(name = "data_hora_ultima_atualizacao", nullable = false)
-    private LocalDateTime dataHoraUltimaAtualizacao;
+    private LocalDateTime lastedUpdateAt;
     @Column(name = "cod_colaborador_ultima_atualizacao", nullable = false)
-    private Long codColaboradorUltimaAtualizacao;
+    private Long lastedUpdateUserId;
 
     @NotNull
     public String getTireSizeUserFriendly() {
