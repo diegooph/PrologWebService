@@ -34,7 +34,7 @@ public final class TireSizeEntity {
     @Column(name = "cod_empresa", nullable = false)
     private Long companyId;
     @Column(name = "cod_auxiliar", nullable = false)
-    private Long additionalId;
+    private String additionalId;
     @Column(name = "status_ativo", nullable = false)
     private boolean isActive;
     @Column(name = "data_hora_cadastro", nullable = false)
