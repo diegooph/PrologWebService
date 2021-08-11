@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
@@ -53,7 +50,9 @@ public class TireSizeResource {
     @GET
     @ApiExposed
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
-    public List<TireSizeListing> getAll(@NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId) throws Throwable {
-        return mapper.toDto(service.getAll(companyId));
+    public List<TireSizeListing> getAll(
+            @NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId,
+            @QueryParam("status") final Boolean statusAtivo) {
+        return mapper.toDto(service.getAll(companyId, statusAtivo));
     }
 }

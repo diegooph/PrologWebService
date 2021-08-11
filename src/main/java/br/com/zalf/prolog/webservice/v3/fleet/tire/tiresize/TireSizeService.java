@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireSizeEntity;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,8 @@ public class TireSizeService {
         return dao.save(mapper.toEntity(tireSizeCreation, colaboradorAutenticado));
     }
 
-    public List<TireSizeEntity> getAll(@NotNull @QueryParam("companyId") @Required final Long companyId) {
-        return dao.findAllByCompanyIdAndActiveIsTrue(companyId);
+    public List<TireSizeEntity> getAll(@NotNull final Long companyId,
+                                       @Nullable final Boolean statusAtivo) {
+        return dao.findAll(companyId, statusAtivo);
     }
 }
