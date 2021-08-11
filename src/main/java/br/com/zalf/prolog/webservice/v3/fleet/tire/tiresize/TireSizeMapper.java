@@ -43,5 +43,6 @@ public class TireSizeMapper {
                 .withAdditionalId(tireSizeEntity.getAdditionalId())
                 .withRim(tireSizeEntity.getRim())
                 .withIsActive(tireSizeEntity.isActive())
+                .build();
     }
 }
