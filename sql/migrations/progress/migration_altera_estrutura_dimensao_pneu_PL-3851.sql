@@ -1,8 +1,9 @@
 alter table dimensao_pneu add column cod_empresa bigint;
 alter table dimensao_pneu add constraint fk_cod_empresa foreign key (cod_empresa) references empresa (codigo);
-alter table dimensao_pneu add column cod_auxiliar bigint;
+alter table dimensao_pneu add column cod_auxiliar text;
 alter table dimensao_pneu add constraint unique_dimensao_cod_empresa unique (codigo, cod_empresa);
 alter table dimensao_pneu add column status_ativo boolean;
+alter table dimensao_pneu add column origem_cadastro text;
 drop view view_pneu_analise_vida_atual;
 drop view view_analise_pneus;
 alter table dimensao_pneu alter column aro type numeric(7,2);

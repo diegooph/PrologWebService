@@ -45,6 +45,8 @@ public final class TireSizeEntity {
     private LocalDateTime lastedUpdateAt;
     @Column(name = "cod_colaborador_ultima_atualizacao", nullable = false)
     private Long lastedUpdateUserId;
+    @Column(name = "origem_cadastro", nullable = false)
+    private String registerOrigin;
 
     @NotNull
     public String getTireSizeUserFriendly() {
