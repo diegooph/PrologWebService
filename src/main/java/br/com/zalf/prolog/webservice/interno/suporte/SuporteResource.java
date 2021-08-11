@@ -82,7 +82,7 @@ public final class SuporteResource {
     }
 
     @GET
-    @Path("/listar-unidade")
+    @Path("/listar-unidades")
     public List<InternalUnidade> getTodasUnidades(@HeaderParam("Authorization") final String authorization) {
         return service.getTodasUnidades(authorization);
     }
