@@ -34,7 +34,7 @@ public final class TireSizeEntity {
     @Column(name = "cod_empresa", nullable = false)
     private Long companyId;
     @Column(name = "cod_auxiliar", nullable = false)
-    private Long additionalId;
+    private String additionalId;
     @Column(name = "status_ativo", nullable = false)
     private boolean isActive;
     @Column(name = "data_hora_cadastro", nullable = false)
@@ -45,6 +45,8 @@ public final class TireSizeEntity {
     private LocalDateTime lastedUpdateAt;
     @Column(name = "cod_colaborador_ultima_atualizacao", nullable = false)
     private Long lastedUpdateUserId;
+    @Column(name = "origem_cadastro", nullable = false)
+    private String registerOrigin;
 
     @NotNull
     public String getTireSizeUserFriendly() {
