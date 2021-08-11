@@ -160,6 +160,7 @@ public final class SuporteDaoImpl {
                         "u.data_hora_cadastro as data_hora_cadastro," +
                         "u.status_ativo as status_ativo," +
                         "u.cod_auxiliar as cod_auxiliar," +
+                        "u.timezone as timezone," +
                         "u.pais as pais, " +
                         "u.estado_provincia as estado_provincia, " +
                         "u.cidade as cidade, " +
@@ -193,6 +194,7 @@ public final class SuporteDaoImpl {
                         "u.data_hora_cadastro as data_hora_cadastro," +
                         "u.status_ativo as status_ativo," +
                         "u.cod_auxiliar as cod_auxiliar," +
+                        "u.timezone as timezone," +
                         "u.pais as pais, " +
                         "u.estado_provincia as estado_provincia, " +
                         "u.cidade as cidade, " +
