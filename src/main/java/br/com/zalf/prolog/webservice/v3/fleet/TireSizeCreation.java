@@ -1,11 +1,15 @@
 package br.com.zalf.prolog.webservice.v3.fleet;
 
+import br.com.zalf.prolog.webservice.v3.validation.CompanyId;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Data
 public class TireSizeCreation {
+    @CompanyId
+    @NotNull
+    private final Long companyId;
     @NotNull
     private final Double height;
     @NotNull
