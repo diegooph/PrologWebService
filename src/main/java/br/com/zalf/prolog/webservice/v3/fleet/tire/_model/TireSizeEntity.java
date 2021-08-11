@@ -26,11 +26,11 @@ public final class TireSizeEntity {
     @Column(name = "codigo", nullable = false)
     private Long id;
     @Column(name = "altura", nullable = false)
-    private Double width;
+    private Double height;
     @Column(name = "largura", nullable = false)
-    private Double aspectRation;
+    private Double width;
     @Column(name = "aro", nullable = false)
-    private Double diameter;
+    private Double rim;
     @Column(name = "cod_empresa", nullable = false)
     private Long companyId;
     @Column(name = "cod_auxiliar", nullable = false)
@@ -48,6 +48,6 @@ public final class TireSizeEntity {
 
     @NotNull
     public String getTireSizeUserFriendly() {
-        return aspectRation + "/" + width + " R" + diameter;
+        return width + "/" + height + " R" + rim;
     }
 }
