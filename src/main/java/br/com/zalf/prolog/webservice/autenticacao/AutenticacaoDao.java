@@ -9,13 +9,17 @@ import java.util.Optional;
 /**
  * Autenticação do usuário no sistema.
  */
+@SuppressWarnings("NullableProblems")
 public interface AutenticacaoDao {
 
     @NotNull
     Autenticacao createTokenByCpf(@NotNull final Long cpf) throws Throwable;
+
     @NotNull
     Autenticacao createTokenByCodColaborador(@NotNull final Long codColaborador) throws Throwable;
+
     boolean delete(@NotNull final String token) throws Throwable;
+
     @NotNull
     Optional<ColaboradorAutenticado> verifyIfTokenExists(@NotNull final String token,
                                                          final boolean apenasUsuariosAtivos) throws Throwable;

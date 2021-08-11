@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * Created on 2021-05-18
@@ -25,11 +26,25 @@ public final class TireSizeEntity {
     @Column(name = "codigo", nullable = false)
     private Long id;
     @Column(name = "altura", nullable = false)
-    private Integer width;
+    private Double width;
     @Column(name = "largura", nullable = false)
-    private Integer aspectRation;
+    private Double aspectRation;
     @Column(name = "aro", nullable = false)
     private Double diameter;
+    @Column(name = "cod_empresa", nullable = false)
+    private Long companyId;
+    @Column(name = "cod_auxiliar", nullable = false)
+    private Long additionalId;
+    @Column(name = "status_ativo", nullable = false)
+    private boolean isActive;
+    @Column(name = "data_hora_cadastro", nullable = false)
+    private LocalDateTime createdAt;
+    @Column(name = "cod_colaborador_cadastro", nullable = false)
+    private Long createdByUserId;
+    @Column(name = "data_hora_ultima_atualizacao", nullable = false)
+    private LocalDateTime lastedUpdateAt;
+    @Column(name = "cod_colaborador_ultima_atualizacao", nullable = false)
+    private Long lastedUpdateUserId;
 
     @NotNull
     public String getTireSizeUserFriendly() {

@@ -1,51 +1,52 @@
-CREATE OR REPLACE FUNCTION SUPORTE.FUNC_PNEU_CADASTRA_DIMENSAO_PNEU(F_ALTURA BIGINT,
-                                                                    F_LARGURA BIGINT,
-                                                                    F_ARO REAL,
-                                                                    OUT AVISO_DIMENSAO_CRIADA TEXT)
-    RETURNS TEXT
-    LANGUAGE PLPGSQL
-    SECURITY DEFINER
-AS
+create or replace function suporte.func_pneu_cadastra_dimensao_pneu(f_altura bigint,
+                                                                    f_largura bigint,
+                                                                    f_aro real,
+                                                                    out aviso_dimensao_criada text)
+    returns text
+    language plpgsql
+    security definer
+as
 $$
-DECLARE
-    COD_DIMENSAO_EXISTENTE BIGINT := (SELECT CODIGO
-                                      FROM DIMENSAO_PNEU
-                                      WHERE LARGURA = F_LARGURA
-                                        AND ALTURA = F_ALTURA
-                                        AND ARO = F_ARO);
-    COD_DIMENSAO_CRIADA    BIGINT;
-BEGIN
-    PERFORM SUPORTE.FUNC_HISTORICO_SALVA_EXECUCAO();
-    --VERIFICA SE OS DADOS INFORMADOS SÃO MAIORES QUE 0.
-    IF(F_ALTURA < 0)
-    THEN
-        RAISE EXCEPTION 'O VALOR ATRIBUÍDO PARA ALTURA DEVE SER MAIOR QUE 0(ZERO). VALOR INFORMADO: %', F_ALTURA;
-    END IF;
+declare
+    cod_dimensao_existente bigint := (select codigo
+                                      from dimensao_pneu
+                                      where largura = f_largura
+                                        and altura = f_altura
+                                        and aro = f_aro);
+    cod_dimensao_criada    bigint;
+begin
+    perform throw_generic_error('o cadastro de dimensão deve ser realizado pelo site ou pelo app');
+    perform suporte.func_historico_salva_execucao();
+    --verifica se os dados informados são maiores que 0.
+    if(f_altura < 0)
+    then
+        raise exception 'o valor atribuído para altura deve ser maior que 0(zero). valor informado: %', f_altura;
+    end if;
 
-    IF(F_LARGURA < 0)
-    THEN
-        RAISE EXCEPTION 'O VALOR ATRIBUÍDO PARA LARGURA DEVE SER MAIOR QUE 0(ZERO). VALOR INFORMADO: %', F_LARGURA;
-    END IF;
+    if(f_largura < 0)
+    then
+        raise exception 'o valor atribuído para largura deve ser maior que 0(zero). valor informado: %', f_largura;
+    end if;
 
-    IF(F_ARO < 0)
-    THEN
-        RAISE EXCEPTION 'O VALOR ATRIBUÍDO PARA ARO DEVE SER MAIOR QUE 0(ZERO). VALOR INFORMADO: %', F_ARO;
-    END IF;
+    if(f_aro < 0)
+    then
+        raise exception 'o valor atribuído para aro deve ser maior que 0(zero). valor informado: %', f_aro;
+    end if;
 
-    --VERIFICA SE ESSA DIMENSÃO EXISTE NA BASE DE DADOS.
-    IF (COD_DIMENSAO_EXISTENTE IS NOT NULL)
-    THEN
-        RAISE EXCEPTION 'ERRO! ESSA DIMENSÃO JÁ ESTÁ CADASTRADA, POSSUI O CÓDIGO = %.', COD_DIMENSAO_EXISTENTE;
-    END IF;
+    --verifica se essa dimensão existe na base de dados.
+    if (cod_dimensao_existente is not null)
+    then
+        raise exception 'erro! essa dimensão já está cadastrada, possui o código = %.', cod_dimensao_existente;
+    end if;
 
-    --ADICIONA NOVA DIMENSÃO E RETORNA SEU ID.
-    INSERT INTO DIMENSAO_PNEU(ALTURA, LARGURA, ARO)
-    VALUES (F_ALTURA, F_LARGURA, F_ARO) RETURNING CODIGO INTO COD_DIMENSAO_CRIADA;
+    --adiciona nova dimensão e retorna seu id.
+    insert into dimensao_pneu(altura, largura, aro)
+    values (f_altura, f_largura, f_aro) returning codigo into cod_dimensao_criada;
 
-    --MENSAGEM DE SUCESSO.
-    SELECT 'DIMENSÃO CADASTRADA COM SUCESSO! DIMENSÃO: ' || F_LARGURA || '/' || F_ALTURA || 'R' || F_ARO ||
-           ' COM CÓDIGO: '
-               || COD_DIMENSAO_CRIADA || '.'
-    INTO AVISO_DIMENSAO_CRIADA;
-END
+    --mensagem de sucesso.
+    select 'dimensão cadastrada com sucesso! dimensão: ' || f_largura || '/' || f_altura || 'r' || f_aro ||
+           ' com código: '
+               || cod_dimensao_criada || '.'
+    into aviso_dimensao_criada;
+end
 $$;

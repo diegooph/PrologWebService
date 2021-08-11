@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
+import br.com.zalf.prolog.webservice.interno.PrologInternalUser;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoInternaService;
 import br.com.zalf.prolog.webservice.interno.suporte._model.InternalEmpresa;
 import lombok.RequiredArgsConstructor;
@@ -60,8 +61,8 @@ public final class SuporteService {
     @NotNull
     public Response updateEmpresa(@NotNull final String authorization,
                                   @NotNull final InternalEmpresa empresa) {
-        validate(authorization);
-        dao.updateEmpresa(empresa);
+        final PrologInternalUser user = validate(authorization);
+        dao.updateEmpresa(empresa, user);
         return Response.ok("Empresa alterada com sucesso!");
     }
 
@@ -70,10 +71,10 @@ public final class SuporteService {
                                             @NotNull final Long codEmpresa,
                                             @NotNull final InputStream fileInputStream,
                                             @NotNull final FormDataContentDisposition fileDetail) {
-        validate(authorization);
+        final PrologInternalUser user = validate(authorization);
         try {
             final ImagemProlog imagemProlog = uploadLogoEmpresa(fileInputStream, fileDetail);
-            dao.updateImagemLogoEmpresa(codEmpresa, imagemProlog.getUrlImagem());
+            dao.updateImagemLogoEmpresa(codEmpresa, imagemProlog.getUrlImagem(), user);
             return Response.ok(imagemProlog.getUrlImagem());
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao alterar imagem da empresa %d", codEmpresa), throwable);
@@ -91,7 +92,8 @@ public final class SuporteService {
                 imageType);
     }
 
-    private void validate(@NotNull final String authorization) {
-        new AutenticacaoInternaService().authorize(authorization);
+    @NotNull
+    private PrologInternalUser validate(@NotNull final String authorization) {
+        return new AutenticacaoInternaService().authorize(authorization);
     }
 }

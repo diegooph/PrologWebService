@@ -6,13 +6,21 @@ Change Log
 ## UNRELEASED
 ##
 
+### Refactors
+* Modifica estrutura de dimensões (PL-3851)
+
 
 <a name="v3.7.0"></a>
 ## Version [v3.7.0](https://github.com/luizfp/PrologWebService/compare/v3.6.0...v3.7.0) (2021-08-04)
 
-# Features
+### Features
 * Cria método de busca de empresa para uso no intralog
 * Cria método de alteração de empresa para uso no intralog
+
+### Refactors
+* Salva metadados sobre alteração de empresa e retorna isso nas buscas
+* Deleta resources/services/daos/testes depreciados do controle de jornada
+* Deleta métodos antigos da estrutura de autenticação
 
 ### Bug Fixes
 * Corrige nome do bucket para upload de logo de empresas
