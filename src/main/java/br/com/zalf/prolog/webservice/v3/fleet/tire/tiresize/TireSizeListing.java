@@ -3,8 +3,6 @@ package br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder(setterPrefix = "with")
 public class TireSizeListing {
