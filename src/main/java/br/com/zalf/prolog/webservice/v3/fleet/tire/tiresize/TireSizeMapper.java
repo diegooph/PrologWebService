@@ -13,6 +13,7 @@ public class TireSizeMapper {
                                    @NotNull final ColaboradorAutenticado colaboradorAutenticado) {
 
         return TireSizeEntity.builder()
+                .withCompanyId(tireSizeCreation.getCompanyId())
                 .withHeight(tireSizeCreation.getHeight())
                 .withWidth(tireSizeCreation.getWidth())
                 .withRim(tireSizeCreation.getRim())
@@ -22,6 +23,7 @@ public class TireSizeMapper {
                 .withCreatedByUserId(colaboradorAutenticado.getCodigo())
                 .withLastedUpdateAt(LocalDateTime.now())
                 .withLastedUpdateUserId(colaboradorAutenticado.getCodigo())
+                .withRegisterOrigin("WS")
                 .build();
     }
 }
