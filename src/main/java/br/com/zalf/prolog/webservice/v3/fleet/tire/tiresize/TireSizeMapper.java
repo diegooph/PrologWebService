@@ -20,7 +20,7 @@ public class TireSizeMapper {
                 .withWidth(tireSizeCreation.getWidth())
                 .withRim(tireSizeCreation.getRim())
                 .withAdditionalId(tireSizeCreation.getAdditionalId())
-                .withIsActive(true)
+                .withActive(true)
                 .withCreatedAt(LocalDateTime.now())
                 .withCreatedByUserId(colaboradorAutenticado.getCodigo())
                 .withLastedUpdateAt(LocalDateTime.now())
