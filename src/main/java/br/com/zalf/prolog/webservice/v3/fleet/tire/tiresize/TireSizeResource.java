@@ -60,10 +60,15 @@ public class TireSizeResource {
     }
 
     @PATCH
+    @Path("update-status")
     @ApiExposed
     @Secured(permissions = Pilares.Frota.Pneu.ALTERAR)
     public SuccessResponse updateStatus(@Valid final TireSizeStatusChange tireSizeStatusChange) {
         service.updateStatus(tireSizeStatusChange);
-        return new SuccessResponse(null, "Modificação de status concluída com sucesso!");
+        return new SuccessResponse(
+                null,
+                String.format(
+                        "Tire size %s successfully!",
+                        (tireSizeStatusChange.getActive() ? "enabled" : "disabled")));
     }
 }
