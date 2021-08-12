@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreation;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeListing;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeStatusChange;
 import br.com.zalf.prolog.webservice.v3.validation.CompanyId;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +57,13 @@ public class TireSizeResource {
             @NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId,
             @QueryParam("status") final Boolean statusActive) {
         return mapper.toDto(service.getAll(companyId, statusActive));
+    }
+
+    @PATCH
+    @ApiExposed
+    @Secured(permissions = Pilares.Frota.Pneu.ALTERAR)
+    public SuccessResponse updateStatus(@Valid final TireSizeStatusChange tireSizeStatusChange) {
+        service.updateStatus(tireSizeStatusChange);
+        return new SuccessResponse(null, "Modificação de status concluída com sucesso!");
     }
 }
