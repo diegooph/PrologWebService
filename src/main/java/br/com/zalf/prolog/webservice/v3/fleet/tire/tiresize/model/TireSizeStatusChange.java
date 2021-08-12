@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class TireSizeStatusChange {
     @CompanyId
+    @NotNull(message = "O código da empresa é obrigatório!")
     private final Long companyId;
     @NotNull(message = "O código da dimensão é obrigatório!")
     private final Long tireSizeId;
