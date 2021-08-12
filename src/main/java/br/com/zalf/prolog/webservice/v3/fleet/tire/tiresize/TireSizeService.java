@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -37,6 +38,7 @@ public class TireSizeService {
         return dao.findAll(companyId, statusActive);
     }
 
+    @Transactional
     public void updateStatus(@NotNull final TireSizeStatusChange tireSizeStatusChange) {
         final int rowsUpdated =
                 dao.updateStatus(tireSizeStatusChange.getTireSizeId(), tireSizeStatusChange.getActive());
