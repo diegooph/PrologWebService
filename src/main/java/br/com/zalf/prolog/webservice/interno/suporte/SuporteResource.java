@@ -27,6 +27,7 @@ public final class SuporteResource {
 
     @POST
     @Path("/cadastrar-empresa")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response insertEmpresa(
             @HeaderParam("Authorization") final String authorization,
             @QueryParam("nomeEmpresa") final String nomeEmpresa,
