@@ -52,7 +52,7 @@ public class TireSizeResource {
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
     public List<TireSizeListing> getAll(
             @NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId,
-            @QueryParam("status") final Boolean statusAtivo) {
-        return mapper.toDto(service.getAll(companyId, statusAtivo));
+            @QueryParam("status") final Boolean statusActive) {
+        return mapper.toDto(service.getAll(companyId, statusActive));
     }
 }

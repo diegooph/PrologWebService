@@ -13,6 +13,6 @@ import java.util.List;
 public interface TireSizeDao extends JpaRepository<TireSizeEntity, Long> {
     @Query("select tse from TireSizeEntity tse " +
             "where tse.companyId = :companyId " +
-            "and (:statusAtivo is null or tse.active = :statusAtivo)")
-    List<TireSizeEntity> findAll(@NotNull final Long companyId, @Nullable final Boolean statusAtivo);
+            "and (:statusActive is null or tse.active = :statusActive)")
+    List<TireSizeEntity> findAll(@NotNull final Long companyId, @Nullable final Boolean statusActive);
 }

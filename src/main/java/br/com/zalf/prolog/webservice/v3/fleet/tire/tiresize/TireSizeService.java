@@ -32,7 +32,7 @@ public class TireSizeService {
     }
 
     public List<TireSizeEntity> getAll(@NotNull final Long companyId,
-                                       @Nullable final Boolean statusAtivo) {
-        return dao.findAll(companyId, statusAtivo);
+                                       @Nullable final Boolean statusActive) {
+        return dao.findAll(companyId, statusActive);
     }
 }
