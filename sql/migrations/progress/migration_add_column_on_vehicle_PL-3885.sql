@@ -1,3 +1,6 @@
+drop function if exists func_checklist_relatorio_ultimo_checklist_realizado_placa(f_cod_unidades bigint[],
+    f_cod_tipos_veiculos bigint[]);
+
 create or replace function func_checklist_relatorio_ultimo_checklist_realizado_placa(f_cod_unidades bigint[],
                                                                                      f_cod_tipos_veiculos bigint[])
     returns table
