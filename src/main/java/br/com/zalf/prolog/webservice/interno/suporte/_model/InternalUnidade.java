@@ -15,6 +15,7 @@ public final class InternalUnidade {
     @NotNull
     private final String nome;
     private final int totalColaboradoresAtivos;
+    private final int totalVeiculosAtivos;
     @NotNull
     private final String timezone;
     @NotNull

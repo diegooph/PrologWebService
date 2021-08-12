@@ -162,6 +162,10 @@ public final class SuporteDaoImpl {
                         "from colaborador c " +
                         "where c.cod_unidade = u.codigo " +
                         "and c.status_ativo) as tota_colaboradores_ativos," +
+                        "(select count(*) " +
+                        "from veiculo v " +
+                        "where v.cod_unidade = u.codigo " +
+                        "and v.status_ativo) as tota_veiculos_ativos," +
                         "u.data_hora_cadastro as data_hora_cadastro," +
                         "u.status_ativo as status_ativo," +
                         "u.cod_auxiliar as cod_auxiliar," +
@@ -199,6 +203,10 @@ public final class SuporteDaoImpl {
                         "from colaborador c " +
                         "where c.cod_unidade = u.codigo " +
                         "and c.status_ativo) as tota_colaboradores_ativos," +
+                        "(select count(*) " +
+                        "from veiculo v " +
+                        "where v.cod_unidade = u.codigo " +
+                        "and v.status_ativo) as tota_veiculos_ativos," +
                         "u.data_hora_cadastro as data_hora_cadastro," +
                         "u.status_ativo as status_ativo," +
                         "u.cod_auxiliar as cod_auxiliar," +

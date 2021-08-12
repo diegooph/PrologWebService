@@ -21,6 +21,7 @@ public final class InternalUnidadeMapper implements RowMapper<InternalUnidade> {
                 .withCodigo(rs.getLong("codigo"))
                 .withNome(rs.getString("nome"))
                 .withTotalColaboradoresAtivos(rs.getInt("tota_colaboradores_ativos"))
+                .withTotalVeiculosAtivos(rs.getInt("tota_veiculos_ativos"))
                 .withTimezone(rs.getString("timezone"))
                 .withDataHoraCadastro(rs.getObject("data_hora_cadastro", OffsetDateTime.class).toLocalDateTime())
                 .withStatusAtivo(rs.getBoolean("status_ativo"))
