@@ -3,8 +3,10 @@ package br.com.zalf.prolog.webservice.gente.treinamento;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
+import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorBackwardHelper;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.TreinamentoColaborador;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -12,6 +14,8 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
@@ -24,6 +28,8 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class TreinamentoResource {
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
     private final TreinamentoService service = new TreinamentoService();
 
@@ -75,30 +81,67 @@ public class TreinamentoResource {
         }
     }
 
+    @Deprecated
     @POST
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
     @Path("/visualizados/{codTreinamento}/{cpf}")
     public Response marcarTreinamentoComoVisto(@PathParam("codTreinamento") final Long codTreinamento,
                                                @PathParam("cpf") final Long cpf) {
-        if (service.marcarTreinamentoComoVisto(codTreinamento, cpf)) {
+        if (service.marcarTreinamentoComoVisto(codTreinamento,
+                                               ColaboradorBackwardHelper.getCodColaboradorByCpf(
+                                                       colaboradorAutenticadoProvider.get().getCodigo(),
+                                                       cpf.toString()))) {
             return Response.ok("Treinamento marcado com sucesso");
         } else {
             return Response.error("Erro ao marcar treinamento");
         }
     }
 
+    @POST
+    @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
+    @Path("/visualizados/{codTreinamento}/{codColaborador}")
+    public Response marcarTreinamentoComoVistoByCodColaborador(@PathParam("codTreinamento") final Long codTreinamento,
+                                                               @PathParam("codColaborador") final Long codColaborador) {
+        if (service.marcarTreinamentoComoVisto(codTreinamento, codColaborador)) {
+            return Response.ok("Treinamento marcado com sucesso");
+        } else {
+            return Response.error("Erro ao marcar treinamento");
+        }
+    }
+
+    @Deprecated
     @GET
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
     @Path("/visualizados/{cpf}")
     public List<Treinamento> getVistosByColaborador(@PathParam("cpf") final Long cpf) {
-        return service.getVistosByColaborador(cpf);
+        return service.getVistosByColaborador(ColaboradorBackwardHelper.getCodColaboradorByCpf(
+                colaboradorAutenticadoProvider.get().getCodigo(),
+                cpf.toString()));
     }
 
     @GET
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
+    @Path("/visualizados/{codColaborador}")
+    public List<Treinamento> getVistosByColaboradorByCodColaborador(
+            @PathParam("codColaborador") final Long codColaborador) {
+        return service.getVistosByColaborador(codColaborador);
+    }
+
+    @Deprecated
+    @GET
+    @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
     @Path("/nao-visualizados/{cpf}")
     public List<Treinamento> getNaoVistosByColaborador(@PathParam("cpf") final Long cpf) {
-        return service.getNaoVistosByColaborador(cpf);
+        return service.getNaoVistosByColaborador(ColaboradorBackwardHelper.getCodColaboradorByCpf(
+                colaboradorAutenticadoProvider.get().getCodigo(),
+                cpf.toString()));
+    }
+
+    @GET
+    @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
+    @Path("/nao-visualizados/{codColaborador}")
+    public List<Treinamento> getNaoVistosByCodColaborador(@PathParam("codColaborador") final Long codColaborador) {
+        return service.getNaoVistosByColaborador(codColaborador);
     }
 
     @GET
@@ -144,7 +187,18 @@ public class TreinamentoResource {
     @Path("/vistosColaborador/{cpf}")
     @Deprecated
     public List<Treinamento> DEPRECATED_GET_VISTOS_BY_COLABORADOR(@PathParam("cpf") final Long cpf) {
-        return service.getVistosByColaborador(cpf);
+        return service.getVistosByColaborador(ColaboradorBackwardHelper.getCodColaboradorByCpf(
+                colaboradorAutenticadoProvider.get().getCodigo(),
+                cpf.toString()));
+    }
+
+    @GET
+    @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
+    @Path("/vistosColaborador/{codColaborador}")
+    @Deprecated
+    public List<Treinamento> DEPRECATED_GET_VISTOS_BY_COD_COLABORADOR(
+            @PathParam("codColaborador") final Long codColaborador) {
+        return service.getVistosByColaborador(codColaborador);
     }
 
     @GET
@@ -152,7 +206,18 @@ public class TreinamentoResource {
     @Path("/naoVistosColaborador/{cpf}")
     @Deprecated
     public List<Treinamento> DEPRECATED_GET_NAO_VISTOS_BY_COLABORADOR(@PathParam("cpf") final Long cpf) {
-        return service.getNaoVistosByColaborador(cpf);
+        return service.getNaoVistosByColaborador(ColaboradorBackwardHelper.getCodColaboradorByCpf(
+                colaboradorAutenticadoProvider.get().getCodigo(),
+                cpf.toString()));
+    }
+
+    @GET
+    @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
+    @Path("/naoVistosColaborador/{codColaborador}")
+    @Deprecated
+    public List<Treinamento> DEPRECATED_GET_NAO_VISTOS_BY_COD_COLABORADOR(
+            @PathParam("codColaborador") final Long codColaborador) {
+        return service.getNaoVistosByColaborador(codColaborador);
     }
 
     @POST
@@ -161,7 +226,7 @@ public class TreinamentoResource {
     public Response DEPRECATED_MARCAR_TREINAMENTO_COMO_VISTO(final TreinamentoColaborador treinamentoColaborador) {
         treinamentoColaborador.setDataVisualizacao(LocalDateTime.now(Clock.systemUTC()));
         if (service.marcarTreinamentoComoVisto(treinamentoColaborador.getCodTreinamento(),
-                treinamentoColaborador.getColaborador().getCpf())) {
+                treinamentoColaborador.getColaborador().getCodigo())) {
             return Response.ok("Treinamento marcado com sucesso");
         } else {
             return Response.error("Erro ao marcar treinamento");
