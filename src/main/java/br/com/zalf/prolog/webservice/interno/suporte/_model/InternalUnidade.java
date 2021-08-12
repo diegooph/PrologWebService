@@ -44,6 +44,8 @@ public final class InternalUnidade {
     private final Long codGrupo;
     @NotNull
     private final String nomeGrupo;
+    @NotNull
+    private final Integer[] pilaresLiberados;
     @Nullable
     private final LocalDateTime dataHoraUltimaAtualizacao;
     @Nullable

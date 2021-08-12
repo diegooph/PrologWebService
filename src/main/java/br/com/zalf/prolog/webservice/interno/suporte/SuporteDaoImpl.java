@@ -8,10 +8,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -113,20 +117,20 @@ public final class SuporteDaoImpl {
     }
 
     public void insertUnidade(@NotNull final InternalUnidadeInsert unidade) {
-        final int updateCount = jdbcTemplate.update(
-                "insert into unidade(" +
-                        "nome," +
-                        "cod_empresa," +
-                        "cod_regional," +
-                        "timezone," +
-                        "cod_auxiliar," +
-                        "pais," +
-                        "estado_provincia," +
-                        "cidade," +
-                        "cep," +
-                        "endereco," +
-                        "latitude_unidade," +
-                        "longitude_unidade) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+        final String sql = "insert into unidade(" +
+                "nome," +
+                "cod_empresa," +
+                "cod_regional," +
+                "timezone," +
+                "cod_auxiliar," +
+                "pais," +
+                "estado_provincia," +
+                "cidade," +
+                "cep," +
+                "endereco," +
+                "latitude_unidade," +
+                "longitude_unidade) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) returning codigo;";
+        final Object[] params = new Object[]{
                 unidade.getNome(),
                 unidade.getCodEmpresa(),
                 unidade.getCodGrupo(),
@@ -138,10 +142,14 @@ public final class SuporteDaoImpl {
                 unidade.getCep(),
                 unidade.getEndereco(),
                 unidade.getLatitude(),
-                unidade.getLongitude());
-        if (updateCount != 1) {
+                unidade.getLongitude()};
+
+        final Long codUnidade = jdbcTemplate.queryForObject(sql, params, Long.class);
+        if (codUnidade == null || codUnidade <= 0) {
             throw new IllegalStateException();
         }
+
+        insertOrUpdatePilaresLiberados(codUnidade, unidade.getPilaresLiberados());
     }
 
     @NotNull
@@ -169,6 +177,9 @@ public final class SuporteDaoImpl {
                         "e.nome as nome_empresa, " +
                         "r.codigo as cod_grupo, " +
                         "r.regiao as nome_grupo, " +
+                        "(select array_agg(upp.cod_pilar::integer) " +
+                        "from unidade_pilar_prolog upp " +
+                        "where upp.cod_unidade = u.codigo) as pilares_liberados, " +
                         "u.data_hora_ultima_atualizacao as data_hora_ultima_atualizacao, " +
                         "u.responsavel_ultima_atualizacao as responsavel_ultima_atualizacao " +
                         "from unidade u " +
@@ -203,6 +214,9 @@ public final class SuporteDaoImpl {
                         "e.nome as nome_empresa, " +
                         "r.codigo as cod_grupo, " +
                         "r.regiao as nome_grupo, " +
+                        "(select array_agg(upp.cod_pilar::integer) " +
+                        "from unidade_pilar_prolog upp " +
+                        "where upp.cod_unidade = u.codigo) as pilares_liberados, " +
                         "u.data_hora_ultima_atualizacao as data_hora_ultima_atualizacao, " +
                         "u.responsavel_ultima_atualizacao as responsavel_ultima_atualizacao " +
                         "from unidade u " +
@@ -250,6 +264,36 @@ public final class SuporteDaoImpl {
                 user.getUsername(),
                 unidade.getCodigo());
         if (updateCount != 1) {
+            throw new IllegalStateException();
+        }
+
+        insertOrUpdatePilaresLiberados(unidade.getCodigo(), unidade.getPilaresLiberados());
+    }
+
+    private void insertOrUpdatePilaresLiberados(@NotNull final Long codUnidade,
+                                                @NotNull final Integer[] pilaresLiberados) {
+        jdbcTemplate.update("delete from unidade_pilar_prolog where cod_unidade = ?", codUnidade);
+
+        final int[] insertsCount = jdbcTemplate.batchUpdate(
+                "insert into unidade_pilar_prolog(cod_unidade, cod_pilar) values (?, ?)",
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(@NotNull final PreparedStatement ps, final int i)
+                            throws SQLException {
+                        ps.setLong(1, codUnidade);
+                        ps.setLong(2, pilaresLiberados[i]);
+                    }
+
+                    @Override
+                    public int getBatchSize() {
+                        return pilaresLiberados.length;
+                    }
+                });
+
+        final boolean tudoOk = IntStream
+                .of(insertsCount)
+                .allMatch(result -> result == 1);
+        if (!tudoOk) {
             throw new IllegalStateException();
         }
     }
