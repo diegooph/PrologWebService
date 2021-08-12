@@ -7,6 +7,8 @@ import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreation;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeListing;
 import br.com.zalf.prolog.webservice.v3.validation.CompanyId;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize;
+package br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model;
 
 import br.com.zalf.prolog.webservice.v3.validation.CompanyId;
 import lombok.Data;

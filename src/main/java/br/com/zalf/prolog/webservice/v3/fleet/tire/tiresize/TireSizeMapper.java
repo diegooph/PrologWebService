@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize;
 
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireSizeEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreation;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeListing;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
