@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.commons.network;
 
+import lombok.Builder;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
+@Builder(setterPrefix = "with")
 public final class SuccessResponse {
     @Nullable
     private final Long uniqueItemId;
