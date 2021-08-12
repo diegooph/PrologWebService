@@ -30,4 +30,6 @@ public final class InternalUnidadeInsert {
     private final Long codEmpresa;
     @NotNull
     private final Long codGrupo;
+    @NotNull
+    private final Integer[] pilaresLiberados;
 }

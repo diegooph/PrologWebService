@@ -15,6 +15,7 @@ public final class InternalUnidade {
     @NotNull
     private final String nome;
     private final int totalColaboradoresAtivos;
+    private final int totalVeiculosAtivos;
     @NotNull
     private final String timezone;
     @NotNull
@@ -44,6 +45,8 @@ public final class InternalUnidade {
     private final Long codGrupo;
     @NotNull
     private final String nomeGrupo;
+    @NotNull
+    private final Integer[] pilaresLiberados;
     @Nullable
     private final LocalDateTime dataHoraUltimaAtualizacao;
     @Nullable

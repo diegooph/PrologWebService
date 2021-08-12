@@ -18,12 +18,13 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.io.InputStream;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public final class SuporteService {
+public class SuporteService {
     private static final String TAG = SuporteService.class.getSimpleName();
     @NotNull
     private final SuporteDaoImpl dao;
@@ -61,6 +62,7 @@ public final class SuporteService {
     }
 
     @NotNull
+    @Transactional
     public Response updateEmpresa(@NotNull final String authorization,
                                   @NotNull final InternalEmpresa empresa) {
         final PrologInternalUser user = validate(authorization);
@@ -69,6 +71,7 @@ public final class SuporteService {
     }
 
     @NotNull
+    @Transactional
     public Response updateImagemLogoEmpresa(@NotNull final String authorization,
                                             @NotNull final Long codEmpresa,
                                             @NotNull final InputStream fileInputStream,
@@ -85,6 +88,7 @@ public final class SuporteService {
     }
 
     @NotNull
+    @Transactional
     public Response insertUnidade(@NotNull final String authorization,
                                   @NotNull final InternalUnidadeInsert unidade) {
         validate(authorization);
@@ -106,6 +110,7 @@ public final class SuporteService {
     }
 
     @NotNull
+    @Transactional
     public Response updateUnidade(final String authorization, @NotNull final InternalUnidade unidade) {
         final PrologInternalUser user = validate(authorization);
         dao.updateUnidade(unidade, user);
