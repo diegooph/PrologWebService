@@ -2,10 +2,7 @@ package br.com.zalf.prolog.webservice.interno.suporte;
 
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.interno.PrologInternalUser;
-import br.com.zalf.prolog.webservice.interno.suporte._model.InternalEmpresa;
-import br.com.zalf.prolog.webservice.interno.suporte._model.InternalEmpresaMapper;
-import br.com.zalf.prolog.webservice.interno.suporte._model.InternalUnidade;
-import br.com.zalf.prolog.webservice.interno.suporte._model.InternalUnidadeMapper;
+import br.com.zalf.prolog.webservice.interno.suporte._model.*;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -115,7 +112,7 @@ public final class SuporteDaoImpl {
         }
     }
 
-    public void insertUnidade(@NotNull final InternalUnidade unidade) {
+    public void insertUnidade(@NotNull final InternalUnidadeInsert unidade) {
         final int updateCount = jdbcTemplate.update(
                 "insert into unidade(" +
                         "nome," +

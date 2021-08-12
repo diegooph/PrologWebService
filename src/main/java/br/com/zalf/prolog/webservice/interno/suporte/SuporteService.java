@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.interno.PrologInternalUser;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoInternaService;
 import br.com.zalf.prolog.webservice.interno.suporte._model.InternalEmpresa;
 import br.com.zalf.prolog.webservice.interno.suporte._model.InternalUnidade;
+import br.com.zalf.prolog.webservice.interno.suporte._model.InternalUnidadeInsert;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -85,7 +86,7 @@ public final class SuporteService {
 
     @NotNull
     public Response insertUnidade(@NotNull final String authorization,
-                                  @NotNull final InternalUnidade unidade) {
+                                  @NotNull final InternalUnidadeInsert unidade) {
         validate(authorization);
         dao.insertUnidade(unidade);
         return Response.ok("Unidade alterada com sucesso!");
