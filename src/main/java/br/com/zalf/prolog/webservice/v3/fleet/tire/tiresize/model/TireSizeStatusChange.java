@@ -9,6 +9,8 @@ import javax.validation.constraints.NotNull;
 public class TireSizeStatusChange {
     @CompanyId
     private final Long companyId;
+    @NotNull(message = "O código da dimensão é obrigatório!")
+    private final Long tireSizeId;
     @NotNull(message = "O status da dimensão é obrigatório!")
     private final Boolean isActive;
 }
