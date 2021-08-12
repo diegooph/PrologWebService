@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-@Builder(setterPrefix = "with")
 public final class SuccessResponse {
     @Nullable
     private final Long uniqueItemId;
