@@ -1,10 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.fleet.tire._model;
 
 import br.com.zalf.prolog.webservice.v3.user.UserEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
@@ -18,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder(toBuilder = true, setterPrefix = "with")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@Data
 @Entity
 @Table(name = "dimensao_pneu", schema = "public")
 public final class TireSizeEntity {
