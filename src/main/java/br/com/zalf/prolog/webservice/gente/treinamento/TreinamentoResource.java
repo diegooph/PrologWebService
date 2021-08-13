@@ -99,7 +99,7 @@ public class TreinamentoResource {
 
     @POST
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
-    @Path("/visualizados/{codTreinamento}/{codColaborador}")
+    @Path("/visualizados/by-codigo/{codTreinamento}/{codColaborador}")
     public Response marcarTreinamentoComoVistoByCodColaborador(@PathParam("codTreinamento") final Long codTreinamento,
                                                                @PathParam("codColaborador") final Long codColaborador) {
         if (service.marcarTreinamentoComoVisto(codTreinamento, codColaborador)) {
@@ -121,7 +121,7 @@ public class TreinamentoResource {
 
     @GET
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
-    @Path("/visualizados/{codColaborador}")
+    @Path("/visualizados/by-codigo/{codColaborador}")
     public List<Treinamento> getVistosByColaboradorByCodColaborador(
             @PathParam("codColaborador") final Long codColaborador) {
         return service.getVistosByColaborador(codColaborador);
@@ -139,7 +139,7 @@ public class TreinamentoResource {
 
     @GET
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
-    @Path("/nao-visualizados/{codColaborador}")
+    @Path("/nao-visualizados/by-codigo/{codColaborador}")
     public List<Treinamento> getNaoVistosByCodColaborador(@PathParam("codColaborador") final Long codColaborador) {
         return service.getNaoVistosByColaborador(codColaborador);
     }
@@ -194,7 +194,7 @@ public class TreinamentoResource {
 
     @GET
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
-    @Path("/vistosColaborador/{codColaborador}")
+    @Path("/vistosColaborador/by-codigo/{codColaborador}")
     @Deprecated
     public List<Treinamento> DEPRECATED_GET_VISTOS_BY_COD_COLABORADOR(
             @PathParam("codColaborador") final Long codColaborador) {
@@ -213,7 +213,7 @@ public class TreinamentoResource {
 
     @GET
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
-    @Path("/naoVistosColaborador/{codColaborador}")
+    @Path("/naoVistosColaborador/by-codigo/{codColaborador}")
     @Deprecated
     public List<Treinamento> DEPRECATED_GET_NAO_VISTOS_BY_COD_COLABORADOR(
             @PathParam("codColaborador") final Long codColaborador) {
