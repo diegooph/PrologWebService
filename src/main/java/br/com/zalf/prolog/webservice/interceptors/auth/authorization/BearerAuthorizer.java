@@ -36,29 +36,34 @@ public final class BearerAuthorizer extends PrologAuthorizer {
                                                     final boolean considerOnlyActiveUsers) {
         final AutenticacaoService service = new AutenticacaoService();
         if (permissions.length == 0) {
-            final Optional<ColaboradorAutenticado> colaboradorAutenticado =
+            final Optional<ColaboradorAutenticado> optional =
                     service.verifyIfTokenExists(value, considerOnlyActiveUsers);
-            if (colaboradorAutenticado.isEmpty()) {
-                throw new NotAuthorizedException("Autenticação inválida, usuário não encontrado");
-            }
-            return colaboradorAutenticado.get();
+            return optional.orElseThrow(this::throwsNotAuthorized);
         } else {
             final Optional<ColaboradorAutenticado> optional = service.userHasPermission(
                     value,
                     permissions,
                     needsToHaveAllPermissions,
                     considerOnlyActiveUsers);
-            if (optional.isEmpty()) {
-                throw new NotAuthorizedException("Autenticação inválida, usuário não encontrado");
-            }
-            final ColaboradorAutenticado colaboradorAutenticado = optional.get();
-            switch (colaboradorAutenticado.getStatusSecured()) {
-                case TOKEN_INVALIDO:
-                    throw new NotAuthorizedException("Autenticação inválida, usuário não encontrado");
-                case TOKEN_OK_SEM_PERMISSAO:
-                    throw new ForbiddenException("Usuário não tem permissão para utilizar esse método");
-            }
+            final ColaboradorAutenticado colaboradorAutenticado = optional.orElseThrow(this::throwsNotAuthorized);
+            throwsIfStatusNotSecured(colaboradorAutenticado.getStatusSecured());
             return colaboradorAutenticado;
         }
+    }
+
+    private void throwsIfStatusNotSecured(@NotNull final StatusSecured statusSecured) {
+        if (statusSecured == StatusSecured.TOKEN_INVALIDO) {
+            throwsNotAuthorized();
+        } else if (statusSecured == StatusSecured.TOKEN_OK_SEM_PERMISSAO) {
+            throwsForbidden();
+        }
+    }
+
+    private RuntimeException throwsNotAuthorized() {
+        throw new NotAuthorizedException("Autenticação inválida, usuário não encontrado");
+    }
+
+    private void throwsForbidden() {
+        throw new ForbiddenException("Usuário não tem permissão para utilizar esse método");
     }
 }
