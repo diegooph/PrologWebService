@@ -21,4 +21,6 @@ public class TireSizeUpdating {
     private final Double tireSizeRim;
     @Nullable
     private final String additionalId;
+    @NotNull(message = "O status da dimensão é obrigatório!")
+    private final Boolean active;
 }
