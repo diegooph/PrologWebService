@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireSizeEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreation;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeStatusChange;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeUpdating;
 import br.com.zalf.prolog.webservice.v3.user.UserEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -48,11 +50,19 @@ public class TireSizeService {
                 tireSizeStatusChange.getActive(),
                 UserEntity.builder()
                         .withId(colaboradorAutenticado.getCodigo())
-                        .build()
+                        .build(),
+                LocalDateTime.now()
         );
         if (rowsUpdated == 0) {
             throw new EntityNotFoundException(
                     String.format("The tire size of id %d was not found!", tireSizeStatusChange.getTireSizeId()));
         }
+    }
+
+    public TireSizeEntity updateTireSize(@NotNull final TireSizeUpdating tireSizeUpdating,
+                                         @NotNull final ColaboradorAutenticado colaboradorAutenticado) {
+        final TireSizeEntity tireSize = dao.getOne(tireSizeUpdating.getTireSizeId());
+
+        return null;
     }
 }
