@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireSizeEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreation;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeListing;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeUpdated;
 import br.com.zalf.prolog.webservice.v3.user.UserEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -35,12 +36,12 @@ public class TireSizeMapper {
                 .build();
     }
 
-    public List<TireSizeListing> toDto(@NotNull final List<TireSizeEntity> tireSizesEntities) {
-        return tireSizesEntities.stream().map(this::toDto).collect(Collectors.toList());
+    public List<TireSizeListing> toTireSizeListing(@NotNull final List<TireSizeEntity> tireSizesEntities) {
+        return tireSizesEntities.stream().map(this::toTireSizeListing).collect(Collectors.toList());
     }
 
     @NotNull
-    public TireSizeListing toDto(@NotNull final TireSizeEntity tireSizeEntity) {
+    public TireSizeListing toTireSizeListing(@NotNull final TireSizeEntity tireSizeEntity) {
         return TireSizeListing.builder()
                 .withId(tireSizeEntity.getId())
                 .withCompanyId(tireSizeEntity.getCompanyId())
@@ -49,6 +50,19 @@ public class TireSizeMapper {
                 .withAdditionalId(tireSizeEntity.getAdditionalId())
                 .withRim(tireSizeEntity.getRim())
                 .withIsActive(tireSizeEntity.isActive())
+                .build();
+    }
+
+    @NotNull
+    public TireSizeUpdated toTireSizeUpdated(@NotNull final TireSizeEntity tireSizeEntity) {
+        return TireSizeUpdated.builder()
+                .withCompanyId(tireSizeEntity.getCompanyId())
+                .withTireSizeId(tireSizeEntity.getId())
+                .withTireSizeHeight(tireSizeEntity.getHeight())
+                .withTireSizeWidth(tireSizeEntity.getWidth())
+                .withTireSizeRim(tireSizeEntity.getRim())
+                .withAdditionalId(tireSizeEntity.getAdditionalId())
+                .withActive(tireSizeEntity.isActive())
                 .build();
     }
 }
