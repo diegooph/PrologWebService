@@ -12,14 +12,14 @@ public final class AuthorizatorFactory {
     }
 
     @NotNull
-    public static PrologAuthorizator createAuthorizator(@NotNull final ContainerRequestContext requestContext,
-                                                        @NotNull final Secured secured,
-                                                        @NotNull final AuthMethod authMethod) {
+    public static PrologAuthorizer createAuthorizator(@NotNull final ContainerRequestContext requestContext,
+                                                      @NotNull final Secured secured,
+                                                      @NotNull final AuthMethod authMethod) {
         switch (authMethod.getAuthType()) {
             case BEARER:
-                return new BearerAuthorizator(requestContext, secured, authMethod);
+                return new BearerAuthorizer(requestContext, secured, authMethod);
             case API:
-                return new ApiAuthorizator(requestContext, secured, authMethod);
+                return new ApiAuthorizer(requestContext, secured, authMethod);
             default:
                 throw new IllegalArgumentException("No implementation available for authType: "
                                                            + authMethod.getAuthType());

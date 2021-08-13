@@ -13,11 +13,11 @@ import java.util.Optional;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public final class ApiAuthorizator extends PrologAuthorizator {
+public final class ApiAuthorizer extends PrologAuthorizer {
 
-    public ApiAuthorizator(@NotNull final ContainerRequestContext requestContext,
-                           @NotNull final Secured secured,
-                           @NotNull final AuthMethod authMethod) {
+    public ApiAuthorizer(@NotNull final ContainerRequestContext requestContext,
+                         @NotNull final Secured secured,
+                         @NotNull final AuthMethod authMethod) {
         super(requestContext, secured, authMethod);
     }
 

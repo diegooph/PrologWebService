@@ -37,7 +37,7 @@ public final class AuthorizationFilter implements ContainerRequestFilter {
         final AuthMethod authMethod = getAuthMethod(requestContext);
         getSecuredAnnotation().ifPresent(secured -> {
             ensureCorrectAuthType(secured.authTypes(), authMethod.getAuthType());
-            final PrologAuthorizator authenticator = AuthorizatorFactory.createAuthorizator(
+            final PrologAuthorizer authenticator = AuthorizatorFactory.createAuthorizator(
                     requestContext,
                     secured,
                     authMethod);
@@ -119,9 +119,9 @@ public final class AuthorizationFilter implements ContainerRequestFilter {
         return Optional.ofNullable(resourceInfo.getResourceClass().getAnnotation(Secured.class));
     }
 
-    private void ensureCorrectAuthType(@NotNull final AuthType[] permitedAuthTypes,
+    private void ensureCorrectAuthType(@NotNull final AuthType[] permittedAuthTypes,
                                        @NotNull final AuthType headerAuthType) {
-        if (Arrays.stream(permitedAuthTypes).anyMatch(authType -> authType == headerAuthType)) {
+        if (Arrays.stream(permittedAuthTypes).anyMatch(authType -> authType == headerAuthType)) {
             return;
         }
         throw new NotAuthorizedException("Authorization method not allowed for this resource: " + headerAuthType);
