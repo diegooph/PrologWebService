@@ -18,6 +18,8 @@ public interface TireSizeDao extends JpaRepository<TireSizeEntity, Long> {
     List<TireSizeEntity> findAll(@NotNull final Long companyId, @Nullable final Boolean statusActive);
 
     @Modifying
-    @Query("update TireSizeEntity tse set tse.active = :isActive where tse.id = :tireSizeId")
-    int updateStatus(@NotNull final Long tireSizeId, @NotNull final Boolean isActive);
+    @Query("update TireSizeEntity tse set tse.active = :isActive " +
+            "where tse.companyId = :companyId " +
+            "and tse.id = :tireSizeId")
+    int updateStatus(@NotNull final Long companyId, @NotNull final Long tireSizeId, @NotNull final Boolean isActive);
 }

@@ -40,8 +40,10 @@ public class TireSizeService {
 
     @Transactional
     public void updateStatus(@NotNull final TireSizeStatusChange tireSizeStatusChange) {
-        final int rowsUpdated =
-                dao.updateStatus(tireSizeStatusChange.getTireSizeId(), tireSizeStatusChange.getActive());
+        final int rowsUpdated = dao.updateStatus(
+                tireSizeStatusChange.getCompanyId(),
+                tireSizeStatusChange.getTireSizeId(),
+                tireSizeStatusChange.getActive());
         if (rowsUpdated == 0) {
             throw new EntityNotFoundException(
                     String.format("The tire size of id %d was not found!", tireSizeStatusChange.getTireSizeId()));
