@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.fleet.tire._model;
 
+import br.com.zalf.prolog.webservice.v3.user.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,8 +44,9 @@ public final class TireSizeEntity {
     private Long createdByUserId;
     @Column(name = "data_hora_ultima_atualizacao", nullable = false)
     private LocalDateTime lastedUpdateAt;
-    @Column(name = "cod_colaborador_ultima_atualizacao", nullable = false)
-    private Long lastedUpdateUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_colaborador_ultima_atualizacao", referencedColumnName = "codigo")
+    private UserEntity lastedUpdateUser;
     @Column(name = "origem_cadastro", nullable = false)
     private String registerOrigin;
 

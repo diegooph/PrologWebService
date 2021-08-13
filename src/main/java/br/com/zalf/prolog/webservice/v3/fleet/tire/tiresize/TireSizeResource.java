@@ -7,9 +7,7 @@ import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreation;
-import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeListing;
-import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeStatusChange;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.*;
 import br.com.zalf.prolog.webservice.v3.validation.CompanyId;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +31,8 @@ public class TireSizeResource {
     private final TireSizeMapper mapper;
 
     @Autowired
-    public TireSizeResource(@NotNull final TireSizeService service, @NotNull final TireSizeMapper mapper) {
+    public TireSizeResource(@NotNull final TireSizeService service,
+                            @NotNull final TireSizeMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
@@ -63,12 +62,21 @@ public class TireSizeResource {
     @Path("update-status")
     @ApiExposed
     @Secured(permissions = Pilares.Frota.Pneu.ALTERAR)
-    public SuccessResponse updateStatus(@Valid final TireSizeStatusChange tireSizeStatusChange) {
-        service.updateStatus(tireSizeStatusChange);
+    public SuccessResponse updateStatus(@Valid final TireSizeStatusChange tireSizeStatusChange,
+                                        @Context final SecurityContext securityContext) {
+        service.updateStatus(tireSizeStatusChange, (ColaboradorAutenticado) securityContext.getUserPrincipal());
         return new SuccessResponse(
                 null,
                 String.format(
                         "Tire size %s successfully!",
                         (tireSizeStatusChange.getActive() ? "enabled" : "disabled")));
+    }
+
+    @PUT
+    @ApiExposed
+    @Secured(permissions = Pilares.Frota.Pneu.ALTERAR)
+    public TireSizeUpdated updateTireSize(@Valid final TireSizeUpdating tireSizeUpdating,
+                                          @Context final SecurityContext securityContext) {
+        return null;
     }
 }

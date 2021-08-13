@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireSizeEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreation;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeListing;
+import br.com.zalf.prolog.webservice.v3.user.UserEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,10 @@ public class TireSizeMapper {
                 .withCreatedAt(LocalDateTime.now())
                 .withCreatedByUserId(colaboradorAutenticado.getCodigo())
                 .withLastedUpdateAt(LocalDateTime.now())
-                .withLastedUpdateUserId(colaboradorAutenticado.getCodigo())
+                .withLastedUpdateUser(
+                        UserEntity.builder()
+                                .withId(colaboradorAutenticado.getCodigo())
+                                .build())
                 .withRegisterOrigin("WS")
                 .build();
     }
