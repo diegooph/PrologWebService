@@ -55,7 +55,7 @@ public class TireSizeResource {
     public List<TireSizeListing> getAll(
             @NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId,
             @QueryParam("status") final Boolean statusActive) {
-        return mapper.toDto(service.getAll(companyId, statusActive));
+        return mapper.toTireSizeListing(service.getAll(companyId, statusActive));
     }
 
     @PATCH
@@ -75,8 +75,9 @@ public class TireSizeResource {
     @PUT
     @ApiExposed
     @Secured(permissions = Pilares.Frota.Pneu.ALTERAR)
-    public TireSizeUpdated updateTireSize(@Valid final TireSizeUpdating tireSizeUpdating,
+    public TireSizeUpdated updateTireSize(@Valid @NotNull final TireSizeUpdating tireSizeUpdating,
                                           @Context final SecurityContext securityContext) {
-        return null;
+        return mapper.toTireSizeUpdated(
+                service.updateTireSize(tireSizeUpdating, (ColaboradorAutenticado) securityContext.getUserPrincipal()));
     }
 }
