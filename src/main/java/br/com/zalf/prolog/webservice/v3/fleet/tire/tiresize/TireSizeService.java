@@ -59,10 +59,26 @@ public class TireSizeService {
         }
     }
 
+    @Transactional
     public TireSizeEntity updateTireSize(@NotNull final TireSizeUpdating tireSizeUpdating,
                                          @NotNull final ColaboradorAutenticado colaboradorAutenticado) {
-        final TireSizeEntity tireSize = dao.getOne(tireSizeUpdating.getTireSizeId());
-
-        return null;
+        final TireSizeEntity tireSize =
+                dao.findByCompanyIdAndId(tireSizeUpdating.getCompanyId(), tireSizeUpdating.getTireSizeId())
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                String.format(
+                                        "The tire size of id %d was not found!",
+                                        tireSizeUpdating.getTireSizeId())));
+        tireSize.setHeight(tireSizeUpdating.getTireSizeHeight());
+        tireSize.setWidth(tireSizeUpdating.getTireSizeWidth());
+        tireSize.setRim(tireSizeUpdating.getTireSizeRim());
+        tireSize.setAdditionalId(tireSizeUpdating.getAdditionalId());
+        tireSize.setActive(tireSizeUpdating.getActive());
+        tireSize.setLastedUpdateUser(
+                UserEntity.builder()
+                        .withId(colaboradorAutenticado.getCodigo())
+                        .build()
+        );
+        tireSize.setLastedUpdateAt(LocalDateTime.now());
+        return dao.save(tireSize);
     }
 }
