@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.interno.autenticacao._model;
 
 import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
-import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
+import br.com.zalf.prolog.webservice.interceptors.auth.authorization.AuthType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.NotAuthorizedException;

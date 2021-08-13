@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.interceptors.auth;
+package br.com.zalf.prolog.webservice.interceptors.auth.authorization;
 
 import org.jetbrains.annotations.NotNull;
 

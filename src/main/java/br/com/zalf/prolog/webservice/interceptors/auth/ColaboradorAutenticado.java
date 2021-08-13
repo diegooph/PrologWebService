@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.interceptors.auth;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.StatusSecured;
+import br.com.zalf.prolog.webservice.interceptors.auth.authorization.StatusSecured;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
