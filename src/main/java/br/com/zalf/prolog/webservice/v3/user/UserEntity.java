@@ -23,9 +23,9 @@ import java.time.ZoneId;
 @Entity
 @Table(schema = "public", name = "colaborador")
 public final class UserEntity {
+    @Id
     @Column(name = "codigo", unique = true)
     private Long id;
-    @Id
     @Column(name = "cpf")
     private Long cpf;
     @Column(name = "nome")
