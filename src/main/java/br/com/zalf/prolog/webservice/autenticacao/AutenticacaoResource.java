@@ -16,8 +16,8 @@ public class AutenticacaoResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Autenticacao authenticate(@FormParam("cpf") final Long cpf,
-                                     @FormParam("dataNascimento") final String dataNascimento) {
+    public AutenticacaoResponse authenticate(@FormParam("cpf") final Long cpf,
+                                             @FormParam("dataNascimento") final String dataNascimento) {
         return service.authenticate(cpf, dataNascimento);
     }
 

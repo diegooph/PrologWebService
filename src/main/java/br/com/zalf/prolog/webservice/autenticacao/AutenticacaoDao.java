@@ -16,7 +16,7 @@ public interface AutenticacaoDao {
                            @NotNull final String token) throws Throwable;
 
     @NotNull
-    Autenticacao createTokenByCodColaborador(@NotNull final Long codColaborador) throws Throwable;
+    AutenticacaoResponse createTokenByCodColaborador(@NotNull final Long codColaborador) throws Throwable;
 
     boolean delete(@NotNull final String token) throws Throwable;
 

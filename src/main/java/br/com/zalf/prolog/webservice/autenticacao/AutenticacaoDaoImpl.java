@@ -31,7 +31,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 
     @NotNull
     @Override
-    public Autenticacao createTokenByCodColaborador(@NotNull final Long codColaborador) throws Throwable {
+    public AutenticacaoResponse createTokenByCodColaborador(@NotNull final Long codColaborador) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -43,15 +43,15 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
             stmt.setLong(1, codColaborador);
             stmt.setString(2, new TokenGenerator().getNextToken());
             rSet = stmt.executeQuery();
-            final Autenticacao autenticacao = new Autenticacao();
+            final AutenticacaoResponse autenticacaoResponse = new AutenticacaoResponse();
             if (rSet.next()) {
-                autenticacao.setCpf(rSet.getLong("CPF_COLABORADOR"));
-                autenticacao.setToken(rSet.getString("TOKEN_AUTENTICACAO"));
-                autenticacao.setStatus(Autenticacao.OK);
+                autenticacaoResponse.setCpf(rSet.getLong("CPF_COLABORADOR"));
+                autenticacaoResponse.setToken(rSet.getString("TOKEN_AUTENTICACAO"));
+                autenticacaoResponse.setStatus(AutenticacaoResponse.OK);
             } else {
-                autenticacao.setStatus(Autenticacao.ERROR);
+                autenticacaoResponse.setStatus(AutenticacaoResponse.ERROR);
             }
-            return autenticacao;
+            return autenticacaoResponse;
         } finally {
             close(conn, stmt, rSet);
         }
