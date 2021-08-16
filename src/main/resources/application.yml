@@ -21,8 +21,8 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
-        ejb:
-          use_class_enhancer: true
+#        ejb:
+#          use_class_enhancer: true
         temp:
           use_jdbc_metadata_defaults: false
     database-platform: br.com.zalf.prolog.webservice.v3.PrologDialect
