@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.interceptors.auth.authenticator;
+package br.com.zalf.prolog.webservice.interceptors.auth.authorization;
 
 /**
  * Created on 8/27/19

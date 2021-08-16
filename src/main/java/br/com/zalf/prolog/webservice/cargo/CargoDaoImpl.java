@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.cargo;
 
 import br.com.zalf.prolog.webservice.cargo._model.*;
-import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
+import br.com.zalf.prolog.webservice.autenticacao._model.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 
@@ -75,7 +75,7 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codigo);
             rSet = stmt.executeQuery();
-            CargoEdicao cargo;
+            final CargoEdicao cargo;
             if (rSet.next()) {
                 cargo = CargoConverter.createCargoEdicao(rSet);
             } else {
@@ -153,7 +153,7 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
     @NotNull
     @Override
     public Long insertCargo(@NotNull final CargoInsercao cargo,
-                            @NotNull final String userToken) throws Throwable{
+                            @NotNull final String userToken) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Connection conn = null;
@@ -216,7 +216,7 @@ public final class CargoDaoImpl extends DatabaseConnection implements CargoDao {
                     "F_COD_EMPRESA := ?, " +
                     "F_COD_CARGO   := ?, " +
                     "F_TOKEN       := ?);");
-            stmt.setLong(1,codEmpresa);
+            stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codigo);
             stmt.setString(3, TokenCleaner.getOnlyToken(userToken));
             rSet = stmt.executeQuery();

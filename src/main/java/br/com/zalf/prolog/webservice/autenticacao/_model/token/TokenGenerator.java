@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.autenticacao.token;
+package br.com.zalf.prolog.webservice.autenticacao._model.token;
 
 import org.jetbrains.annotations.NotNull;
 

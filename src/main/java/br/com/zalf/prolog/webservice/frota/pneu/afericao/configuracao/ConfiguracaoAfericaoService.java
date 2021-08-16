@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
+import br.com.zalf.prolog.webservice.autenticacao._model.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.*;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;

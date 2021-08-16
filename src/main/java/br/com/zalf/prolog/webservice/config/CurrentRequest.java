@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.config;
 
-import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
+import br.com.zalf.prolog.webservice.autenticacao._model.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;

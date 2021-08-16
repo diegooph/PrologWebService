@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
-import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.log.LogRequest;
@@ -98,12 +97,12 @@ public class ControleJornadaResource {
     }
 
     /**
-     * Essa busca só é feita no app caso exista algum usuário logado, então podemos deixar usando o @Secured como
-     * BEARER e não precisa autenticar pelo Token da Marcação.
+     * Essa busca só é feita no app caso exista algum usuário logado, então podemos usar o @Secured
+     * e não precisa autenticar pelo Token da Marcação.
      */
     @GET
     @UsedBy(platforms = Platform.ANDROID)
-    @Secured(authTypes = AuthType.BEARER, permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
+    @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/offline-support")
     public IntervaloOfflineSupport getIntervaloOfflineSupport(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) final long versaoDadosIntervalo,
