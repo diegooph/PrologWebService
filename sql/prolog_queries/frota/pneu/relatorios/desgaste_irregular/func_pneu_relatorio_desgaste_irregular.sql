@@ -40,20 +40,6 @@ declare
     f_timestamp_format text := 'DD/MM/YYYY HH24:MI';
 begin
     return query
-        -- Essa CTE busca o código da última aferição de cada pneu.
-        -- Com o código nós conseguimos buscar depois a data/hora da aferição e o código da unidade em que ocorreu,
-        -- para aplicar o TZ correto.
-        with ultimas_afericoes as (
-            select av.cod_pneu   as cod_pneu_aferido,
-                   max(a.codigo) as cod_afericao
-            from afericao a
-                     join afericao_valores av
-                          on av.cod_afericao = a.codigo
-                     join pneu p on p.codigo = av.cod_pneu
-            where p.cod_unidade = any (f_cod_unidades)
-            group by av.cod_pneu
-        )
-
         select u.nome :: text                                                               as unidade_alocado,
                p.codigo_cliente :: text                                                     as cod_pneu,
                p.status :: text                                                             as status,
@@ -85,16 +71,16 @@ begin
                -- Usamos um CASE ao invés do coalesce da func FORMAT_WITH_TZ, pois desse modo evitamos o evaluate
                -- dos dois selects internos de consulta na tabela AFERICAO caso o pneu nunca tenha sido aferido.
                case
-                   when ua.cod_afericao is null
+                   when (select not exists(select av.cod_pneu from afericao_valores av where av.cod_pneu = p.codigo))
                        then 'Nunca Aferido'
                    else
-                       format_with_tz((select a.data_hora
-                                       from afericao a
-                                       where a.codigo = ua.cod_afericao),
-                                      tz_unidade((select a.cod_unidade
-                                                  from afericao a
-                                                  where a.codigo = ua.cod_afericao)),
-                                      f_timestamp_format)
+                       to_char((select max(a.data_hora) at time zone tz_unidade(a.cod_unidade) as data_hora
+                                from afericao a
+                                         join afericao_valores av on a.codigo = av.cod_afericao
+                                where av.cod_pneu = p.codigo
+                                group by a.codigo, a.cod_unidade, a.data_hora
+                                order by a.data_hora desc
+                                limit 1), f_timestamp_format)
                    end                                                                      as ultima_afericao,
                ptdi.descricao                                                               as descricao_desgaste,
                -- Por enquanto, deixamos hardcoded os ranges de cada nível de desgaste.
@@ -137,13 +123,15 @@ begin
                  left join veiculo_tipo vt
                            on v.cod_tipo = vt.codigo
                  left join veiculo_diagrama vd on vt.cod_diagrama = vd.codigo
-                 left join pneu_posicao_nomenclatura_empresa ppne on ppne.cod_empresa = e.codigo
-            and ppne.cod_diagrama = vd.codigo
-            and ppne.posicao_prolog = vp.posicao
-                 left join ultimas_afericoes ua
-                           on ua.cod_pneu_aferido = p.codigo
+                 left join pneu_posicao_nomenclatura_empresa ppne
+                           on ppne.cod_empresa = e.codigo
+                               and ppne.cod_diagrama = vd.codigo
+                               and ppne.posicao_prolog = vp.posicao
         where p.cod_unidade = any (f_cod_unidades)
-          and f_if(f_status_pneu is null, true, f_status_pneu = p.status :: pneu_status_type)
+          and case
+                  when f_status_pneu is null then true
+                  else f_status_pneu::text = p.status
+            end
           and verif_desgaste.tem_desgaste_irregular
         order by verif_desgaste.nivel_desgaste_irregular desc, u.nome, p.codigo_cliente;
 end;
