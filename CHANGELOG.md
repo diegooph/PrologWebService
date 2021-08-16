@@ -8,6 +8,7 @@ Change Log
 
 ### Refactors
 * Melhora estrutura de autenticação do Prolog (PL-3900)
+* Verifica se empresa e unidade estão ativas ao realizar o login
 
 
 <a name="v3.8.1"></a>
