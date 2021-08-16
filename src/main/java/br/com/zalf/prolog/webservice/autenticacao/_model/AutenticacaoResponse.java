@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.autenticacao;
+package br.com.zalf.prolog.webservice.autenticacao._model;
 
 /**
  * Created by luiz on 1/16/16.

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.interceptors.auth.authorization;
 
-import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
+import br.com.zalf.prolog.webservice.autenticacao._model.token.TokenCleaner;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;

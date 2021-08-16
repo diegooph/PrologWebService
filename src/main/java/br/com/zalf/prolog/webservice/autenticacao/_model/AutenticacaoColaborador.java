@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.autenticacao;
+package br.com.zalf.prolog.webservice.autenticacao._model;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import lombok.Data;

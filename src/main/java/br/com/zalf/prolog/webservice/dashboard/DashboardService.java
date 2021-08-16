@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.dashboard;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
+import br.com.zalf.prolog.webservice.autenticacao._model.token.TokenCleaner;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;

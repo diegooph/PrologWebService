@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.interno.autenticacao._model;
 
-import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
+import br.com.zalf.prolog.webservice.autenticacao._model.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.interceptors.auth.authorization.AuthType;
 import org.jetbrains.annotations.NotNull;
 

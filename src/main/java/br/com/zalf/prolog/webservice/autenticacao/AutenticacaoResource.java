@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
+import br.com.zalf.prolog.webservice.autenticacao._model.AutenticacaoResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import org.jetbrains.annotations.NotNull;
