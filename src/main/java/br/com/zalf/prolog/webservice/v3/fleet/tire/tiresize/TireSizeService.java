@@ -42,9 +42,18 @@ public class TireSizeService {
         return dao.save(mapper.toEntity(tireSizeCreation, colaboradorAutenticado));
     }
 
+    @NotNull
     public List<TireSizeEntity> getAll(@NotNull final Long companyId,
                                        @Nullable final Boolean statusActive) {
         return dao.findAll(companyId, statusActive);
+    }
+
+    @NotNull
+    public TireSizeEntity getById(@NotNull final Long companyId,
+                                  @NotNull final Long tireSizeId) {
+        return dao.findByCompanyIdAndId(companyId, tireSizeId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("The tire size of id %d was not found!", tireSizeId)));
     }
 
     @Transactional
@@ -65,15 +74,11 @@ public class TireSizeService {
         }
     }
 
+    @NotNull
     @Transactional
     public TireSizeEntity updateTireSize(@NotNull final TireSizeUpdating tireSizeUpdating,
                                          @NotNull final ColaboradorAutenticado colaboradorAutenticado) {
-        final TireSizeEntity tireSize =
-                dao.findByCompanyIdAndId(tireSizeUpdating.getCompanyId(), tireSizeUpdating.getTireSizeId())
-                        .orElseThrow(() -> new EntityNotFoundException(
-                                String.format(
-                                        "The tire size of id %d was not found!",
-                                        tireSizeUpdating.getTireSizeId())));
+        final TireSizeEntity tireSize = getById(tireSizeUpdating.getCompanyId(), tireSizeUpdating.getTireSizeId());
         tireSize.setHeight(tireSizeUpdating.getTireSizeHeight());
         tireSize.setWidth(tireSizeUpdating.getTireSizeWidth());
         tireSize.setRim(tireSizeUpdating.getTireSizeRim());
@@ -90,10 +95,7 @@ public class TireSizeService {
 
     @Transactional
     public void deleteTireSize(@NotNull final Long companyId, @NotNull final Long tireSizeId) {
-        final TireSizeEntity tireSize =
-                dao.findByCompanyIdAndId(companyId, tireSizeId)
-                        .orElseThrow(() -> new EntityNotFoundException(
-                                String.format("The tire size of id %d was not found!", tireSizeId)));
+        final TireSizeEntity tireSize = getById(companyId, tireSizeId);
         tireService.getTiresByTireSize(tireSize).stream()
                 .findAny()
                 .ifPresent(tireEntity -> {
