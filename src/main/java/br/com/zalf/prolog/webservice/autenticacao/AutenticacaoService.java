@@ -51,9 +51,9 @@ public class AutenticacaoService {
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao verificar se o usuário com os seguintes dados existe: cpf - %s |" +
                                              " Data de Nascimento - %s", cpf, dataNascimento), throwable);
-            // Optamos por não tratar com o handler do Prolog, pois não queremos mandar nenhuma mensagem
-            // aos usuários nesse caso.
-            throw new RuntimeException(throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao realizar login, tente novamente.");
         }
     }
 
