@@ -37,8 +37,9 @@ public final class TireSizeEntity {
     private boolean active;
     @Column(name = "data_hora_cadastro", nullable = false)
     private LocalDateTime createdAt;
-    @Column(name = "cod_colaborador_cadastro", nullable = false)
-    private Long createdByUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_colaborador_cadastro", referencedColumnName = "codigo")
+    private UserEntity createByUser;
     @Column(name = "data_hora_ultima_atualizacao", nullable = false)
     private LocalDateTime lastedUpdateAt;
     @ManyToOne(fetch = FetchType.LAZY)
