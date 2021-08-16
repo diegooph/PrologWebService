@@ -5,10 +5,10 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.container.ContainerRequestContext;
 
-public final class AuthorizatorFactory {
+public final class AuthorizerFactory {
 
-    private AuthorizatorFactory() {
-        throw new IllegalStateException(AuthorizatorFactory.class.getSimpleName() + " cannot be instantiated!");
+    private AuthorizerFactory() {
+        throw new IllegalStateException(AuthorizerFactory.class.getSimpleName() + " cannot be instantiated!");
     }
 
     @NotNull
