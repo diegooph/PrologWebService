@@ -23,11 +23,10 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 
     }
 
-    @NotNull
     @Override
-    public Autenticacao createTokenByCpf(@NotNull final Long cpf) throws Throwable {
-        final String token = new TokenGenerator().getNextToken();
-        return insert(cpf, token);
+    public void insertTokenForCpf(@NotNull final Long cpf,
+                                  @NotNull final String token) throws Throwable {
+        insertToken(cpf, token);
     }
 
     @NotNull
@@ -109,32 +108,38 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         }
     }
 
-    @NotNull
     @Override
-    public Optional<ColaboradorAutenticado> verifyIfUserExists(@NotNull final Long cpf,
-                                                               @NotNull final LocalDate dataNascimento,
-                                                               final boolean apenasUsuariosAtivos) throws Throwable {
+    public AutenticacaoColaborador authenticate(@NotNull final Long cpf,
+                                                @NotNull final LocalDate dataNascimento) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select c.codigo as cod_colaborador " +
+            stmt = conn.prepareStatement("select " +
+                                                 "c.codigo as cod_colaborador, " +
+                                                 "c.cpf as cpf_colaborador, " +
+                                                 "c.status_ativo as colaborador_ativo, " +
+                                                 "e.status_ativo as empresa_ativa, " +
+                                                 "u.status_ativo as unidade_ativa " +
                                                  "from colaborador c " +
+                                                 "join empresa e on c.cod_empresa = e.codigo " +
+                                                 "join unidade u on c.cod_unidade = u.codigo " +
                                                  "where c.cpf = ? " +
-                                                 "and c.data_nascimento = ? " +
-                                                 "and c.status_ativo::text like ?;");
+                                                 "and c.data_nascimento = ?;");
             stmt.setLong(1, cpf);
             stmt.setObject(2, dataNascimento);
-            stmt.setString(3, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return Optional.of(new ColaboradorAutenticado(
-                        rSet.getLong("COD_COLABORADOR"),
-                        cpf,
-                        StatusSecured.TOKEN_E_PERMISSAO_OK));
+                return new AutenticacaoColaborador(
+                        rSet.getLong("cod_colaborador"),
+                        rSet.getLong("cpf_colaborador"),
+                        rSet.getBoolean("colaborador_ativo"),
+                        rSet.getBoolean("empresa_ativa"),
+                        rSet.getBoolean("unidade_ativa"));
             } else {
-                return Optional.empty();
+                throw new SQLException(String.format(
+                        "Colaborador não encontrado com CPF %d e data de nascimento %s", cpf, dataNascimento));
             }
         } finally {
             close(conn, stmt, rSet);
@@ -206,13 +211,9 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         }
     }
 
-    @NotNull
-    private Autenticacao insert(@NotNull final Long cpf, @NotNull final String token) throws SQLException {
+    private void insertToken(@NotNull final Long cpf, @NotNull final String token) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
-        final Autenticacao autenticacao = new Autenticacao();
-        autenticacao.setCpf(cpf);
-        autenticacao.setToken(token);
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("insert into token_autenticacao"
@@ -223,14 +224,11 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
             stmt.setString(3, token);
             final int count = stmt.executeUpdate();
             if (count == 0) {
-                autenticacao.setStatus(Autenticacao.ERROR);
-                return autenticacao;
+                throw new SQLException("Erro ao salvar token para o CPF: " + cpf);
             }
         } finally {
             close(conn, stmt);
         }
-        autenticacao.setStatus(Autenticacao.OK);
-        return autenticacao;
     }
 
     @NotNull

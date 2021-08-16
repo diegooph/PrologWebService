@@ -1,11 +1,13 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.autenticacao.token.TokenGenerator;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -36,17 +38,17 @@ public class AutenticacaoService {
     }
 
     @NotNull
-    public Optional<ColaboradorAutenticado> verifyIfUserExists(@NotNull final Long cpf,
-                                                               @NotNull final String dataNascimento,
-                                                               final boolean apenasUsuariosAtivos) {
+    public Autenticacao authenticate(@NotNull final Long cpf,
+                                     @NotNull final String dataNascimento) {
         try {
-            return dao.verifyIfUserExists(
-                    cpf,
-                    PrologDateParser.toLocalDate(dataNascimento),
-                    apenasUsuariosAtivos);
+            final LocalDate dataNascimentoLocalDate = PrologDateParser.toLocalDate(dataNascimento);
+            final AutenticacaoColaborador colaborador = dao.authenticate(cpf, dataNascimentoLocalDate);
+            colaborador.validate();
+            final String token = createTokenByCpf(cpf);
+            return new Autenticacao(Autenticacao.OK, cpf, token);
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao verificar se o usuário com os seguintes dados existe: cpf - %s |" +
-                    " Data de Nascimento - %s", cpf, dataNascimento), throwable);
+                                             " Data de Nascimento - %s", cpf, dataNascimento), throwable);
             // Optamos por não tratar com o handler do Prolog, pois não queremos mandar nenhuma mensagem
             // aos usuários nesse caso.
             throw new RuntimeException(throwable);
@@ -62,12 +64,12 @@ public class AutenticacaoService {
             return dao.userHasPermission(token, permissions, needsToHaveAllPermissions, apenasUsuariosAtivos);
         } catch (final Throwable t) {
             Log.e(TAG,
-                    String.format("Erro ao verificar se o usuário com o token: %s tem acesso as permissões: %s |" +
-                                    " needsToHaveAllPermissions/apenasUsuariosAtivos: %b/%b",
-                            token,
-                            Arrays.toString(permissions),
-                            needsToHaveAllPermissions,
-                            apenasUsuariosAtivos), t);
+                  String.format("Erro ao verificar se o usuário com o token: %s tem acesso as permissões: %s |" +
+                                        " needsToHaveAllPermissions/apenasUsuariosAtivos: %b/%b",
+                                token,
+                                Arrays.toString(permissions),
+                                needsToHaveAllPermissions,
+                                apenasUsuariosAtivos), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao validar permissões");
@@ -89,12 +91,12 @@ public class AutenticacaoService {
                     apenasUsuariosAtivos);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao verificar se o usuário com o cpf/Nascimento: %d/%s tem acesso as " +
-                            "permissões: %s | needsToHaveAllPermissions/apenasUsuariosAtivos: %b/%b",
-                    cpf,
-                    dataNascimento,
-                    Arrays.toString(permissions),
-                    needsToHaveAllPermissions,
-                    apenasUsuariosAtivos), t);
+                                             "permissões: %s | needsToHaveAllPermissions/apenasUsuariosAtivos: %b/%b",
+                                     cpf,
+                                     dataNascimento,
+                                     Arrays.toString(permissions),
+                                     needsToHaveAllPermissions,
+                                     apenasUsuariosAtivos), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao validar permissões");
@@ -102,12 +104,14 @@ public class AutenticacaoService {
     }
 
     @NotNull
-    Autenticacao createTokenByCpf(@NotNull final Long cpf) {
+    String createTokenByCpf(@NotNull final Long cpf) throws Throwable {
         try {
-            return dao.createTokenByCpf(cpf);
+            final String token = new TokenGenerator().getNextToken();
+            dao.insertTokenForCpf(cpf, token);
+            return token;
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao inserir o token para o cpf: %d", cpf), throwable);
-            return new Autenticacao(Autenticacao.ERROR, cpf, "-1");
+            throw throwable;
         }
     }
 }

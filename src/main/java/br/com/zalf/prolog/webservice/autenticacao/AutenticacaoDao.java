@@ -12,8 +12,8 @@ import java.util.Optional;
 @SuppressWarnings("NullableProblems")
 public interface AutenticacaoDao {
 
-    @NotNull
-    Autenticacao createTokenByCpf(@NotNull final Long cpf) throws Throwable;
+    void insertTokenForCpf(@NotNull final Long cpf,
+                           @NotNull final String token) throws Throwable;
 
     @NotNull
     Autenticacao createTokenByCodColaborador(@NotNull final Long codColaborador) throws Throwable;
@@ -23,15 +23,17 @@ public interface AutenticacaoDao {
     @NotNull
     Optional<ColaboradorAutenticado> verifyIfTokenExists(@NotNull final String token,
                                                          final boolean apenasUsuariosAtivos) throws Throwable;
+
     @NotNull
-    Optional<ColaboradorAutenticado> verifyIfUserExists(@NotNull final Long cpf,
-                                                        @NotNull final LocalDate dataNascimento,
-                                                        final boolean apenasUsuariosAtivos) throws Throwable;
+    AutenticacaoColaborador authenticate(@NotNull final Long cpf,
+                                         @NotNull final LocalDate dataNascimento) throws Throwable;
+
     @NotNull
     Optional<ColaboradorAutenticado> userHasPermission(@NotNull final String token,
                                                        @NotNull final int[] permissions,
                                                        final boolean needsToHaveAllPermissions,
                                                        final boolean apenasUsuariosAtivos) throws Throwable;
+
     @NotNull
     Optional<ColaboradorAutenticado> userHasPermission(final long cpf,
                                                        @NotNull final LocalDate dataNascimento,

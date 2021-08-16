@@ -4,7 +4,7 @@ package br.com.zalf.prolog.webservice.autenticacao;
  * Created by luiz on 1/16/16.
  * Objeto gerado após a autenticação no ws
  */
-public class Autenticacao {
+public final class Autenticacao {
     /**
      * variáveis públicas utilizadas para setar o atributo status.
      */
