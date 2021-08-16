@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
-import br.com.zalf.prolog.webservice.autenticacao._model.AutenticacaoColaborador;
+import br.com.zalf.prolog.webservice.autenticacao._model.AutenticacaoLogin;
 import br.com.zalf.prolog.webservice.autenticacao._model.AutenticacaoResponse;
 import br.com.zalf.prolog.webservice.autenticacao._model.token.TokenGenerator;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -111,8 +111,8 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
     }
 
     @Override
-    public AutenticacaoColaborador authenticate(@NotNull final Long cpf,
-                                                @NotNull final LocalDate dataNascimento) throws Throwable {
+    public AutenticacaoLogin authenticate(@NotNull final Long cpf,
+                                          @NotNull final LocalDate dataNascimento) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -133,7 +133,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
             stmt.setObject(2, dataNascimento);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return new AutenticacaoColaborador(
+                return new AutenticacaoLogin(
                         rSet.getLong("cod_colaborador"),
                         rSet.getLong("cpf_colaborador"),
                         rSet.getBoolean("colaborador_ativo"),

@@ -5,7 +5,7 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 @Data
-public final class AutenticacaoColaborador {
+public final class AutenticacaoLogin {
     @NotNull
     private final Long codColaborador;
     @NotNull

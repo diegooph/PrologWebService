@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
-import br.com.zalf.prolog.webservice.autenticacao._model.AutenticacaoColaborador;
+import br.com.zalf.prolog.webservice.autenticacao._model.AutenticacaoLogin;
 import br.com.zalf.prolog.webservice.autenticacao._model.AutenticacaoResponse;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import org.jetbrains.annotations.NotNull;
@@ -27,8 +27,8 @@ public interface AutenticacaoDao {
                                                          final boolean apenasUsuariosAtivos) throws Throwable;
 
     @NotNull
-    AutenticacaoColaborador authenticate(@NotNull final Long cpf,
-                                         @NotNull final LocalDate dataNascimento) throws Throwable;
+    AutenticacaoLogin authenticate(@NotNull final Long cpf,
+                                   @NotNull final LocalDate dataNascimento) throws Throwable;
 
     @NotNull
     Optional<ColaboradorAutenticado> userHasPermission(@NotNull final String token,

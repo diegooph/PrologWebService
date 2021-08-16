@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.autenticacao._model.AutenticacaoColaborador;
+import br.com.zalf.prolog.webservice.autenticacao._model.AutenticacaoLogin;
 import br.com.zalf.prolog.webservice.autenticacao._model.AutenticacaoResponse;
 import br.com.zalf.prolog.webservice.autenticacao._model.token.TokenGenerator;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -44,7 +44,7 @@ public class AutenticacaoService {
                                              @NotNull final String dataNascimento) {
         try {
             final LocalDate dataNascimentoLocalDate = PrologDateParser.toLocalDate(dataNascimento);
-            final AutenticacaoColaborador colaborador = dao.authenticate(cpf, dataNascimentoLocalDate);
+            final AutenticacaoLogin colaborador = dao.authenticate(cpf, dataNascimentoLocalDate);
             colaborador.validate();
             final String token = createTokenByCpf(cpf);
             return new AutenticacaoResponse(AutenticacaoResponse.OK, cpf, token);
