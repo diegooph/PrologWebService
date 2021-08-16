@@ -27,19 +27,19 @@ public final class AutenticacaoLogin {
 
     private void validaColaboradorAtivo() {
         if (!isColaboradorAtivo()) {
-            throw new GenericException("Erro ao realizar login, colaborador inativo.");
+            throw new GenericException("Erro ao realizar login, colaborador inativo.", false);
         }
     }
 
     private void validaEmpresaAtiva() {
         if (!isEmpresaAtiva()) {
-            throw new GenericException("Erro ao realizar login, empresa inativa.");
+            throw new GenericException("Erro ao realizar login, empresa inativa.", false);
         }
     }
 
     private void validaUnidadeAtiva() {
         if (!isUnidadeAtiva()) {
-            throw new GenericException("Erro ao realizar login, unidade inativa.");
+            throw new GenericException("Erro ao realizar login, unidade inativa.", false);
         }
     }
 }
