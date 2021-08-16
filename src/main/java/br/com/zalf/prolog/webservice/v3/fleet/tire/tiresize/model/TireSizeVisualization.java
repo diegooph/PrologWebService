@@ -13,7 +13,7 @@ public class TireSizeVisualization {
     private final Double width;
     private final Double rim;
     private final String additionalId;
-    private final boolean isActive;
+    private final boolean active;
     private final LocalDateTime createdAt;
     private final Long createdAtUserId;
     private final String createdAtUserName;
