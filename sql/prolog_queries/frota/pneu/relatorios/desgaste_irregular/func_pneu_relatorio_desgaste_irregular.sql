@@ -1,150 +1,150 @@
-CREATE OR REPLACE FUNCTION FUNC_PNEU_RELATORIO_DESGASTE_IRREGULAR(F_COD_UNIDADES BIGINT[],
-                                                                  F_STATUS_PNEU PNEU_STATUS_TYPE DEFAULT NULL)
-    RETURNS TABLE
+create or replace function func_pneu_relatorio_desgaste_irregular(f_cod_unidades bigint[],
+                                                                  f_status_pneu pneu_status_type default null)
+    returns table
             (
-                "UNIDADE ALOCADO"       TEXT,
-                "PNEU"                  TEXT,
-                "STATUS"                TEXT,
-                "VALOR DE AQUISIÇÃO"    TEXT,
-                "DATA/HORA CADASTRO"    TEXT,
-                "MARCA"                 TEXT,
-                "MODELO"                TEXT,
-                "BANDA APLICADA"        TEXT,
-                "VALOR DA BANDA"        TEXT,
-                "MEDIDAS"               TEXT,
-                "PLACA"                 TEXT,
-                "TIPO"                  TEXT,
-                "POSIÇÃO"               TEXT,
-                "QUANTIDADE DE SULCOS"  TEXT,
-                "SULCO INTERNO"         TEXT,
-                "SULCO CENTRAL INTERNO" TEXT,
-                "SULCO CENTRAL EXTERNO" TEXT,
-                "SULCO EXTERNO"         TEXT,
-                "MENOR SULCO"           TEXT,
-                "PRESSÃO ATUAL (PSI)"   TEXT,
-                "PRESSÃO IDEAL (PSI)"   TEXT,
-                "VIDA ATUAL"            TEXT,
-                "DOT"                   TEXT,
-                "ÚLTIMA AFERIÇÃO"       TEXT,
-                "DESCRIÇÃO DESGASTE"    TEXT,
-                "NÍVEL DE DESGASTE"     TEXT,
-                "APARÊNCIA PNEU"        TEXT,
-                "CAUSAS PROVÁVEIS"      TEXT,
-                "AÇÃO"                  TEXT,
-                "PRECAUÇÃO"             TEXT
+                "UNIDADE ALOCADO"       text,
+                "PNEU"                  text,
+                "STATUS"                text,
+                "VALOR DE AQUISIÇÃO"    text,
+                "DATA/HORA CADASTRO"    text,
+                "MARCA"                 text,
+                "MODELO"                text,
+                "BANDA APLICADA"        text,
+                "VALOR DA BANDA"        text,
+                "MEDIDAS"               text,
+                "PLACA"                 text,
+                "TIPO"                  text,
+                "POSIÇÃO"               text,
+                "QUANTIDADE DE SULCOS"  text,
+                "SULCO INTERNO"         text,
+                "SULCO CENTRAL INTERNO" text,
+                "SULCO CENTRAL EXTERNO" text,
+                "SULCO EXTERNO"         text,
+                "MENOR SULCO"           text,
+                "PRESSÃO ATUAL (PSI)"   text,
+                "PRESSÃO IDEAL (PSI)"   text,
+                "VIDA ATUAL"            text,
+                "DOT"                   text,
+                "ÚLTIMA AFERIÇÃO"       text,
+                "DESCRIÇÃO DESGASTE"    text,
+                "NÍVEL DE DESGASTE"     text,
+                "APARÊNCIA PNEU"        text,
+                "CAUSAS PROVÁVEIS"      text,
+                "AÇÃO"                  text,
+                "PRECAUÇÃO"             text
             )
-    LANGUAGE PLPGSQL
-AS
+    language plpgsql
+as
 $$
-DECLARE
-    F_TIMESTAMP_FORMAT TEXT := 'DD/MM/YYYY HH24:MI';
-BEGIN
-    RETURN QUERY
+declare
+    f_timestamp_format text := 'DD/MM/YYYY HH24:MI';
+begin
+    return query
         -- Essa CTE busca o código da última aferição de cada pneu.
         -- Com o código nós conseguimos buscar depois a data/hora da aferição e o código da unidade em que ocorreu,
         -- para aplicar o TZ correto.
-        WITH ULTIMAS_AFERICOES AS (
-            SELECT AV.COD_PNEU   AS COD_PNEU_AFERIDO,
-                   MAX(A.CODIGO) AS COD_AFERICAO
-            FROM AFERICAO A
-                     JOIN AFERICAO_VALORES AV
-                          ON AV.COD_AFERICAO = A.CODIGO
-                     JOIN PNEU P ON P.CODIGO = AV.COD_PNEU
-            WHERE P.COD_UNIDADE = ANY (F_COD_UNIDADES)
-            GROUP BY AV.COD_PNEU
+        with ultimas_afericoes as (
+            select av.cod_pneu   as cod_pneu_aferido,
+                   max(a.codigo) as cod_afericao
+            from afericao a
+                     join afericao_valores av
+                          on av.cod_afericao = a.codigo
+                     join pneu p on p.codigo = av.cod_pneu
+            where p.cod_unidade = any (f_cod_unidades)
+            group by av.cod_pneu
         )
 
-        SELECT U.NOME :: TEXT                                                               AS UNIDADE_ALOCADO,
-               P.CODIGO_CLIENTE :: TEXT                                                     AS COD_PNEU,
-               P.STATUS :: TEXT                                                             AS STATUS,
-               COALESCE(TRUNC(P.VALOR :: NUMERIC, 2) :: TEXT, '-')                          AS VALOR_AQUISICAO,
-               FORMAT_WITH_TZ(P.DATA_HORA_CADASTRO,
-                              TZ_UNIDADE(P.COD_UNIDADE_CADASTRO),
-                              F_TIMESTAMP_FORMAT,
-                              '-')                                                          AS DATA_HORA_CADASTRO,
-               MAP.NOME :: TEXT                                                             AS NOME_MARCA_PNEU,
-               MP.NOME :: TEXT                                                              AS NOME_MODELO_PNEU,
-               F_IF(MARB.CODIGO IS NULL, 'Nunca Recapado', MARB.NOME || ' - ' || MODB.NOME) AS BANDA_APLICADA,
-               COALESCE(TRUNC(PVV.VALOR :: NUMERIC, 2) :: TEXT, '-')                        AS VALOR_BANDA,
-               FUNC_PNEU_FORMAT_DIMENSAO(DP.LARGURA, DP.ALTURA, DP.ARO)                     AS MEDIDAS,
-               COALESCE(V.PLACA, '-') :: TEXT                                              AS PLACA,
-               COALESCE(VT.NOME, '-') :: TEXT                                               AS TIPO_VEICULO,
-               COALESCE(PPNE.NOMENCLATURA :: TEXT, '-')                                     AS POSICAO_PNEU,
-               COALESCE(MODB.QT_SULCOS, MP.QT_SULCOS) :: TEXT                               AS QTD_SULCOS,
-               FUNC_PNEU_FORMAT_SULCO(P.ALTURA_SULCO_INTERNO)                               AS SULCO_INTERNO,
-               FUNC_PNEU_FORMAT_SULCO(P.ALTURA_SULCO_CENTRAL_INTERNO)                       AS SULCO_CENTRAL_INTERNO,
-               FUNC_PNEU_FORMAT_SULCO(P.ALTURA_SULCO_CENTRAL_EXTERNO)                       AS SULCO_CENTRAL_EXTERNO,
-               FUNC_PNEU_FORMAT_SULCO(P.ALTURA_SULCO_EXTERNO)                               AS SULCO_EXTERNO,
-               FUNC_PNEU_FORMAT_SULCO(LEAST(P.ALTURA_SULCO_EXTERNO, P.ALTURA_SULCO_CENTRAL_EXTERNO,
-                                            P.ALTURA_SULCO_CENTRAL_INTERNO,
-                                            P.ALTURA_SULCO_INTERNO))                        AS MENOR_SULCO,
-               COALESCE(TRUNC(P.PRESSAO_ATUAL) :: TEXT, '-')                                AS PRESSAO_ATUAL,
-               P.PRESSAO_RECOMENDADA :: TEXT                                                AS PRESSAO_RECOMENDADA,
-               PVN.NOME :: TEXT                                                             AS VIDA_ATUAL,
-               COALESCE(P.DOT, '-') :: TEXT                                                 AS DOT,
+        select u.nome :: text                                                               as unidade_alocado,
+               p.codigo_cliente :: text                                                     as cod_pneu,
+               p.status :: text                                                             as status,
+               coalesce(trunc(p.valor :: numeric, 2) :: text, '-')                          as valor_aquisicao,
+               format_with_tz(p.data_hora_cadastro,
+                              tz_unidade(p.cod_unidade_cadastro),
+                              f_timestamp_format,
+                              '-')                                                          as data_hora_cadastro,
+               map.nome :: text                                                             as nome_marca_pneu,
+               mp.nome :: text                                                              as nome_modelo_pneu,
+               f_if(marb.codigo is null, 'Nunca Recapado', marb.nome || ' - ' || modb.nome) as banda_aplicada,
+               coalesce(trunc(pvv.valor :: numeric, 2) :: text, '-')                        as valor_banda,
+               func_pneu_format_dimensao(dp.largura, dp.altura, dp.aro)                     as medidas,
+               coalesce(v.placa, '-') :: text                                               as placa,
+               coalesce(vt.nome, '-') :: text                                               as tipo_veiculo,
+               coalesce(ppne.nomenclatura :: text, '-')                                     as posicao_pneu,
+               coalesce(modb.qt_sulcos, mp.qt_sulcos) :: text                               as qtd_sulcos,
+               func_pneu_format_sulco(p.altura_sulco_interno)                               as sulco_interno,
+               func_pneu_format_sulco(p.altura_sulco_central_interno)                       as sulco_central_interno,
+               func_pneu_format_sulco(p.altura_sulco_central_externo)                       as sulco_central_externo,
+               func_pneu_format_sulco(p.altura_sulco_externo)                               as sulco_externo,
+               func_pneu_format_sulco(least(p.altura_sulco_externo, p.altura_sulco_central_externo,
+                                            p.altura_sulco_central_interno,
+                                            p.altura_sulco_interno))                        as menor_sulco,
+               coalesce(trunc(p.pressao_atual) :: text, '-')                                as pressao_atual,
+               p.pressao_recomendada :: text                                                as pressao_recomendada,
+               pvn.nome :: text                                                             as vida_atual,
+               coalesce(p.dot, '-') :: text                                                 as dot,
                -- Usamos um CASE ao invés do coalesce da func FORMAT_WITH_TZ, pois desse modo evitamos o evaluate
                -- dos dois selects internos de consulta na tabela AFERICAO caso o pneu nunca tenha sido aferido.
-               CASE
-                   WHEN UA.COD_AFERICAO IS NULL
-                       THEN 'Nunca Aferido'
-                   ELSE
-                       FORMAT_WITH_TZ((SELECT A.DATA_HORA
-                                       FROM AFERICAO A
-                                       WHERE A.CODIGO = UA.COD_AFERICAO),
-                                      TZ_UNIDADE((SELECT A.COD_UNIDADE
-                                                  FROM AFERICAO A
-                                                  WHERE A.CODIGO = UA.COD_AFERICAO)),
-                                      F_TIMESTAMP_FORMAT)
-                   END                                                                      AS ULTIMA_AFERICAO,
-               PTDI.DESCRICAO                                                               AS DESCRICAO_DESGASTE,
+               case
+                   when ua.cod_afericao is null
+                       then 'Nunca Aferido'
+                   else
+                       format_with_tz((select a.data_hora
+                                       from afericao a
+                                       where a.codigo = ua.cod_afericao),
+                                      tz_unidade((select a.cod_unidade
+                                                  from afericao a
+                                                  where a.codigo = ua.cod_afericao)),
+                                      f_timestamp_format)
+                   end                                                                      as ultima_afericao,
+               ptdi.descricao                                                               as descricao_desgaste,
                -- Por enquanto, deixamos hardcoded os ranges de cada nível de desgaste.
-               CASE
-                   WHEN VERIF_DESGASTE.NIVEL_DESGASTE_IRREGULAR = 'BAIXO'
-                       THEN 'BAIXO (0.1 mm até 0.9 mm)'
-                   WHEN VERIF_DESGASTE.NIVEL_DESGASTE_IRREGULAR = 'MODERADO'
-                       THEN 'MODERADO (1.0 mm até 2.0 mm)'
-                   WHEN VERIF_DESGASTE.NIVEL_DESGASTE_IRREGULAR = 'ACENTUADO'
-                       THEN 'ACENTUADO (2.1 mm e acima)'
-                   END                                                                      AS NIVEL_DESGASTE,
-               PTDI.APARENCIA_PNEU                                                          AS APARENCIA_PNEU,
-               PTDI.CAUSAS_PROVAVEIS                                                        AS CAUSAS_PROVAVEIS,
-               PTDI.ACAO                                                                    AS ACAO,
-               PTDI.PRECAUCAO                                                               AS PRECAUCAO
-        FROM PNEU P
-                 JOIN DIMENSAO_PNEU DP ON DP.CODIGO = P.COD_DIMENSAO
-                 JOIN UNIDADE U ON U.CODIGO = P.COD_UNIDADE
-                 JOIN EMPRESA E ON U.COD_EMPRESA = E.CODIGO
-                 JOIN MODELO_PNEU MP ON MP.CODIGO = P.COD_MODELO AND MP.COD_EMPRESA = U.COD_EMPRESA
-                 JOIN MARCA_PNEU MAP ON MAP.CODIGO = MP.COD_MARCA
-                 JOIN PNEU_VIDA_NOMENCLATURA PVN ON PVN.COD_VIDA = P.VIDA_ATUAL
-                 JOIN FUNC_PNEU_VERIFICA_DESGASTE_IRREGULAR(P.CODIGO,
-                                                            P.ALTURA_SULCO_EXTERNO,
-                                                            P.ALTURA_SULCO_CENTRAL_EXTERNO,
-                                                            P.ALTURA_SULCO_CENTRAL_INTERNO,
-                                                            P.ALTURA_SULCO_INTERNO) VERIF_DESGASTE
-                      ON VERIF_DESGASTE.COD_PNEU = P.CODIGO
-                 LEFT JOIN PNEU_TIPO_DESGASTE_IRREGULAR PTDI
-                           ON PTDI.TIPO_DESGASTE_IRREGULAR = VERIF_DESGASTE.TIPO_DESGASTE_IRREGULAR
-                 LEFT JOIN MODELO_BANDA MODB ON MODB.CODIGO = P.COD_MODELO_BANDA
-                 LEFT JOIN MARCA_BANDA MARB ON MARB.CODIGO = MODB.COD_MARCA
-                 LEFT JOIN PNEU_VALOR_VIDA PVV ON P.CODIGO = PVV.COD_PNEU AND PVV.VIDA = P.VIDA_ATUAL
-                 LEFT JOIN VEICULO_PNEU VP
-                           ON P.CODIGO = VP.COD_PNEU
-                               AND P.COD_UNIDADE = VP.COD_UNIDADE
-                 LEFT JOIN VEICULO V
-                           ON VP.COD_VEICULO = V.CODIGO
-                               AND VP.COD_UNIDADE = V.COD_UNIDADE
-                 LEFT JOIN VEICULO_TIPO VT
-                           ON V.COD_TIPO = VT.CODIGO
-                 LEFT JOIN VEICULO_DIAGRAMA VD ON VT.COD_DIAGRAMA = VD.CODIGO
-                 LEFT JOIN PNEU_POSICAO_NOMENCLATURA_EMPRESA PPNE ON PPNE.COD_EMPRESA = E.CODIGO
-                    AND PPNE.COD_DIAGRAMA = VD.CODIGO
-                    AND PPNE.POSICAO_PROLOG = VP.POSICAO
-                 LEFT JOIN ULTIMAS_AFERICOES UA
-                           ON UA.COD_PNEU_AFERIDO = P.CODIGO
-        WHERE P.COD_UNIDADE = ANY (F_COD_UNIDADES)
-          AND F_IF(F_STATUS_PNEU IS NULL, TRUE, F_STATUS_PNEU = P.STATUS :: PNEU_STATUS_TYPE)
-          AND VERIF_DESGASTE.TEM_DESGASTE_IRREGULAR
-        ORDER BY VERIF_DESGASTE.NIVEL_DESGASTE_IRREGULAR DESC, U.NOME, P.CODIGO_CLIENTE;
-END;
+               case
+                   when verif_desgaste.nivel_desgaste_irregular = 'BAIXO'
+                       then 'BAIXO (0.1 mm até 0.9 mm)'
+                   when verif_desgaste.nivel_desgaste_irregular = 'MODERADO'
+                       then 'MODERADO (1.0 mm até 2.0 mm)'
+                   when verif_desgaste.nivel_desgaste_irregular = 'ACENTUADO'
+                       then 'ACENTUADO (2.1 mm e acima)'
+                   end                                                                      as nivel_desgaste,
+               ptdi.aparencia_pneu                                                          as aparencia_pneu,
+               ptdi.causas_provaveis                                                        as causas_provaveis,
+               ptdi.acao                                                                    as acao,
+               ptdi.precaucao                                                               as precaucao
+        from pneu p
+                 join dimensao_pneu dp on dp.codigo = p.cod_dimensao
+                 join unidade u on u.codigo = p.cod_unidade
+                 join empresa e on u.cod_empresa = e.codigo
+                 join modelo_pneu mp on mp.codigo = p.cod_modelo and mp.cod_empresa = u.cod_empresa
+                 join marca_pneu map on map.codigo = mp.cod_marca
+                 join pneu_vida_nomenclatura pvn on pvn.cod_vida = p.vida_atual
+                 join func_pneu_verifica_desgaste_irregular(p.codigo,
+                                                            p.altura_sulco_externo,
+                                                            p.altura_sulco_central_externo,
+                                                            p.altura_sulco_central_interno,
+                                                            p.altura_sulco_interno) verif_desgaste
+                      on verif_desgaste.cod_pneu = p.codigo
+                 left join pneu_tipo_desgaste_irregular ptdi
+                           on ptdi.tipo_desgaste_irregular = verif_desgaste.tipo_desgaste_irregular
+                 left join modelo_banda modb on modb.codigo = p.cod_modelo_banda
+                 left join marca_banda marb on marb.codigo = modb.cod_marca
+                 left join pneu_valor_vida pvv on p.codigo = pvv.cod_pneu and pvv.vida = p.vida_atual
+                 left join veiculo_pneu vp
+                           on p.codigo = vp.cod_pneu
+                               and p.cod_unidade = vp.cod_unidade
+                 left join veiculo v
+                           on vp.cod_veiculo = v.codigo
+                               and vp.cod_unidade = v.cod_unidade
+                 left join veiculo_tipo vt
+                           on v.cod_tipo = vt.codigo
+                 left join veiculo_diagrama vd on vt.cod_diagrama = vd.codigo
+                 left join pneu_posicao_nomenclatura_empresa ppne on ppne.cod_empresa = e.codigo
+            and ppne.cod_diagrama = vd.codigo
+            and ppne.posicao_prolog = vp.posicao
+                 left join ultimas_afericoes ua
+                           on ua.cod_pneu_aferido = p.codigo
+        where p.cod_unidade = any (f_cod_unidades)
+          and f_if(f_status_pneu is null, true, f_status_pneu = p.status :: pneu_status_type)
+          and verif_desgaste.tem_desgaste_irregular
+        order by verif_desgaste.nivel_desgaste_irregular desc, u.nome, p.codigo_cliente;
+end;
 $$;
