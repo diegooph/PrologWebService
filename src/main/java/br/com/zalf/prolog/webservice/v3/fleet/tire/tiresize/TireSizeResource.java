@@ -2,9 +2,9 @@ package br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
-import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.auth.authorization.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.*;
@@ -38,7 +38,7 @@ public class TireSizeResource {
     }
 
     @POST
-    @ApiExposed
+    @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR, authTypes = AuthType.BEARER)
     public SuccessResponse insert(@Context final SecurityContext securityContext,
                                   @Valid final TireSizeCreation tireSizeCreation) throws Throwable {
 
@@ -49,17 +49,24 @@ public class TireSizeResource {
     }
 
     @GET
-    @ApiExposed
-    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
+    @Secured(permissions = Pilares.Frota.Pneu.VISUALIZAR)
     public List<TireSizeListing> getAll(
             @NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId,
             @QueryParam("status") final Boolean statusActive) {
         return mapper.toTireSizeListing(service.getAll(companyId, statusActive));
     }
 
+    @GET
+    @Path("get-by-id")
+    @Secured(permissions = Pilares.Frota.Pneu.VISUALIZAR)
+    public TireSizeVisualization getById(
+            @NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId,
+            @QueryParam("tireSizeId") @Required final Long tireSizeId) {
+        return mapper.toTireSizeVisualization(service.getById(companyId, tireSizeId));
+    }
+
     @PATCH
     @Path("update-status")
-    @ApiExposed
     @Secured(permissions = Pilares.Frota.Pneu.ALTERAR)
     public SuccessResponse updateStatus(@Valid final TireSizeStatusChange tireSizeStatusChange,
                                         @Context final SecurityContext securityContext) {
@@ -72,7 +79,6 @@ public class TireSizeResource {
     }
 
     @PUT
-    @ApiExposed
     @Secured(permissions = Pilares.Frota.Pneu.ALTERAR)
     public TireSizeUpdated updateTireSize(@Valid @NotNull final TireSizeUpdating tireSizeUpdating,
                                           @Context final SecurityContext securityContext) {
@@ -81,7 +87,6 @@ public class TireSizeResource {
     }
 
     @DELETE
-    @ApiExposed
     @Secured(permissions = {Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.CADASTRAR})
     public SuccessResponse deleteTireSize(@QueryParam("companyId") @CompanyId final Long companyId,
                                           @QueryParam("tireSizeId") final Long tireSizeId) {
