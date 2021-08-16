@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireSizeEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tireservice.TireServiceService;
 import br.com.zalf.prolog.webservice.v3.fleet.tireservice.servicetype.TireServiceTypeEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tireservice.servicetype.TireServiceTypeService;
@@ -80,6 +81,11 @@ public class TireService {
     public SuccessResponse updateTireStatus(@NotNull final Long tireId, @NotNull final StatusPneu tireStatus) {
         tireDao.updateTireStatus(tireId, tireStatus);
         return new SuccessResponse(tireId, "Alterado o status do pneu com sucesso.");
+    }
+
+    @NotNull
+    public List<TireEntity> getTiresByTireSize(@NotNull final TireSizeEntity tireSizeEntity) {
+        return tireDao.getAllByTireSizeEntity(tireSizeEntity);
     }
 
     private void validateTire(@NotNull final TireCreateDto tireCreateDto,
