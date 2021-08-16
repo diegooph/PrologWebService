@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Builder(setterPrefix = "with")
 public class TireSizeVisualization {
     private final Long id;
-    private final Long companyId;
     private final Double height;
     private final Double width;
     private final Double rim;
