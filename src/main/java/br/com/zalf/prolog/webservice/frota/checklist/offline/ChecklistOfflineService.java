@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.autenticacao.Autenticacao;
+import br.com.zalf.prolog.webservice.autenticacao._model.AutenticacaoResponse;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -33,10 +33,10 @@ public class ChecklistOfflineService {
             // Precisamos verificar o token para ter certeza se o usuário é apto a utilizar os métodos.
             ensureValidToken(tokenSincronizacao);
             // Buscamos um token para o usuário que realizou o checklist sendo sincronizado
-            final Autenticacao autenticacao =
+            final AutenticacaoResponse autenticacaoResponse =
                     Injection.provideAutenticacaoDao().createTokenByCodColaborador(checklist.getCodColaborador());
             final InfosChecklistInserido infosChecklistInserido =
-                    RouterChecklistOffline.create(dao, autenticacao.getToken()).insertChecklistOffline(checklist);
+                    RouterChecklistOffline.create(dao, autenticacaoResponse.getToken()).insertChecklistOffline(checklist);
             return ResponseWithCod.ok(
                     "Checklist inserido com sucesso",
                     infosChecklistInserido.getCodChecklist());

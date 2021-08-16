@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.messaging.push;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
+import br.com.zalf.prolog.webservice.autenticacao._model.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.messaging.push._model.PushColaboradorCadastro;
 import org.jetbrains.annotations.NotNull;
 

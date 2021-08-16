@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
+import br.com.zalf.prolog.webservice.autenticacao._model.AutenticacaoResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,21 +12,14 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class AutenticacaoResource {
-    private static final String TAG = AutenticacaoResource.class.getSimpleName();
     @NotNull
     private final AutenticacaoService service = new AutenticacaoService();
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Autenticacao authenticate(@FormParam("cpf") final Long cpf,
-                                     @FormParam("dataNascimento") final String dataNascimento) {
-        if (service.verifyIfUserExists(cpf, dataNascimento, true).isPresent()) {
-            final Autenticacao autenticacao = service.createTokenByCpf(cpf);
-            Log.d(TAG, autenticacao.getToken());
-            return autenticacao;
-        } else {
-            return new Autenticacao(Autenticacao.ERROR, cpf, "-1");
-        }
+    public AutenticacaoResponse authenticate(@FormParam("cpf") final Long cpf,
+                                             @FormParam("dataNascimento") final String dataNascimento) {
+        return service.authenticate(cpf, dataNascimento);
     }
 
     @DELETE

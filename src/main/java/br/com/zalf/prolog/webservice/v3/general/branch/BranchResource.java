@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.general.branch;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
+import br.com.zalf.prolog.webservice.interceptors.auth.authorization.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -42,27 +42,27 @@ public final class BranchResource implements BranchResourceApiDoc {
         this.mapper = mapper;
     }
 
-    @ApiExposed
     @PUT
-    @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API},
+             permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Override
     public SuccessResponse updateBranch(@Valid final BranchUpdateDto branchUpdateDto) {
         final BranchEntity branch = mapper.toEntity(branchUpdateDto);
         return service.updateBranch(branch);
     }
 
-    @ApiExposed
     @GET
-    @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API},
+             permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Path("/{codUnidade}")
     @Override
     public BranchDto getBranchById(@PathParam("codUnidade") final Long branchId) {
         return mapper.toDto(service.getBranchById(branchId));
     }
 
-    @ApiExposed
     @GET
-    @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API},
+             permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Override
     public List<BranchDto> getAllBranches(@QueryParam("codEmpresa") final Long companyId,
                                           @QueryParam("codGrupos") final List<Long> groupsId) {

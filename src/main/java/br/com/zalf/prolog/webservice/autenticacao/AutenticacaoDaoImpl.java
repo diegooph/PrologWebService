@@ -1,10 +1,12 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
-import br.com.zalf.prolog.webservice.autenticacao.token.TokenGenerator;
+import br.com.zalf.prolog.webservice.autenticacao._model.AutenticacaoLogin;
+import br.com.zalf.prolog.webservice.autenticacao._model.AutenticacaoResponse;
+import br.com.zalf.prolog.webservice.autenticacao._model.token.TokenGenerator;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDeletedException;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
-import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.StatusSecured;
+import br.com.zalf.prolog.webservice.interceptors.auth.authorization.StatusSecured;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -23,16 +25,15 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 
     }
 
-    @NotNull
     @Override
-    public Autenticacao createTokenByCpf(@NotNull final Long cpf) throws Throwable {
-        final String token = new TokenGenerator().getNextToken();
-        return insert(cpf, token);
+    public void insertTokenForCpf(@NotNull final Long cpf,
+                                  @NotNull final String token) throws Throwable {
+        insertToken(cpf, token);
     }
 
     @NotNull
     @Override
-    public Autenticacao createTokenByCodColaborador(@NotNull final Long codColaborador) throws Throwable {
+    public AutenticacaoResponse createTokenByCodColaborador(@NotNull final Long codColaborador) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -44,15 +45,15 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
             stmt.setLong(1, codColaborador);
             stmt.setString(2, new TokenGenerator().getNextToken());
             rSet = stmt.executeQuery();
-            final Autenticacao autenticacao = new Autenticacao();
+            final AutenticacaoResponse autenticacaoResponse = new AutenticacaoResponse();
             if (rSet.next()) {
-                autenticacao.setCpf(rSet.getLong("CPF_COLABORADOR"));
-                autenticacao.setToken(rSet.getString("TOKEN_AUTENTICACAO"));
-                autenticacao.setStatus(Autenticacao.OK);
+                autenticacaoResponse.setCpf(rSet.getLong("CPF_COLABORADOR"));
+                autenticacaoResponse.setToken(rSet.getString("TOKEN_AUTENTICACAO"));
+                autenticacaoResponse.setStatus(AutenticacaoResponse.OK);
             } else {
-                autenticacao.setStatus(Autenticacao.ERROR);
+                autenticacaoResponse.setStatus(AutenticacaoResponse.ERROR);
             }
-            return autenticacao;
+            return autenticacaoResponse;
         } finally {
             close(conn, stmt, rSet);
         }
@@ -109,32 +110,38 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         }
     }
 
-    @NotNull
     @Override
-    public Optional<ColaboradorAutenticado> verifyIfUserExists(@NotNull final Long cpf,
-                                                               @NotNull final LocalDate dataNascimento,
-                                                               final boolean apenasUsuariosAtivos) throws Throwable {
+    public AutenticacaoLogin authenticate(@NotNull final Long cpf,
+                                          @NotNull final LocalDate dataNascimento) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select c.codigo as cod_colaborador " +
+            stmt = conn.prepareStatement("select " +
+                                                 "c.codigo as cod_colaborador, " +
+                                                 "c.cpf as cpf_colaborador, " +
+                                                 "c.status_ativo as colaborador_ativo, " +
+                                                 "e.status_ativo as empresa_ativa, " +
+                                                 "u.status_ativo as unidade_ativa " +
                                                  "from colaborador c " +
+                                                 "join empresa e on c.cod_empresa = e.codigo " +
+                                                 "join unidade u on c.cod_unidade = u.codigo " +
                                                  "where c.cpf = ? " +
-                                                 "and c.data_nascimento = ? " +
-                                                 "and c.status_ativo::text like ?;");
+                                                 "and c.data_nascimento = ?;");
             stmt.setLong(1, cpf);
             stmt.setObject(2, dataNascimento);
-            stmt.setString(3, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return Optional.of(new ColaboradorAutenticado(
-                        rSet.getLong("COD_COLABORADOR"),
-                        cpf,
-                        StatusSecured.TOKEN_E_PERMISSAO_OK));
+                return new AutenticacaoLogin(
+                        rSet.getLong("cod_colaborador"),
+                        rSet.getLong("cpf_colaborador"),
+                        rSet.getBoolean("colaborador_ativo"),
+                        rSet.getBoolean("empresa_ativa"),
+                        rSet.getBoolean("unidade_ativa"));
             } else {
-                return Optional.empty();
+                throw new SQLException(String.format(
+                        "Colaborador não encontrado com CPF %d e data de nascimento %s", cpf, dataNascimento));
             }
         } finally {
             close(conn, stmt, rSet);
@@ -206,13 +213,9 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         }
     }
 
-    @NotNull
-    private Autenticacao insert(@NotNull final Long cpf, @NotNull final String token) throws SQLException {
+    private void insertToken(@NotNull final Long cpf, @NotNull final String token) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
-        final Autenticacao autenticacao = new Autenticacao();
-        autenticacao.setCpf(cpf);
-        autenticacao.setToken(token);
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("insert into token_autenticacao"
@@ -223,14 +226,11 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
             stmt.setString(3, token);
             final int count = stmt.executeUpdate();
             if (count == 0) {
-                autenticacao.setStatus(Autenticacao.ERROR);
-                return autenticacao;
+                throw new SQLException("Erro ao salvar token para o CPF: " + cpf);
             }
         } finally {
             close(conn, stmt);
         }
-        autenticacao.setStatus(Autenticacao.OK);
-        return autenticacao;
     }
 
     @NotNull

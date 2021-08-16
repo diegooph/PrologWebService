@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
-import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
+import br.com.zalf.prolog.webservice.autenticacao._model.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
@@ -523,8 +523,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                         socorroRotaAberturaVisualizacao,
                         socorroRotaAtendimentoVisualizacao,
                         socorroRotaFinalizacaoVisualizacao,
-                        socorroRotaInvalidacaoVisualizacao
-                );
+                        socorroRotaInvalidacaoVisualizacao);
             } else {
                 throw new Throwable("Erro ao finalizar esta solitação de socorro");
             }
