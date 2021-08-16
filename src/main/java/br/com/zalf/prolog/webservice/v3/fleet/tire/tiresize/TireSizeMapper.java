@@ -19,7 +19,6 @@ public class TireSizeMapper {
     @NotNull
     public TireSizeEntity toEntity(@NotNull final TireSizeCreation tireSizeCreation,
                                    @NotNull final ColaboradorAutenticado colaboradorAutenticado) {
-
         return TireSizeEntity.builder()
                 .withCompanyId(tireSizeCreation.getCompanyId())
                 .withHeight(tireSizeCreation.getHeight())
