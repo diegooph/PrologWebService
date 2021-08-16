@@ -39,7 +39,6 @@ public class TireSizeResource {
 
     @POST
     @ApiExposed
-    @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     public SuccessResponse insert(@Context final SecurityContext securityContext,
                                   @Valid final TireSizeCreation tireSizeCreation) throws Throwable {
 
@@ -79,5 +78,14 @@ public class TireSizeResource {
                                           @Context final SecurityContext securityContext) {
         return mapper.toTireSizeUpdated(
                 service.updateTireSize(tireSizeUpdating, (ColaboradorAutenticado) securityContext.getUserPrincipal()));
+    }
+
+    @DELETE
+    @ApiExposed
+    @Secured(permissions = {Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.CADASTRAR})
+    public SuccessResponse deleteTireSize(@QueryParam("companyId") @CompanyId final Long companyId,
+                                          @QueryParam("tireSizeId") final Long tireSizeId) {
+        service.deleteTireSize(companyId, tireSizeId);
+        return new SuccessResponse(null, "Tire size deleted successfully!");
     }
 }
