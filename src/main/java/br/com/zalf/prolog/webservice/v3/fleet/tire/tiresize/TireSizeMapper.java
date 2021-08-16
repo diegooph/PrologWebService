@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class TireSizeMapper {
+    @NotNull
     public TireSizeEntity toEntity(@NotNull final TireSizeCreation tireSizeCreation,
                                    @NotNull final ColaboradorAutenticado colaboradorAutenticado) {
 
