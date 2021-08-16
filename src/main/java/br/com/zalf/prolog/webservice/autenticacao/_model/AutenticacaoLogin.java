@@ -20,6 +20,11 @@ public final class AutenticacaoLogin {
         validaUnidadeAtiva();
     }
 
+    @NotNull
+    public AutenticacaoResponse toAutenticacaoResponse(@NotNull final String token) {
+        return new AutenticacaoResponse(AutenticacaoResponse.OK, cpfColaborador, token);
+    }
+
     private void validaColaboradorAtivo() {
         if (!isColaboradorAtivo()) {
             throw new GenericException("Erro ao autenticar, colaborador inativo.");

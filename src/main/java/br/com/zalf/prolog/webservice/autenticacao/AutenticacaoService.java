@@ -44,10 +44,10 @@ public class AutenticacaoService {
                                              @NotNull final String dataNascimento) {
         try {
             final LocalDate dataNascimentoLocalDate = PrologDateParser.toLocalDate(dataNascimento);
-            final AutenticacaoLogin colaborador = dao.authenticate(cpf, dataNascimentoLocalDate);
-            colaborador.validate();
+            final AutenticacaoLogin autenticacaoLogin = dao.authenticate(cpf, dataNascimentoLocalDate);
+            autenticacaoLogin.validate();
             final String token = createTokenByCpf(cpf);
-            return new AutenticacaoResponse(AutenticacaoResponse.OK, cpf, token);
+            return autenticacaoLogin.toAutenticacaoResponse(token);
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao verificar se o usuário com os seguintes dados existe: cpf - %s |" +
                                              " Data de Nascimento - %s", cpf, dataNascimento), throwable);
