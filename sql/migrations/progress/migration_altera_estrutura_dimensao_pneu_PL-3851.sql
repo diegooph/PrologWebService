@@ -286,7 +286,6 @@ $$;
 
 alter table dimensao_pneu drop constraint unique_dimensao_pneu;
 alter table dimensao_pneu add constraint  unique_dimensao_pneu unique (altura, largura, aro, cod_empresa);
-
 insert into dimensao_pneu (altura, largura, aro, cod_empresa, status_ativo,
                            cod_colaborador_cadastro, data_hora_ultima_atualizacao, cod_colaborador_ultima_atualizacao)
 select distinct d.altura,
@@ -301,7 +300,7 @@ from dimensao_pneu d
          join pneu_data pd on
     d.codigo = pd.cod_dimensao
          join empresa e on pd.cod_empresa = e.codigo
-where d.cod_empresa not in (select ti.cod_empresa
+where pd.cod_empresa not in (select ti.cod_empresa
                             from integracao.token_integracao ti);
 
 insert into dimensao_pneu (altura, largura, aro, cod_empresa, status_ativo,
@@ -320,19 +319,15 @@ from dimensao_pneu d
          join pneu_data pd on
         d.codigo = pd.cod_dimensao
          join empresa e on pd.cod_empresa = e.codigo
-where d.cod_empresa in (select ti.cod_empresa
+where pd.cod_empresa in (select ti.cod_empresa
                             from integracao.token_integracao ti);
 
 update pneu_data pd
 set cod_dimensao = (
-    select d2.codigo
+    select d.codigo
     from dimensao_pneu d
-             join pneu_data p on d.codigo = p.cod_dimensao
-             left join dimensao_pneu d2 on d.aro = d2.aro and d.altura = d2.altura and d.largura = d2.largura and
-                                           d2.cod_empresa = p.cod_empresa
-    where d.cod_empresa is null
-      and d2.cod_empresa is not null
-      and pd.codigo = p.codigo);
+             join dimensao_pneu d2 on d.aro = d2.aro and d.altura = d2.altura and d.largura = d2.largura
+    where d.cod_empresa = pd.cod_empresa and d2.codigo = pd.cod_dimensao);
 
 delete from dimensao_pneu where cod_empresa is null;
 
@@ -1079,8 +1074,6 @@ BEGIN
 END;
 $$;
 
---/
-
 create or replace function suporte.func_pneu_altera_pressao_ideal_by_dimensao(f_cod_empresa bigint,
                                                                               f_cod_unidade bigint,
                                                                               f_cod_dimensao bigint,
@@ -1179,25 +1172,6 @@ begin
 end;
 $$;
 
--- Sobre:
---
--- Function disponível na API do ProLog para alterar informações de um pneu já cadastrado no ProLog.
---
--- A function deverá receber todos os atributos do pneu, inclusive aqueles atributos que não sofreram edição. Caso o
--- atributo não tenha sofrido edição deve-se repassar para a function o valor atual.
--- Essa function irá ignorar caso existam informações de banda nas atualizações mas o pneu estiver em PRIMEIRA VIDA.
--- Porém, caso o pneu possua uma banda aplicada, as informações dela deverão ser repassadas para a function, idependente
--- se foram alteradas ou não.
---
--- Precondições:
--- É obrigatório a existência do pneu na base de dados do ProLog para realizar as alterações. Essa function não insere
--- nenhum dado caso o pneu não exista.
---
--- Histórico:
--- 2019-08-15 -> Function criada (diogenesvanzella - PL-2222).
--- 2020-03-30 -> Corrige update da tabela 'pneu_cadastrado' (diogenesvanzella - PLI-111).
--- 2020-07-27 -> Corrige arquivo base (diogenesvanzella - PLI-189).
--- 2020-08-06 -> Adapta function para lidar com tokens repetidos (diogenesvanzella - PLI-175).
 CREATE OR REPLACE FUNCTION INTEGRACAO.FUNC_PNEU_ATUALIZA_PNEU_PROLOG(F_COD_PNEU_SISTEMA_INTEGRADO BIGINT,
                                                                      F_NOVO_CODIGO_PNEU_CLIENTE TEXT,
                                                                      F_NOVO_COD_MODELO_PNEU BIGINT,
@@ -1359,35 +1333,6 @@ BEGIN
 END;
 $$;
 
--- Sobre:
---
--- Function disponível na API do ProLog para inserir um pneu.
---
--- Temos uma tabela intermediária onde fazemos o mapeamento de todos os pneus que foram cadastrados através de rotinas
--- integradas, a tabela 'integracao.pneu_cadastrado' é onde essas informações ficam.
---
--- Para essa function assumimos que os pneus cadastrados por integração sempre terão o sulco = NULL.
--- Também, entendemos que os pneus cadastrados por essa rotina devem sempre estar com status ESTOQUE, para não precisar
--- lidar com toda a tratativa de pneus aplicados em posições de veículos, ou pneus em recapadoras.
--- A function recebe nos seus parâmetros o modelo da banda e também o valor da banda aplicada, ambos os valores podem
--- ser nulos, caso o pneu esteja na primeira vida. Apesar de receber o código do modelo da banda, esse só será aplicado
--- ao pneu se ele não se encontrar na primeira vida, caso estiver na primeira vida, o código de modelo de banda será
--- ignorado mesmo não sendo nulo.
---
--- Precondições:
--- Essa function recebe todas as informações necessárias para realizar o cadastro de um Pneu de forma integrada,
--- inclusive os vínculos com 'modelos de pneus', 'dimensões de pneus' e 'modelos de bandas'. Todas esses códigos são
--- verificados antes de tentar inserir o pneu e mensagens específicas são retornadas em caso de erro de vínculo.
---
--- Histórico:
--- 2019-08-14 -> Function criada (diogenesvanzella - PL-2222).
--- 2019-10-23 -> Altera tipo da 'F_DATA_HORA_PNEU_CADASTRO' recebida
---               para 'TIMESTAMP WITH TIME ZONE' (diogenesvanzella - PLI-30).
--- 2020-01-03 -> Corrige mensagem de erro (diogenesvanzella - PLI-30).
--- 2020-01-22 -> Permite sobrescrever dados dos pneus (diogenesvanzella - PLI-43).
--- 2020-03-30 -> Corrige update da tabela 'pneu_cadastrado' (diogenesvanzella - PLI-111).
--- 2020-07-30 -> Corrige schema da function (diogenesvanzella - PLI-189).
--- 2020-08-06 -> Adapta function para lidar com tokens repetidos (diogenesvanzella - PLI-175).
 CREATE OR REPLACE FUNCTION INTEGRACAO.FUNC_PNEU_INSERE_PNEU_PROLOG(F_COD_PNEU_SISTEMA_INTEGRADO BIGINT,
                                                                    F_CODIGO_PNEU_CLIENTE CHARACTER VARYING,
                                                                    F_COD_UNIDADE_PNEU BIGINT,
