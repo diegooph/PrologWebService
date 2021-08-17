@@ -226,9 +226,9 @@ from pneu p
          join modelo_pneu mp on mp.codigo = p.cod_modelo and mp.cod_empresa = u.cod_empresa
          join marca_pneu map on map.codigo = mp.cod_marca;
 
-alter table dimensao_pneu add column data_hora_cadastro date default now();
+alter table dimensao_pneu add column data_hora_cadastro timestamp with time zone default now();
 alter table dimensao_pneu add column cod_colaborador_cadastro bigint;
-alter table dimensao_pneu add column data_hora_ultima_atualizacao date;
+alter table dimensao_pneu add column data_hora_ultima_atualizacao timestamp with time zone;
 alter table dimensao_pneu add column cod_colaborador_ultima_atualizacao bigint;
 
 create or replace function suporte.func_pneu_cadastra_dimensao_pneu(f_altura bigint,
