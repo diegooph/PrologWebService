@@ -39,15 +39,17 @@ public final class InternalExceptionMapper {
     public static Response toResponse(final Throwable throwable) {
         if (throwable instanceof SqlExceptionV2Wrapper) {
             final SqlExceptionV2Wrapper sqlExceptionV2Wrapper = (SqlExceptionV2Wrapper) throwable;
+            final ProLogSqlExceptionTranslator translator = Injection.provideProLogSqlExceptionTranslator();
+            final ProLogException prologException = convertToPrologException(throwable);
             if (sqlExceptionV2Wrapper.getParentException() instanceof DataAccessException) {
                 final PSQLException psqlException = (PSQLException) throwable.getCause().getCause();
-                final ProLogSqlExceptionTranslator translator = Injection.provideProLogSqlExceptionTranslator();
+                tryToLogEventException(prologException);
                 return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
                                       createPrologError(translator.doTranslate(psqlException)));
             }
             if (sqlExceptionV2Wrapper.getParentException() instanceof SQLException) {
                 final SQLException sqlException = (SQLException) sqlExceptionV2Wrapper.getParentException();
-                final ProLogSqlExceptionTranslator translator = Injection.provideProLogSqlExceptionTranslator();
+                tryToLogEventException(prologException);
                 return createResponse(Response.Status.BAD_REQUEST.getStatusCode(),
                                       createPrologError(translator.doTranslate(sqlException)));
             }
@@ -80,16 +82,13 @@ public final class InternalExceptionMapper {
                                   createPrologError(translator.doTranslate(psqlException)));
         }
 
-        final ProLogException proLogException = convertToPrologException(throwable);
-        tryToLogEventException(proLogException);
-        return createResponse(
-                proLogException.getHttpStatusCode(),
-                createPrologError(proLogException));
+        final ProLogException prologException = convertToPrologException(throwable);
+        tryToLogEventException(prologException);
+        return createResponse(prologException.getHttpStatusCode(), createPrologError(prologException));
     }
 
     @NotNull
-    private static Response createResponse(final int statusCode,
-                                           @NotNull final ProLogError entity) {
+    private static Response createResponse(final int statusCode, @NotNull final ProLogError entity) {
         return Response
                 .status(statusCode)
                 .entity(entity)
@@ -102,8 +101,7 @@ public final class InternalExceptionMapper {
             @NotNull final ConstraintViolationException exception) {
         final int totalErrors = exception.getConstraintViolations().size();
         final String totalErrorsMessage = getTotalErrorsMessage(totalErrors);
-        final String detailedMessage =
-                getDetailedMessage(totalErrorsMessage, getConstraintErrorMessages(exception));
+        final String detailedMessage = getDetailedMessage(totalErrorsMessage, getConstraintErrorMessages(exception));
         return new ClientSideErrorException(
                 totalErrorsMessage,
                 detailedMessage,
@@ -112,8 +110,7 @@ public final class InternalExceptionMapper {
     }
 
     @NotNull
-    private static ClientSideErrorException convertToClientSideErrorException(
-            @NotNull final ParamException exception) {
+    private static ClientSideErrorException convertToClientSideErrorException(@NotNull final ParamException exception) {
         return new ClientSideErrorException(
                 String.format("O parâmetro %s possuí valores inválidos.", exception.getParameterName()),
                 String.format(
@@ -155,16 +152,16 @@ public final class InternalExceptionMapper {
         }
     }
 
-    private static void tryToLogEventException(@NotNull final ProLogException proLogException) {
-        if (proLogException.isloggableOnErrorReportSystem()) {
+    private static void tryToLogEventException(@NotNull final ProLogException prologException) {
+        if (prologException.isloggableOnErrorReportSystem()) {
             final SentryEvent event = new SentryEvent();
             final Message message = new Message();
-            final Map<String, Object> extras = getExtrasByException(proLogException);
-            message.setMessage(proLogException.getMessage());
+            final Map<String, Object> extras = getExtrasByException(prologException);
+            message.setMessage(prologException.getMessage());
             event.setMessage(message);
             event.setLevel(SentryLevel.ERROR);
-            event.setLogger(proLogException.getClass().getSimpleName());
-            event.setThrowable(proLogException);
+            event.setLogger(prologException.getClass().getSimpleName());
+            event.setThrowable(prologException);
             event.setExtras(extras);
             ErrorReportSystem.logEvent(event);
         }
