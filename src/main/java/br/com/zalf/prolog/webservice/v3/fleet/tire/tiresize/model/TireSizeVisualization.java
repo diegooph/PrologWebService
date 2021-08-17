@@ -18,7 +18,7 @@ public class TireSizeVisualization {
     private final Double width;
     @NotNull
     private final Double rim;
-    @NotNull
+    @Nullable
     private final String additionalId;
     private final boolean active;
     @NotNull
