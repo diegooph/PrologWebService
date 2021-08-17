@@ -7,8 +7,25 @@ Change Log
 ##
 
 ### Refactors
+* Melhora estrutura de autenticação do Prolog (PL-3900)
+* Verifica se empresa e unidade estão ativas ao realizar o login
 * Modifica estrutura de dimensões (PL-3851)
 
+<a name="v3.8.1"></a>
+## Version [v3.8.1](https://github.com/luizfp/PrologWebService/compare/v3.8.0...v3.8.1) (2021-08-12)
+
+### Refactors
+* [intralog] Adiciona pilares liberados ao crud de unidades
+* [intralog] Adiciona veículos ativos ao crud de unidades
+
+### Bug Fixes
+* [intralog] Corrige cadastro de empresa
+
+<a name="v3.8.0"></a>
+## Version [v3.8.0](https://github.com/luizfp/PrologWebService/compare/v3.7.0...v3.8.0) (2021-08-11)
+
+### Features
+* Cria crud de unidades para uso no intralog
 
 <a name="v3.7.0"></a>
 ## Version [v3.7.0](https://github.com/luizfp/PrologWebService/compare/v3.6.0...v3.7.0) (2021-08-04)

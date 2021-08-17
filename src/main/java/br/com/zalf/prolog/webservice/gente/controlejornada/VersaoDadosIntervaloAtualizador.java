@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada;
 
-import br.com.zalf.prolog.webservice.autenticacao.token.TokenGenerator;
+import br.com.zalf.prolog.webservice.autenticacao._model.token.TokenGenerator;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorEdicao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorInsercao;

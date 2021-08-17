@@ -1,10 +1,10 @@
-package br.com.zalf.prolog.webservice.autenticacao;
+package br.com.zalf.prolog.webservice.autenticacao._model;
 
 /**
  * Created by luiz on 1/16/16.
  * Objeto gerado após a autenticação no ws
  */
-public class Autenticacao {
+public final class AutenticacaoResponse {
     /**
      * variáveis públicas utilizadas para setar o atributo status.
      */
@@ -15,10 +15,10 @@ public class Autenticacao {
     private String status;
 
 
-    public Autenticacao() {
+    public AutenticacaoResponse() {
     }
 
-    public Autenticacao(final String status, final Long cpf, final String token) {
+    public AutenticacaoResponse(final String status, final Long cpf, final String token) {
         this.status = status;
         this.cpf = cpf;
         this.token = token;
