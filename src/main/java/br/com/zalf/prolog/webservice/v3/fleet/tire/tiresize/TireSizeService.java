@@ -66,8 +66,7 @@ public class TireSizeService {
                 UserEntity.builder()
                         .withId(colaboradorAutenticado.getCodigo())
                         .build(),
-                LocalDateTime.now()
-        );
+                LocalDateTime.now());
         if (rowsUpdated == 0) {
             throw new EntityNotFoundException(
                     String.format("The tire size of id %d was not found!", tireSizeStatusChange.getTireSizeId()));
@@ -87,8 +86,7 @@ public class TireSizeService {
         tireSize.setLastedUpdateUser(
                 UserEntity.builder()
                         .withId(colaboradorAutenticado.getCodigo())
-                        .build()
-        );
+                        .build());
         tireSize.setLastedUpdateAt(LocalDateTime.now());
         return dao.save(tireSize);
     }

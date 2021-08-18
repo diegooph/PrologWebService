@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.commons.network;
 
-import lombok.Builder;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

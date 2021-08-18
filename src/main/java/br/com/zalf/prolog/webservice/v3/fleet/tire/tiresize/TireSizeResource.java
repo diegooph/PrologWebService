@@ -44,8 +44,7 @@ public class TireSizeResource {
 
         return new SuccessResponse(
                 service.insert(tireSizeCreation, (ColaboradorAutenticado) securityContext.getUserPrincipal()).getId(),
-                "Registro inserido com sucesso!"
-        );
+                "Registro inserido com sucesso!");
     }
 
     @GET
