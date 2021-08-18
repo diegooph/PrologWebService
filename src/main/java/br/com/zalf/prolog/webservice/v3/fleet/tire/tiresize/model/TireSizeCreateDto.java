@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Data
-public class TireSizeCreation {
+public class TireSizeCreateDto {
     @CompanyId
     @NotNull
     private final Long companyId;

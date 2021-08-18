@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder(setterPrefix = "with")
-public class TireSizeVisualization {
+public class TireSizeDto {
     @NotNull
     private final Long id;
     @NotNull
@@ -20,7 +20,7 @@ public class TireSizeVisualization {
     private final Double rim;
     @Nullable
     private final String additionalId;
-    private final boolean active;
+    private final boolean isActive;
     @NotNull
     private final LocalDateTime createdAt;
     @Nullable

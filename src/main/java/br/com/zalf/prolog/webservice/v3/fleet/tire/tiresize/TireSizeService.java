@@ -4,9 +4,9 @@ import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.TireService;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireSizeEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreation;
-import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeStatusChange;
-import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeUpdating;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreateDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeStatusChangeDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeUpdateDto;
 import br.com.zalf.prolog.webservice.v3.user.UserEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,9 +37,9 @@ public class TireSizeService {
     }
 
     @NotNull
-    public TireSizeEntity insert(@NotNull final TireSizeCreation tireSizeCreation,
+    public TireSizeEntity insert(@NotNull final TireSizeCreateDto tireSizeCreateDto,
                                  @NotNull final ColaboradorAutenticado colaboradorAutenticado) {
-        return dao.save(mapper.toEntity(tireSizeCreation, colaboradorAutenticado));
+        return dao.save(mapper.toEntity(tireSizeCreateDto, colaboradorAutenticado));
     }
 
     @NotNull
@@ -57,32 +57,32 @@ public class TireSizeService {
     }
 
     @Transactional
-    public void updateStatus(@NotNull final TireSizeStatusChange tireSizeStatusChange,
+    public void updateStatus(@NotNull final TireSizeStatusChangeDto tireSizeStatusChangeDto,
                              @NotNull final ColaboradorAutenticado colaboradorAutenticado) {
         final int rowsUpdated = dao.updateStatus(
-                tireSizeStatusChange.getCompanyId(),
-                tireSizeStatusChange.getTireSizeId(),
-                tireSizeStatusChange.getActive(),
+                tireSizeStatusChangeDto.getCompanyId(),
+                tireSizeStatusChangeDto.getTireSizeId(),
+                tireSizeStatusChangeDto.isActive(),
                 UserEntity.builder()
                         .withId(colaboradorAutenticado.getCodigo())
                         .build(),
                 LocalDateTime.now());
         if (rowsUpdated == 0) {
             throw new EntityNotFoundException(
-                    String.format("The tire size of id %d was not found!", tireSizeStatusChange.getTireSizeId()));
+                    String.format("The tire size of id %d was not found!", tireSizeStatusChangeDto.getTireSizeId()));
         }
     }
 
     @NotNull
     @Transactional
-    public TireSizeEntity updateTireSize(@NotNull final TireSizeUpdating tireSizeUpdating,
+    public TireSizeEntity updateTireSize(@NotNull final TireSizeUpdateDto tireSizeUpdating,
                                          @NotNull final ColaboradorAutenticado colaboradorAutenticado) {
-        final TireSizeEntity tireSize = getById(tireSizeUpdating.getCompanyId(), tireSizeUpdating.getTireSizeId());
-        tireSize.setHeight(tireSizeUpdating.getTireSizeHeight());
-        tireSize.setWidth(tireSizeUpdating.getTireSizeWidth());
-        tireSize.setRim(tireSizeUpdating.getTireSizeRim());
+        final TireSizeEntity tireSize = getById(tireSizeUpdating.getCompanyId(), tireSizeUpdating.getId());
+        tireSize.setHeight(tireSizeUpdating.getHeight());
+        tireSize.setWidth(tireSizeUpdating.getWidth());
+        tireSize.setRim(tireSizeUpdating.getRim());
         tireSize.setAdditionalId(tireSizeUpdating.getAdditionalId());
-        tireSize.setActive(tireSizeUpdating.getActive());
+        tireSize.setActive(tireSizeUpdating.isActive());
         tireSize.setLastedUpdateUser(
                 UserEntity.builder()
                         .withId(colaboradorAutenticado.getCodigo())

@@ -2,10 +2,8 @@ package br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize;
 
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireSizeEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreation;
-import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeListing;
-import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeUpdated;
-import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeVisualization;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreateDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeDto;
 import br.com.zalf.prolog.webservice.v3.user.UserEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -17,14 +15,14 @@ import java.util.stream.Collectors;
 @Component
 public class TireSizeMapper {
     @NotNull
-    public TireSizeEntity toEntity(@NotNull final TireSizeCreation tireSizeCreation,
+    public TireSizeEntity toEntity(@NotNull final TireSizeCreateDto tireSizeCreateDto,
                                    @NotNull final ColaboradorAutenticado colaboradorAutenticado) {
         return TireSizeEntity.builder()
-                .withCompanyId(tireSizeCreation.getCompanyId())
-                .withHeight(tireSizeCreation.getHeight())
-                .withWidth(tireSizeCreation.getWidth())
-                .withRim(tireSizeCreation.getRim())
-                .withAdditionalId(tireSizeCreation.getAdditionalId())
+                .withCompanyId(tireSizeCreateDto.getCompanyId())
+                .withHeight(tireSizeCreateDto.getHeight())
+                .withWidth(tireSizeCreateDto.getWidth())
+                .withRim(tireSizeCreateDto.getRim())
+                .withAdditionalId(tireSizeCreateDto.getAdditionalId())
                 .withActive(true)
                 .withCreatedAt(LocalDateTime.now())
                 .withCreateByUser(
@@ -41,45 +39,19 @@ public class TireSizeMapper {
     }
 
     @NotNull
-    public List<TireSizeListing> toTireSizeListing(@NotNull final List<TireSizeEntity> tireSizesEntities) {
-        return tireSizesEntities.stream().map(this::toTireSizeListing).collect(Collectors.toList());
+    public List<TireSizeDto> toTireSizeDto(@NotNull final List<TireSizeEntity> tireSizeEntities) {
+        return tireSizeEntities.stream().map(this::toTireSizeDto).collect(Collectors.toList());
     }
 
     @NotNull
-    public TireSizeListing toTireSizeListing(@NotNull final TireSizeEntity tireSizeEntity) {
-        return TireSizeListing.builder()
+    public TireSizeDto toTireSizeDto(@NotNull final TireSizeEntity tireSizeEntity) {
+        return TireSizeDto.builder()
                 .withId(tireSizeEntity.getId())
-                .withCompanyId(tireSizeEntity.getCompanyId())
                 .withHeight(tireSizeEntity.getHeight())
                 .withWidth(tireSizeEntity.getWidth())
-                .withAdditionalId(tireSizeEntity.getAdditionalId())
                 .withRim(tireSizeEntity.getRim())
+                .withAdditionalId(tireSizeEntity.getAdditionalId())
                 .withIsActive(tireSizeEntity.isActive())
-                .build();
-    }
-
-    @NotNull
-    public TireSizeUpdated toTireSizeUpdated(@NotNull final TireSizeEntity tireSizeEntity) {
-        return TireSizeUpdated.builder()
-                .withCompanyId(tireSizeEntity.getCompanyId())
-                .withTireSizeId(tireSizeEntity.getId())
-                .withTireSizeHeight(tireSizeEntity.getHeight())
-                .withTireSizeWidth(tireSizeEntity.getWidth())
-                .withTireSizeRim(tireSizeEntity.getRim())
-                .withAdditionalId(tireSizeEntity.getAdditionalId())
-                .withActive(tireSizeEntity.isActive())
-                .build();
-    }
-
-    @NotNull
-    public TireSizeVisualization toTireSizeVisualization(@NotNull final TireSizeEntity tireSizeEntity) {
-        return TireSizeVisualization.builder()
-                .withId(tireSizeEntity.getId())
-                .withHeight(tireSizeEntity.getHeight())
-                .withWidth(tireSizeEntity.getWidth())
-                .withRim(tireSizeEntity.getRim())
-                .withAdditionalId(tireSizeEntity.getAdditionalId())
-                .withActive(tireSizeEntity.isActive())
                 .withCreatedAt(tireSizeEntity.getCreatedAt())
                 .withCreatedAtUserId(tireSizeEntity.getCreateByUser().getId())
                 .withCreatedAtUserName(tireSizeEntity.getCreateByUser().getName())

@@ -40,49 +40,49 @@ public class TireSizeResource {
     @POST
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR, authTypes = AuthType.BEARER)
     public SuccessResponse insert(@Context final SecurityContext securityContext,
-                                  @Valid final TireSizeCreation tireSizeCreation) throws Throwable {
+                                  @Valid final TireSizeCreateDto tireSizeCreateDto) throws Throwable {
 
         return new SuccessResponse(
-                service.insert(tireSizeCreation, (ColaboradorAutenticado) securityContext.getUserPrincipal()).getId(),
+                service.insert(tireSizeCreateDto, (ColaboradorAutenticado) securityContext.getUserPrincipal()).getId(),
                 "Registro inserido com sucesso!");
     }
 
     @GET
     @Secured(permissions = Pilares.Frota.Pneu.VISUALIZAR)
-    public List<TireSizeListing> getAll(
+    public List<TireSizeDto> getAll(
             @NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId,
             @QueryParam("status") final Boolean statusActive) {
-        return mapper.toTireSizeListing(service.getAll(companyId, statusActive));
+        return mapper.toTireSizeDto(service.getAll(companyId, statusActive));
     }
 
     @GET
     @Path("get-by-id")
     @Secured(permissions = Pilares.Frota.Pneu.VISUALIZAR)
-    public TireSizeVisualization getById(
+    public TireSizeDto getById(
             @NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId,
             @QueryParam("tireSizeId") @Required final Long tireSizeId) {
-        return mapper.toTireSizeVisualization(service.getById(companyId, tireSizeId));
+        return mapper.toTireSizeDto(service.getById(companyId, tireSizeId));
     }
 
     @PATCH
     @Path("update-status")
     @Secured(permissions = Pilares.Frota.Pneu.ALTERAR)
-    public SuccessResponse updateStatus(@Valid final TireSizeStatusChange tireSizeStatusChange,
+    public SuccessResponse updateStatus(@Valid final TireSizeStatusChangeDto tireSizeStatusChangeDto,
                                         @Context final SecurityContext securityContext) {
-        service.updateStatus(tireSizeStatusChange, (ColaboradorAutenticado) securityContext.getUserPrincipal());
+        service.updateStatus(tireSizeStatusChangeDto, (ColaboradorAutenticado) securityContext.getUserPrincipal());
         return new SuccessResponse(
                 null,
                 String.format(
                         "Tire size %s successfully!",
-                        (tireSizeStatusChange.getActive() ? "enabled" : "disabled")));
+                        (tireSizeStatusChangeDto.isActive() ? "enabled" : "disabled")));
     }
 
     @PUT
     @Secured(permissions = Pilares.Frota.Pneu.ALTERAR)
-    public TireSizeUpdated updateTireSize(@Valid @NotNull final TireSizeUpdating tireSizeUpdating,
-                                          @Context final SecurityContext securityContext) {
-        return mapper.toTireSizeUpdated(
-                service.updateTireSize(tireSizeUpdating, (ColaboradorAutenticado) securityContext.getUserPrincipal()));
+    public TireSizeDto updateTireSize(@Valid @NotNull final TireSizeUpdateDto tireSizeUpdateDto,
+                                            @Context final SecurityContext securityContext) {
+        return mapper.toTireSizeDto(
+                service.updateTireSize(tireSizeUpdateDto, (ColaboradorAutenticado) securityContext.getUserPrincipal()));
     }
 
     @DELETE
