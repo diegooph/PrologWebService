@@ -57,7 +57,7 @@ public class TireSizeResource {
 
     @GET
     @Path("get-by-id")
-    @Secured(permissions = Pilares.Frota.Pneu.VISUALIZAR)
+    @Secured(permissions = {Pilares.Frota.Pneu.VISUALIZAR, Pilares.Frota.Pneu.ALTERAR})
     public TireSizeDto getById(
             @NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId,
             @QueryParam("tireSizeId") @Required final Long tireSizeId) {
