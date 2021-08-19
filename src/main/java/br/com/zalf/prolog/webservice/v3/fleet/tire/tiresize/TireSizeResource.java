@@ -1,13 +1,18 @@
 package br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.auth.authorization.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.*;
+import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireSizeEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreateDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeStatusChangeDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeUpdateDto;
 import br.com.zalf.prolog.webservice.v3.validation.CompanyId;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,57 +36,53 @@ public class TireSizeResource {
     private final TireSizeMapper mapper;
 
     @Autowired
-    public TireSizeResource(@NotNull final TireSizeService service,
-                            @NotNull final TireSizeMapper mapper) {
+    public TireSizeResource(@NotNull final TireSizeService service, @NotNull final TireSizeMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }
 
     @POST
-    @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR, authTypes = AuthType.BEARER)
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API}, permissions = Pilares.Frota.Pneu.CADASTRAR)
     public SuccessResponse insert(@Context final SecurityContext securityContext,
                                   @Valid final TireSizeCreateDto tireSizeCreateDto) throws Throwable {
-
-        return new SuccessResponse(
-                service.insert(tireSizeCreateDto, (ColaboradorAutenticado) securityContext.getUserPrincipal()).getId(),
-                "Registro inserido com sucesso!");
+        final ColaboradorAutenticado userPrincipal = (ColaboradorAutenticado) securityContext.getUserPrincipal();
+        final TireSizeEntity insertedTireSize = service.insert(tireSizeCreateDto, userPrincipal);
+        return new SuccessResponse(insertedTireSize.getId(), "Registro inserido com sucesso!");
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
-    public List<TireSizeDto> getAll(
-            @NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId,
-            @QueryParam("statusActive") final Boolean statusActive) {
-        return mapper.toTireSizeDto(service.getAll(companyId, statusActive));
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API},
+            permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
+    public List<TireSizeDto> getAll(@NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId,
+                                    @QueryParam("statusActive") @Optional final Boolean statusActive) {
+        final List<TireSizeEntity> tireSizeEntities = service.getAll(companyId, statusActive);
+        return mapper.toTireSizeDto(tireSizeEntities);
     }
 
     @GET
-    @Path("get-by-id")
-    @Secured(permissions = {Pilares.Frota.Pneu.VISUALIZAR, Pilares.Frota.Pneu.ALTERAR})
-    public TireSizeDto getById(
-            @NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId,
-            @QueryParam("tireSizeId") @Required final Long tireSizeId) {
-        return mapper.toTireSizeDto(service.getById(companyId, tireSizeId));
+    @Path("{tireSizeId}")
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API},
+            permissions = {Pilares.Frota.Pneu.VISUALIZAR, Pilares.Frota.Pneu.ALTERAR})
+    public TireSizeDto getById(@PathParam("tireSizeId") @Required final Long tireSizeId,
+                               @NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId) {
+        final TireSizeEntity tireSizeEntity = service.getById(companyId, tireSizeId);
+        return mapper.toTireSizeDto(tireSizeEntity);
     }
 
     @PATCH
-    @Path("update-status")
-    @Secured(permissions = Pilares.Frota.Pneu.ALTERAR)
-    public SuccessResponse updateStatus(@Valid final TireSizeStatusChangeDto tireSizeStatusChangeDto,
-                                        @Context final SecurityContext securityContext) {
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API}, permissions = Pilares.Frota.Pneu.ALTERAR)
+    public SuccessResponse updateStatus(@Context final SecurityContext securityContext,
+                                        @Valid final TireSizeStatusChangeDto tireSizeStatusChangeDto) {
         service.updateStatus(tireSizeStatusChangeDto, (ColaboradorAutenticado) securityContext.getUserPrincipal());
-        return new SuccessResponse(
-                null,
-                String.format(
-                        "Tire size %s successfully!",
-                        (tireSizeStatusChangeDto.isActive() ? "enabled" : "disabled")));
+        return new SuccessResponse(null, "Status alterado com sucesso!");
     }
 
     @PUT
-    @Secured(permissions = Pilares.Frota.Pneu.ALTERAR)
-    public TireSizeDto updateTireSize(@Valid @NotNull final TireSizeUpdateDto tireSizeUpdateDto,
-                                            @Context final SecurityContext securityContext) {
-        return mapper.toTireSizeDto(
-                service.updateTireSize(tireSizeUpdateDto, (ColaboradorAutenticado) securityContext.getUserPrincipal()));
+    @Secured(authTypes = {AuthType.BEARER, AuthType.API}, permissions = Pilares.Frota.Pneu.ALTERAR)
+    public TireSizeDto updateTireSize(@Context final SecurityContext securityContext,
+                                      @Valid @NotNull final TireSizeUpdateDto tireSizeUpdateDto) {
+        final TireSizeEntity tireSizeEntity =
+                service.updateTireSize(tireSizeUpdateDto, (ColaboradorAutenticado) securityContext.getUserPrincipal());
+        return mapper.toTireSizeDto(tireSizeEntity);
     }
 }
