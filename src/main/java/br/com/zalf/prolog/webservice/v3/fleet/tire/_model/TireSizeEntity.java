@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * Created on 2021-05-18
@@ -47,6 +48,14 @@ public final class TireSizeEntity {
     private UserEntity lastedUpdateUser;
     @Column(name = "origem_cadastro", nullable = false)
     private String registerOrigin;
+
+    public Optional<UserEntity> getCreateByUser() {
+        return Optional.ofNullable(createByUser);
+    }
+
+    public Optional<UserEntity> getLastedUpdateUser() {
+        return Optional.ofNullable(lastedUpdateUser);
+    }
 
     @NotNull
     public String getTireSizeUserFriendly() {

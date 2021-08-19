@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -45,6 +46,8 @@ public class TireSizeMapper {
 
     @NotNull
     public TireSizeDto toTireSizeDto(@NotNull final TireSizeEntity tireSizeEntity) {
+        final Optional<UserEntity> createdByUser = tireSizeEntity.getCreateByUser();
+        final Optional<UserEntity> lastedUpdateUser = tireSizeEntity.getLastedUpdateUser();
         return TireSizeDto.builder()
                 .withId(tireSizeEntity.getId())
                 .withHeight(tireSizeEntity.getHeight())
@@ -53,11 +56,23 @@ public class TireSizeMapper {
                 .withAdditionalId(tireSizeEntity.getAdditionalId())
                 .withIsActive(tireSizeEntity.isActive())
                 .withCreatedAt(tireSizeEntity.getCreatedAt())
-                .withCreatedAtUserId(tireSizeEntity.getCreateByUser().getId())
-                .withCreatedAtUserName(tireSizeEntity.getCreateByUser().getName())
+                .withCreatedAtUserId(
+                        tireSizeEntity.getCreateByUser()
+                                .map(UserEntity::getId)
+                                .orElse(null))
+                .withCreatedAtUserName(
+                        tireSizeEntity.getCreateByUser()
+                                .map(UserEntity::getName)
+                                .orElse(null))
                 .withLastedUpdateAt(tireSizeEntity.getLastedUpdateAt())
-                .withLastedUpdateUserId(tireSizeEntity.getLastedUpdateUser().getId())
-                .withLastedUpdateUserName(tireSizeEntity.getLastedUpdateUser().getName())
+                .withLastedUpdateUserId(
+                        tireSizeEntity.getLastedUpdateUser()
+                                .map(UserEntity::getId)
+                                .orElse(null))
+                .withLastedUpdateUserName(
+                        tireSizeEntity.getLastedUpdateUser()
+                                .map(UserEntity::getName)
+                                .orElse(null))
                 .withRegisterOrigin(tireSizeEntity.getRegisterOrigin())
                 .build();
     }
