@@ -29,4 +29,18 @@ public class TireSizeIt extends IntegrationTest {
                                 .build());
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
+    @Test
+    @DisplayName("given wrong tire sizes infos (null rim) to insert, then return error")
+    void givenCorrectTireToInsert_ThenReturnError() {
+        final ResponseEntity<SuccessResponse> response =
+                client.insert(
+                        TireSizeCreateDto.builder()
+                                .withCompanyId(3L)
+                                .withHeight(1.0)
+                                .withWidth(2.0)
+                                .withAdditionalId("Teste cod auxiliar")
+                                .build());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
 }
