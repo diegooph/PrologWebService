@@ -308,16 +308,13 @@ alter table dimensao_pneu
     drop constraint unique_dimensao_pneu;
 alter table dimensao_pneu
     add constraint unique_dimensao_pneu unique (altura, largura, aro, cod_empresa);
-insert into dimensao_pneu (altura, largura, aro, cod_empresa, status_ativo,
-                           cod_colaborador_cadastro, data_hora_ultima_atualizacao, cod_colaborador_ultima_atualizacao)
+insert into dimensao_pneu (altura, largura, aro, cod_empresa, status_ativo, data_hora_ultima_atualizacao)
 select distinct d.altura,
                 d.largura,
                 d.aro,
                 e.codigo,
                 true,
-                2316,
-                now(),
-                2316
+                now()
 from dimensao_pneu d
          join pneu_data pd on
     d.codigo = pd.cod_dimensao
@@ -325,17 +322,13 @@ from dimensao_pneu d
 where pd.cod_empresa not in (select ti.cod_empresa
                              from integracao.token_integracao ti);
 
-insert into dimensao_pneu (altura, largura, aro, cod_empresa, status_ativo,
-                           cod_colaborador_cadastro, data_hora_ultima_atualizacao, cod_colaborador_ultima_atualizacao,
-                           cod_auxiliar)
+insert into dimensao_pneu (altura, largura, aro, cod_empresa, status_ativo, data_hora_cadastro, cod_auxiliar)
 select distinct d.altura,
                 d.largura,
                 d.aro,
                 e.codigo,
                 true,
-                2316,
                 now(),
-                2316,
                 d.codigo
 from dimensao_pneu d
          join pneu_data pd on
