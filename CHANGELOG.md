@@ -10,6 +10,7 @@ Change Log
 * Melhora estrutura de autenticação do Prolog (PL-3900)
 * Verifica se empresa e unidade estão ativas ao realizar o login
 * Loga exceptions vindas da implementação V2
+* Ordenar por ordem decrescente a listagem de treinamento (PL-3903)
 
 <a name="v3.8.1"></a>
 ## Version [v3.8.1](https://github.com/luizfp/PrologWebService/compare/v3.8.0...v3.8.1) (2021-08-12)
