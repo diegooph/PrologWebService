@@ -226,9 +226,9 @@ from pneu p
          join modelo_pneu mp on mp.codigo = p.cod_modelo and mp.cod_empresa = u.cod_empresa
          join marca_pneu map on map.codigo = mp.cod_marca;
 
-alter table dimensao_pneu add column data_hora_cadastro date default now();
+alter table dimensao_pneu add column data_hora_cadastro timestamp with time zone default now();
 alter table dimensao_pneu add column cod_colaborador_cadastro bigint;
-alter table dimensao_pneu add column data_hora_ultima_atualizacao date;
+alter table dimensao_pneu add column data_hora_ultima_atualizacao timestamp with time zone;
 alter table dimensao_pneu add column cod_colaborador_ultima_atualizacao bigint;
 
 create or replace function suporte.func_pneu_cadastra_dimensao_pneu(f_altura bigint,
@@ -286,7 +286,6 @@ $$;
 
 alter table dimensao_pneu drop constraint unique_dimensao_pneu;
 alter table dimensao_pneu add constraint  unique_dimensao_pneu unique (altura, largura, aro, cod_empresa);
-
 insert into dimensao_pneu (altura, largura, aro, cod_empresa, status_ativo,
                            cod_colaborador_cadastro, data_hora_ultima_atualizacao, cod_colaborador_ultima_atualizacao)
 select distinct d.altura,
@@ -301,7 +300,7 @@ from dimensao_pneu d
          join pneu_data pd on
     d.codigo = pd.cod_dimensao
          join empresa e on pd.cod_empresa = e.codigo
-where d.cod_empresa not in (select ti.cod_empresa
+where pd.cod_empresa not in (select ti.cod_empresa
                             from integracao.token_integracao ti);
 
 insert into dimensao_pneu (altura, largura, aro, cod_empresa, status_ativo,
@@ -320,19 +319,15 @@ from dimensao_pneu d
          join pneu_data pd on
         d.codigo = pd.cod_dimensao
          join empresa e on pd.cod_empresa = e.codigo
-where d.cod_empresa in (select ti.cod_empresa
+where pd.cod_empresa in (select ti.cod_empresa
                             from integracao.token_integracao ti);
 
 update pneu_data pd
 set cod_dimensao = (
-    select d2.codigo
+    select d.codigo
     from dimensao_pneu d
-             join pneu_data p on d.codigo = p.cod_dimensao
-             left join dimensao_pneu d2 on d.aro = d2.aro and d.altura = d2.altura and d.largura = d2.largura and
-                                           d2.cod_empresa = p.cod_empresa
-    where d.cod_empresa is null
-      and d2.cod_empresa is not null
-      and pd.codigo = p.codigo);
+             join dimensao_pneu d2 on d.aro = d2.aro and d.altura = d2.altura and d.largura = d2.largura
+    where d.cod_empresa = pd.cod_empresa and d2.codigo = pd.cod_dimensao);
 
 delete from dimensao_pneu where cod_empresa is null;
 
@@ -1079,8 +1074,6 @@ BEGIN
 END;
 $$;
 
---/
-
 create or replace function suporte.func_pneu_altera_pressao_ideal_by_dimensao(f_cod_empresa bigint,
                                                                               f_cod_unidade bigint,
                                                                               f_cod_dimensao bigint,
@@ -1179,25 +1172,6 @@ begin
 end;
 $$;
 
--- Sobre:
---
--- Function disponível na API do ProLog para alterar informações de um pneu já cadastrado no ProLog.
---
--- A function deverá receber todos os atributos do pneu, inclusive aqueles atributos que não sofreram edição. Caso o
--- atributo não tenha sofrido edição deve-se repassar para a function o valor atual.
--- Essa function irá ignorar caso existam informações de banda nas atualizações mas o pneu estiver em PRIMEIRA VIDA.
--- Porém, caso o pneu possua uma banda aplicada, as informações dela deverão ser repassadas para a function, idependente
--- se foram alteradas ou não.
---
--- Precondições:
--- É obrigatório a existência do pneu na base de dados do ProLog para realizar as alterações. Essa function não insere
--- nenhum dado caso o pneu não exista.
---
--- Histórico:
--- 2019-08-15 -> Function criada (diogenesvanzella - PL-2222).
--- 2020-03-30 -> Corrige update da tabela 'pneu_cadastrado' (diogenesvanzella - PLI-111).
--- 2020-07-27 -> Corrige arquivo base (diogenesvanzella - PLI-189).
--- 2020-08-06 -> Adapta function para lidar com tokens repetidos (diogenesvanzella - PLI-175).
 CREATE OR REPLACE FUNCTION INTEGRACAO.FUNC_PNEU_ATUALIZA_PNEU_PROLOG(F_COD_PNEU_SISTEMA_INTEGRADO BIGINT,
                                                                      F_NOVO_CODIGO_PNEU_CLIENTE TEXT,
                                                                      F_NOVO_COD_MODELO_PNEU BIGINT,
@@ -1359,35 +1333,6 @@ BEGIN
 END;
 $$;
 
--- Sobre:
---
--- Function disponível na API do ProLog para inserir um pneu.
---
--- Temos uma tabela intermediária onde fazemos o mapeamento de todos os pneus que foram cadastrados através de rotinas
--- integradas, a tabela 'integracao.pneu_cadastrado' é onde essas informações ficam.
---
--- Para essa function assumimos que os pneus cadastrados por integração sempre terão o sulco = NULL.
--- Também, entendemos que os pneus cadastrados por essa rotina devem sempre estar com status ESTOQUE, para não precisar
--- lidar com toda a tratativa de pneus aplicados em posições de veículos, ou pneus em recapadoras.
--- A function recebe nos seus parâmetros o modelo da banda e também o valor da banda aplicada, ambos os valores podem
--- ser nulos, caso o pneu esteja na primeira vida. Apesar de receber o código do modelo da banda, esse só será aplicado
--- ao pneu se ele não se encontrar na primeira vida, caso estiver na primeira vida, o código de modelo de banda será
--- ignorado mesmo não sendo nulo.
---
--- Precondições:
--- Essa function recebe todas as informações necessárias para realizar o cadastro de um Pneu de forma integrada,
--- inclusive os vínculos com 'modelos de pneus', 'dimensões de pneus' e 'modelos de bandas'. Todas esses códigos são
--- verificados antes de tentar inserir o pneu e mensagens específicas são retornadas em caso de erro de vínculo.
---
--- Histórico:
--- 2019-08-14 -> Function criada (diogenesvanzella - PL-2222).
--- 2019-10-23 -> Altera tipo da 'F_DATA_HORA_PNEU_CADASTRO' recebida
---               para 'TIMESTAMP WITH TIME ZONE' (diogenesvanzella - PLI-30).
--- 2020-01-03 -> Corrige mensagem de erro (diogenesvanzella - PLI-30).
--- 2020-01-22 -> Permite sobrescrever dados dos pneus (diogenesvanzella - PLI-43).
--- 2020-03-30 -> Corrige update da tabela 'pneu_cadastrado' (diogenesvanzella - PLI-111).
--- 2020-07-30 -> Corrige schema da function (diogenesvanzella - PLI-189).
--- 2020-08-06 -> Adapta function para lidar com tokens repetidos (diogenesvanzella - PLI-175).
 CREATE OR REPLACE FUNCTION INTEGRACAO.FUNC_PNEU_INSERE_PNEU_PROLOG(F_COD_PNEU_SISTEMA_INTEGRADO BIGINT,
                                                                    F_CODIGO_PNEU_CLIENTE CHARACTER VARYING,
                                                                    F_COD_UNIDADE_PNEU BIGINT,
@@ -1676,4 +1621,428 @@ BEGIN
 
     RETURN COD_PNEU_PROLOG;
 END;
+$$;
+
+drop function func_pneu_get_pneu_by_placa(character varying,bigint);
+create or replace function func_pneu_get_pneu_by_placa(f_placa varchar(7), f_cod_unidade bigint)
+    returns table
+            (
+                nome_marca_pneu              varchar(255),
+                cod_marca_pneu               bigint,
+                codigo                       bigint,
+                codigo_cliente               varchar(255),
+                cod_unidade_alocado          bigint,
+                cod_regional_alocado         bigint,
+                pressao_atual                real,
+                vida_atual                   integer,
+                vida_total                   integer,
+                pneu_novo_nunca_rodado       boolean,
+                nome_modelo_pneu             varchar(255),
+                cod_modelo_pneu              bigint,
+                qt_sulcos_modelo_pneu        smallint,
+                altura_sulcos_modelo_pneu    real,
+                altura                       numeric,
+                largura                      numeric,
+                aro                          numeric,
+                cod_dimensao                 bigint,
+                pressao_recomendada          real,
+                altura_sulco_central_interno real,
+                altura_sulco_central_externo real,
+                altura_sulco_interno         real,
+                altura_sulco_externo         real,
+                status                       varchar(255),
+                dot                          varchar(20),
+                valor                        real,
+                cod_modelo_banda             bigint,
+                nome_modelo_banda            varchar(255),
+                qt_sulcos_modelo_banda       smallint,
+                altura_sulcos_modelo_banda   real,
+                cod_marca_banda              bigint,
+                nome_marca_banda             varchar(255),
+                valor_banda                  real,
+                posicao_pneu                 integer,
+                posicao_aplicado_cliente     varchar(255),
+                cod_veiculo_aplicado         bigint,
+                placa_aplicado               varchar(7),
+                identificador_frota          text
+            )
+    language sql
+as
+$$
+select mp.nome                                  as nome_marca_pneu,
+       mp.codigo                                as cod_marca_pneu,
+       p.codigo,
+       p.codigo_cliente,
+       u.codigo                                 as cod_unidade_alocado,
+       r.codigo                                 as cod_regional_alocado,
+       p.pressao_atual,
+       p.vida_atual,
+       p.vida_total,
+       p.pneu_novo_nunca_rodado,
+       mop.nome                                 as nome_modelo_pneu,
+       mop.codigo                               as cod_modelo_pneu,
+       mop.qt_sulcos                            as qt_sulcos_modelo_pneu,
+       mop.altura_sulcos                        as altura_sulcos_modelo_pneu,
+       pd.altura,
+       pd.largura,
+       pd.aro,
+       pd.codigo                                as cod_dimensao,
+       p.pressao_recomendada,
+       p.altura_sulco_central_interno,
+       p.altura_sulco_central_externo,
+       p.altura_sulco_interno,
+       p.altura_sulco_externo,
+       p.status,
+       p.dot,
+       p.valor,
+       mob.codigo                               as cod_modelo_banda,
+       mob.nome                                 as nome_modelo_banda,
+       mob.qt_sulcos                            as qt_sulcos_modelo_banda,
+       mob.altura_sulcos                        as altura_sulcos_modelo_banda,
+       mab.codigo                               as cod_marca_banda,
+       mab.nome                                 as nome_marca_banda,
+       pvv.valor                                as valor_banda,
+       po.posicao_prolog                        as posicao_pneu,
+       coalesce(ppne.nomenclatura :: text, '-') as posicao_aplicado_cliente,
+       vei.codigo                               as cod_veiculo_aplicado,
+       vei.placa                                as placa_aplicado,
+       vei.identificador_frota                  as identificador_frota
+from pneu p
+         join modelo_pneu mop on mop.codigo = p.cod_modelo
+         join marca_pneu mp on mp.codigo = mop.cod_marca
+         join dimensao_pneu pd on pd.codigo = p.cod_dimensao
+         join unidade u on u.codigo = p.cod_unidade
+         join regional r on u.cod_regional = r.codigo
+         left join veiculo_pneu vp on p.codigo = vp.cod_pneu
+         left join veiculo vei on vei.codigo = vp.cod_veiculo
+         left join veiculo_tipo vt on vt.codigo = vei.cod_tipo and vt.cod_empresa = p.cod_empresa
+         left join veiculo_diagrama vd on vt.cod_diagrama = vd.codigo
+         left join pneu_ordem po on vp.posicao = po.posicao_prolog
+         left join modelo_banda mob on mob.codigo = p.cod_modelo_banda and mob.cod_empresa = u.cod_empresa
+         left join marca_banda mab on mab.codigo = mob.cod_marca and mab.cod_empresa = mob.cod_empresa
+         left join pneu_valor_vida pvv on pvv.cod_pneu = p.codigo and pvv.vida = p.vida_atual
+         left join pneu_posicao_nomenclatura_empresa ppne
+                   on ppne.cod_empresa = p.cod_empresa and ppne.cod_diagrama = vd.codigo and
+                      ppne.posicao_prolog = vp.posicao
+where vei.placa = f_placa
+  and vei.cod_empresa = (select u.cod_empresa from unidade u where u.codigo = f_cod_unidade)
+order by po.ordem_exibicao;
+$$;
+
+drop function func_pneu_get_pneu_by_codigo(bigint);
+create or replace function func_pneu_get_pneu_by_codigo(f_cod_pneu bigint)
+    returns table
+            (
+                codigo                       bigint,
+                codigo_cliente               text,
+                dot                          text,
+                valor                        real,
+                cod_unidade_alocado          bigint,
+                cod_regional_alocado         bigint,
+                pneu_novo_nunca_rodado       boolean,
+                cod_marca_pneu               bigint,
+                nome_marca_pneu              text,
+                cod_modelo_pneu              bigint,
+                nome_modelo_pneu             text,
+                qt_sulcos_modelo_pneu        smallint,
+                cod_marca_banda              bigint,
+                nome_marca_banda             text,
+                altura_sulcos_modelo_pneu    real,
+                cod_modelo_banda             bigint,
+                nome_modelo_banda            text,
+                qt_sulcos_modelo_banda       smallint,
+                altura_sulcos_modelo_banda   real,
+                valor_banda                  real,
+                altura                       numeric,
+                largura                      numeric,
+                aro                          numeric,
+                cod_dimensao                 bigint,
+                altura_sulco_central_interno real,
+                altura_sulco_central_externo real,
+                altura_sulco_interno         real,
+                altura_sulco_externo         real,
+                pressao_recomendada          real,
+                pressao_atual                real,
+                status                       text,
+                vida_atual                   integer,
+                vida_total                   integer,
+                posicao_pneu                 integer,
+                posicao_aplicado_cliente     text,
+                cod_veiculo_aplicado         bigint,
+                placa_aplicado               text,
+                identificador_frota          text
+            )
+    language sql
+as
+$$
+select p.codigo,
+       p.codigo_cliente,
+       p.dot,
+       p.valor,
+       u.codigo                         as cod_unidade_alocado,
+       r.codigo                         as cod_regional_alocado,
+       p.pneu_novo_nunca_rodado,
+       mp.codigo                        as cod_marca_pneu,
+       mp.nome                          as nome_marca_pneu,
+       mop.codigo                       as cod_modelo_pneu,
+       mop.nome                         as nome_modelo_pneu,
+       mop.qt_sulcos                    as qt_sulcos_modelo_pneu,
+       mab.codigo                       as cod_marca_banda,
+       mab.nome                         as nome_marca_banda,
+       mop.altura_sulcos                as altura_sulcos_modelo_pneu,
+       mob.codigo                       as cod_modelo_banda,
+       mob.nome                         as nome_modelo_banda,
+       mob.qt_sulcos                    as qt_sulcos_modelo_banda,
+       mob.altura_sulcos                as altura_sulcos_modelo_banda,
+       pvv.valor                        as valor_banda,
+       pd.altura,
+       pd.largura,
+       pd.aro,
+       pd.codigo                        as cod_dimensao,
+       p.altura_sulco_central_interno,
+       p.altura_sulco_central_externo,
+       p.altura_sulco_interno,
+       p.altura_sulco_externo,
+       p.pressao_recomendada,
+       p.pressao_atual,
+       p.status,
+       p.vida_atual,
+       p.vida_total,
+       vp.posicao                       as posicao_pneu,
+       coalesce(ppne.nomenclatura, '-') as posicao_aplicado_cliente,
+       vei.codigo                       as cod_veiculo_aplicado,
+       vei.placa                        as placa_aplicado,
+       vei.identificador_frota          as identificador_frota
+from pneu p
+         join modelo_pneu mop on mop.codigo = p.cod_modelo
+         join marca_pneu mp on mp.codigo = mop.cod_marca
+         join dimensao_pneu pd on pd.codigo = p.cod_dimensao
+         join unidade u on u.codigo = p.cod_unidade
+         join empresa e on u.cod_empresa = e.codigo
+         join regional r on u.cod_regional = r.codigo
+         left join modelo_banda mob on mob.codigo = p.cod_modelo_banda and mob.cod_empresa = u.cod_empresa
+         left join marca_banda mab on mab.codigo = mob.cod_marca and mab.cod_empresa = mob.cod_empresa
+         left join pneu_valor_vida pvv on pvv.cod_pneu = p.codigo and pvv.vida = p.vida_atual
+         left join veiculo_pneu vp on vp.cod_pneu = p.codigo
+         left join veiculo vei on vei.codigo = vp.cod_veiculo
+         left join veiculo_tipo vt on vt.codigo = vei.cod_tipo and vt.cod_empresa = e.codigo
+         left join veiculo_diagrama vd on vt.cod_diagrama = vd.codigo
+         left join pneu_posicao_nomenclatura_empresa ppne on ppne.cod_empresa = e.codigo
+    and ppne.cod_diagrama = vd.codigo
+    and ppne.posicao_prolog = vp.posicao
+where p.codigo = f_cod_pneu
+order by p.codigo_cliente asc;
+$$;
+
+drop function func_pneu_get_pneu_by_cod_veiculo(bigint);
+create or replace function func_pneu_get_pneu_by_cod_veiculo(f_cod_veiculo bigint)
+    returns table
+            (
+                nome_marca_pneu              varchar(255),
+                cod_marca_pneu               bigint,
+                codigo                       bigint,
+                codigo_cliente               varchar(255),
+                cod_unidade_alocado          bigint,
+                cod_regional_alocado         bigint,
+                pressao_atual                real,
+                vida_atual                   integer,
+                vida_total                   integer,
+                pneu_novo_nunca_rodado       boolean,
+                nome_modelo_pneu             varchar(255),
+                cod_modelo_pneu              bigint,
+                qt_sulcos_modelo_pneu        smallint,
+                altura_sulcos_modelo_pneu    real,
+                altura                       numeric,
+                largura                      numeric,
+                aro                          numeric,
+                cod_dimensao                 bigint,
+                pressao_recomendada          real,
+                altura_sulco_central_interno real,
+                altura_sulco_central_externo real,
+                altura_sulco_interno         real,
+                altura_sulco_externo         real,
+                dot                          varchar(20),
+                valor                        real,
+                cod_modelo_banda             bigint,
+                nome_modelo_banda            varchar(255),
+                qt_sulcos_modelo_banda       smallint,
+                altura_sulcos_modelo_banda   real,
+                cod_marca_banda              bigint,
+                nome_marca_banda             varchar(255),
+                valor_banda                  real,
+                posicao_pneu                 integer,
+                nomenclatura                 varchar(255),
+                cod_veiculo_aplicado         bigint,
+                placa_aplicado               varchar(7)
+            )
+    language sql
+as
+$$
+select mp.nome                                  as nome_marca_pneu,
+       mp.codigo                                as cod_marca_pneu,
+       p.codigo,
+       p.codigo_cliente,
+       u.codigo                                 as cod_unidade_alocado,
+       r.codigo                                 as cod_regional_alocado,
+       p.pressao_atual,
+       p.vida_atual,
+       p.vida_total,
+       p.pneu_novo_nunca_rodado,
+       mop.nome                                 as nome_modelo_pneu,
+       mop.codigo                               as cod_modelo_pneu,
+       mop.qt_sulcos                            as qt_sulcos_modelo_pneu,
+       mop.altura_sulcos                        as altura_sulcos_modelo_pneu,
+       pd.altura,
+       pd.largura,
+       pd.aro,
+       pd.codigo                                as cod_dimensao,
+       p.pressao_recomendada,
+       p.altura_sulco_central_interno,
+       p.altura_sulco_central_externo,
+       p.altura_sulco_interno,
+       p.altura_sulco_externo,
+       coalesce(p.dot :: text, '-')             as dot,
+       p.valor,
+       mob.codigo                               as cod_modelo_banda,
+       mob.nome                                 as nome_modelo_banda,
+       mob.qt_sulcos                            as qt_sulcos_modelo_banda,
+       mob.altura_sulcos                        as altura_sulcos_modelo_banda,
+       mab.codigo                               as cod_marca_banda,
+       mab.nome                                 as nome_marca_banda,
+       pvv.valor                                as valor_banda,
+       po.posicao_prolog                        as posicao_pneu,
+       coalesce(ppne.nomenclatura :: text, '-') as nomenclatura,
+       vei.codigo                               as cod_veiculo_aplicado,
+       vei.placa                                as placa_aplicado
+from pneu p
+         join modelo_pneu mop on mop.codigo = p.cod_modelo
+         join marca_pneu mp on mp.codigo = mop.cod_marca
+         join dimensao_pneu pd on pd.codigo = p.cod_dimensao
+         join unidade u on u.codigo = p.cod_unidade
+         join regional r on u.cod_regional = r.codigo
+         left join veiculo_pneu vp on p.codigo = vp.cod_pneu
+         left join veiculo vei on vei.codigo = vp.cod_veiculo
+         left join veiculo_tipo vt on vt.codigo = vei.cod_tipo and vt.cod_empresa = p.cod_empresa
+         left join veiculo_diagrama vd on vt.cod_diagrama = vd.codigo
+         left join pneu_ordem po on vp.posicao = po.posicao_prolog
+         left join modelo_banda mob on mob.codigo = p.cod_modelo_banda and mob.cod_empresa = u.cod_empresa
+         left join marca_banda mab on mab.codigo = mob.cod_marca and mab.cod_empresa = mob.cod_empresa
+         left join pneu_valor_vida pvv on pvv.cod_pneu = p.codigo and pvv.vida = p.vida_atual
+         left join pneu_posicao_nomenclatura_empresa ppne on
+            ppne.cod_empresa = p.cod_empresa and
+            ppne.cod_diagrama = vd.codigo and
+            ppne.posicao_prolog = vp.posicao
+where vei.codigo = f_cod_veiculo
+order by po.ordem_exibicao asc;
+$$;
+
+drop function func_pneu_get_listagem_pneus_by_status(bigint[],text);
+create or replace function func_pneu_get_listagem_pneus_by_status(f_cod_unidades bigint[],
+                                                                  f_status_pneu text)
+    returns table
+            (
+                codigo                       bigint,
+                codigo_cliente               text,
+                dot                          text,
+                valor                        real,
+                cod_unidade_alocado          bigint,
+                nome_unidade_alocado         text,
+                cod_regional_alocado         bigint,
+                nome_regional_alocado        text,
+                pneu_novo_nunca_rodado       boolean,
+                cod_marca_pneu               bigint,
+                nome_marca_pneu              text,
+                cod_modelo_pneu              bigint,
+                nome_modelo_pneu             text,
+                qt_sulcos_modelo_pneu        smallint,
+                cod_marca_banda              bigint,
+                nome_marca_banda             text,
+                altura_sulcos_modelo_pneu    real,
+                cod_modelo_banda             bigint,
+                nome_modelo_banda            text,
+                qt_sulcos_modelo_banda       smallint,
+                altura_sulcos_modelo_banda   real,
+                valor_banda                  real,
+                altura                       numeric,
+                largura                      numeric,
+                aro                          numeric,
+                cod_dimensao                 bigint,
+                altura_sulco_central_interno real,
+                altura_sulco_central_externo real,
+                altura_sulco_interno         real,
+                altura_sulco_externo         real,
+                pressao_recomendada          real,
+                pressao_atual                real,
+                status                       text,
+                vida_atual                   integer,
+                vida_total                   integer,
+                posicao_pneu                 integer,
+                posicao_aplicado_cliente     text,
+                cod_veiculo_aplicado         bigint,
+                placa_aplicado               text,
+                identificador_frota          text
+            )
+    language sql
+as
+$$
+select p.codigo,
+       p.codigo_cliente,
+       p.dot,
+       p.valor,
+       u.codigo                         as cod_unidade_alocado,
+       u.nome                           as nome_unidade_alocado,
+       r.codigo                         as cod_regional_alocado,
+       r.regiao                         as nome_regional_alocado,
+       p.pneu_novo_nunca_rodado,
+       mp.codigo                        as cod_marca_pneu,
+       mp.nome                          as nome_marca_pneu,
+       mop.codigo                       as cod_modelo_pneu,
+       mop.nome                         as nome_modelo_pneu,
+       mop.qt_sulcos                    as qt_sulcos_modelo_pneu,
+       mab.codigo                       as cod_marca_banda,
+       mab.nome                         as nome_marca_banda,
+       mop.altura_sulcos                as altura_sulcos_modelo_pneu,
+       mob.codigo                       as cod_modelo_banda,
+       mob.nome                         as nome_modelo_banda,
+       mob.qt_sulcos                    as qt_sulcos_modelo_banda,
+       mob.altura_sulcos                as altura_sulcos_modelo_banda,
+       pvv.valor                        as valor_banda,
+       pd.altura,
+       pd.largura,
+       pd.aro,
+       pd.codigo                        as cod_dimensao,
+       p.altura_sulco_central_interno,
+       p.altura_sulco_central_externo,
+       p.altura_sulco_interno,
+       p.altura_sulco_externo,
+       p.pressao_recomendada,
+       p.pressao_atual,
+       p.status,
+       p.vida_atual,
+       p.vida_total,
+       vp.posicao                       as posicao_pneu,
+       coalesce(ppne.nomenclatura, '-') as posicao_aplicado,
+       vei.codigo                       as cod_veiculo,
+       vei.placa                        as placa_aplicado,
+       vei.identificador_frota          as identificador_frota
+from pneu p
+         join modelo_pneu mop on mop.codigo = p.cod_modelo
+         join marca_pneu mp on mp.codigo = mop.cod_marca
+         join dimensao_pneu pd on pd.codigo = p.cod_dimensao
+         join unidade u on u.codigo = p.cod_unidade
+         join empresa e on u.cod_empresa = e.codigo
+         join regional r on u.cod_regional = r.codigo
+         left join veiculo_pneu vp on vp.cod_pneu = p.codigo and vp.cod_unidade = p.cod_unidade
+         left join veiculo vei on vei.codigo = vp.cod_veiculo
+         left join veiculo_tipo vt on vt.codigo = vei.cod_tipo and vt.cod_empresa = e.codigo
+         left join veiculo_diagrama vd on vt.cod_diagrama = vd.codigo
+         left join modelo_banda mob on mob.codigo = p.cod_modelo_banda and mob.cod_empresa = u.cod_empresa
+         left join marca_banda mab on mab.codigo = mob.cod_marca and mab.cod_empresa = mob.cod_empresa
+         left join pneu_valor_vida pvv on pvv.cod_pneu = p.codigo and pvv.vida = p.vida_atual
+         left join pneu_posicao_nomenclatura_empresa ppne on ppne.cod_empresa = e.codigo
+    and ppne.cod_diagrama = vd.codigo
+    and ppne.posicao_prolog = vp.posicao
+where p.cod_unidade = any (f_cod_unidades)
+  and p.status like f_status_pneu
+order by p.codigo_cliente asc;
 $$;

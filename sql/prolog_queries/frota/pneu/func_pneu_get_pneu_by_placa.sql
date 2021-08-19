@@ -1,4 +1,4 @@
-create or replace function func_pneu_get_pneu_by_placa(f_placa varchar(7), f_cod_unidade bigint)
+create or replace function func_pneu_get_pneu_by_placa (f_placa varchar(7), f_cod_unidade bigint)
     returns table
             (
                 nome_marca_pneu              varchar(255),

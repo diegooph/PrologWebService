@@ -1,0 +1,1 @@
+update dashboard_componente set url_endpoint_dados = '/v2' || url_endpoint_dados;
