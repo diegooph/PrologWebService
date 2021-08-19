@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.v3.fleet.tire;
 
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireSizeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Pageable;

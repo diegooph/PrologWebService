@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.*;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tiremovement._model.TireMovementDestinationEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.vehicle._model.VehicleEntity;
 import br.com.zalf.prolog.webservice.v3.general.branch._model.BranchEntity;

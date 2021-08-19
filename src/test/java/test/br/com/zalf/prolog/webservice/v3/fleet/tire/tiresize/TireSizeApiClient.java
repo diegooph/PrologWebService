@@ -60,7 +60,7 @@ public class TireSizeApiClient {
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<ClientSideErrorException>() {
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<>() {
         });
     }
 
@@ -68,9 +68,8 @@ public class TireSizeApiClient {
     public ResponseEntity<TireSizeDto> getTireSizeById(final long companyId,
                                                        final long tireSizeId) {
         final UriComponents components = UriComponentsBuilder
-                .fromPath(TireSizeResource.RESOURCE_PATH + "/get-by-id")
+                .fromPath(TireSizeResource.RESOURCE_PATH + "/" + tireSizeId)
                 .queryParam("companyId", companyId)
-                .queryParam("tireSizeId", tireSizeId)
                 .build();
         final RequestEntity<Void> reqEntity = RequestEntity
                 .get(components.toUri())
@@ -84,9 +83,8 @@ public class TireSizeApiClient {
     public ResponseEntity<ClientSideErrorException> getTireSizeByIdWithWrongCompanyId(final long companyId,
                                                                                       final long tireSizeId) {
         final UriComponents components = UriComponentsBuilder
-                .fromPath(TireSizeResource.RESOURCE_PATH + "/get-by-id")
+                .fromPath(TireSizeResource.RESOURCE_PATH + "/" + tireSizeId)
                 .queryParam("companyId", companyId)
-                .queryParam("tireSizeId", tireSizeId)
                 .build();
         final RequestEntity<Void> reqEntity = RequestEntity
                 .get(components.toUri())
@@ -99,7 +97,7 @@ public class TireSizeApiClient {
     @NotNull
     public ResponseEntity<SuccessResponse> updateStatus(@NotNull final TireSizeStatusChangeDto dto) {
         final UriComponents components = UriComponentsBuilder
-                .fromPath(TireSizeResource.RESOURCE_PATH + "/update-status")
+                .fromPath(TireSizeResource.RESOURCE_PATH)
                 .build();
         final RequestEntity<TireSizeStatusChangeDto> reqEntity = RequestEntity
                 .patch(components.toUri())
@@ -112,7 +110,7 @@ public class TireSizeApiClient {
     @NotNull
     public ResponseEntity<ClientSideErrorException> updateStatusWithWrongCompanyId(@NotNull final TireSizeStatusChangeDto dto) {
         final UriComponents components = UriComponentsBuilder
-                .fromPath(TireSizeResource.RESOURCE_PATH + "/update-status")
+                .fromPath(TireSizeResource.RESOURCE_PATH)
                 .build();
         final RequestEntity<TireSizeStatusChangeDto> reqEntity = RequestEntity
                 .patch(components.toUri())

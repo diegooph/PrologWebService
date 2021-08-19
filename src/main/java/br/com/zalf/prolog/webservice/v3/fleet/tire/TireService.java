@@ -10,7 +10,6 @@ import br.com.zalf.prolog.webservice.v3.OffsetBasedPageRequest;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireEntity;
-import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireSizeEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tireservice.TireServiceService;
 import br.com.zalf.prolog.webservice.v3.fleet.tireservice.servicetype.TireServiceTypeEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tireservice.servicetype.TireServiceTypeService;

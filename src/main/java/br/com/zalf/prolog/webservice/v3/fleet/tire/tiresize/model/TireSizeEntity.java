@@ -1,5 +1,7 @@
-package br.com.zalf.prolog.webservice.v3.fleet.tire._model;
+package br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model;
 
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
+import br.com.zalf.prolog.webservice.v3.LocalDateTimeUtcAttributeConverter;
 import br.com.zalf.prolog.webservice.v3.user.UserEntity;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +18,7 @@ import java.util.Optional;
 @Builder(toBuilder = true, setterPrefix = "with")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
 @Entity
 @Table(name = "dimensao_pneu", schema = "public")
 public final class TireSizeEntity {
@@ -35,20 +37,23 @@ public final class TireSizeEntity {
     @Column(name = "cod_auxiliar", nullable = false)
     private String additionalId;
     @Column(name = "status_ativo", nullable = false)
-    private boolean active;
+    private boolean isActive;
+    @Convert(converter = LocalDateTimeUtcAttributeConverter.class)
     @Column(name = "data_hora_cadastro", nullable = false)
     private LocalDateTime createdAt;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_colaborador_cadastro", referencedColumnName = "codigo")
     private UserEntity createByUser;
+    @Convert(converter = LocalDateTimeUtcAttributeConverter.class)
     @Column(name = "data_hora_ultima_atualizacao", nullable = false)
     private LocalDateTime lastedUpdateAt;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_colaborador_ultima_atualizacao", referencedColumnName = "codigo")
     private UserEntity lastedUpdateUser;
     @Column(name = "origem_cadastro", nullable = false)
-    private String registerOrigin;
+    private OrigemAcaoEnum registerOrigin;
 
+    @NotNull
     public Optional<UserEntity> getCreateByUser() {
         return Optional.ofNullable(createByUser);
     }

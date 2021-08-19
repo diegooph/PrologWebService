@@ -1,14 +1,14 @@
 package br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize;
 
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.auth.authorization.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.v3.fleet.tire._model.TireSizeEntity;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeEntity;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeStatusChangeDto;
@@ -23,6 +23,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @ConsoleDebugLog
@@ -43,10 +44,13 @@ public class TireSizeResource {
 
     @POST
     @Secured(authTypes = {AuthType.BEARER, AuthType.API}, permissions = Pilares.Frota.Pneu.CADASTRAR)
-    public SuccessResponse insert(@Context final SecurityContext securityContext,
-                                  @Valid final TireSizeCreateDto tireSizeCreateDto) throws Throwable {
-        final ColaboradorAutenticado userPrincipal = (ColaboradorAutenticado) securityContext.getUserPrincipal();
-        final TireSizeEntity insertedTireSize = service.insert(tireSizeCreateDto, userPrincipal);
+    public SuccessResponse insert(
+            @HeaderParam(PrologCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION) @Required final Integer appVersion,
+            @Context final SecurityContext securityContext,
+            @Valid final TireSizeCreateDto tireSizeCreateDto) throws Throwable {
+        final Optional<ColaboradorAutenticado> userPrincipal =
+                Optional.ofNullable((ColaboradorAutenticado) securityContext.getUserPrincipal());
+        final TireSizeEntity insertedTireSize = service.insert(tireSizeCreateDto, userPrincipal, appVersion);
         return new SuccessResponse(insertedTireSize.getId(), "Registro inserido com sucesso!");
     }
 
@@ -54,7 +58,7 @@ public class TireSizeResource {
     @Secured(authTypes = {AuthType.BEARER, AuthType.API},
             permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
     public List<TireSizeDto> getAll(@NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId,
-                                    @QueryParam("statusActive") @Optional final Boolean statusActive) {
+                                    @QueryParam("statusActive") final Boolean statusActive) {
         final List<TireSizeEntity> tireSizeEntities = service.getAll(companyId, statusActive);
         return mapper.toTireSizeDto(tireSizeEntities);
     }
@@ -73,16 +77,19 @@ public class TireSizeResource {
     @Secured(authTypes = {AuthType.BEARER, AuthType.API}, permissions = Pilares.Frota.Pneu.ALTERAR)
     public SuccessResponse updateStatus(@Context final SecurityContext securityContext,
                                         @Valid final TireSizeStatusChangeDto tireSizeStatusChangeDto) {
-        service.updateStatus(tireSizeStatusChangeDto, (ColaboradorAutenticado) securityContext.getUserPrincipal());
-        return new SuccessResponse(null, "Status alterado com sucesso!");
+        final Optional<ColaboradorAutenticado> userPrincipal =
+                Optional.ofNullable((ColaboradorAutenticado) securityContext.getUserPrincipal());
+        service.updateStatus(tireSizeStatusChangeDto, userPrincipal);
+        return new SuccessResponse(null, "Alteração realizada com sucesso!");
     }
 
     @PUT
     @Secured(authTypes = {AuthType.BEARER, AuthType.API}, permissions = Pilares.Frota.Pneu.ALTERAR)
-    public TireSizeDto updateTireSize(@Context final SecurityContext securityContext,
-                                      @Valid @NotNull final TireSizeUpdateDto tireSizeUpdateDto) {
-        final TireSizeEntity tireSizeEntity =
-                service.updateTireSize(tireSizeUpdateDto, (ColaboradorAutenticado) securityContext.getUserPrincipal());
-        return mapper.toTireSizeDto(tireSizeEntity);
+    public SuccessResponse updateTireSize(@Context final SecurityContext securityContext,
+                                          @Valid @NotNull final TireSizeUpdateDto tireSizeUpdateDto) {
+        final Optional<ColaboradorAutenticado> userPrincipal =
+                Optional.ofNullable((ColaboradorAutenticado) securityContext.getUserPrincipal());
+        service.updateTireSize(tireSizeUpdateDto, userPrincipal);
+        return new SuccessResponse(null, "Alteração realizada com sucesso!");
     }
 }

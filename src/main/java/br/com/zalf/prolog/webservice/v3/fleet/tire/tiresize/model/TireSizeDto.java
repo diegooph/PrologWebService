@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model;
 
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import lombok.Builder;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -24,15 +25,15 @@ public class TireSizeDto {
     @NotNull
     private final LocalDateTime createdAt;
     @Nullable
-    private final Long createdAtUserId;
+    private final Long createdByUserId;
     @Nullable
-    private final String createdAtUserName;
+    private final String createdByUserName;
     @Nullable
-    private final LocalDateTime lastedUpdateAt;
+    private final LocalDateTime lastUpdateAt;
     @Nullable
-    private final Long lastedUpdateUserId;
+    private final Long lastUpdateByUserId;
     @Nullable
-    private final String lastedUpdateUserName;
+    private final String lastUpdateByUserName;
     @Nullable
-    private final String registerOrigin;
+    private final OrigemAcaoEnum registerOrigin;
 }
