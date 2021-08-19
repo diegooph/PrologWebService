@@ -54,7 +54,7 @@ public class TireSizeApiClient {
         final UriComponents components = UriComponentsBuilder
                 .fromPath(TireSizeResource.RESOURCE_PATH)
                 .queryParam("companyId", companyId)
-                .queryParam("status", tireSizeStatus)
+                .queryParam("statusActive", tireSizeStatus)
                 .build();
         final RequestEntity<Void> reqEntity = RequestEntity
                 .get(components.toUri())
