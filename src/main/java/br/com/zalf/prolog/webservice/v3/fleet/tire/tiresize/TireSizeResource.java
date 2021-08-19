@@ -84,12 +84,4 @@ public class TireSizeResource {
         return mapper.toTireSizeDto(
                 service.updateTireSize(tireSizeUpdateDto, (ColaboradorAutenticado) securityContext.getUserPrincipal()));
     }
-
-    @DELETE
-    @Secured(permissions = {Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.CADASTRAR})
-    public SuccessResponse deleteTireSize(@QueryParam("companyId") @CompanyId final Long companyId,
-                                          @QueryParam("tireSizeId") final Long tireSizeId) {
-        service.deleteTireSize(companyId, tireSizeId);
-        return new SuccessResponse(null, "Tire size deleted successfully!");
-    }
 }
