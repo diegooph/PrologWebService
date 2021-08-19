@@ -72,7 +72,7 @@ public class TreinamentoService {
             return dao.marcarTreinamentoComoVisto(codTreinamento, codColaborador);
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao marcar o treinamento como visto. \n" +
-                    "cpf: %d \n" +
+                    "código: %d \n" +
                     "codTreinamento: %d", codColaborador, codTreinamento), e);
             return false;
         }
