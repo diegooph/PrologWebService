@@ -1,6 +1,12 @@
 alter table treinamento_colaborador
     add column cod_colaborador bigint;
 
+alter table treinamento_colaborador alter column cod_treinamento set not null;
+
+alter table treinamento_colaborador
+    add constraint fk_cod_colaborador foreign key (cod_colaborador)
+        references colaborador_data (codigo) deferrable;
+
 update treinamento_colaborador tr
 set cod_colaborador = (select cd.codigo
                        from colaborador_data cd
