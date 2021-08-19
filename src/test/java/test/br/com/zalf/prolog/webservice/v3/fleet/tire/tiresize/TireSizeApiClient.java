@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.TireSizeResource;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeStatusChangeDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeUpdateDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -105,6 +106,45 @@ public class TireSizeApiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .body(dto);
         return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<SuccessResponse>() {
+        });
+    }
+
+    @NotNull
+    public ResponseEntity<ClientSideErrorException> updateStatusWithWrongCompanyId(@NotNull final TireSizeStatusChangeDto dto) {
+        final UriComponents components = UriComponentsBuilder
+                .fromPath(TireSizeResource.RESOURCE_PATH + "/update-status")
+                .build();
+        final RequestEntity<TireSizeStatusChangeDto> reqEntity = RequestEntity
+                .patch(components.toUri())
+                .accept(MediaType.APPLICATION_JSON)
+                .body(dto);
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<ClientSideErrorException>() {
+        });
+    }
+
+    @NotNull
+    public ResponseEntity<TireSizeDto> updateTireSize(@NotNull final TireSizeUpdateDto dto) {
+        final UriComponents components = UriComponentsBuilder
+                .fromPath(TireSizeResource.RESOURCE_PATH)
+                .build();
+        final RequestEntity<TireSizeUpdateDto> reqEntity = RequestEntity
+                .put(components.toUri())
+                .accept(MediaType.APPLICATION_JSON)
+                .body(dto);
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<TireSizeDto>() {
+        });
+    }
+
+    @NotNull
+    public ResponseEntity<ClientSideErrorException> updateTireSizeWrongInfos(@NotNull final TireSizeUpdateDto dto) {
+        final UriComponents components = UriComponentsBuilder
+                .fromPath(TireSizeResource.RESOURCE_PATH)
+                .build();
+        final RequestEntity<TireSizeUpdateDto> reqEntity = RequestEntity
+                .put(components.toUri())
+                .accept(MediaType.APPLICATION_JSON)
+                .body(dto);
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<ClientSideErrorException>() {
         });
     }
 }

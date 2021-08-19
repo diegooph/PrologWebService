@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeStatusChangeDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeUpdateDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,5 +91,46 @@ public class TireSizeIt extends IntegrationTest {
                         .withIsActive(true)
                         .build());
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    @DisplayName("given correct tire sizes infos to update status, then return status ok")
+    void givenCorrectTireToUpdate_ThenReturnForbbiden() {
+        final ResponseEntity<ClientSideErrorException> response = client.updateStatusWithWrongCompanyId(
+                TireSizeStatusChangeDto.builder()
+                        .withCompanyId(10L)
+                        .withTireSizeId(86L)
+                        .withIsActive(true)
+                        .build());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("given correct tire sizes infos to update tire size, then return status ok")
+    void givenCorrectTireToUpdateTireSize_ThenReturnStatusOk() {
+        final ResponseEntity<TireSizeDto> response = client.updateTireSize(
+                TireSizeUpdateDto.builder()
+                        .withCompanyId(3L)
+                        .withId(86L)
+                        .withHeight(11.0)
+                        .withWidth(11.0)
+                        .withRim(11.0)
+                        .withIsActive(false)
+                        .build());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    @DisplayName("given wrong tire sizes infos (null rim) to update, then return error")
+    void givenWrongTireToUpdateTireSize_ThenReturnError() {
+        final ResponseEntity<ClientSideErrorException> response = client.updateTireSizeWrongInfos(
+                TireSizeUpdateDto.builder()
+                        .withCompanyId(3L)
+                        .withId(86L)
+                        .withHeight(11.0)
+                        .withWidth(11.0)
+                        .withIsActive(false)
+                        .build());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
