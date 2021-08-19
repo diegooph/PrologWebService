@@ -240,15 +240,9 @@ alter table dimensao_pneu
 alter table dimensao_pneu
     add column cod_colaborador_cadastro bigint;
 alter table dimensao_pneu
-    add constraint fk_colaborador_cadastro_empresa foreign key (cod_colaborador_cadastro)
-        references colaborador_data (codigo);
-alter table dimensao_pneu
     add column data_hora_ultima_atualizacao timestamp with time zone;
 alter table dimensao_pneu
     add column cod_colaborador_ultima_atualizacao bigint;
-alter table dimensao_pneu
-    add constraint fk_colaborador_cadastro_empresa foreign key (cod_colaborador_ultima_atualizacao)
-        references colaborador_data (codigo);
 
 create or replace function suporte.func_pneu_cadastra_dimensao_pneu(f_altura bigint,
                                                                     f_largura bigint,
@@ -336,6 +330,12 @@ from dimensao_pneu d
          join empresa e on pd.cod_empresa = e.codigo
 where pd.cod_empresa in (select ti.cod_empresa
                          from integracao.token_integracao ti);
+alter table dimensao_pneu
+    add constraint fk_colaborador_cadastro_empresa foreign key (cod_colaborador_cadastro)
+        references colaborador_data (codigo) deferrable;
+alter table dimensao_pneu
+    add constraint fk_colaborador_cadastro_empresa foreign key (cod_colaborador_ultima_atualizacao)
+        references colaborador_data (codigo) deferrable;
 
 update pneu_data pd
 set cod_dimensao = (
