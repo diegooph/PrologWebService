@@ -1,11 +1,11 @@
 package test.br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.TireSizeResource;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeStatusChangeDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -60,6 +60,51 @@ public class TireSizeApiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
         return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<ClientSideErrorException>() {
+        });
+    }
+
+    @NotNull
+    public ResponseEntity<TireSizeDto> getTireSizeById(final long companyId,
+                                                       final long tireSizeId) {
+        final UriComponents components = UriComponentsBuilder
+                .fromPath(TireSizeResource.RESOURCE_PATH + "/get-by-id")
+                .queryParam("companyId", companyId)
+                .queryParam("tireSizeId", tireSizeId)
+                .build();
+        final RequestEntity<Void> reqEntity = RequestEntity
+                .get(components.toUri())
+                .accept(MediaType.APPLICATION_JSON)
+                .build();
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<TireSizeDto>() {
+        });
+    }
+
+    @NotNull
+    public ResponseEntity<ClientSideErrorException> getTireSizeByIdWithWrongCompanyId(final long companyId,
+                                                                                      final long tireSizeId) {
+        final UriComponents components = UriComponentsBuilder
+                .fromPath(TireSizeResource.RESOURCE_PATH + "/get-by-id")
+                .queryParam("companyId", companyId)
+                .queryParam("tireSizeId", tireSizeId)
+                .build();
+        final RequestEntity<Void> reqEntity = RequestEntity
+                .get(components.toUri())
+                .accept(MediaType.APPLICATION_JSON)
+                .build();
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<ClientSideErrorException>() {
+        });
+    }
+
+    @NotNull
+    public ResponseEntity<SuccessResponse> updateStatus(@NotNull final TireSizeStatusChangeDto dto) {
+        final UriComponents components = UriComponentsBuilder
+                .fromPath(TireSizeResource.RESOURCE_PATH + "/update-status")
+                .build();
+        final RequestEntity<TireSizeStatusChangeDto> reqEntity = RequestEntity
+                .patch(components.toUri())
+                .accept(MediaType.APPLICATION_JSON)
+                .body(dto);
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<SuccessResponse>() {
         });
     }
 }

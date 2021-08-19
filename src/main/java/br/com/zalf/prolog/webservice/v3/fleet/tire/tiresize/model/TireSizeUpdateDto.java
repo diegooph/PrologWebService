@@ -1,12 +1,14 @@
 package br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model;
 
 import br.com.zalf.prolog.webservice.v3.validation.CompanyId;
+import lombok.Builder;
 import lombok.Data;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
 
 @Data
+@Builder(setterPrefix = "with")
 public class TireSizeUpdateDto {
     @CompanyId
     @NotNull(message = "O código da empresa é obrigatório!")

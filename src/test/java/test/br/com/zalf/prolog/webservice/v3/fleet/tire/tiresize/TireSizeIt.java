@@ -1,10 +1,10 @@
 package test.br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeCreateDto;
 import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeDto;
+import br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model.TireSizeStatusChangeDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,5 +63,32 @@ public class TireSizeIt extends IntegrationTest {
         final ResponseEntity<ClientSideErrorException> response =
                 client.getAllTireSizesWithWrongCompanyId(10, true);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("given correct query params, return a tire size")
+    void givenCorrectTireToGetById_ThenReturnOne() {
+        final ResponseEntity<TireSizeDto> response = client.getTireSizeById(3, 86);
+        assertThat(response.getBody()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("given wrong company id, return a error")
+    void givenCorrectTireToGetById_ThenForbbiden() {
+        final ResponseEntity<ClientSideErrorException> response =
+                client.getTireSizeByIdWithWrongCompanyId(10, 86);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("given correct tire sizes infos to update status, then return status ok")
+    void givenCorrectTireToUpdate_ThenReturnStatusOk() {
+        final ResponseEntity<SuccessResponse> response = client.updateStatus(
+                TireSizeStatusChangeDto.builder()
+                        .withCompanyId(3L)
+                        .withTireSizeId(86L)
+                        .withIsActive(true)
+                        .build());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
