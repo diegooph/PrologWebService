@@ -83,11 +83,6 @@ public class TireService {
         return new SuccessResponse(tireId, "Alterado o status do pneu com sucesso.");
     }
 
-    @NotNull
-    public List<TireEntity> getTiresByTireSize(@NotNull final TireSizeEntity tireSizeEntity) {
-        return tireDao.getAllByTireSizeEntity(tireSizeEntity);
-    }
-
     private void validateTire(@NotNull final TireCreateDto tireCreateDto,
                               final boolean ignoreDotValidation) throws Throwable {
         PneuValidator.validacaoVida(tireCreateDto.getVidaAtualPneu(), tireCreateDto.getVidaTotalPneu());

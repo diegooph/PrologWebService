@@ -49,12 +49,4 @@ public interface TireDao extends JpaRepository<TireEntity, Long> {
     @Modifying
     @Query("update TireEntity t set t.tireStatus = :tireStatus where t.id = :tireId")
     void updateTireStatus(@NotNull final Long tireId, @NotNull final StatusPneu tireStatus);
-
-    @Query("select te from TireEntity te " +
-            "join fetch te.tireModelEntity tme " +
-            "join fetch te.treadModelEntity trme " +
-            "join fetch tme.tireBrandEntity tbe " +
-            "join fetch trme.treadBrandEntity trbe " +
-            "where te.tireSizeEntity = :tireSizeEntity")
-    List<TireEntity> getAllByTireSizeEntity(@NotNull final TireSizeEntity tireSizeEntity);
 }

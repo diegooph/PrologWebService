@@ -24,16 +24,12 @@ public class TireSizeService {
     private final TireSizeDao dao;
     @NotNull
     private final TireSizeMapper mapper;
-    @NotNull
-    private final TireService tireService;
 
     @Autowired
     public TireSizeService(@NotNull final TireSizeDao dao,
-                           @NotNull final TireSizeMapper mapper,
-                           @NotNull final TireService tireService) {
+                           @NotNull final TireSizeMapper mapper) {
         this.dao = dao;
         this.mapper = mapper;
-        this.tireService = tireService;
     }
 
     @NotNull
@@ -89,18 +85,5 @@ public class TireSizeService {
                         .build());
         tireSize.setLastedUpdateAt(LocalDateTime.now());
         return dao.save(tireSize);
-    }
-
-    @Transactional
-    public void deleteTireSize(@NotNull final Long companyId, @NotNull final Long tireSizeId) {
-        final TireSizeEntity tireSize = getById(companyId, tireSizeId);
-        tireService.getTiresByTireSize(tireSize).stream()
-                .findAny()
-                .ifPresent(tireEntity -> {
-                    throw new ClientSideErrorException(
-                            "It's not possible to delete the dimension because there are tires using it.",
-                            "It's needed to change the tires dimension before delete the dimension.");
-                });
-        dao.delete(tireSize);
     }
 }
