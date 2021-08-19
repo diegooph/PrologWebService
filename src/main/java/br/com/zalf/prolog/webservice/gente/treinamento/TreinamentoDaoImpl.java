@@ -54,7 +54,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                     "AND (? = 1 OR T.DATA_HORA_CADASTRO::DATE >= (? AT TIME ZONE ?)) " +
                     "AND (? = 1 OR T.DATA_HORA_CADASTRO::DATE <= (? AT TIME ZONE ?)) " +
                     "GROUP BY T.CODIGO " +
-                    "ORDER BY T.DATA_HORA_CADASTRO " +
+                    "ORDER BY T.DATA_HORA_CADASTRO DESC " +
                     "LIMIT ? OFFSET ?;");
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
             stmt.setString(1, zoneId);
