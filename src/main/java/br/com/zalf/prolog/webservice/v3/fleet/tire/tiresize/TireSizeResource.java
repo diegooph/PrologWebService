@@ -48,7 +48,7 @@ public class TireSizeResource {
     }
 
     @GET
-    @Secured(permissions = Pilares.Frota.Pneu.VISUALIZAR)
+    @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR, Pilares.Frota.Pneu.VISUALIZAR})
     public List<TireSizeDto> getAll(
             @NotNull @CompanyId @QueryParam("companyId") @Required final Long companyId,
             @QueryParam("status") final Boolean statusActive) {
