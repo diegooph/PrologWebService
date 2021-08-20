@@ -1,3 +1,15 @@
+alter table treinamento_colaborador
+    add column cod_colaborador bigint;
+
+alter table treinamento_colaborador
+    add constraint fk_cod_colaborador foreign key (cod_colaborador)
+        references colaborador_data (codigo) deferrable;
+
+update treinamento_colaborador tr
+set cod_colaborador = (select cd.codigo
+                       from colaborador_data cd
+                       where cd.cpf = tr.cpf_colaborador);
+
 create or replace function func_relatorio_treinamento_visualizados_por_colaborador(f_data_inicial date,
                                                                                    f_data_final date,
                                                                                    f_time_zone_datas text,
@@ -30,3 +42,7 @@ where t.cod_unidade = f_cod_unidade
   and c.status_ativo
 order by c.nome;
 $$;
+
+alter table treinamento_colaborador alter column cod_colaborador set not null;
+alter table treinamento_colaborador
+    drop column cpf_colaborador;

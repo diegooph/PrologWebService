@@ -28,6 +28,10 @@ Change Log
 ### Features
 * Cria crud de unidades para uso no intralog
 
+### Refactors
+* Remove CPF de treinamento (PL-3857)
+
+
 <a name="v3.7.0"></a>
 ## Version [v3.7.0](https://github.com/luizfp/PrologWebService/compare/v3.6.0...v3.7.0) (2021-08-04)
 

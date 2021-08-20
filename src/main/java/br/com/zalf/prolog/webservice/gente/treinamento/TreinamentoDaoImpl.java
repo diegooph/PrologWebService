@@ -112,7 +112,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
     }
 
     @Override
-    public List<Treinamento> getNaoVistosColaborador(final Long cpf) throws SQLException {
+    public List<Treinamento> getNaoVistosColaborador(final Long codColaborador) throws SQLException {
         final List<Treinamento> treinamentos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -130,13 +130,13 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                     "T.COD_UNIDADE AS COD_UNIDADE " +
                     "FROM TREINAMENTO T JOIN "
                     + "RESTRICAO_TREINAMENTO RT ON RT.COD_TREINAMENTO = T.CODIGO "
-                    + "JOIN COLABORADOR C ON C.COD_FUNCAO = RT.COD_FUNCAO AND C.COD_UNIDADE = T.cod_unidade AND C.CPF "
-                    + "= ? WHERE T.CODIGO NOT IN (SELECT TC.COD_TREINAMENTO FROM COLABORADOR C JOIN "
-                    + "TREINAMENTO_COLABORADOR TC ON C.CPF = TC.CPF_COLABORADOR WHERE "
-                    + "C.CPF = ?) AND t.data_liberacao <= ? ;");
-            stmt.setString(1, TimeZoneManager.getZoneIdForCpf(cpf, conn).getId());
-            stmt.setLong(2, cpf);
-            stmt.setLong(3, cpf);
+                    + "JOIN COLABORADOR C ON C.COD_FUNCAO = RT.COD_FUNCAO AND C.COD_UNIDADE = T.cod_unidade "
+                    + "AND C.CODIGO = ? WHERE T.CODIGO NOT IN (SELECT TC.COD_TREINAMENTO FROM COLABORADOR C JOIN "
+                    + "TREINAMENTO_COLABORADOR TC ON C.CODIGO = TC.COD_COLABORADOR WHERE "
+                    + "C.CODIGO = ?) AND t.data_liberacao <= ? ;");
+            stmt.setString(1, TimeZoneManager.getZoneIdForCodColaborador(codColaborador, conn).getId());
+            stmt.setLong(2, codColaborador);
+            stmt.setLong(3, codColaborador);
             stmt.setObject(4, LocalDate.now(Clock.systemUTC()));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
@@ -150,7 +150,7 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
     }
 
     @Override
-    public List<Treinamento> getVistosColaborador(final Long cpf) throws SQLException {
+    public List<Treinamento> getVistosColaborador(final Long codColaborador) throws SQLException {
         final List<Treinamento> treinamentos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -165,12 +165,12 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
                 "T.DATA_HORA_CADASTRO AT TIME ZONE ? AS DATA_HORA_CADASTRO, " +
                 "T.COD_UNIDADE AS COD_UNIDADE " +
                 "FROM TREINAMENTO T JOIN TREINAMENTO_COLABORADOR TC ON \n" +
-                "T.CODIGO = TC.COD_TREINAMENTO WHERE TC.CPF_COLABORADOR = ?";
+                "T.CODIGO = TC.COD_TREINAMENTO WHERE TC.COD_COLABORADOR = ?";
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(treinamentosVistosQuery);
-            stmt.setString(1, TimeZoneManager.getZoneIdForCpf(cpf, conn).getId());
-            stmt.setLong(2, cpf);
+            stmt.setString(1, TimeZoneManager.getZoneIdForCodColaborador(codColaborador, conn).getId());
+            stmt.setLong(2, codColaborador);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 treinamentos.add(createTreinamento(rSet));
@@ -182,16 +182,16 @@ public class TreinamentoDaoImpl extends DatabaseConnection implements Treinament
     }
 
     @Override
-    public boolean marcarTreinamentoComoVisto(final Long codTreinamento, final Long cpf) throws SQLException {
+    public boolean marcarTreinamentoComoVisto(final Long codTreinamento, final Long codColaborador) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO TREINAMENTO_COLABORADOR "
-                    + "(COD_TREINAMENTO, CPF_COLABORADOR, DATA_VISUALIZACAO) VALUES "
+                    + "(COD_TREINAMENTO, COD_COLABORADOR, DATA_VISUALIZACAO) VALUES "
                     + "(?, ?, ?)");
             stmt.setLong(1, codTreinamento);
-            stmt.setLong(2, cpf);
+            stmt.setLong(2, codColaborador);
             // A Coluna DATA_VISUALIZACAO é na verdade um TIMESTAMP e deveria se chamar DATA_HORA_VISUALIZACAO. Por
             // ser um TIMESTAMP WITH TIME ZONE utilizamos um OffsetDateTime.
             stmt.setObject(3, OffsetDateTime.now(Clock.systemUTC()));

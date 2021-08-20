@@ -16,13 +16,13 @@ public class TreinamentoService {
     private static final String TAG = TreinamentoService.class.getSimpleName();
     private final TreinamentoDao dao = Injection.provideTreinamentoDao();
 
-    public List<Treinamento> getVistosByColaborador(final Long cpf) {
+    public List<Treinamento> getVistosByColaborador(final Long codColaborador) {
         try {
-            return dao.getVistosColaborador(cpf);
+            return dao.getVistosColaborador(codColaborador);
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os treinamentos vistos do colaborador. \n" +
-                    "cpf: %d", cpf), e);
-            throw new RuntimeException("Erro ao buscar treinamentos vistos pelo colaborador " + cpf);
+                    "código: %d", codColaborador), e);
+            throw new RuntimeException("Erro ao buscar treinamentos vistos pelo colaborador " + codColaborador);
         }
     }
 
@@ -57,23 +57,23 @@ public class TreinamentoService {
         }
     }
 
-    public List<Treinamento> getNaoVistosByColaborador(final Long cpf) {
+    public List<Treinamento> getNaoVistosByColaborador(final Long codColaborador) {
         try {
-            return dao.getNaoVistosColaborador(cpf);
+            return dao.getNaoVistosColaborador(codColaborador);
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os treinamentos não vistos do colaborador. \n" +
-                    "cpf: %d", cpf), e);
-            throw new RuntimeException("Erro ao buscar treinamentos não vistos pelo colaborador " + cpf);
+                    "código: %d", codColaborador), e);
+            throw new RuntimeException("Erro ao buscar treinamentos não vistos pelo colaborador " + codColaborador);
         }
     }
 
-    public boolean marcarTreinamentoComoVisto(final Long codTreinamento, final Long cpf) {
+    public boolean marcarTreinamentoComoVisto(final Long codTreinamento, final Long codColaborador) {
         try {
-            return dao.marcarTreinamentoComoVisto(codTreinamento, cpf);
+            return dao.marcarTreinamentoComoVisto(codTreinamento, codColaborador);
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao marcar o treinamento como visto. \n" +
-                    "cpf: %d \n" +
-                    "codTreinamento: %d", cpf, codTreinamento), e);
+                    "código: %d \n" +
+                    "codTreinamento: %d", codColaborador, codTreinamento), e);
             return false;
         }
     }

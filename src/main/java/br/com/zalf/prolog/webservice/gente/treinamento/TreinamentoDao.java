@@ -20,11 +20,11 @@ public interface TreinamentoDao {
                              long limit,
                              long offset) throws SQLException;
 
-    List<Treinamento> getNaoVistosColaborador(Long cpf) throws SQLException;
+    List<Treinamento> getNaoVistosColaborador(Long codColaborador) throws SQLException;
 
-    List<Treinamento> getVistosColaborador(Long cpf) throws SQLException;
+    List<Treinamento> getVistosColaborador(Long codColaborador) throws SQLException;
 
-    boolean marcarTreinamentoComoVisto(Long codTreinamento, Long cpf) throws SQLException;
+    boolean marcarTreinamentoComoVisto(Long codTreinamento, Long codColaborador) throws SQLException;
 
     Long insert(Treinamento treinamento) throws SQLException;
 
