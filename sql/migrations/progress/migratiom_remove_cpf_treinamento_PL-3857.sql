@@ -1,8 +1,6 @@
 alter table treinamento_colaborador
     add column cod_colaborador bigint;
 
-alter table treinamento_colaborador alter column cod_treinamento set not null;
-
 alter table treinamento_colaborador
     add constraint fk_cod_colaborador foreign key (cod_colaborador)
         references colaborador_data (codigo) deferrable;
@@ -45,5 +43,6 @@ where t.cod_unidade = f_cod_unidade
 order by c.nome;
 $$;
 
+alter table treinamento_colaborador alter column cod_colaborador set not null;
 alter table treinamento_colaborador
     drop column cpf_colaborador;
