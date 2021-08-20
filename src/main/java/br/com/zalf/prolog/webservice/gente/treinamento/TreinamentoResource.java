@@ -194,30 +194,12 @@ public class TreinamentoResource {
 
     @GET
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
-    @Path("/vistosColaborador/by-codigo/{codColaborador}")
-    @Deprecated
-    public List<Treinamento> DEPRECATED_GET_VISTOS_BY_COD_COLABORADOR(
-            @PathParam("codColaborador") final Long codColaborador) {
-        return service.getVistosByColaborador(codColaborador);
-    }
-
-    @GET
-    @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
     @Path("/naoVistosColaborador/{cpf}")
     @Deprecated
     public List<Treinamento> DEPRECATED_GET_NAO_VISTOS_BY_COLABORADOR(@PathParam("cpf") final Long cpf) {
         return service.getNaoVistosByColaborador(ColaboradorBackwardHelper.getCodColaboradorByCpf(
                 colaboradorAutenticadoProvider.get().getCodigo(),
                 cpf.toString()));
-    }
-
-    @GET
-    @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
-    @Path("/naoVistosColaborador/by-codigo/{codColaborador}")
-    @Deprecated
-    public List<Treinamento> DEPRECATED_GET_NAO_VISTOS_BY_COD_COLABORADOR(
-            @PathParam("codColaborador") final Long codColaborador) {
-        return service.getNaoVistosByColaborador(codColaborador);
     }
 
     @POST
