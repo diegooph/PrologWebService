@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.ZoneId;
 
 /**
@@ -22,7 +23,7 @@ import java.time.ZoneId;
 @Getter
 @Entity
 @Table(schema = "public", name = "colaborador")
-public final class UserEntity {
+public final class UserEntity implements Serializable {
     @Id
     @Column(name = "codigo", unique = true)
     private Long id;
@@ -38,12 +39,12 @@ public final class UserEntity {
     private CompanyEntity companyEntity;
 
     @NotNull
-    public ZoneId getColaboradorZoneId() {
+    public ZoneId getUserZoneId() {
         return ZoneId.of(this.branchEntity.getTimezone());
     }
 
     @NotNull
-    public String getCpfFormatado() {
+    public String getFormattedCpf() {
         return String.format("%011d", this.cpf);
     }
 }

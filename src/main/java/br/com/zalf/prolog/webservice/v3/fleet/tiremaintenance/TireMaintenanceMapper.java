@@ -59,7 +59,7 @@ public class TireMaintenanceMapper {
                 tireMaintenance.isResolvedAutomatically(),
                 tireMaintenance.getResolvedAt(),
                 resolverUser.map(UserEntity::getId).orElse(null),
-                resolverUser.map(UserEntity::getCpfFormatado).orElse(null),
+                resolverUser.map(UserEntity::getFormattedCpf).orElse(null),
                 resolverUser.map(UserEntity::getName).orElse(null),
                 tireMaintenance.getVehicleKmAtResolution(),
                 tireMaintenanceProblem.map(TireMaintenanceProblemEntity::getId).orElse(null),

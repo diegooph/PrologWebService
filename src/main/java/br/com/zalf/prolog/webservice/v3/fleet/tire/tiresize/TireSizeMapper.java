@@ -94,7 +94,7 @@ public class TireSizeMapper {
     }
 
     @Nullable
-    public UserEntity createUserFrom(@NotNull final Optional<ColaboradorAutenticado> colaboradorAutenticado) {
+    private UserEntity createUserFrom(@NotNull final Optional<ColaboradorAutenticado> colaboradorAutenticado) {
         if (colaboradorAutenticado.isEmpty()) {
             return null;
         }

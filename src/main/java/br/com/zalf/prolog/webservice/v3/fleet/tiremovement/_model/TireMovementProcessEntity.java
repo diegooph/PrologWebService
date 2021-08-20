@@ -72,6 +72,6 @@ public final class TireMovementProcessEntity implements KmCollectedEntity {
 
     @NotNull
     public LocalDateTime getMovementProcessAtWithTimeZone() {
-        return TimezoneUtils.applyTimezone(movementProcessAt, movementProcessBy.getColaboradorZoneId());
+        return TimezoneUtils.applyTimezone(movementProcessAt, movementProcessBy.getUserZoneId());
     }
 }
