@@ -1,14 +1,23 @@
-alter table dimensao_pneu add column cod_empresa bigint;
-alter table dimensao_pneu add constraint fk_cod_empresa foreign key (cod_empresa) references empresa (codigo);
-alter table dimensao_pneu add column cod_auxiliar text;
-alter table dimensao_pneu add constraint unique_dimensao_cod_empresa unique (codigo, cod_empresa);
-alter table dimensao_pneu add column status_ativo boolean;
-alter table dimensao_pneu add column origem_cadastro text;
+alter table dimensao_pneu
+    add column cod_empresa bigint;
+alter table dimensao_pneu
+    add constraint fk_cod_empresa foreign key (cod_empresa) references empresa (codigo);
+alter table dimensao_pneu
+    add column cod_auxiliar text;
+alter table dimensao_pneu
+    add constraint unique_dimensao_cod_empresa unique (codigo, cod_empresa);
+alter table dimensao_pneu
+    add column status_ativo boolean;
+alter table dimensao_pneu
+    add column origem_cadastro text;
 drop view view_pneu_analise_vida_atual;
 drop view view_analise_pneus;
-alter table dimensao_pneu alter column aro type numeric(7,2);
-alter table dimensao_pneu alter column altura type numeric(7,2);
-alter table dimensao_pneu alter column largura type numeric(7,2);
+alter table dimensao_pneu
+    alter column aro type numeric(7, 2);
+alter table dimensao_pneu
+    alter column altura type numeric(7, 2);
+alter table dimensao_pneu
+    alter column largura type numeric(7, 2);
 
 create or replace view view_pneu_analise_vida_atual as
 with dados as (
@@ -135,8 +144,8 @@ select p.cod_unidade                                                            
                case
                    when dados.total_km > 0::numeric and dados.total_dias > 0 and
                         (dados.total_km / dados.total_dias::numeric) > 0::numeric then
-                               dados.km_por_mm * dados.sulco_restante /
-                               (dados.total_km / dados.total_dias::numeric)::double precision
+                           dados.km_por_mm * dados.sulco_restante /
+                           (dados.total_km / dados.total_dias::numeric)::double precision
                    else 0::double precision
                    end)                                                               as dias_restantes,
        case
@@ -226,10 +235,14 @@ from pneu p
          join modelo_pneu mp on mp.codigo = p.cod_modelo and mp.cod_empresa = u.cod_empresa
          join marca_pneu map on map.codigo = mp.cod_marca;
 
-alter table dimensao_pneu add column data_hora_cadastro timestamp with time zone default now();
-alter table dimensao_pneu add column cod_colaborador_cadastro bigint;
-alter table dimensao_pneu add column data_hora_ultima_atualizacao timestamp with time zone;
-alter table dimensao_pneu add column cod_colaborador_ultima_atualizacao bigint;
+alter table dimensao_pneu
+    add column data_hora_cadastro timestamp with time zone default now();
+alter table dimensao_pneu
+    add column cod_colaborador_cadastro bigint;
+alter table dimensao_pneu
+    add column data_hora_ultima_atualizacao timestamp with time zone;
+alter table dimensao_pneu
+    add column cod_colaborador_ultima_atualizacao bigint;
 
 create or replace function suporte.func_pneu_cadastra_dimensao_pneu(f_altura bigint,
                                                                     f_largura bigint,
@@ -251,17 +264,17 @@ begin
     perform throw_generic_error('o cadastro de dimensão deve ser realizado pelo site ou pelo app');
     perform suporte.func_historico_salva_execucao();
     --verifica se os dados informados são maiores que 0.
-    if(f_altura < 0)
+    if (f_altura < 0)
     then
         raise exception 'o valor atribuído para altura deve ser maior que 0(zero). valor informado: %', f_altura;
     end if;
 
-    if(f_largura < 0)
+    if (f_largura < 0)
     then
         raise exception 'o valor atribuído para largura deve ser maior que 0(zero). valor informado: %', f_largura;
     end if;
 
-    if(f_aro < 0)
+    if (f_aro < 0)
     then
         raise exception 'o valor atribuído para aro deve ser maior que 0(zero). valor informado: %', f_aro;
     end if;
@@ -274,7 +287,8 @@ begin
 
     --adiciona nova dimensão e retorna seu id.
     insert into dimensao_pneu(altura, largura, aro)
-    values (f_altura, f_largura, f_aro) returning codigo into cod_dimensao_criada;
+    values (f_altura, f_largura, f_aro)
+    returning codigo into cod_dimensao_criada;
 
     --mensagem de sucesso.
     select 'dimensão cadastrada com sucesso! dimensão: ' || f_largura || '/' || f_altura || 'r' || f_aro ||
@@ -284,52 +298,56 @@ begin
 end
 $$;
 
-alter table dimensao_pneu drop constraint unique_dimensao_pneu;
-alter table dimensao_pneu add constraint  unique_dimensao_pneu unique (altura, largura, aro, cod_empresa);
-insert into dimensao_pneu (altura, largura, aro, cod_empresa, status_ativo,
-                           cod_colaborador_cadastro, data_hora_ultima_atualizacao, cod_colaborador_ultima_atualizacao)
+alter table dimensao_pneu
+    drop constraint unique_dimensao_pneu;
+alter table dimensao_pneu
+    add constraint unique_dimensao_pneu unique (altura, largura, aro, cod_empresa);
+insert into dimensao_pneu (altura, largura, aro, cod_empresa, status_ativo, data_hora_ultima_atualizacao)
 select distinct d.altura,
                 d.largura,
                 d.aro,
                 e.codigo,
                 true,
-                2316,
-                now(),
-                2316
+                now()
 from dimensao_pneu d
          join pneu_data pd on
     d.codigo = pd.cod_dimensao
          join empresa e on pd.cod_empresa = e.codigo
 where pd.cod_empresa not in (select ti.cod_empresa
-                            from integracao.token_integracao ti);
+                             from integracao.token_integracao ti);
 
-insert into dimensao_pneu (altura, largura, aro, cod_empresa, status_ativo,
-                           cod_colaborador_cadastro, data_hora_ultima_atualizacao, cod_colaborador_ultima_atualizacao,
-                           cod_auxiliar)
+insert into dimensao_pneu (altura, largura, aro, cod_empresa, status_ativo, data_hora_cadastro, cod_auxiliar)
 select distinct d.altura,
                 d.largura,
                 d.aro,
                 e.codigo,
                 true,
-                2316,
                 now(),
-                2316,
                 d.codigo
 from dimensao_pneu d
          join pneu_data pd on
-        d.codigo = pd.cod_dimensao
+    d.codigo = pd.cod_dimensao
          join empresa e on pd.cod_empresa = e.codigo
 where pd.cod_empresa in (select ti.cod_empresa
-                            from integracao.token_integracao ti);
+                         from integracao.token_integracao ti);
+alter table dimensao_pneu
+    add constraint fk_colaborador_cadastro_empresa foreign key (cod_colaborador_cadastro)
+        references colaborador_data (codigo) deferrable;
+alter table dimensao_pneu
+    add constraint fk_colaborador_cadastro_empresa foreign key (cod_colaborador_ultima_atualizacao)
+        references colaborador_data (codigo) deferrable;
 
 update pneu_data pd
 set cod_dimensao = (
     select d.codigo
     from dimensao_pneu d
              join dimensao_pneu d2 on d.aro = d2.aro and d.altura = d2.altura and d.largura = d2.largura
-    where d.cod_empresa = pd.cod_empresa and d2.codigo = pd.cod_dimensao);
+    where d.cod_empresa = pd.cod_empresa
+      and d2.codigo = pd.cod_dimensao);
 
-delete from dimensao_pneu where cod_empresa is null;
+delete
+from dimensao_pneu
+where cod_empresa is null;
 
 CREATE OR REPLACE FUNCTION IMPLANTACAO.TG_FUNC_PNEU_CONFERE_PLANILHA_IMPORTA_PNEU()
     RETURNS TRIGGER
@@ -645,7 +663,8 @@ BEGIN
                                                                MAX(func_gera_similaridade(NEW.DIMENSAO_FORMATADA_IMPORT,
                                                                                           CONCAT(DP.LARGURA, '/', DP.ALTURA, 'R', DP.ARO))) AS SIMILARIDADE_DIMENSAO
             INTO F_COD_DIMENSAO, F_SIMILARIDADE_DIMENSAO
-            FROM DIMENSAO_PNEU DP WHERE DP.COD_EMPRESA = NEW.COD_EMPRESA
+            FROM DIMENSAO_PNEU DP
+            WHERE DP.COD_EMPRESA = NEW.COD_EMPRESA
             GROUP BY NEW.DIMENSAO_FORMATADA_IMPORT, NEW.DIMENSAO_EDITAVEL,
                      CONCAT(DP.LARGURA, '/', DP.ALTURA, 'R', DP.ARO),
                      DP.CODIGO
@@ -1118,7 +1137,8 @@ begin
     -- Verifica se existe a dimensão informada.
     if not exists(select dm.codigo
                   from dimensao_pneu dm
-                  where dm.codigo = f_cod_dimensao and dm.cod_empresa = f_cod_empresa)
+                  where dm.codigo = f_cod_dimensao
+                    and dm.cod_empresa = f_cod_empresa)
     then
         raise exception 'Dimensao de código % não existe!', f_cod_dimensao;
     end if;
@@ -1200,7 +1220,7 @@ DECLARE
                                            WHERE P.CODIGO = COD_PNEU_PROLOG) IS NULL), FALSE, TRUE);
     TROCOU_BANDA_PNEU    BOOLEAN := F_IF(F_NOVO_COD_MODELO_BANDA_PNEU IS NULL, FALSE, TRUE);
     F_QTD_ROWS_ALTERADAS BIGINT;
-    V_COD_DIMENSAO BIGINT;
+    V_COD_DIMENSAO       BIGINT;
 BEGIN
     PERFORM INTEGRACAO.FUNC_GARANTE_TOKEN_EMPRESA(COD_EMPRESA_PNEU, F_TOKEN_INTEGRACAO);
 
@@ -1623,7 +1643,7 @@ BEGIN
 END;
 $$;
 
-drop function func_pneu_get_pneu_by_placa(character varying,bigint);
+drop function func_pneu_get_pneu_by_placa(character varying, bigint);
 create or replace function func_pneu_get_pneu_by_placa(f_placa varchar(7), f_cod_unidade bigint)
     returns table
             (
@@ -1929,14 +1949,14 @@ from pneu p
          left join marca_banda mab on mab.codigo = mob.cod_marca and mab.cod_empresa = mob.cod_empresa
          left join pneu_valor_vida pvv on pvv.cod_pneu = p.codigo and pvv.vida = p.vida_atual
          left join pneu_posicao_nomenclatura_empresa ppne on
-            ppne.cod_empresa = p.cod_empresa and
-            ppne.cod_diagrama = vd.codigo and
-            ppne.posicao_prolog = vp.posicao
+        ppne.cod_empresa = p.cod_empresa and
+        ppne.cod_diagrama = vd.codigo and
+        ppne.posicao_prolog = vp.posicao
 where vei.codigo = f_cod_veiculo
 order by po.ordem_exibicao asc;
 $$;
 
-drop function func_pneu_get_listagem_pneus_by_status(bigint[],text);
+drop function func_pneu_get_listagem_pneus_by_status(bigint[], text);
 create or replace function func_pneu_get_listagem_pneus_by_status(f_cod_unidades bigint[],
                                                                   f_status_pneu text)
     returns table
