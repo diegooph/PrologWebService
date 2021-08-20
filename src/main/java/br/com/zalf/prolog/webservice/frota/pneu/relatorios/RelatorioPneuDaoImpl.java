@@ -720,14 +720,15 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_STATUS_PLACAS_AFERICAO(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM TESTFUNC_PNEU_RELATORIO_STATUS_PLACAS_AFERICAO(?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setObject(2, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new StatusPlacasAfericao(
                         rSet.getInt("TOTAL_VENCIDAS"),
-                        rSet.getInt("TOTAL_NO_PRAZO"));
+                        rSet.getInt("TOTAL_NO_PRAZO"),
+                        rSet.getInt("TOTAL_NUNCA_AFERIDAS"));
             } else {
                 throw new SQLException("Erro ao buscar o status das placas");
             }

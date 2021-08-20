@@ -192,8 +192,8 @@ final class DashboardPneuComponentsCreator {
                 Color.fromHex("#15C41F")));
         entries.add(PieEntry.create(
                 "Placas nunca aferidas",
-                statusPlacasAfericao.getQtdPlacasAfericaoNoPrazo(),
-                String.valueOf(statusPlacasAfericao.getQtdPlacasAfericaoNoPrazo()),
+                statusPlacasAfericao.getQtdPlacasNuncaAferidas(),
+                String.valueOf(statusPlacasAfericao.getQtdPlacasNuncaAferidas()),
                 Color.fromHex("#999")));
         final PieData pieData = new PieData(entries);
         return PieChartComponent.createDefault(component, pieData, SliceValueMode.SLICE_PERCENTAGE);

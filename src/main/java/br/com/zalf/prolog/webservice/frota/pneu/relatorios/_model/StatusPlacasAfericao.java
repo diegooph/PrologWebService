@@ -13,8 +13,9 @@ public final class StatusPlacasAfericao {
     public StatusPlacasAfericao(final int qtdPlacasAfericaoVencida, final int qtdPlacasAfericaoNoPrazo) {
         this.qtdPlacasAfericaoVencida = qtdPlacasAfericaoVencida;
         this.qtdPlacasAfericaoNoPrazo = qtdPlacasAfericaoNoPrazo;
-       this.qtdPlacasNuncaAferidas = 0;
+        this.qtdPlacasNuncaAferidas = 0;
     }
+
     public StatusPlacasAfericao(final int qtdPlacasAfericaoVencida, final int qtdPlacasAfericaoNoPrazo,final int qtdPlacasNuncaAferidas) {
         this.qtdPlacasAfericaoVencida = qtdPlacasAfericaoVencida;
         this.qtdPlacasNuncaAferidas = qtdPlacasNuncaAferidas;
@@ -26,5 +27,9 @@ public final class StatusPlacasAfericao {
 
     public int getQtdPlacasAfericaoNoPrazo() {
         return qtdPlacasAfericaoNoPrazo;
+    }
+
+    public int getQtdPlacasNuncaAferidas() {
+        return qtdPlacasNuncaAferidas;
     }
 }
