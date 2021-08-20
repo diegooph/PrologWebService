@@ -58,12 +58,8 @@ public final class TireSizeEntity {
         return Optional.ofNullable(createByUser);
     }
 
+    @NotNull
     public Optional<UserEntity> getLastedUpdateUser() {
         return Optional.ofNullable(lastedUpdateUser);
-    }
-
-    @NotNull
-    public String getTireSizeUserFriendly() {
-        return width + "/" + height + " R" + rim;
     }
 }
