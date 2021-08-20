@@ -6,6 +6,9 @@ Change Log
 ## UNRELEASED
 ##
 
+### Features
+* Cria CRUD de dimensão de pneu (PL-3892)
+
 ### Refactors
 * Melhora estrutura de autenticação do Prolog (PL-3900)
 * Verifica se empresa e unidade estão ativas ao realizar o login
