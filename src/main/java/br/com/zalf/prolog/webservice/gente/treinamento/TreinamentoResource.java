@@ -96,7 +96,7 @@ public class TreinamentoResource {
     @GET
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
     @Path("/visualizados/by-codigo/{codColaborador}")
-    public List<Treinamento> getVistosByColaboradorByCodColaborador(
+    public List<Treinamento> getVistosByCodColaborador(
             @PathParam("codColaborador") final Long codColaborador) {
         return service.getVistosByColaborador(codColaborador);
     }
@@ -135,6 +135,10 @@ public class TreinamentoResource {
                 apenasTreinametosLiberados, limit, offset);
     }
 
+    /**
+     * @deprecated em 20/08/2021.
+     * Use {@link #marcarTreinamentoComoVistoByCodColaborador(Long, Long)} instead.
+     */
     @Deprecated
     @POST
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
@@ -151,6 +155,10 @@ public class TreinamentoResource {
         }
     }
 
+    /**
+     * @deprecated em 20/08/2021.
+     * Use {@link #getVistosByCodColaborador(Long)}
+     */
     @Deprecated
     @GET
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
@@ -172,6 +180,10 @@ public class TreinamentoResource {
         }
     }
 
+    /**
+     * @deprecated em 20/08/2021.
+     * Use {@link #getNaoVistosByCodColaborador(Long)}
+     */
     @Deprecated
     @GET
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
