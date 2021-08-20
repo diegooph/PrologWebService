@@ -332,10 +332,10 @@ where pd.cod_empresa in (select ti.cod_empresa
                          from integracao.token_integracao ti);
 alter table dimensao_pneu
     add constraint fk_colaborador_cadastro_empresa foreign key (cod_colaborador_cadastro)
-        references colaborador_data (codigo) deferrable;
+        references colaborador_data (codigo);
 alter table dimensao_pneu
-    add constraint fk_colaborador_cadastro_empresa foreign key (cod_colaborador_ultima_atualizacao)
-        references colaborador_data (codigo) deferrable;
+    add constraint fk_colaborador_edicao_empresa foreign key (cod_colaborador_ultima_atualizacao)
+        references colaborador_data (codigo);
 
 update pneu_data pd
 set cod_dimensao = (
