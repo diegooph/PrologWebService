@@ -1,6 +1,6 @@
-package br.com.zalf.prolog.webservice.cargo;
+package br.com.zalf.prolog.webservice.gente.cargo;
 
-import br.com.zalf.prolog.webservice.cargo._model.*;
+import br.com.zalf.prolog.webservice.gente.cargo._model.*;
 import br.com.zalf.prolog.webservice.autenticacao._model.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;

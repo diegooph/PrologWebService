@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.cargo._model;
+package br.com.zalf.prolog.webservice.gente.cargo._model;
 
 import br.com.zalf.prolog.webservice.permissao.pilares.ImpactoPermissaoProLog;
 import lombok.Data;

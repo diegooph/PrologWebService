@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.cargo.relatorios;
+package br.com.zalf.prolog.webservice.gente.cargo.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
