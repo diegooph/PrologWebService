@@ -2,9 +2,8 @@
 Change Log
 ==========
 
-##
-## UNRELEASED
-##
+<a name="v3.9.0"></a>
+## Version [v3.9.0](https://github.com/luizfp/PrologWebService/compare/v3.8.0...v3.9.0) (2021-08-22)
 
 ### Features
 * Cria CRUD de dimensão de pneu (PL-3892)
