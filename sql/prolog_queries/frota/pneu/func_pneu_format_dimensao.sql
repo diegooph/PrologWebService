@@ -1,12 +1,12 @@
-CREATE OR REPLACE FUNCTION FUNC_PNEU_FORMAT_DIMENSAO(F_LARGURA INTEGER,
-                                                     F_ALTURA INTEGER,
-                                                     F_ARO REAL)
-    RETURNS TEXT
-    IMMUTABLE STRICT
-    LANGUAGE PLPGSQL
-AS
+create or replace function func_pneu_format_dimensao(f_largura numeric,
+                                                     f_altura numeric,
+                                                     f_aro numeric)
+    returns text
+    immutable strict
+    language plpgsql
+as
 $$
-BEGIN
-    RETURN (((F_LARGURA || '/' :: TEXT) || F_ALTURA) || ' R' :: TEXT) || F_ARO;
-END;
+begin
+    return (((f_largura || '/' :: text) || f_altura) || ' r' :: text) || f_aro;
+end;
 $$;
