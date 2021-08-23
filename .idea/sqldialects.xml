@@ -2,9 +2,12 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/sql/__old_migrations__/old/migration_v2_73_to_74.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/sql/migrations/done/0295_migration_fix_dahsboard_afericao_PL-3629.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/sql/migrations/done/0303_migration_sai_placa_fluxo_sistema_PL-3618.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/sql/migrations/done/0350_migration_add_coluna_relatorio_checklist_PL-3885.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/sql/migrations/done/0351_migration_otimiza_relatorio_desgaste_irregular_PL-3908.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/sql/migrations/done/0359_migration_fix_dahsboard_afericao_PL-3902.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/sql/prolog_queries/frota/afericao/relatorios/func_afericao_relatorio_dados_base_validacao_vencimento.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/sql/prolog_queries/frota/afericao/relatorios/func_afericao_relatorio_qtd_dias_placas_vencidas.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/sql/prolog_queries/frota/afericao/relatorios/func_pneu_relatorio_status_placas_afericao.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/sql/prolog_setup_db/scripts/base/T01_script_prolog_db_schemas_extensions.sql" dialect="PostgreSQL" />
