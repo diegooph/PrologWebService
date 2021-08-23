@@ -23,9 +23,9 @@ create or replace function func_afericao_get_pneus_disponiveis_afericao_avulsa(f
                 qt_sulcos_modelo_banda                smallint,
                 altura_sulcos_modelo_banda            real,
                 valor_banda                           real,
-                altura                                integer,
-                largura                               integer,
-                aro                                   real,
+                altura                                numeric,
+                largura                               numeric,
+                aro                                   numeric,
                 cod_dimensao                          bigint,
                 altura_sulco_central_interno          real,
                 altura_sulco_central_externo          real,
@@ -72,7 +72,7 @@ with afericoes as (
                  a.tipo_medicao_coletada,
                  a.tipo_processo_coleta,
                  c.nome                      as nome_colaborador,
-                 MAX(a.codigo)
+                 max(a.codigo)
                  over (
                      partition by cod_pneu ) as max_cod_afericao
           from pneu p
