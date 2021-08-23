@@ -1,3 +1,4 @@
+drop function func_pneus_get_listagem_pneus_movimentacoes_analise(f_cod_unidade bigint);
 create or replace function func_pneus_get_listagem_pneus_movimentacoes_analise(f_cod_unidade bigint)
   returns table(
     codigo                       bigint,
