@@ -15,7 +15,8 @@ public interface TireSizeDao extends JpaRepository<TireSizeEntity, Long> {
     @NotNull
     @Query("select tse from TireSizeEntity tse " +
             "where tse.companyId = :companyId " +
-            "and (:statusActive is null or tse.isActive = :statusActive)")
+            "and (:statusActive is null or tse.isActive = :statusActive) " +
+            "order by tse.isActive desc, tse.id")
     List<TireSizeEntity> getAll(@NotNull final Long companyId, @Nullable final Boolean statusActive);
 
     @NotNull
