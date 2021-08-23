@@ -6,11 +6,15 @@ Change Log
 ## UNRELEASED
 ##
 
+### Features
+* Cria CRUD de dimensão de pneu (PL-3892)
+
 ### Refactors
 * Melhora estrutura de autenticação do Prolog (PL-3900)
 * Verifica se empresa e unidade estão ativas ao realizar o login
 * Loga exceptions vindas da implementação V2
 * Ordenar por ordem decrescente a listagem de treinamento (PL-3903)
+* Modifica estrutura de dimensões (PL-3851)
 
 <a name="v3.8.1"></a>
 ## Version [v3.8.1](https://github.com/luizfp/PrologWebService/compare/v3.8.0...v3.8.1) (2021-08-12)
@@ -30,7 +34,6 @@ Change Log
 
 ### Refactors
 * Remove CPF de treinamento (PL-3857)
-
 
 <a name="v3.7.0"></a>
 ## Version [v3.7.0](https://github.com/luizfp/PrologWebService/compare/v3.6.0...v3.7.0) (2021-08-04)

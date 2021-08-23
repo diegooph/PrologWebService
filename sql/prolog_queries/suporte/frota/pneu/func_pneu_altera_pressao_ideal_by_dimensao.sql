@@ -42,7 +42,7 @@ begin
     -- Verifica se existe a dimensão informada.
     if not exists(select dm.codigo
                   from dimensao_pneu dm
-                  where dm.codigo = f_cod_dimensao)
+                  where dm.codigo = f_cod_dimensao and dm.cod_empresa = f_cod_empresa)
     then
         raise exception 'Dimensao de código % não existe!', f_cod_dimensao;
     end if;

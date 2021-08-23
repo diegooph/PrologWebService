@@ -35,7 +35,7 @@ public final class TireMovementMapper {
                                           movementProcessEntity.getMovementProcessAt(),
                                           movementProcessEntity.getMovementProcessAtWithTimeZone(),
                                           movementProcessEntity.getMovementProcessBy().getId(),
-                                          movementProcessEntity.getMovementProcessBy().getCpfFormatado(),
+                                          movementProcessEntity.getMovementProcessBy().getFormattedCpf(),
                                           movementProcessEntity.getMovementProcessBy().getName(),
                                           vehicleMovement.map(VehicleMovement::getVehicleId).orElse(null),
                                           vehicleMovement.map(VehicleMovement::getVehiclePlate).orElse(null),

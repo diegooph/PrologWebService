@@ -17,7 +17,7 @@ public class TireFactory {
                                 215L,
                                 "teste04",
                                 131L,
-                                10L,
+                                86L,
                                 2,
                                 3,
                                 100.00,

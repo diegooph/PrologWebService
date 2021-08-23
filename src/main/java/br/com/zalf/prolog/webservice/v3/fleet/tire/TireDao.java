@@ -21,26 +21,26 @@ import java.util.List;
 public interface TireDao extends JpaRepository<TireEntity, Long> {
     @NotNull
     @Query("select t from TireEntity t " +
-                   "join fetch t.branchEntity b " +
-                   "join fetch b.groupEntity " +
-                   "join fetch t.tireSizeEntity " +
-                   "join fetch t.tireModelEntity tm " +
-                   "join fetch tm.tireBrandEntity " +
-                   "left join fetch t.treadModelEntity ttm " +
-                   "left join fetch ttm.treadBrandEntity " +
-                   "left join fetch t.tireServiceEntities psr " +
-                   "left join fetch psr.tireServiceTypeEntity " +
-                   "left join fetch t.vehicleApplied " +
-                   "left join fetch t.tireMovementEntities mov " +
-                   "left join fetch mov.tireMovementDestinationEntity movD " +
-                   "left join fetch movD.retreaderEntity " +
-                   // Fizemos JOIN com essas propriedades por mais que não precisava, para não gerar N+1 requests ao BD.
-                   "left join fetch mov.tireMovementSourceEntity " +
-                   "left join fetch mov.tireMovementProcessEntity movP " +
-                   "left join fetch movP.movementProcessBy c " +
-                   "where b.id in :branchesId " +
-                   "and (:tireStatus is null or t.tireStatus = :tireStatus) " +
-                   "order by t.id asc")
+            "join fetch t.branchEntity b " +
+            "join fetch b.groupEntity " +
+            "join fetch t.tireSizeEntity " +
+            "join fetch t.tireModelEntity tm " +
+            "join fetch tm.tireBrandEntity " +
+            "left join fetch t.treadModelEntity ttm " +
+            "left join fetch ttm.treadBrandEntity " +
+            "left join fetch t.tireServiceEntities psr " +
+            "left join fetch psr.tireServiceTypeEntity " +
+            "left join fetch t.vehicleApplied " +
+            "left join fetch t.tireMovementEntities mov " +
+            "left join fetch mov.tireMovementDestinationEntity movD " +
+            "left join fetch movD.retreaderEntity " +
+            // Fizemos JOIN com essas propriedades por mais que não precisava, para não gerar N+1 requests ao BD.
+            "left join fetch mov.tireMovementSourceEntity " +
+            "left join fetch mov.tireMovementProcessEntity movP " +
+            "left join fetch movP.movementProcessBy c " +
+            "where b.id in :branchesId " +
+            "and (:tireStatus is null or t.tireStatus = :tireStatus) " +
+            "order by t.id asc")
     List<TireEntity> getAllTires(@NotNull final List<Long> branchesId,
                                  @Nullable final StatusPneu tireStatus,
                                  @NotNull final Pageable pageable);
