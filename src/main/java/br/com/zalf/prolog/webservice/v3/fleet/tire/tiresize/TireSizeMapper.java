@@ -33,8 +33,8 @@ public class TireSizeMapper {
                 .withIsActive(true)
                 .withCreatedAt(Now.getLocalDateTimeUtc())
                 .withCreateByUser(createUserFrom(colaboradorAutenticado))
-                .withLastedUpdateAt(Now.getLocalDateTimeUtc())
-                .withLastedUpdateUser(createUserFrom(colaboradorAutenticado))
+                .withLastUpdateAt(Now.getLocalDateTimeUtc())
+                .withLastUpdateUser(createUserFrom(colaboradorAutenticado))
                 .withRegisterOrigin(registerOrigin)
                 .build();
     }
@@ -47,7 +47,7 @@ public class TireSizeMapper {
     @NotNull
     public TireSizeDto toTireSizeDto(@NotNull final TireSizeEntity tireSizeEntity) {
         final Optional<UserEntity> createdByUser = tireSizeEntity.getCreateByUser();
-        final Optional<UserEntity> lastedUpdateUser = tireSizeEntity.getLastedUpdateUser();
+        final Optional<UserEntity> lastedUpdateUser = tireSizeEntity.getLastUpdateUser();
         return TireSizeDto.builder()
                 .withId(tireSizeEntity.getId())
                 .withHeight(tireSizeEntity.getHeight())
@@ -55,10 +55,10 @@ public class TireSizeMapper {
                 .withRim(tireSizeEntity.getRim())
                 .withAdditionalId(tireSizeEntity.getAdditionalId())
                 .withIsActive(tireSizeEntity.isActive())
-                .withCreatedAt(tireSizeEntity.getCreatedAt())
+                .withCreatedAt(tireSizeEntity.getCreatedAtWithTimezone())
                 .withCreatedByUserId(createdByUser.map(UserEntity::getId).orElse(null))
                 .withCreatedByUserName(createdByUser.map(UserEntity::getName).orElse(null))
-                .withLastUpdateAt(tireSizeEntity.getLastedUpdateAt())
+                .withLastUpdateAt(tireSizeEntity.getLastUpdatedAtWithTimezone().orElse(null))
                 .withLastUpdateByUserId(lastedUpdateUser.map(UserEntity::getId).orElse(null))
                 .withLastUpdateByUserName(lastedUpdateUser.map(UserEntity::getName).orElse(null))
                 .withRegisterOrigin(tireSizeEntity.getRegisterOrigin())
@@ -76,8 +76,8 @@ public class TireSizeMapper {
                 .withRim(tireSizeUpdateDto.getRim())
                 .withAdditionalId(tireSizeUpdateDto.getAdditionalId())
                 .withIsActive(tireSizeUpdateDto.isActive())
-                .withLastedUpdateUser(createUserFrom(colaboradorAutenticado))
-                .withLastedUpdateAt(LocalDateTime.now())
+                .withLastUpdateUser(createUserFrom(colaboradorAutenticado))
+                .withLastUpdateAt(LocalDateTime.now())
                 .build();
     }
 
@@ -88,8 +88,8 @@ public class TireSizeMapper {
             @NotNull final Optional<ColaboradorAutenticado> colaboradorAutenticado) {
         return tireSizeEntity.toBuilder()
                 .withIsActive(tireSizeStatusChangeDto.isActive())
-                .withLastedUpdateUser(createUserFrom(colaboradorAutenticado))
-                .withLastedUpdateAt(LocalDateTime.now())
+                .withLastUpdateUser(createUserFrom(colaboradorAutenticado))
+                .withLastUpdateAt(LocalDateTime.now())
                 .build();
     }
 

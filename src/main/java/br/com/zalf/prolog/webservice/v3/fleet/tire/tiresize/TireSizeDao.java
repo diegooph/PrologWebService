@@ -22,7 +22,7 @@ public interface TireSizeDao extends JpaRepository<TireSizeEntity, Long> {
     @NotNull
     @Query("select tse from TireSizeEntity tse " +
             "left join fetch tse.createByUser cbu " +
-            "left join fetch tse.lastedUpdateUser luu " +
+            "left join fetch tse.lastUpdateUser luu " +
             "where tse.companyId = :companyId " +
             "and tse.id = :id")
     Optional<TireSizeEntity> getByCompanyIdAndTireSizeId(@NotNull final Long companyId, @NotNull final Long id);

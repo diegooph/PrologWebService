@@ -1,9 +1,13 @@
 package br.com.zalf.prolog.webservice.v3.fleet.tire.tiresize.model;
 
+import br.com.zalf.prolog.webservice.commons.util.datetime.TimezoneUtils;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.v3.LocalDateTimeUtcAttributeConverter;
 import br.com.zalf.prolog.webservice.v3.user.UserEntity;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
@@ -46,10 +50,10 @@ public final class TireSizeEntity {
     private UserEntity createByUser;
     @Convert(converter = LocalDateTimeUtcAttributeConverter.class)
     @Column(name = "data_hora_ultima_atualizacao", nullable = false)
-    private LocalDateTime lastedUpdateAt;
+    private LocalDateTime lastUpdateAt;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_colaborador_ultima_atualizacao", referencedColumnName = "codigo")
-    private UserEntity lastedUpdateUser;
+    private UserEntity lastUpdateUser;
     @Column(name = "origem_cadastro", nullable = false)
     private OrigemAcaoEnum registerOrigin;
 
@@ -59,7 +63,21 @@ public final class TireSizeEntity {
     }
 
     @NotNull
-    public Optional<UserEntity> getLastedUpdateUser() {
-        return Optional.ofNullable(lastedUpdateUser);
+    public LocalDateTime getCreatedAtWithTimezone() {
+        return createByUser != null
+                ? TimezoneUtils.applyTimezone(createdAt, createByUser.getUserZoneId())
+                : createdAt;
+    }
+
+    @NotNull
+    public Optional<UserEntity> getLastUpdateUser() {
+        return Optional.ofNullable(lastUpdateUser);
+    }
+
+    @NotNull
+    public Optional<LocalDateTime> getLastUpdatedAtWithTimezone() {
+        return lastUpdateAt != null && lastUpdateUser != null
+                ? Optional.of(TimezoneUtils.applyTimezone(lastUpdateAt, lastUpdateUser.getUserZoneId()))
+                : Optional.empty();
     }
 }
