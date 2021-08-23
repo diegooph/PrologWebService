@@ -1,88 +1,88 @@
-CREATE OR REPLACE FUNCTION FUNC_PNEUS_GET_LISTAGEM_PNEUS_MOVIMENTACOES_ANALISE(F_COD_UNIDADE BIGINT)
-  RETURNS TABLE(
-    CODIGO                       BIGINT,
-    CODIGO_CLIENTE               TEXT,
-    DOT                          TEXT,
-    VALOR                        REAL,
-    COD_UNIDADE_ALOCADO          BIGINT,
-    NOME_UNIDADE_ALOCADO         TEXT,
-    COD_REGIONAL_ALOCADO         BIGINT,
-    NOME_REGIONAL_ALOCADO        TEXT,
-    PNEU_NOVO_NUNCA_RODADO       BOOLEAN,
-    COD_MARCA_PNEU               BIGINT,
-    NOME_MARCA_PNEU              TEXT,
-    COD_MODELO_PNEU              BIGINT,
-    NOME_MODELO_PNEU             TEXT,
-    QT_SULCOS_MODELO_PNEU        SMALLINT,
-    COD_MARCA_BANDA              BIGINT,
-    NOME_MARCA_BANDA             TEXT,
-    ALTURA_SULCOS_MODELO_PNEU    REAL,
-    COD_MODELO_BANDA             BIGINT,
-    NOME_MODELO_BANDA            TEXT,
-    QT_SULCOS_MODELO_BANDA       SMALLINT,
-    ALTURA_SULCOS_MODELO_BANDA   REAL,
-    VALOR_BANDA                  REAL,
-    ALTURA                       INTEGER,
-    LARGURA                      INTEGER,
-    ARO                          REAL,
-    COD_DIMENSAO                 BIGINT,
-    ALTURA_SULCO_CENTRAL_INTERNO REAL,
-    ALTURA_SULCO_CENTRAL_EXTERNO REAL,
-    ALTURA_SULCO_INTERNO         REAL,
-    ALTURA_SULCO_EXTERNO         REAL,
-    PRESSAO_RECOMENDADA          REAL,
-    PRESSAO_ATUAL                REAL,
-    STATUS                       TEXT,
-    VIDA_ATUAL                   INTEGER,
-    VIDA_TOTAL                   INTEGER,
-    POSICAO_PNEU                 INTEGER,
-    POSICAO_APLICADO_CLIENTE     TEXT,
-    COD_VEICULO_APLICADO         BIGINT,
-    PLACA_APLICADO               TEXT,
-    IDENTIFICADOR_FROTA          TEXT,
-    COD_MOVIMENTACAO             BIGINT,
-    COD_RECAPADORA               BIGINT,
-    NOME_RECAPADORA              TEXT,
-    COD_EMPRESA_RECAPADORA       BIGINT,
-    RECAPADORA_ATIVA             BOOLEAN,
-    COD_COLETA                   TEXT)
-LANGUAGE SQL
-AS $$
-WITH MOVIMENTACOES_ANALISE AS (
-    SELECT
-      INNER_TABLE.CODIGO                 AS COD_MOVIMENTACAO,
-      INNER_TABLE.COD_PNEU               AS COD_PNEU,
-      INNER_TABLE.COD_RECAPADORA_DESTINO AS COD_RECAPADORA,
-      INNER_TABLE.NOME                   AS NOME_RECAPADORA,
-      INNER_TABLE.COD_EMPRESA            AS COD_EMPRESA_RECAPADORA,
-      INNER_TABLE.ATIVA                  AS RECAPADORA_ATIVA,
-      INNER_TABLE.COD_COLETA             AS COD_COLETA
-    FROM (SELECT
-            MOV.CODIGO,
-            MOV.COD_PNEU,
-            MAX(MOV.CODIGO)
-            OVER (
-              PARTITION BY COD_PNEU ) AS MAX_COD_MOVIMENTACAO,
-            MD.COD_RECAPADORA_DESTINO,
-            REC.NOME,
-            REC.COD_EMPRESA,
-            REC.ATIVA,
-            MD.COD_COLETA
-          FROM MOVIMENTACAO AS MOV
-            JOIN MOVIMENTACAO_DESTINO AS MD ON MOV.CODIGO = MD.COD_MOVIMENTACAO
-            LEFT JOIN RECAPADORA AS REC ON MD.COD_RECAPADORA_DESTINO = REC.CODIGO
-          WHERE COD_UNIDADE = F_COD_UNIDADE AND MD.TIPO_DESTINO = 'ANALISE') AS INNER_TABLE
-    WHERE CODIGO = INNER_TABLE.MAX_COD_MOVIMENTACAO
+create or replace function func_pneus_get_listagem_pneus_movimentacoes_analise(f_cod_unidade bigint)
+  returns table(
+    codigo                       bigint,
+    codigo_cliente               text,
+    dot                          text,
+    valor                        real,
+    cod_unidade_alocado          bigint,
+    nome_unidade_alocado         text,
+    cod_regional_alocado         bigint,
+    nome_regional_alocado        text,
+    pneu_novo_nunca_rodado       boolean,
+    cod_marca_pneu               bigint,
+    nome_marca_pneu              text,
+    cod_modelo_pneu              bigint,
+    nome_modelo_pneu             text,
+    qt_sulcos_modelo_pneu        smallint,
+    cod_marca_banda              bigint,
+    nome_marca_banda             text,
+    altura_sulcos_modelo_pneu    real,
+    cod_modelo_banda             bigint,
+    nome_modelo_banda            text,
+    qt_sulcos_modelo_banda       smallint,
+    altura_sulcos_modelo_banda   real,
+    valor_banda                  real,
+    altura                       numeric,
+    largura                      numeric,
+    aro                          numeric,
+    cod_dimensao                 bigint,
+    altura_sulco_central_interno real,
+    altura_sulco_central_externo real,
+    altura_sulco_interno         real,
+    altura_sulco_externo         real,
+    pressao_recomendada          real,
+    pressao_atual                real,
+    status                       text,
+    vida_atual                   integer,
+    vida_total                   integer,
+    posicao_pneu                 integer,
+    posicao_aplicado_cliente     text,
+    cod_veiculo_aplicado         bigint,
+    placa_aplicado               text,
+    identificador_frota          text,
+    cod_movimentacao             bigint,
+    cod_recapadora               bigint,
+    nome_recapadora              text,
+    cod_empresa_recapadora       bigint,
+    recapadora_ativa             boolean,
+    cod_coleta                   text)
+language sql
+as $$
+with movimentacoes_analise as (
+    select
+        inner_table.codigo                 as cod_movimentacao,
+        inner_table.cod_pneu               as cod_pneu,
+        inner_table.cod_recapadora_destino as cod_recapadora,
+        inner_table.nome                   as nome_recapadora,
+        inner_table.cod_empresa            as cod_empresa_recapadora,
+        inner_table.ativa                  as recapadora_ativa,
+        inner_table.cod_coleta             as cod_coleta
+    from (select
+              mov.codigo,
+              mov.cod_pneu,
+              max(mov.codigo)
+                  over (
+                      partition by cod_pneu ) as max_cod_movimentacao,
+              md.cod_recapadora_destino,
+              rec.nome,
+              rec.cod_empresa,
+              rec.ativa,
+              md.cod_coleta
+          from movimentacao as mov
+                   join movimentacao_destino as md on mov.codigo = md.cod_movimentacao
+                   left join recapadora as rec on md.cod_recapadora_destino = rec.codigo
+          where cod_unidade = f_cod_unidade and md.tipo_destino = 'ANALISE') as inner_table
+    where codigo = inner_table.max_cod_movimentacao
 )
 
-SELECT
-  FUNC.*,
-  MA.COD_MOVIMENTACAO,
-  MA.COD_RECAPADORA,
-  MA.NOME_RECAPADORA,
-  MA.COD_EMPRESA_RECAPADORA,
-  MA.RECAPADORA_ATIVA,
-  MA.COD_COLETA
-FROM FUNC_PNEU_GET_LISTAGEM_PNEUS_BY_STATUS(array[F_COD_UNIDADE], 'ANALISE') AS FUNC
-  JOIN MOVIMENTACOES_ANALISE MA ON MA.COD_PNEU = FUNC.CODIGO;
+select
+    func.*,
+    ma.cod_movimentacao,
+    ma.cod_recapadora,
+    ma.nome_recapadora,
+    ma.cod_empresa_recapadora,
+    ma.recapadora_ativa,
+    ma.cod_coleta
+from func_pneu_get_listagem_pneus_by_status(array[f_cod_unidade], 'ANALISE') as func
+         join movimentacoes_analise ma on ma.cod_pneu = func.codigo;
 $$;

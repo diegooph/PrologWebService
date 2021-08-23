@@ -14,7 +14,7 @@ create or replace function func_relatorio_treinamento_visualizados_por_colaborad
     language sql
 as
 $$
-select lpad(tc.cpf_colaborador :: text, 11, '0')                                          as cpf,
+select lpad(c.cpf :: text, 11, '0')                                                       as cpf,
        c.nome                                                                             as colaborador,
        f.nome                                                                             as cargo_colaborador,
        t.titulo                                                                           as titulo_treinamento,
@@ -22,7 +22,7 @@ select lpad(tc.cpf_colaborador :: text, 11, '0')                                
        to_char(tc.data_visualizacao at time zone f_time_zone_datas, 'DD/MM/YYYY HH24:MI') as data_hora_visualizacao
 from treinamento_colaborador tc
          join treinamento t on tc.cod_treinamento = t.codigo
-         join colaborador c on tc.cpf_colaborador = c.cpf
+         join colaborador c on tc.cod_colaborador = c.codigo
          join funcao f on c.cod_funcao = f.codigo
 where t.cod_unidade = f_cod_unidade
   and (tc.data_visualizacao at time zone f_time_zone_datas):: date >= f_data_inicial

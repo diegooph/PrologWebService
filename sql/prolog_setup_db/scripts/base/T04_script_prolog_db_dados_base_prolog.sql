@@ -234,7 +234,7 @@ INSERT INTO public.dimensao_pneu (codigo, altura, largura, aro) VALUES (78, 60, 
 INSERT INTO public.dimensao_pneu (codigo, altura, largura, aro) VALUES (79, 27, 10, 12);
 INSERT INTO public.dimensao_pneu (codigo, altura, largura, aro) VALUES (80, 6, 50, 10);
 INSERT INTO public.dimensao_pneu (codigo, altura, largura, aro) VALUES (81, 23, 9, 10);
-
+SELECT setval('dimensao_pneu_codigo_seq', 81, true);
 
 INSERT INTO public.dispositivo_movel_marca_prolog (codigo, nome) VALUES (1, 'Alcatel');
 INSERT INTO public.dispositivo_movel_marca_prolog (codigo, nome) VALUES (2, 'Acer');

@@ -312,7 +312,7 @@ BEGIN
                                                                MAX(func_gera_similaridade(NEW.DIMENSAO_FORMATADA_IMPORT,
                                                                                           CONCAT(DP.LARGURA, '/', DP.ALTURA, 'R', DP.ARO))) AS SIMILARIDADE_DIMENSAO
             INTO F_COD_DIMENSAO, F_SIMILARIDADE_DIMENSAO
-            FROM DIMENSAO_PNEU DP
+            FROM DIMENSAO_PNEU DP WHERE DP.COD_EMPRESA = NEW.COD_EMPRESA
             GROUP BY NEW.DIMENSAO_FORMATADA_IMPORT, NEW.DIMENSAO_EDITAVEL,
                      CONCAT(DP.LARGURA, '/', DP.ALTURA, 'R', DP.ARO),
                      DP.CODIGO

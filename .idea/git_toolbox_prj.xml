@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="GitToolBoxProjectSettings">
+    <option name="commitDialogBranchCompletionOverride">
+      <BoolValueOverride>
+        <option name="enabled" value="true" />
+      </BoolValueOverride>
+    </option>
     <option name="commitDialogCompletion" value="false" />
     <option name="commitMessageValidation" value="true" />
-   <!-- Para uma explicação sobre essa regex, veja o PR: https://github.com/prologapp/PrologWebService/pull/150 -->
+    <option name="commitMessageValidationOverride">
+      <BoolValueOverride>
+        <option name="enabled" value="true" />
+        <option name="value" value="true" />
+      </BoolValueOverride>
+    </option>
     <option name="commitMessageValidationRegex" value="^(fix|docs|feat|refactor|style|test|perf)(\((aferição|cargo|checklist|colaborador|core|cs|dashboard|dispositivo|escala|prontuário|quiz|relato|socorro|treinamento|indicador|integração|interno|jornada|login|mapa|movimentação|pneu|pré-contracheque|produtividade|suporte|tracking|transferência|veículo)\)(:)|(:))[^\S\r\n].{5,}((?:\n\n)((?=PL)(PL-\d+)|(.{5,}|.{5,}\n\n(PL-\d+)))|())$" />
+    <option name="commitMessageValidationRegexOverride">
+      <StringValueOverride>
+        <option name="enabled" value="true" />
+        <option name="value" value="^(fix|docs|feat|refactor|style|test|perf)(\((aferição|cargo|checklist|colaborador|core|cs|dashboard|dispositivo|escala|prontuário|quiz|relato|socorro|treinamento|indicador|integração|interno|jornada|login|mapa|movimentação|pneu|pré-contracheque|produtividade|suporte|tracking|transferência|veículo)\)(:)|(:))[^\S\r\n].{5,}((?:\n\n)((?=PL)(PL-\d+)|(.{5,}|.{5,}\n\n(PL-\d+)))|())$" />
+      </StringValueOverride>
+    </option>
   </component>
 </project>

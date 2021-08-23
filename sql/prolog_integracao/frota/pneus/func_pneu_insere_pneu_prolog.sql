@@ -61,6 +61,7 @@ DECLARE
                                                               AND P.COD_EMPRESA = COD_EMPRESA_PNEU));
     COD_PNEU_PROLOG               BIGINT;
     F_QTD_ROWS_AFETADAS           BIGINT;
+    V_COD_DIMENSAO                BIGINT;
 BEGIN
     PERFORM INTEGRACAO.FUNC_GARANTE_TOKEN_EMPRESA(COD_EMPRESA_PNEU, F_TOKEN_INTEGRACAO);
 
@@ -90,12 +91,17 @@ BEGIN
     END IF;
 
     -- Validamos se a dimensão do pneu está mapeada.
-    IF (SELECT NOT EXISTS(SELECT DP.CODIGO
+    IF (SELECT NOT EXISTS(SELECT DP.COD_AUXILIAR
                           FROM PUBLIC.DIMENSAO_PNEU DP
-                          WHERE DP.CODIGO = F_COD_DIMENSAO_PNEU))
+                          WHERE DP.COD_AUXILIAR = F_COD_DIMENSAO_PNEU))
     THEN
         PERFORM PUBLIC.THROW_GENERIC_ERROR(FORMAT('A dimensão de código %s do pneu não está mapeada no Sistema ProLog',
                                                   F_COD_DIMENSAO_PNEU));
+    ELSE
+        SELECT DP.CODIGO
+        INTO V_COD_DIMENSAO
+        FROM DIMENSAO_PNEU DP
+        WHERE DP.COD_EMPRESA = COD_EMPRESA_PNEU;
     END IF;
 
     -- Validamos se a pressão recomendada é válida.
@@ -220,7 +226,7 @@ BEGIN
                 F_COD_UNIDADE_PNEU,
                 F_CODIGO_PNEU_CLIENTE,
                 F_COD_MODELO_PNEU,
-                F_COD_DIMENSAO_PNEU,
+                V_COD_DIMENSAO,
                 F_PRESSAO_CORRETA_PNEU,
                 0, -- PRESSAO_ATUAL
                 NULL, -- ALTURA_SULCO_INTERNO
