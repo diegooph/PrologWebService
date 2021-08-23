@@ -1,2 +1,5 @@
 ### IntelliJ IDEA ###
 target
+!/.idea/sqldialects.xml
+!/.gitignore
+!/src/main/resources/application-dev.yml
