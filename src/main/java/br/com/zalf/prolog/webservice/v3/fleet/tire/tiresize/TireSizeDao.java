@@ -14,6 +14,10 @@ import java.util.Optional;
 public interface TireSizeDao extends JpaRepository<TireSizeEntity, Long> {
     @NotNull
     @Query("select tse from TireSizeEntity tse " +
+            "left join fetch tse.createByUser cbu " +
+            "left join fetch tse.lastUpdateUser luu " +
+            "left join fetch luu.branchEntity beluu " +
+            "left join fetch cbu.branchEntity becbu " +
             "where tse.companyId = :companyId " +
             "and (:statusActive is null or tse.isActive = :statusActive) " +
             "order by tse.isActive desc, tse.id")
@@ -23,6 +27,8 @@ public interface TireSizeDao extends JpaRepository<TireSizeEntity, Long> {
     @Query("select tse from TireSizeEntity tse " +
             "left join fetch tse.createByUser cbu " +
             "left join fetch tse.lastUpdateUser luu " +
+            "left join fetch luu.branchEntity beluu " +
+            "left join fetch cbu.branchEntity becbu " +
             "where tse.companyId = :companyId " +
             "and tse.id = :id")
     Optional<TireSizeEntity> getByCompanyIdAndTireSizeId(@NotNull final Long companyId, @NotNull final Long id);
